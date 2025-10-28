@@ -37,6 +37,7 @@ export default function AdminEventsTable() {
           <h2 className="text-xl font-semibold">Event Management</h2>
           <Button
             onClick={() => setShowEventForm(!showEventForm)}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
             data-testid="button-create-event"
           >
             <Plus className="w-4 h-4 mr-2" />

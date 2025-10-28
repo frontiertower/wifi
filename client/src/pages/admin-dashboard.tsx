@@ -313,7 +313,7 @@ export default function AdminDashboard() {
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-gray-900">Event Management</h2>
-                <Button className="bg-primary-500 hover:bg-primary-600" data-testid="button-create-event">
+                <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white" data-testid="button-create-event">
                   <Plus className="mr-2 h-4 w-4" />
                   Create Event
                 </Button>
