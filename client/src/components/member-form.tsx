@@ -141,19 +141,19 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
                   <SelectValue placeholder="Select your floor" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="2">2nd Floor</SelectItem>
-                  <SelectItem value="3">3rd Floor</SelectItem>
-                  <SelectItem value="4">4th Floor</SelectItem>
-                  <SelectItem value="5">5th Floor</SelectItem>
-                  <SelectItem value="6">6th Floor</SelectItem>
-                  <SelectItem value="7">7th Floor</SelectItem>
-                  <SelectItem value="8">8th Floor</SelectItem>
-                  <SelectItem value="9">9th Floor</SelectItem>
-                  <SelectItem value="10">10th Floor</SelectItem>
-                  <SelectItem value="11">11th Floor</SelectItem>
-                  <SelectItem value="12">12th Floor</SelectItem>
-                  <SelectItem value="14">14th Floor</SelectItem>
-                  <SelectItem value="15">15th Floor</SelectItem>
+                  <SelectItem value="unknown">I don't know</SelectItem>
+                  <SelectItem value="2">2nd Floor - Private Offices</SelectItem>
+                  <SelectItem value="3">3rd Floor - Private Offices</SelectItem>
+                  <SelectItem value="4">4th Floor - Robotics</SelectItem>
+                  <SelectItem value="6">6th Floor - Arts & Music</SelectItem>
+                  <SelectItem value="7">7th Floor - Makerspace</SelectItem>
+                  <SelectItem value="8">8th Floor - Biotech & Neurotech</SelectItem>
+                  <SelectItem value="9">9th Floor - AI</SelectItem>
+                  <SelectItem value="10">10th Floor - Accelerate</SelectItem>
+                  <SelectItem value="11">11th Floor - Longevity</SelectItem>
+                  <SelectItem value="12">12th Floor - Ethereum House</SelectItem>
+                  <SelectItem value="14">14th Floor - Human Flourishing</SelectItem>
+                  <SelectItem value="15">15th Floor - Poly-floorous</SelectItem>
                 </SelectContent>
               </Select>
             </div>
