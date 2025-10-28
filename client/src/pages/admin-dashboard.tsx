@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 type Tab = "users" | "vouchers" | "events" | "analytics";
 
@@ -31,6 +35,9 @@ interface EventsResponse {
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("vouchers");
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [lumaUrl, setLumaUrl] = useState("");
+  const { toast } = useToast();
 
   const { data: stats } = useQuery<StatsResponse>({
     queryKey: ['/api/admin/stats'],
@@ -50,6 +57,43 @@ export default function AdminDashboard() {
     queryKey: ['/api/admin/events'],
     enabled: activeTab === "events",
   });
+
+  const createEventMutation = useMutation({
+    mutationFn: async (url: string) => {
+      const response = await apiRequest("POST", "/api/admin/events/from-url", { url });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Event Created",
+        description: "Event has been successfully added from Luma URL",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+      setShowEventForm(false);
+      setLumaUrl("");
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to Create Event",
+        description: error instanceof Error ? error.message : "Could not create event from URL",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmitUrl = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!lumaUrl.trim()) {
+      toast({
+        title: "URL Required",
+        description: "Please enter a Luma event URL",
+        variant: "destructive",
+      });
+      return;
+    }
+    createEventMutation.mutate(lumaUrl);
+  };
 
   const tabs = [
     { id: "users", label: "Users", icon: Users },
@@ -313,12 +357,73 @@ export default function AdminDashboard() {
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-semibold text-gray-900">Event Management</h2>
-                <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white" data-testid="button-create-event">
+                <Button 
+                  onClick={() => setShowEventForm(!showEventForm)}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white" 
+                  data-testid="button-create-event"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Create Event
                 </Button>
               </div>
             </div>
+
+            {showEventForm && (
+              <Card className="m-6 p-6 bg-muted/30">
+                <h3 className="font-semibold mb-4 flex items-center">
+                  <Link2 className="mr-2 h-5 w-5 text-purple-500" />
+                  Add Event from Luma URL
+                </h3>
+                <form onSubmit={handleSubmitUrl} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="lumaUrl">Luma Event URL</Label>
+                    <Input
+                      id="lumaUrl"
+                      type="url"
+                      value={lumaUrl}
+                      onChange={(e) => setLumaUrl(e.target.value)}
+                      placeholder="https://lu.ma/event-name"
+                      className="h-12"
+                      data-testid="input-luma-url"
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Paste a Luma event URL to automatically import event details
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      type="submit" 
+                      disabled={createEventMutation.isPending}
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                      data-testid="button-submit-url"
+                    >
+                      {createEventMutation.isPending ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Importing...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="mr-2 h-4 w-4" />
+                          Import Event
+                        </>
+                      )}
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline"
+                      onClick={() => {
+                        setShowEventForm(false);
+                        setLumaUrl("");
+                      }}
+                      data-testid="button-cancel"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </Card>
+            )}
 
             <Table>
               <TableHeader>

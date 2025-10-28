@@ -334,6 +334,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/admin/events/from-url", async (req, res) => {
+    try {
+      const { url } = z.object({
+        url: z.string().url()
+      }).parse(req.body);
+
+      if (!url.includes('lu.ma')) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide a valid Luma event URL (lu.ma)"
+        });
+      }
+
+      const fetch = (await import('node-fetch')).default;
+      const cheerio = await import('cheerio');
+      
+      const response = await fetch(url);
+      const html = await response.text();
+      const $ = cheerio.load(html);
+
+      let eventName = '';
+      let description = '';
+      let startDate = new Date();
+      let endDate = new Date();
+
+      $('script[type="application/ld+json"]').each((_, element) => {
+        try {
+          const jsonData = JSON.parse($(element).html() || '{}');
+          if (jsonData['@type'] === 'Event') {
+            eventName = jsonData.name || '';
+            description = jsonData.description || '';
+            
+            if (jsonData.startDate) {
+              startDate = new Date(jsonData.startDate);
+            }
+            if (jsonData.endDate) {
+              endDate = new Date(jsonData.endDate);
+            }
+          }
+        } catch (e) {
+          console.error('Error parsing JSON-LD:', e);
+        }
+      });
+
+      if (!eventName) {
+        eventName = $('meta[property="og:title"]').attr('content') || 
+                    $('title').text() || 
+                    'Imported Luma Event';
+      }
+
+      if (!description) {
+        description = $('meta[property="og:description"]').attr('content') || 
+                      $('meta[name="description"]').attr('content') || 
+                      '';
+      }
+
+      const code = eventName
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, '')
+        .substring(0, 10) + new Date().getTime().toString().slice(-4);
+
+      const eventData = {
+        name: eventName,
+        code: code,
+        description: description,
+        startDate: startDate,
+        endDate: endDate,
+        isActive: true,
+        maxAttendees: 100,
+        currentAttendees: 0
+      };
+
+      const event = await storage.createEvent(eventData);
+      
+      res.json({
+        success: true,
+        event,
+        message: "Event imported successfully from Luma"
+      });
+    } catch (error) {
+      console.error('Error scraping Luma URL:', error);
+      res.status(400).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to import event from URL"
+      });
+    }
+  });
+
   app.get("/api/admin/sessions", async (req, res) => {
     try {
       const sessions = await storage.getActiveSessions();
