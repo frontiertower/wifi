@@ -225,7 +225,7 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
 
             {isOtherEvent && (
               <div className="space-y-2">
-                <Label htmlFor="customEventName">Custom Event Name</Label>
+                <Label htmlFor="customEventName">Event Name</Label>
                 <Input
                   id="customEventName"
                   type="text"
@@ -237,7 +237,7 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
                   data-testid="input-custom-event-name"
                 />
                 {customEventName.trim().length > 0 && (
-                  <p className="text-sm text-green-600">✓ Custom event name entered</p>
+                  <p className="text-sm text-green-600">✓ Event name entered</p>
                 )}
               </div>
             )}
