@@ -63,7 +63,7 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
       onSuccess({
         message: "You are now connected to Frontier Tower Guest WiFi.",
         networkName: "Frontier-Guest",
-        duration: "4 hours",
+        duration: "8 hours",
         speedLimit: "10 Mbps"
       });
     },
@@ -192,7 +192,7 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
             <Alert className="bg-yellow-50 border-yellow-200">
               <Info className="h-4 w-4 text-yellow-600" />
               <AlertDescription className="text-yellow-800">
-                <strong>Guest Access Policy:</strong> Access is limited to 4 hours. Download speeds are limited to 10 Mbps.
+                <strong>Guest Access Policy:</strong> Access is limited to 8 hours. Download speeds are limited to 10 Mbps.
               </AlertDescription>
             </Alert>
 
@@ -210,7 +210,7 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
               ) : (
                 <>
                   <Clock className="mr-2 h-4 w-4" />
-                  Get 4-Hour Access
+                  Get 8-Hour Access
                 </>
               )}
             </Button>

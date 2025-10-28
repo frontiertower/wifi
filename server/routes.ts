@@ -161,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const unifiResult = await unifiService.authorizeGuest(
         clientMac,
-        4,
+        8,
         10240,
         10240,
         guestData.unifiParams
