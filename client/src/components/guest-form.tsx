@@ -89,19 +89,19 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-lg mx-auto">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="bg-green-500 text-white p-6">
+          <div className="bg-green-600 text-white p-6">
             <Button
               onClick={onBack}
               variant="ghost"
               size="sm"
-              className="mb-4 text-white hover:text-green-100 hover:bg-white/10 p-0"
+              className="mb-4 text-white hover:text-white/80 hover:bg-white/10 p-0"
               data-testid="button-back"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
             <h1 className="text-xl font-bold">Guest Access</h1>
-            <p className="text-green-100 text-sm mt-1">Welcome! Please provide your information</p>
+            <p className="text-white/90 text-sm mt-1">Welcome! Please provide your information</p>
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4">

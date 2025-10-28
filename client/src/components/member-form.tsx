@@ -91,19 +91,19 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-lg mx-auto">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="bg-primary-500 text-white p-6">
+          <div className="bg-primary text-primary-foreground p-6">
             <Button
               onClick={onBack}
               variant="ghost"
               size="sm"
-              className="mb-4 text-white hover:text-blue-100 hover:bg-white/10 p-0"
+              className="mb-4 text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10 p-0"
               data-testid="button-back"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
             <h1 className="text-xl font-bold">Member Access</h1>
-            <p className="text-blue-100 text-sm mt-1">Please provide your member details</p>
+            <p className="text-primary-foreground/80 text-sm mt-1">Please provide your member details</p>
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4">

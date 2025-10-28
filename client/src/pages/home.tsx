@@ -76,12 +76,12 @@ export default function Home() {
     <>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-primary-500 text-white p-6 text-center">
+          <div className="bg-primary text-primary-foreground p-6 text-center">
             <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Building className="text-2xl" />
             </div>
             <h1 className="text-2xl font-bold mb-2">Frontier Tower</h1>
-            <p className="text-blue-100">Welcome to our WiFi network</p>
+            <p className="text-primary-foreground/80">Welcome to our WiFi network</p>
           </div>
 
           <div className="p-6">
