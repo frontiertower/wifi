@@ -53,7 +53,7 @@ export default function AdminDashboard() {
 
   const tabs = [
     { id: "users", label: "Users", icon: Users },
-    { id: "vouchers", label: "Vouchers", icon: Ticket },
+    { id: "vouchers", label: "Guests", icon: Ticket },
     { id: "events", label: "Events", icon: Calendar },
     { id: "analytics", label: "Analytics", icon: TrendingUp },
   ] as const;
