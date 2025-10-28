@@ -89,12 +89,12 @@ export default function Home() {
 
             <button
               onClick={() => handleRoleSelect("member")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all duration-200 text-left group"
+              className="w-full mb-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 text-left group"
               data-testid="button-select-member"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-primary-200">
-                  <i className="fas fa-user-tie text-primary-600"></i>
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200">
+                  <i className="fas fa-user-tie text-blue-600"></i>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800">Member</div>
