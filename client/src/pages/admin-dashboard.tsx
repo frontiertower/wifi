@@ -43,7 +43,7 @@ export default function AdminDashboard() {
 
   const { data: allUsers } = useQuery<UsersResponse>({
     queryKey: ['/api/admin/users'],
-    enabled: activeTab === "users",
+    enabled: activeTab === "users" || activeTab === "vouchers",
   });
 
   const { data: events } = useQuery<EventsResponse>({
@@ -159,53 +159,68 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-gray-900">Voucher Management</h2>
-                <Button className="bg-primary-500 hover:bg-primary-600" data-testid="button-create-voucher">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Vouchers
-                </Button>
+                <h2 className="text-lg font-semibold text-gray-900">Guest & Event Access Users</h2>
+                <div className="flex space-x-2">
+                  <Input placeholder="Search guests..." className="w-64" data-testid="input-search-guests" />
+                  <Button variant="outline" size="sm" data-testid="button-filter-guests">
+                    <Filter className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
 
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Voucher Code</TableHead>
+                  <TableHead>Name / Email</TableHead>
                   <TableHead>Type</TableHead>
-                  <TableHead>Duration</TableHead>
+                  <TableHead>Event / Details</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Registered</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {vouchers?.vouchers?.length === 0 && (
+                {(!allUsers?.users || allUsers.users.filter((u: any) => u.role === "guest" || u.role === "event").length === 0) && (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                      No vouchers found. Create your first voucher to get started.
+                      No guest or event users found.
                     </TableCell>
                   </TableRow>
                 )}
-                {vouchers?.vouchers?.map((voucher: any) => (
-                  <TableRow key={voucher.id}>
-                    <TableCell className="font-mono">{voucher.code}</TableCell>
+                {allUsers?.users?.filter((user: any) => user.role === "guest" || user.role === "event").map((user: any) => (
+                  <TableRow key={user.id}>
                     <TableCell>
-                      <Badge variant={voucher.type === "guest" ? "secondary" : voucher.type === "event" ? "default" : "outline"}>
-                        {voucher.type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{voucher.duration} hours</TableCell>
-                    <TableCell>
-                      <Badge variant={voucher.isUsed ? "destructive" : "default"}>
-                        {voucher.isUsed ? "Used" : "Available"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{new Date(voucher.createdAt).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button variant="ghost" size="sm">Edit</Button>
-                        <Button variant="ghost" size="sm" className="text-red-600">Delete</Button>
+                      <div>
+                        <div className="font-medium">{user.name || "N/A"}</div>
+                        <div className="text-sm text-gray-500">{user.email}</div>
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={user.role === "guest" ? "secondary" : "outline"}>
+                        {user.role}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {user.role === "event" && user.eventName && (
+                        <div className="text-sm">
+                          <div className="font-medium">{user.eventName}</div>
+                          {user.organization && <div className="text-gray-500">{user.organization}</div>}
+                        </div>
+                      )}
+                      {user.role === "guest" && (
+                        <div className="text-sm">
+                          <div className="text-gray-600">Host: {user.host}</div>
+                          <div className="text-gray-500">{user.purpose}</div>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600">{user.phone || "-"}</TableCell>
+                    <TableCell className="text-sm">{new Date(user.createdAt).toLocaleString()}</TableCell>
+                    <TableCell>
+                      <Badge variant={user.isActive ? "default" : "secondary"}>
+                        {user.isActive ? "Active" : "Inactive"}
+                      </Badge>
                     </TableCell>
                   </TableRow>
                 ))}
