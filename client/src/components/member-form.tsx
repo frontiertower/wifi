@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -29,7 +28,6 @@ interface MemberFormData {
   phone: string;
   telegramUsername: string;
   floor: string;
-  agreeToTerms: boolean;
 }
 
 export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFormProps) {
@@ -38,7 +36,6 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
     phone: "",
     telegramUsername: "",
     floor: "",
-    agreeToTerms: false,
   });
   const { toast } = useToast();
 
@@ -73,16 +70,6 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.agreeToTerms) {
-      toast({
-        title: "Terms Required",
-        description: "You must agree to the network usage policy to continue.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     registerMutation.mutate(formData);
   };
 
@@ -172,19 +159,6 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
                   <SelectItem value="15">15th Floor - Poly-floorous</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            <div className="flex items-start space-x-2">
-              <Checkbox
-                id="terms"
-                checked={formData.agreeToTerms}
-                onCheckedChange={(checked) => handleInputChange("agreeToTerms", !!checked)}
-                required
-                data-testid="checkbox-terms"
-              />
-              <Label htmlFor="terms" className="text-sm text-gray-600 leading-tight">
-                I agree to the network usage policy and understand that my activity may be monitored for security purposes.
-              </Label>
             </div>
 
             <Button
