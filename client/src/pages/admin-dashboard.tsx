@@ -21,8 +21,8 @@ interface VouchersResponse {
   vouchers?: any[];
 }
 
-interface SessionsResponse {
-  sessions?: any[];
+interface UsersResponse {
+  users?: any[];
 }
 
 interface EventsResponse {
@@ -41,8 +41,8 @@ export default function AdminDashboard() {
     enabled: activeTab === "vouchers",
   });
 
-  const { data: sessions } = useQuery<SessionsResponse>({
-    queryKey: ['/api/admin/sessions'],
+  const { data: allUsers } = useQuery<UsersResponse>({
+    queryKey: ['/api/admin/users'],
     enabled: activeTab === "users",
   });
 
@@ -218,7 +218,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-gray-900">Active User Sessions</h2>
+                <h2 className="text-lg font-semibold text-gray-900">All Connected Users</h2>
                 <div className="flex space-x-2">
                   <Input placeholder="Search users..." className="w-64" data-testid="input-search-users" />
                   <Button variant="outline" size="sm" data-testid="button-filter">
@@ -231,40 +231,62 @@ export default function AdminDashboard() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>User</TableHead>
+                  <TableHead>Name / Email</TableHead>
                   <TableHead>Type</TableHead>
-                  <TableHead>Session Start</TableHead>
-                  <TableHead>Data Usage</TableHead>
+                  <TableHead>Event / Details</TableHead>
                   <TableHead>Floor</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Registered</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sessions?.sessions?.length === 0 && (
+                {(!allUsers?.users || allUsers.users.length === 0) && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                      No active user sessions found.
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                      No users found.
                     </TableCell>
                   </TableRow>
                 )}
-                {sessions?.sessions?.map((session: any) => (
-                  <TableRow key={session.id}>
+                {allUsers?.users?.map((user: any) => (
+                  <TableRow key={user.id}>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{session.user?.name || session.user?.email}</div>
-                        <div className="text-sm text-gray-500">{session.user?.email}</div>
+                        <div className="font-medium">{user.name || "N/A"}</div>
+                        <div className="text-sm text-gray-500">{user.email}</div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">{session.user?.role}</Badge>
+                      <Badge variant={
+                        user.role === "member" ? "default" : 
+                        user.role === "guest" ? "secondary" : 
+                        "outline"
+                      }>
+                        {user.role}
+                      </Badge>
                     </TableCell>
-                    <TableCell>{new Date(session.startTime).toLocaleString()}</TableCell>
-                    <TableCell>{Math.round((session.bytesIn + session.bytesOut) / 1024 / 1024)} MB</TableCell>
-                    <TableCell>{session.user?.floor || "N/A"}</TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="sm" className="text-red-600">
-                        Disconnect
-                      </Button>
+                      {user.role === "event" && user.eventName && (
+                        <div className="text-sm">
+                          <div className="font-medium">{user.eventName}</div>
+                          {user.organization && <div className="text-gray-500">{user.organization}</div>}
+                        </div>
+                      )}
+                      {user.role === "guest" && (
+                        <div className="text-sm">
+                          <div className="text-gray-600">Host: {user.host}</div>
+                          <div className="text-gray-500">{user.purpose}</div>
+                        </div>
+                      )}
+                      {user.role === "member" && <span className="text-gray-500">-</span>}
+                    </TableCell>
+                    <TableCell>{user.floor || "N/A"}</TableCell>
+                    <TableCell className="text-sm text-gray-600">{user.phone || "-"}</TableCell>
+                    <TableCell className="text-sm">{new Date(user.createdAt).toLocaleString()}</TableCell>
+                    <TableCell>
+                      <Badge variant={user.isActive ? "default" : "secondary"}>
+                        {user.isActive ? "Active" : "Inactive"}
+                      </Badge>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -177,6 +177,10 @@ export class DatabaseStorage {
     return activeSessions;
   }
 
+  async getAllCaptiveUsers(): Promise<CaptiveUser[]> {
+    return await db.select().from(captiveUsers).orderBy(sql`${captiveUsers.id} DESC`);
+  }
+
   async revokeSession(sessionId: string): Promise<void> {
     await db
       .update(captiveUsers)

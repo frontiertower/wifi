@@ -346,6 +346,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/admin/users", async (req, res) => {
+    try {
+      const users = await storage.getAllCaptiveUsers();
+      res.json({ success: true, users });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch users"
+      });
+    }
+  });
+
   app.delete("/api/admin/sessions/:sessionId", async (req, res) => {
     try {
       const { sessionId } = req.params;
