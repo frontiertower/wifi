@@ -100,7 +100,7 @@ export default function AdminDashboard() {
               </div>
               <div className="ml-4">
                 <p className="text-2xl font-bold text-gray-900">{stats?.stats?.activeVouchers || 0}</p>
-                <p className="text-sm text-gray-600">Active Vouchers</p>
+                <p className="text-sm text-gray-600">Active Guests</p>
               </div>
             </div>
           </div>
