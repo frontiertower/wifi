@@ -142,7 +142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: z.literal("guest"),
         name: z.string().min(1),
         telegramUsername: z.string().optional(),
-        purpose: z.string().min(1),
+        purpose: z.string().optional(),
         host: z.string().min(1),
         phone: z.string().optional(),
         macAddress: z.string().optional(),

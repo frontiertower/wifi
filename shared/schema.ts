@@ -30,6 +30,7 @@ export const captiveUsers = pgTable("captive_users", {
   host: text("host"),
   // Event specific fields
   eventCode: text("event_code"),
+  eventName: text("event_name"),
   organization: text("organization"),
   registrationType: text("registration_type"),
   createdAt: timestamp("created_at").defaultNow(),

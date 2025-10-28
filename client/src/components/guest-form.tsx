@@ -29,7 +29,6 @@ interface GuestFormData {
   name: string;
   email: string;
   telegramUsername: string;
-  purpose: string;
   host: string;
   phone: string;
 }
@@ -39,7 +38,6 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
     name: "",
     email: "",
     telegramUsername: "",
-    purpose: "",
     host: "",
     phone: "",
   });
@@ -52,7 +50,6 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
         name: data.name,
         email: data.email,
         telegramUsername: data.telegramUsername,
-        purpose: data.purpose,
         host: data.host,
         phone: data.phone || undefined,
         unifiParams: unifiParams,
@@ -144,22 +141,6 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
                 className="h-12"
                 data-testid="input-telegram"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="purpose">Visiting Purpose</Label>
-              <Select value={formData.purpose} onValueChange={(value) => handleInputChange("purpose", value)} required>
-                <SelectTrigger className="h-12" data-testid="select-purpose">
-                  <SelectValue placeholder="Select purpose" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="meeting">Business Meeting</SelectItem>
-                  <SelectItem value="interview">Interview</SelectItem>
-                  <SelectItem value="delivery">Delivery/Service</SelectItem>
-                  <SelectItem value="personal">Personal Visit</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="space-y-2">

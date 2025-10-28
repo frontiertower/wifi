@@ -209,8 +209,8 @@ export default function AdminDashboard() {
                           {user.organization && <div className="text-gray-500">{user.organization}</div>}
                         </div>
                       )}
-                      {user.role === "guest" && user.purpose && (
-                        <div className="text-sm text-gray-500">{user.purpose}</div>
+                      {user.role === "guest" && (
+                        <div className="text-sm text-gray-500">-</div>
                       )}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">{user.host || "-"}</TableCell>
@@ -289,7 +289,6 @@ export default function AdminDashboard() {
                       {user.role === "guest" && (
                         <div className="text-sm">
                           <div className="text-gray-600">Host: {user.host}</div>
-                          <div className="text-gray-500">{user.purpose}</div>
                         </div>
                       )}
                       {user.role === "member" && <span className="text-gray-500">-</span>}
