@@ -175,6 +175,7 @@ export default function AdminDashboard() {
                   <TableHead>Name / Email</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Event / Details</TableHead>
+                  <TableHead>Host</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Registered</TableHead>
                   <TableHead>Status</TableHead>
@@ -183,7 +184,7 @@ export default function AdminDashboard() {
               <TableBody>
                 {(!allUsers?.users || allUsers.users.filter((u: any) => u.role === "guest" || u.role === "event").length === 0) && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                       No guest or event users found.
                     </TableCell>
                   </TableRow>
@@ -208,13 +209,11 @@ export default function AdminDashboard() {
                           {user.organization && <div className="text-gray-500">{user.organization}</div>}
                         </div>
                       )}
-                      {user.role === "guest" && (
-                        <div className="text-sm">
-                          <div className="text-gray-600">Host: {user.host}</div>
-                          <div className="text-gray-500">{user.purpose}</div>
-                        </div>
+                      {user.role === "guest" && user.purpose && (
+                        <div className="text-sm text-gray-500">{user.purpose}</div>
                       )}
                     </TableCell>
+                    <TableCell className="text-sm text-gray-600">{user.host || "-"}</TableCell>
                     <TableCell className="text-sm text-gray-600">{user.phone || "-"}</TableCell>
                     <TableCell className="text-sm">{new Date(user.createdAt).toLocaleString()}</TableCell>
                     <TableCell>
