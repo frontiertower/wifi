@@ -88,17 +88,17 @@ export default function Home() {
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Select your access type</h2>
 
             <button
-              onClick={() => handleRoleSelect("member")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 text-left group"
-              data-testid="button-select-member"
+              onClick={() => handleRoleSelect("event")}
+              className="w-full mb-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all duration-200 text-left group"
+              data-testid="button-select-event"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200">
-                  <i className="fas fa-user-tie text-blue-600"></i>
+                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200">
+                  <i className="fas fa-calendar text-orange-600"></i>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800">Member</div>
-                  <div className="text-sm text-gray-500">Building residents and employees</div>
+                  <div className="font-medium text-gray-800">Event Access</div>
+                  <div className="text-sm text-gray-500">Conference and event attendees</div>
                 </div>
               </div>
             </button>
@@ -120,17 +120,17 @@ export default function Home() {
             </button>
 
             <button
-              onClick={() => handleRoleSelect("event")}
-              className="w-full mb-4 p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all duration-200 text-left group"
-              data-testid="button-select-event"
+              onClick={() => handleRoleSelect("member")}
+              className="w-full mb-4 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 text-left group"
+              data-testid="button-select-member"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200">
-                  <i className="fas fa-calendar text-orange-600"></i>
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200">
+                  <i className="fas fa-user-tie text-blue-600"></i>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800">Event Access</div>
-                  <div className="text-sm text-gray-500">Conference and event attendees</div>
+                  <div className="font-medium text-gray-800">Member</div>
+                  <div className="text-sm text-gray-500">Building residents and employees</div>
                 </div>
               </div>
             </button>

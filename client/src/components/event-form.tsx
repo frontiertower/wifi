@@ -31,7 +31,6 @@ interface EventFormData {
   email: string;
   telegramUsername: string;
   organization: string;
-  registrationType: string;
 }
 
 export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormProps) {
@@ -41,7 +40,6 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
     email: "",
     telegramUsername: "",
     organization: "",
-    registrationType: "",
   });
 
   const [selectedDate, setSelectedDate] = useState<string>(() => {
@@ -91,7 +89,6 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
         telegramUsername: data.telegramUsername,
         eventName: data.eventName,
         organization: data.organization,
-        registrationType: data.registrationType,
         unifiParams: unifiParams,
       });
       return response.json();
@@ -298,22 +295,6 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
                 className="h-12"
                 data-testid="input-organization"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="registrationType">Registration Type</Label>
-              <Select value={formData.registrationType} onValueChange={(value) => handleInputChange("registrationType", value)} required>
-                <SelectTrigger className="h-12" data-testid="select-registration-type">
-                  <SelectValue placeholder="Select registration type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="speaker">Speaker</SelectItem>
-                  <SelectItem value="attendee">Attendee</SelectItem>
-                  <SelectItem value="sponsor">Sponsor</SelectItem>
-                  <SelectItem value="media">Media</SelectItem>
-                  <SelectItem value="staff">Event Staff</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             <Alert className="bg-orange-50 border-orange-200">
