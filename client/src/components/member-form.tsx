@@ -179,6 +179,10 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
                 </>
               )}
             </Button>
+
+            <div className="text-center text-xs text-gray-500 mt-4">
+              By connecting, you agree to our terms of service
+            </div>
           </form>
         </div>
       </div>
