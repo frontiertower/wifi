@@ -26,6 +26,7 @@ interface MemberFormProps {
 
 interface MemberFormData {
   email: string;
+  phone: string;
   telegramUsername: string;
   floor: string;
   agreeToTerms: boolean;
@@ -34,6 +35,7 @@ interface MemberFormData {
 export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFormProps) {
   const [formData, setFormData] = useState<MemberFormData>({
     email: "",
+    phone: "",
     telegramUsername: "",
     floor: "",
     agreeToTerms: false,
@@ -45,6 +47,7 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
       const response = await apiRequest("POST", "/api/register/member", {
         role: "member",
         email: data.email,
+        phone: data.phone,
         telegramUsername: data.telegramUsername,
         floor: data.floor,
         unifiParams: unifiParams,
@@ -118,6 +121,19 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
                 placeholder="your.email@company.com"
                 className="h-12"
                 data-testid="input-email"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => handleInputChange("phone", e.target.value)}
+                placeholder="+1-555-123-4567 (optional)"
+                className="h-12"
+                data-testid="input-phone"
               />
             </div>
 
