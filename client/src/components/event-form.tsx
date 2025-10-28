@@ -326,7 +326,7 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
             <Button
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 h-12 text-white"
-              disabled={registerMutation.isPending || !isValidEvent || eventsLoading || availableEvents.length === 0}
+              disabled={registerMutation.isPending || !isValidEvent || eventsLoading}
               data-testid="button-submit"
             >
               {registerMutation.isPending ? (

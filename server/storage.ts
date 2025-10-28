@@ -1,6 +1,6 @@
-import { users, captiveUsers, events, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session } from "@shared/schema";
 import { db } from "./db";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, count, and } from "drizzle-orm";
 
 export class DatabaseStorage {
   async getUser(id: number): Promise<User | undefined> {
@@ -58,23 +58,52 @@ export class DatabaseStorage {
   }
 
   async getDashboardStats(): Promise<any> {
-    // Mock implementation for now
+    const [totalUsersResult] = await db.select({ count: count() }).from(captiveUsers);
+    const [activeUsersResult] = await db.select({ count: count() }).from(captiveUsers).where(eq(captiveUsers.isActive, true));
+    const [totalEventsResult] = await db.select({ count: count() }).from(events).where(eq(events.isActive, true));
+    const [totalVouchersResult] = await db.select({ count: count() }).from(vouchers).where(eq(vouchers.isUsed, false));
+
+    const totalDataUsage = await db.select({ total: sql<number>`SUM(${captiveUsers.dataUsed})` }).from(captiveUsers);
+    const dataUsageGB = Math.round((totalDataUsage[0]?.total || 0) / 1024);
+
     return {
-      totalUsers: 0,
-      activeUsers: 0,
-      totalEvents: 0,
-      totalVouchers: 0
+      totalUsers: totalUsersResult.count,
+      activeUsers: activeUsersResult.count,
+      activeEvents: totalEventsResult.count,
+      activeVouchers: totalVouchersResult.count,
+      dataUsage: `${dataUsageGB}GB`
     };
   }
 
-  async getAllVouchers(): Promise<any[]> {
-    // Mock implementation for now
-    return [];
+  async getAllVouchers(): Promise<Voucher[]> {
+    return await db.select().from(vouchers);
   }
 
-  async createVouchers(vouchers: any[]): Promise<any[]> {
-    // Mock implementation for now
-    return [];
+  async createVouchers(voucherDataArray: InsertVoucher[]): Promise<Voucher[]> {
+    const createdVouchers: Voucher[] = [];
+    
+    for (const voucherData of voucherDataArray) {
+      const code = this.generateVoucherCode();
+      const [voucher] = await db
+        .insert(vouchers)
+        .values({
+          ...voucherData,
+          code
+        })
+        .returning();
+      createdVouchers.push(voucher);
+    }
+    
+    return createdVouchers;
+  }
+
+  private generateVoucherCode(): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 12; i++) {
+      code += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return code;
   }
 
   async getAllEvents(): Promise<Event[]> {
@@ -122,12 +151,47 @@ export class DatabaseStorage {
   }
 
   async getActiveSessions(): Promise<any[]> {
-    // Mock implementation for now
-    return [];
+    const activeSessions = await db
+      .select({
+        id: sessions.id,
+        userId: sessions.userId,
+        startTime: sessions.startTime,
+        endTime: sessions.endTime,
+        ipAddress: sessions.ipAddress,
+        macAddress: sessions.macAddress,
+        bytesIn: sessions.bytesIn,
+        bytesOut: sessions.bytesOut,
+        isActive: sessions.isActive,
+        user: {
+          id: captiveUsers.id,
+          name: captiveUsers.name,
+          email: captiveUsers.email,
+          role: captiveUsers.role,
+          floor: captiveUsers.floor
+        }
+      })
+      .from(sessions)
+      .leftJoin(captiveUsers, eq(sessions.userId, captiveUsers.id))
+      .where(eq(sessions.isActive, true));
+
+    return activeSessions;
   }
 
   async revokeSession(sessionId: string): Promise<void> {
-    // Mock implementation for now
+    await db
+      .update(captiveUsers)
+      .set({ isActive: false, sessionEnd: new Date() })
+      .where(eq(captiveUsers.sessionId, sessionId));
+
+    await db
+      .update(sessions)
+      .set({ isActive: false, endTime: new Date() })
+      .where(
+        and(
+          eq(sessions.isActive, true),
+          sql`${sessions.userId} IN (SELECT id FROM ${captiveUsers} WHERE ${captiveUsers.sessionId} = ${sessionId})`
+        )
+      );
   }
 }
 
