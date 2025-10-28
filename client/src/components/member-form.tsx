@@ -141,9 +141,6 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
                   <SelectValue placeholder="Select your floor" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="B1">B1 - Basement</SelectItem>
-                  <SelectItem value="G">G - Ground Floor</SelectItem>
-                  <SelectItem value="1">1st Floor</SelectItem>
                   <SelectItem value="2">2nd Floor</SelectItem>
                   <SelectItem value="3">3rd Floor</SelectItem>
                   <SelectItem value="4">4th Floor</SelectItem>
@@ -157,7 +154,6 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
                   <SelectItem value="12">12th Floor</SelectItem>
                   <SelectItem value="14">14th Floor</SelectItem>
                   <SelectItem value="15">15th Floor</SelectItem>
-                  <SelectItem value="16">16th Floor</SelectItem>
                 </SelectContent>
               </Select>
             </div>
