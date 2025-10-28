@@ -177,7 +177,7 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
 
             <Button
               type="submit"
-              className="w-full bg-primary-500 hover:bg-primary-600 h-12 text-white"
+              className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-white"
               disabled={registerMutation.isPending}
               data-testid="button-submit"
             >
