@@ -8,24 +8,45 @@ import { useQuery } from "@tanstack/react-query";
 
 type Tab = "users" | "vouchers" | "events" | "analytics";
 
+interface StatsResponse {
+  stats?: {
+    activeUsers?: number;
+    activeVouchers?: number;
+    activeEvents?: number;
+    dataUsage?: string;
+  };
+}
+
+interface VouchersResponse {
+  vouchers?: any[];
+}
+
+interface SessionsResponse {
+  sessions?: any[];
+}
+
+interface EventsResponse {
+  events?: any[];
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("vouchers");
 
-  const { data: stats } = useQuery({
+  const { data: stats } = useQuery<StatsResponse>({
     queryKey: ['/api/admin/stats'],
   });
 
-  const { data: vouchers } = useQuery({
+  const { data: vouchers } = useQuery<VouchersResponse>({
     queryKey: ['/api/admin/vouchers'],
     enabled: activeTab === "vouchers",
   });
 
-  const { data: sessions } = useQuery({
+  const { data: sessions } = useQuery<SessionsResponse>({
     queryKey: ['/api/admin/sessions'],
     enabled: activeTab === "users",
   });
 
-  const { data: events } = useQuery({
+  const { data: events } = useQuery<EventsResponse>({
     queryKey: ['/api/admin/events'],
     enabled: activeTab === "events",
   });
@@ -66,7 +87,7 @@ export default function AdminDashboard() {
                 <Users className="text-primary-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900">{stats?.activeUsers || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.stats?.activeUsers || 0}</p>
                 <p className="text-sm text-gray-600">Active Users</p>
               </div>
             </div>
@@ -78,7 +99,7 @@ export default function AdminDashboard() {
                 <Ticket className="text-green-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900">{stats?.activeVouchers || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.stats?.activeVouchers || 0}</p>
                 <p className="text-sm text-gray-600">Active Vouchers</p>
               </div>
             </div>
@@ -90,7 +111,7 @@ export default function AdminDashboard() {
                 <Calendar className="text-orange-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900">{stats?.activeEvents || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.stats?.activeEvents || 0}</p>
                 <p className="text-sm text-gray-600">Active Events</p>
               </div>
             </div>
@@ -102,7 +123,7 @@ export default function AdminDashboard() {
                 <TrendingUp className="text-blue-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900">{stats?.dataUsage || "0TB"}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.stats?.dataUsage || "0TB"}</p>
                 <p className="text-sm text-gray-600">Data Usage Today</p>
               </div>
             </div>
