@@ -80,7 +80,6 @@ export class DatabaseStorage {
   }
 
   async getDailyGuestCount(): Promise<number> {
-    await this.checkAndResetDailyStats();
     const today = this.getTodayDateString();
     const [stats] = await db
       .select()
@@ -91,71 +90,28 @@ export class DatabaseStorage {
   }
 
   async incrementDailyGuestCount(): Promise<void> {
-    await this.checkAndResetDailyStats();
     const today = this.getTodayDateString();
-    
-    const [existingStats] = await db
-      .select()
-      .from(dailyStats)
-      .where(eq(dailyStats.date, today));
-
-    if (existingStats) {
-      await db
-        .update(dailyStats)
-        .set({ guestCount: existingStats.guestCount + 1 })
-        .where(eq(dailyStats.date, today));
-    } else {
-      await db
-        .insert(dailyStats)
-        .values({
-          date: today,
-          guestCount: 1,
-          lastResetAt: new Date()
-        });
-    }
-  }
-
-  private async checkAndResetDailyStats(): Promise<void> {
-    const today = this.getTodayDateString();
-    const [stats] = await db
-      .select()
-      .from(dailyStats)
-      .where(eq(dailyStats.date, today));
-
-    if (!stats || !stats.lastResetAt) {
-      return;
-    }
-
     const now = new Date();
-    const lastReset = new Date(stats.lastResetAt);
     
-    // Check if we need to reset (crossed 4am boundary)
-    if (this.shouldResetAt4AM(lastReset, now)) {
-      await db
-        .update(dailyStats)
-        .set({ 
-          guestCount: 0,
-          lastResetAt: now
-        })
-        .where(eq(dailyStats.date, today));
-    }
-  }
-
-  private shouldResetAt4AM(lastReset: Date, now: Date): boolean {
-    // Get 4am today
-    const fourAMToday = new Date(now);
-    fourAMToday.setHours(4, 0, 0, 0);
-
-    // Get 4am yesterday
-    const fourAMYesterday = new Date(fourAMToday);
-    fourAMYesterday.setDate(fourAMYesterday.getDate() - 1);
-
-    // If last reset was before today's 4am and now is after today's 4am
-    if (lastReset < fourAMToday && now >= fourAMToday) {
-      return true;
-    }
-
-    return false;
+    // Atomic upsert: insert new row or increment existing count
+    // This handles both first-of-day registration and concurrent increments safely
+    await db.execute(sql`
+      INSERT INTO daily_stats (date, guest_count, last_reset_at, created_at)
+      VALUES (${today}, 1, ${now.toISOString()}, ${now.toISOString()})
+      ON CONFLICT (date) DO UPDATE SET
+        guest_count = CASE
+          WHEN daily_stats.last_reset_at < (CURRENT_DATE + INTERVAL '4 hours')
+               AND NOW() >= (CURRENT_DATE + INTERVAL '4 hours')
+          THEN 1
+          ELSE daily_stats.guest_count + 1
+        END,
+        last_reset_at = CASE
+          WHEN daily_stats.last_reset_at < (CURRENT_DATE + INTERVAL '4 hours')
+               AND NOW() >= (CURRENT_DATE + INTERVAL '4 hours')
+          THEN NOW()
+          ELSE daily_stats.last_reset_at
+        END
+    `);
   }
 
   private getTodayDateString(): string {

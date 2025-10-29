@@ -19,6 +19,7 @@ interface StatsResponse {
     activeVouchers?: number;
     activeEvents?: number;
     dataUsage?: string;
+    dailyGuestCount?: number;
   };
 }
 
