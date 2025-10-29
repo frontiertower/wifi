@@ -10,6 +10,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Analytics Tab with Total Counts (October 29, 2025)
+- Added comprehensive analytics dashboard showing lifetime totals
+- Displays 5 stat cards: Total Users, Total Members, Total Guests, Total Event Guests, Total Events
+- Gradient card backgrounds with dark mode support (blue, purple, green, pink, orange)
+- Responsive grid layout (3 columns on large screens, 2 on medium, 1 on mobile)
+- Backend queries count users by role and total events from database
+
 ### Users Today & Guests Today Counters (October 29, 2025)
 - Changed "Active Users" to "Users Today" - counts all users registered today (member/guest/event)
 - Changed "Daily Guest Count" to "Guests Today" - counts only guest registrations today
