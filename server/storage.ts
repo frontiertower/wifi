@@ -59,7 +59,11 @@ export class DatabaseStorage {
 
   async getDashboardStats(): Promise<any> {
     const [totalUsersResult] = await db.select({ count: count() }).from(captiveUsers);
-    const [activeUsersResult] = await db.select({ count: count() }).from(captiveUsers).where(eq(captiveUsers.isActive, true));
+    
+    // Count users registered today
+    const [usersToday] = await db.select({ count: count() })
+      .from(captiveUsers)
+      .where(sql`DATE(${captiveUsers.createdAt}) = CURRENT_DATE`);
     
     // Count only events happening today (where today falls within start_date and end_date range)
     const [eventsToday] = await db.select({ count: count() })
@@ -77,16 +81,16 @@ export class DatabaseStorage {
     const totalDataUsage = await db.select({ total: sql<number>`SUM(${captiveUsers.dataUsed})` }).from(captiveUsers);
     const dataUsageGB = Math.round((totalDataUsage[0]?.total || 0) / 1024);
 
-    // Get daily guest count
+    // Get daily guest count (guests registered today)
     const dailyGuestCount = await this.getDailyGuestCount();
 
     return {
       totalUsers: totalUsersResult.count,
-      activeUsers: activeUsersResult.count,
+      usersToday: usersToday.count,
       eventsToday: eventsToday.count,
       activeVouchers: totalVouchersResult.count,
       dataUsage: `${dataUsageGB}GB`,
-      dailyGuestCount: dailyGuestCount
+      guestsToday: dailyGuestCount
     };
   }
 

@@ -15,11 +15,11 @@ type Tab = "users" | "vouchers" | "events" | "analytics";
 
 interface StatsResponse {
   stats?: {
-    activeUsers?: number;
+    usersToday?: number;
     activeVouchers?: number;
     eventsToday?: number;
     dataUsage?: string;
-    dailyGuestCount?: number;
+    guestsToday?: number;
   };
 }
 
@@ -134,8 +134,8 @@ export default function AdminDashboard() {
                 <Users className="text-primary-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900">{stats?.stats?.activeUsers || 0}</p>
-                <p className="text-sm text-gray-600">Active Users</p>
+                <p className="text-2xl font-bold text-gray-900" data-testid="text-users-today">{stats?.stats?.usersToday || 0}</p>
+                <p className="text-sm text-gray-600">Users Today</p>
               </div>
             </div>
           </div>
@@ -146,9 +146,8 @@ export default function AdminDashboard() {
                 <Ticket className="text-green-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900" data-testid="text-daily-guest-count">{stats?.stats?.dailyGuestCount || 0}</p>
-                <p className="text-sm text-gray-600">Daily Guest Count</p>
-                <p className="text-xs text-gray-400">Resets at 4am</p>
+                <p className="text-2xl font-bold text-gray-900" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
+                <p className="text-sm text-gray-600">Guests Today</p>
               </div>
             </div>
           </div>
