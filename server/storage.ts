@@ -84,13 +84,33 @@ export class DatabaseStorage {
     // Get daily guest count (guests registered today)
     const dailyGuestCount = await this.getDailyGuestCount();
 
+    // Analytics totals
+    const [totalMembers] = await db.select({ count: count() })
+      .from(captiveUsers)
+      .where(eq(captiveUsers.role, "member"));
+    
+    const [totalGuests] = await db.select({ count: count() })
+      .from(captiveUsers)
+      .where(eq(captiveUsers.role, "guest"));
+    
+    const [totalEventUsers] = await db.select({ count: count() })
+      .from(captiveUsers)
+      .where(eq(captiveUsers.role, "event"));
+    
+    const [totalEventsResult] = await db.select({ count: count() }).from(events);
+
     return {
       totalUsers: totalUsersResult.count,
       usersToday: usersToday.count,
       eventsToday: eventsToday.count,
       activeVouchers: totalVouchersResult.count,
       dataUsage: `${dataUsageGB}GB`,
-      guestsToday: dailyGuestCount
+      guestsToday: dailyGuestCount,
+      // Analytics
+      totalMembers: totalMembers.count,
+      totalGuests: totalGuests.count,
+      totalEventUsers: totalEventUsers.count,
+      totalEvents: totalEventsResult.count
     };
   }
 

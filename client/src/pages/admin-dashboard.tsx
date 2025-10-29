@@ -20,6 +20,11 @@ interface StatsResponse {
     eventsToday?: number;
     dataUsage?: string;
     guestsToday?: number;
+    totalUsers?: number;
+    totalMembers?: number;
+    totalGuests?: number;
+    totalEventUsers?: number;
+    totalEvents?: number;
   };
 }
 
@@ -484,9 +489,78 @@ export default function AdminDashboard() {
 
         {activeTab === "analytics" && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Analytics Dashboard</h2>
-            <div className="text-center py-12 text-gray-500">
-              Analytics features coming soon...
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">Analytics Dashboard</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg p-6 border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Users</p>
+                    <p className="text-3xl font-bold text-blue-900 dark:text-blue-100 mt-2" data-testid="text-total-users">
+                      {stats?.stats?.totalUsers || 0}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center">
+                    <Users className="text-blue-700 dark:text-blue-300" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg p-6 border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Total Members</p>
+                    <p className="text-3xl font-bold text-purple-900 dark:text-purple-100 mt-2" data-testid="text-total-members">
+                      {stats?.stats?.totalMembers || 0}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-lg flex items-center justify-center">
+                    <Building className="text-purple-700 dark:text-purple-300" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-lg p-6 border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-green-600 dark:text-green-400">Total Guests</p>
+                    <p className="text-3xl font-bold text-green-900 dark:text-green-100 mt-2" data-testid="text-total-guests">
+                      {stats?.stats?.totalGuests || 0}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-200 dark:bg-green-800 rounded-lg flex items-center justify-center">
+                    <Ticket className="text-green-700 dark:text-green-300" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-950 dark:to-pink-900 rounded-lg p-6 border border-pink-200 dark:border-pink-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-pink-600 dark:text-pink-400">Total Event Guests</p>
+                    <p className="text-3xl font-bold text-pink-900 dark:text-pink-100 mt-2" data-testid="text-total-event-users">
+                      {stats?.stats?.totalEventUsers || 0}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-pink-200 dark:bg-pink-800 rounded-lg flex items-center justify-center">
+                    <Calendar className="text-pink-700 dark:text-pink-300" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 rounded-lg p-6 border border-orange-200 dark:border-orange-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Total Events</p>
+                    <p className="text-3xl font-bold text-orange-900 dark:text-orange-100 mt-2" data-testid="text-total-events">
+                      {stats?.stats?.totalEvents || 0}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-orange-200 dark:bg-orange-800 rounded-lg flex items-center justify-center">
+                    <Calendar className="text-orange-700 dark:text-orange-300" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
