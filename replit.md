@@ -10,6 +10,21 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Users Today & Guests Today Counters (October 29, 2025)
+- Changed "Active Users" to "Users Today" - counts all users registered today (member/guest/event)
+- Changed "Daily Guest Count" to "Guests Today" - counts only guest registrations today
+- Backend SQL query: `DATE(created_at) = CURRENT_DATE` for Users Today counter
+- Displays real-time registration counts for current day in admin dashboard stat cards
+- Note: Counters use database timezone (typically UTC) for date comparison
+
+### Colored Role Type Badges (October 29, 2025)
+- Added colored backgrounds to user role badges in admin dashboard
+- Member badges: Blue (bg-blue-100/900 with text-blue-700/300)
+- Guest badges: Green (bg-green-100/900 with text-green-700/300)
+- Event badges: Purple (bg-purple-100/900 with text-purple-700/300)
+- Includes light/dark mode variants for accessibility
+- Applied consistently across Guests and Users tabs
+
 ### Events Today Feature (October 29, 2025)
 - Updated admin dashboard stats to show "Events Today" instead of "Active Events"
 - Backend filters events where current date falls within the event's date range (inclusive)
@@ -20,7 +35,6 @@ Preferred communication style: Simple, everyday language.
 - Tracks daily guest registration count with automatic 4am reset
 - Uses atomic SQL upsert to prevent race conditions during concurrent registrations
 - New `daily_stats` table with date-based unique constraint
-- Displays in admin dashboard with "Resets at 4am" subtitle
 - Thread-safe implementation using PostgreSQL's `INSERT ... ON CONFLICT` with embedded reset logic
 
 ### AI-Powered Bulk Event Import (October 29, 2025)
