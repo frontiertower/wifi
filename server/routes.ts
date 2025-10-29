@@ -396,6 +396,7 @@ Rules:
       }
 
       const createdEvents = [];
+      const failedEvents: Array<{ name: string; error: string }> = [];
       
       for (const eventData of parsedEvents) {
         try {
@@ -410,24 +411,48 @@ Rules:
             description: eventData.description || '',
             startDate: new Date(eventData.startDate),
             endDate: new Date(eventData.endDate),
-            isActive: true,
             maxAttendees: eventData.maxAttendees || 50,
-            currentAttendees: 0
           };
 
-          const event = await storage.createEvent(newEvent);
+          // Validate against schema before creating
+          const validatedEvent = insertEventSchema.parse(newEvent);
+
+          // Check if dates are valid
+          if (isNaN(validatedEvent.startDate.getTime()) || isNaN(validatedEvent.endDate.getTime())) {
+            throw new Error('Invalid date format');
+          }
+
+          const event = await storage.createEvent(validatedEvent);
           createdEvents.push(event);
           
           await new Promise(resolve => setTimeout(resolve, 100));
         } catch (eventError) {
-          console.error(`Failed to create event: ${eventData.name}`, eventError);
+          const eventName = eventData.name || 'Unknown Event';
+          const errorMessage = eventError instanceof Error ? eventError.message : 'Unknown error';
+          console.error(`Failed to create event: ${eventName}`, errorMessage);
+          failedEvents.push({ name: eventName, error: errorMessage });
         }
       }
+
+      // Fail if no events were successfully created
+      if (createdEvents.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Failed to import any events. All events had validation or parsing errors.",
+          failedEvents
+        });
+      }
+
+      // Return success with partial failure information if applicable
+      const message = failedEvents.length > 0
+        ? `Successfully imported ${createdEvents.length} event(s), ${failedEvents.length} failed`
+        : `Successfully imported ${createdEvents.length} event(s)`;
 
       res.json({
         success: true,
         events: createdEvents,
-        message: `Successfully imported ${createdEvents.length} event(s)`
+        failedEvents: failedEvents.length > 0 ? failedEvents : undefined,
+        message
       });
     } catch (error) {
       console.error('Error bulk importing events:', error);
