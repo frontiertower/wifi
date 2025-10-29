@@ -8,6 +8,28 @@ Frontier Tower WiFi Portal is a captive portal application that manages WiFi acc
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+### Events Today Feature (October 29, 2025)
+- Updated admin dashboard stats to show "Events Today" instead of "Active Events"
+- Backend filters events where current date falls within the event's date range (inclusive)
+- SQL query: `CURRENT_DATE >= DATE(start_date) AND CURRENT_DATE <= DATE(end_date)`
+- Displays count of events happening today in orange-colored stat card
+
+### Daily Guest Counter (October 29, 2025)
+- Tracks daily guest registration count with automatic 4am reset
+- Uses atomic SQL upsert to prevent race conditions during concurrent registrations
+- New `daily_stats` table with date-based unique constraint
+- Displays in admin dashboard with "Resets at 4am" subtitle
+- Thread-safe implementation using PostgreSQL's `INSERT ... ON CONFLICT` with embedded reset logic
+
+### AI-Powered Bulk Event Import (October 29, 2025)
+- Integrated OpenAI GPT-4o via Replit AI Integrations for event parsing
+- Bulk import endpoint accepts unstructured text and extracts multiple events
+- Graceful error handling for partial imports with schema validation
+- Enhanced event validation with descriptive error messages
+- Production database populated with 27 real events from Luma.com
+
 ## System Architecture
 
 ### Frontend Architecture
