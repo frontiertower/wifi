@@ -334,90 +334,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/events/from-url", async (req, res) => {
+  app.post("/api/admin/events/bulk-import", async (req, res) => {
     try {
-      const { url } = z.object({
-        url: z.string().url()
+      const { text } = z.object({
+        text: z.string().min(10)
       }).parse(req.body);
 
-      if (!url.includes('lu.ma')) {
+      const OpenAI = (await import('openai')).default;
+      const openai = new OpenAI({
+        baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+        apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      });
+
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: `You are an event extraction assistant. Extract event information from the provided text and return a JSON array of events. Each event should have:
+- name: string (event title)
+- description: string (brief description, max 200 chars)
+- startDate: ISO 8601 datetime string
+- endDate: ISO 8601 datetime string
+- maxAttendees: number (estimate based on context, default 50)
+
+Rules:
+- Extract ALL events found in the text
+- Use context clues for dates (e.g., "Tomorrow" = next day, "Nov 1" = November 1st of current/next year)
+- If only start time is given, estimate endDate as 2-3 hours after start
+- Generate concise, professional descriptions
+- Return ONLY valid JSON array, no other text
+- Current date for reference: ${new Date().toISOString()}`
+          },
+          {
+            role: "user",
+            content: text
+          }
+        ],
+        temperature: 0.3,
+      });
+
+      const eventsJson = completion.choices[0]?.message?.content || '[]';
+      let parsedEvents;
+      
+      try {
+        parsedEvents = JSON.parse(eventsJson);
+      } catch (parseError) {
+        const jsonMatch = eventsJson.match(/\[[\s\S]*\]/);
+        if (jsonMatch) {
+          parsedEvents = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error("AI did not return valid JSON");
+        }
+      }
+
+      if (!Array.isArray(parsedEvents) || parsedEvents.length === 0) {
         return res.status(400).json({
           success: false,
-          message: "Please provide a valid Luma event URL (lu.ma)"
+          message: "No events found in the provided text"
         });
       }
 
-      const fetch = (await import('node-fetch')).default;
-      const cheerio = await import('cheerio');
+      const createdEvents = [];
       
-      const response = await fetch(url);
-      const html = await response.text();
-      const $ = cheerio.load(html);
-
-      let eventName = '';
-      let description = '';
-      let startDate = new Date();
-      let endDate = new Date();
-
-      $('script[type="application/ld+json"]').each((_, element) => {
+      for (const eventData of parsedEvents) {
         try {
-          const jsonData = JSON.parse($(element).html() || '{}');
-          if (jsonData['@type'] === 'Event') {
-            eventName = jsonData.name || '';
-            description = jsonData.description || '';
-            
-            if (jsonData.startDate) {
-              startDate = new Date(jsonData.startDate);
-            }
-            if (jsonData.endDate) {
-              endDate = new Date(jsonData.endDate);
-            }
-          }
-        } catch (e) {
-          console.error('Error parsing JSON-LD:', e);
+          const code = (eventData.name || 'EVENT')
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, '')
+            .substring(0, 10) + new Date().getTime().toString().slice(-4);
+
+          const newEvent = {
+            name: eventData.name,
+            code: code,
+            description: eventData.description || '',
+            startDate: new Date(eventData.startDate),
+            endDate: new Date(eventData.endDate),
+            isActive: true,
+            maxAttendees: eventData.maxAttendees || 50,
+            currentAttendees: 0
+          };
+
+          const event = await storage.createEvent(newEvent);
+          createdEvents.push(event);
+          
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (eventError) {
+          console.error(`Failed to create event: ${eventData.name}`, eventError);
         }
-      });
-
-      if (!eventName) {
-        eventName = $('meta[property="og:title"]').attr('content') || 
-                    $('title').text() || 
-                    'Imported Luma Event';
       }
 
-      if (!description) {
-        description = $('meta[property="og:description"]').attr('content') || 
-                      $('meta[name="description"]').attr('content') || 
-                      '';
-      }
-
-      const code = eventName
-        .toUpperCase()
-        .replace(/[^A-Z0-9]/g, '')
-        .substring(0, 10) + new Date().getTime().toString().slice(-4);
-
-      const eventData = {
-        name: eventName,
-        code: code,
-        description: description,
-        startDate: startDate,
-        endDate: endDate,
-        isActive: true,
-        maxAttendees: 100,
-        currentAttendees: 0
-      };
-
-      const event = await storage.createEvent(eventData);
-      
       res.json({
         success: true,
-        event,
-        message: "Event imported successfully from Luma"
+        events: createdEvents,
+        message: `Successfully imported ${createdEvents.length} event(s)`
       });
     } catch (error) {
-      console.error('Error scraping Luma URL:', error);
+      console.error('Error bulk importing events:', error);
       res.status(400).json({
         success: false,
-        message: error instanceof Error ? error.message : "Failed to import event from URL"
+        message: error instanceof Error ? error.message : "Failed to import events"
       });
     }
   });

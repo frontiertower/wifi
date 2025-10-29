@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Link2 } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -36,7 +37,7 @@ interface EventsResponse {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("vouchers");
   const [showEventForm, setShowEventForm] = useState(false);
-  const [lumaUrl, setLumaUrl] = useState("");
+  const [bulkEventText, setBulkEventText] = useState("");
   const { toast } = useToast();
 
   const { data: stats } = useQuery<StatsResponse>({
@@ -58,41 +59,42 @@ export default function AdminDashboard() {
     enabled: activeTab === "events",
   });
 
-  const createEventMutation = useMutation({
-    mutationFn: async (url: string) => {
-      const response = await apiRequest("POST", "/api/admin/events/from-url", { url });
+  const createEventsMutation = useMutation({
+    mutationFn: async (text: string) => {
+      const response = await apiRequest("POST", "/api/admin/events/bulk-import", { text });
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const count = data.events?.length || 0;
       toast({
-        title: "Event Created",
-        description: "Event has been successfully added from Luma URL",
+        title: "Events Imported",
+        description: `Successfully imported ${count} event${count !== 1 ? 's' : ''} using AI`,
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
       setShowEventForm(false);
-      setLumaUrl("");
+      setBulkEventText("");
     },
     onError: (error) => {
       toast({
-        title: "Failed to Create Event",
-        description: error instanceof Error ? error.message : "Could not create event from URL",
+        title: "Failed to Import Events",
+        description: error instanceof Error ? error.message : "Could not process events with AI",
         variant: "destructive",
       });
     },
   });
 
-  const handleSubmitUrl = (e: React.FormEvent) => {
+  const handleSubmitBulkText = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!lumaUrl.trim()) {
+    if (!bulkEventText.trim()) {
       toast({
-        title: "URL Required",
-        description: "Please enter a Luma event URL",
+        title: "Text Required",
+        description: "Please paste event information to import",
         variant: "destructive",
       });
       return;
     }
-    createEventMutation.mutate(lumaUrl);
+    createEventsMutation.mutate(bulkEventText);
   };
 
   const tabs = [
@@ -371,41 +373,40 @@ export default function AdminDashboard() {
             {showEventForm && (
               <Card className="m-6 p-6 bg-muted/30">
                 <h3 className="font-semibold mb-4 flex items-center">
-                  <Link2 className="mr-2 h-5 w-5 text-purple-500" />
-                  Add Event from Luma URL
+                  <Sparkles className="mr-2 h-5 w-5 text-purple-500" />
+                  Import Events with AI
                 </h3>
-                <form onSubmit={handleSubmitUrl} className="space-y-4">
+                <form onSubmit={handleSubmitBulkText} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="lumaUrl">Luma Event URL</Label>
-                    <Input
-                      id="lumaUrl"
-                      type="url"
-                      value={lumaUrl}
-                      onChange={(e) => setLumaUrl(e.target.value)}
-                      placeholder="https://lu.ma/event-name"
-                      className="h-12"
-                      data-testid="input-luma-url"
+                    <Label htmlFor="bulkEventText">Paste Event Calendar or List</Label>
+                    <Textarea
+                      id="bulkEventText"
+                      value={bulkEventText}
+                      onChange={(e) => setBulkEventText(e.target.value)}
+                      placeholder="Paste text from Luma calendar, event listings, or any text containing event information. AI will automatically extract and create events..."
+                      className="min-h-[200px] font-mono text-sm"
+                      data-testid="input-bulk-text"
                     />
                     <p className="text-sm text-muted-foreground">
-                      Paste a Luma event URL to automatically import event details
+                      💡 Paste content from event calendars, Luma pages, or any text with event details. AI will parse and create multiple events automatically.
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <Button 
                       type="submit" 
-                      disabled={createEventMutation.isPending}
+                      disabled={createEventsMutation.isPending}
                       className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                      data-testid="button-submit-url"
+                      data-testid="button-submit-bulk"
                     >
-                      {createEventMutation.isPending ? (
+                      {createEventsMutation.isPending ? (
                         <>
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Importing...
+                          Processing with AI...
                         </>
                       ) : (
                         <>
-                          <Plus className="mr-2 h-4 w-4" />
-                          Import Event
+                          <Sparkles className="mr-2 h-4 w-4" />
+                          Import Events
                         </>
                       )}
                     </Button>
@@ -414,7 +415,7 @@ export default function AdminDashboard() {
                       variant="outline"
                       onClick={() => {
                         setShowEventForm(false);
-                        setLumaUrl("");
+                        setBulkEventText("");
                       }}
                       data-testid="button-cancel"
                     >
