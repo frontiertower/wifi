@@ -159,6 +159,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const clientMac = guestData.unifiParams?.mac || guestData.macAddress || "unknown";
       const user = await storage.createCaptiveUser(guestData);
 
+      // Increment daily guest count
+      await storage.incrementDailyGuestCount();
+
       const unifiResult = await unifiService.authorizeGuest(
         clientMac,
         8,

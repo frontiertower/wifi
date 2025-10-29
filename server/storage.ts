@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -66,13 +66,101 @@ export class DatabaseStorage {
     const totalDataUsage = await db.select({ total: sql<number>`SUM(${captiveUsers.dataUsed})` }).from(captiveUsers);
     const dataUsageGB = Math.round((totalDataUsage[0]?.total || 0) / 1024);
 
+    // Get daily guest count
+    const dailyGuestCount = await this.getDailyGuestCount();
+
     return {
       totalUsers: totalUsersResult.count,
       activeUsers: activeUsersResult.count,
       activeEvents: totalEventsResult.count,
       activeVouchers: totalVouchersResult.count,
-      dataUsage: `${dataUsageGB}GB`
+      dataUsage: `${dataUsageGB}GB`,
+      dailyGuestCount: dailyGuestCount
     };
+  }
+
+  async getDailyGuestCount(): Promise<number> {
+    await this.checkAndResetDailyStats();
+    const today = this.getTodayDateString();
+    const [stats] = await db
+      .select()
+      .from(dailyStats)
+      .where(eq(dailyStats.date, today));
+    
+    return stats?.guestCount || 0;
+  }
+
+  async incrementDailyGuestCount(): Promise<void> {
+    await this.checkAndResetDailyStats();
+    const today = this.getTodayDateString();
+    
+    const [existingStats] = await db
+      .select()
+      .from(dailyStats)
+      .where(eq(dailyStats.date, today));
+
+    if (existingStats) {
+      await db
+        .update(dailyStats)
+        .set({ guestCount: existingStats.guestCount + 1 })
+        .where(eq(dailyStats.date, today));
+    } else {
+      await db
+        .insert(dailyStats)
+        .values({
+          date: today,
+          guestCount: 1,
+          lastResetAt: new Date()
+        });
+    }
+  }
+
+  private async checkAndResetDailyStats(): Promise<void> {
+    const today = this.getTodayDateString();
+    const [stats] = await db
+      .select()
+      .from(dailyStats)
+      .where(eq(dailyStats.date, today));
+
+    if (!stats || !stats.lastResetAt) {
+      return;
+    }
+
+    const now = new Date();
+    const lastReset = new Date(stats.lastResetAt);
+    
+    // Check if we need to reset (crossed 4am boundary)
+    if (this.shouldResetAt4AM(lastReset, now)) {
+      await db
+        .update(dailyStats)
+        .set({ 
+          guestCount: 0,
+          lastResetAt: now
+        })
+        .where(eq(dailyStats.date, today));
+    }
+  }
+
+  private shouldResetAt4AM(lastReset: Date, now: Date): boolean {
+    // Get 4am today
+    const fourAMToday = new Date(now);
+    fourAMToday.setHours(4, 0, 0, 0);
+
+    // Get 4am yesterday
+    const fourAMYesterday = new Date(fourAMToday);
+    fourAMYesterday.setDate(fourAMYesterday.getDate() - 1);
+
+    // If last reset was before today's 4am and now is after today's 4am
+    if (lastReset < fourAMToday && now >= fourAMToday) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private getTodayDateString(): string {
+    const now = new Date();
+    return now.toISOString().split('T')[0]; // YYYY-MM-DD
   }
 
   async getAllVouchers(): Promise<Voucher[]> {
