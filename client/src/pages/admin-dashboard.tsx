@@ -17,7 +17,7 @@ interface StatsResponse {
   stats?: {
     activeUsers?: number;
     activeVouchers?: number;
-    activeEvents?: number;
+    eventsToday?: number;
     dataUsage?: string;
     dailyGuestCount?: number;
   };
@@ -159,8 +159,8 @@ export default function AdminDashboard() {
                 <Calendar className="text-orange-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900">{stats?.stats?.activeEvents || 0}</p>
-                <p className="text-sm text-gray-600">Active Events</p>
+                <p className="text-2xl font-bold text-gray-900" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
+                <p className="text-sm text-gray-600">Events Today</p>
               </div>
             </div>
           </div>
