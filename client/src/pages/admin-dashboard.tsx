@@ -246,7 +246,13 @@ export default function AdminDashboard() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={user.role === "guest" ? "secondary" : "outline"}>
+                      <Badge 
+                        className={
+                          user.role === "guest" 
+                            ? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300" 
+                            : "bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300"
+                        }
+                      >
                         {user.role}
                       </Badge>
                     </TableCell>
@@ -319,11 +325,15 @@ export default function AdminDashboard() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={
-                        user.role === "member" ? "default" : 
-                        user.role === "guest" ? "secondary" : 
-                        "outline"
-                      }>
+                      <Badge 
+                        className={
+                          user.role === "member" 
+                            ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300" 
+                            : user.role === "guest" 
+                            ? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300" 
+                            : "bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300"
+                        }
+                      >
                         {user.role}
                       </Badge>
                     </TableCell>
