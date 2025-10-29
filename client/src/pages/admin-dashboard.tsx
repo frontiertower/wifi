@@ -145,8 +145,9 @@ export default function AdminDashboard() {
                 <Ticket className="text-green-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900">{stats?.stats?.activeVouchers || 0}</p>
-                <p className="text-sm text-gray-600">Active Guests</p>
+                <p className="text-2xl font-bold text-gray-900" data-testid="text-daily-guest-count">{stats?.stats?.dailyGuestCount || 0}</p>
+                <p className="text-sm text-gray-600">Daily Guest Count</p>
+                <p className="text-xs text-gray-400">Resets at 4am</p>
               </div>
             </div>
           </div>
