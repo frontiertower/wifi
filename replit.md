@@ -10,15 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### Location Tab with 3D Building Visualization (October 30, 2025)
-- Added Location tab showing 3D visualization of Frontier Tower's 16-story building
+### Location Tab with 2D Building Visualization (October 30, 2025)
+- Added Location tab showing 2D visualization of Frontier Tower's 16-story building
 - Building displays floors 2-16 (excluding floor 13 per building convention)
 - User distribution logic: Event users→Floor 2, Guest users→Floor 16, Members→their selected floor
 - Color-coded floors by user density (gray→blue→green→yellow→orange for 0→1-2→3-5→6-10→10+ users)
-- 3D perspective transforms create depth effect with visible sides and bottom faces
+- Clean 2D stacked layout with gradient backgrounds (converted from 3D perspective design)
 - Special badges on Floor 16 (Guests) and Floor 2 (Events)
 - Responsive legend showing density color coding
 - Backend endpoint `/api/admin/floor-stats` aggregates user counts per floor
+- Floor stats filtered to show only users registered after 4am (consistent with "Users Today" metric)
 
 ### Analytics Tab with Total Counts (October 29, 2025)
 - Added comprehensive analytics dashboard showing lifetime totals
