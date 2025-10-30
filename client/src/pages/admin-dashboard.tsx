@@ -15,7 +15,7 @@ type Tab = "users" | "vouchers" | "events" | "analytics" | "location";
 
 interface StatsResponse {
   stats?: {
-    usersToday?: number;
+    membersToday?: number;
     activeVouchers?: number;
     eventsToday?: number;
     eventGuestsToday?: number;
@@ -145,12 +145,12 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div className="flex items-center">
-              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
-                <Users className="text-primary-600" />
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Users className="text-blue-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900" data-testid="text-users-today">{stats?.stats?.usersToday || 0}</p>
-                <p className="text-sm text-gray-600">Users Today</p>
+                <p className="text-2xl font-bold text-gray-900" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
+                <p className="text-sm text-gray-600">Members Today</p>
               </div>
             </div>
           </div>

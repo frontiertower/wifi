@@ -60,14 +60,19 @@ export class DatabaseStorage {
   async getDashboardStats(): Promise<any> {
     const [totalUsersResult] = await db.select({ count: count() }).from(captiveUsers);
     
-    // Count users registered after 4am today (or after 4am yesterday if before 4am now)
-    const [usersToday] = await db.select({ count: count() })
+    // Count members registered after 4am today (or after 4am yesterday if before 4am now)
+    const [membersToday] = await db.select({ count: count() })
       .from(captiveUsers)
-      .where(sql`${captiveUsers.createdAt} >= CASE 
-        WHEN EXTRACT(HOUR FROM NOW()) >= 4 
-        THEN CURRENT_DATE + INTERVAL '4 hours'
-        ELSE CURRENT_DATE - INTERVAL '1 day' + INTERVAL '4 hours'
-      END`);
+      .where(
+        and(
+          eq(captiveUsers.role, "member"),
+          sql`${captiveUsers.createdAt} >= CASE 
+            WHEN EXTRACT(HOUR FROM NOW()) >= 4 
+            THEN CURRENT_DATE + INTERVAL '4 hours'
+            ELSE CURRENT_DATE - INTERVAL '1 day' + INTERVAL '4 hours'
+          END`
+        )
+      );
     
     // Count only events happening today (where today falls within start_date and end_date range)
     const [eventsToday] = await db.select({ count: count() })
@@ -130,7 +135,7 @@ export class DatabaseStorage {
 
     return {
       totalUsers: totalUsersResult.count,
-      usersToday: usersToday.count,
+      membersToday: membersToday.count,
       eventsToday: eventsToday.count,
       activeVouchers: totalVouchersResult.count,
       dataUsage: `${dataUsageGB}GB`,
