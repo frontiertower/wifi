@@ -28,6 +28,14 @@ Preferred communication style: Simple, everyday language.
 - Responsive grid layout (3 columns on large screens, 2 on medium, 1 on mobile)
 - Backend queries count users by role and total events from database
 
+### Event Guests Today Counter (October 30, 2025)
+- Replaced "Data Usage Today" stat with "Event Guests Today" counter
+- Counts event attendees (role="event") registered after 4am using same 4am reset logic
+- Purple color scheme with Users icon to match event badge styling throughout app
+- Backend query filters captive_users by role and 4am cutoff timestamp
+- Displays count in fourth stat card on admin dashboard
+- Complements Users Today, Guests Today, and Events Today metrics
+
 ### Users Today & Guests Today Counters with 4am Reset (October 30, 2025)
 - Changed "Active Users" to "Users Today" - counts all users registered after 4am (member/guest/event)
 - Changed "Daily Guest Count" to "Guests Today" - counts only guest registrations after 4am
