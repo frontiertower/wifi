@@ -124,6 +124,41 @@ export class DatabaseStorage {
     return stats?.guestCount || 0;
   }
 
+  async getFloorStats(): Promise<Record<string, number>> {
+    // Get all users
+    const allUsers = await db.select({
+      role: captiveUsers.role,
+      floor: captiveUsers.floor
+    }).from(captiveUsers);
+
+    // Initialize floor counts for all floors 2-16 (skipping only 13)
+    const floorCounts: Record<string, number> = {};
+    const floors = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '14', '15', '16'];
+    floors.forEach(floor => floorCounts[floor] = 0);
+    floorCounts['unknown'] = 0;
+
+    // Count users per floor based on their role
+    allUsers.forEach(user => {
+      if (user.role === 'event') {
+        // Event users go to 2nd floor
+        floorCounts['2'] = (floorCounts['2'] || 0) + 1;
+      } else if (user.role === 'guest') {
+        // Guest users go to 16th floor
+        floorCounts['16'] = (floorCounts['16'] || 0) + 1;
+      } else if (user.role === 'member') {
+        // Member users go to their selected floor
+        const memberFloor = user.floor || 'unknown';
+        if (floors.includes(memberFloor)) {
+          floorCounts[memberFloor] = (floorCounts[memberFloor] || 0) + 1;
+        } else {
+          floorCounts['unknown'] = (floorCounts['unknown'] || 0) + 1;
+        }
+      }
+    });
+
+    return floorCounts;
+  }
+
   async incrementDailyGuestCount(): Promise<void> {
     const today = this.getTodayDateString();
     const now = new Date();

@@ -262,6 +262,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/admin/floor-stats", async (req, res) => {
+    try {
+      const floorStats = await storage.getFloorStats();
+      res.json({ success: true, floorStats });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch floor statistics"
+      });
+    }
+  });
+
   app.get("/api/admin/vouchers", async (req, res) => {
     try {
       const vouchers = await storage.getAllVouchers();

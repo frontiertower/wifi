@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -11,7 +11,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-type Tab = "users" | "vouchers" | "events" | "analytics";
+type Tab = "users" | "vouchers" | "events" | "analytics" | "location";
 
 interface StatsResponse {
   stats?: {
@@ -40,6 +40,10 @@ interface EventsResponse {
   events?: any[];
 }
 
+interface FloorStatsResponse {
+  floorStats?: Record<string, number>;
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("vouchers");
   const [showEventForm, setShowEventForm] = useState(false);
@@ -63,6 +67,11 @@ export default function AdminDashboard() {
   const { data: events } = useQuery<EventsResponse>({
     queryKey: ['/api/admin/events'],
     enabled: activeTab === "events",
+  });
+
+  const { data: floorStats } = useQuery<FloorStatsResponse>({
+    queryKey: ['/api/admin/floor-stats'],
+    enabled: activeTab === "location",
   });
 
   const createEventsMutation = useMutation({
@@ -108,6 +117,7 @@ export default function AdminDashboard() {
     { id: "vouchers", label: "Guests", icon: Ticket },
     { id: "events", label: "Events", icon: Calendar },
     { id: "analytics", label: "Analytics", icon: TrendingUp },
+    { id: "location", label: "Location", icon: MapPin },
   ] as const;
 
   return (
@@ -560,6 +570,130 @@ export default function AdminDashboard() {
                     <Calendar className="text-orange-700 dark:text-orange-300" />
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "location" && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">Building Location Map</h2>
+            <p className="text-sm text-gray-600 mb-8">
+              Frontier Tower - 16 Story Office Building (Floor 13 omitted)
+            </p>
+            
+            <div className="flex justify-center items-center min-h-[600px] py-8">
+              <div className="relative" style={{ perspective: "2000px" }}>
+                <div 
+                  className="relative" 
+                  style={{ 
+                    transformStyle: "preserve-3d",
+                    transform: "rotateX(15deg) rotateY(-25deg)",
+                  }}
+                >
+                  {/* Building floors - displayed from top to bottom */}
+                  {['16', '15', '14', '12', '11', '10', '9', '8', '7', '6', '5', '4', '3', '2'].map((floor, index) => {
+                    const userCount = floorStats?.floorStats?.[floor] || 0;
+                    const totalFloors = 14;
+                    const isTop = index === 0;
+                    const isBottom = index === totalFloors - 1;
+                    
+                    // Color based on user density
+                    const getFloorColor = (count: number) => {
+                      if (count === 0) return 'from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900';
+                      if (count <= 2) return 'from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-950';
+                      if (count <= 5) return 'from-green-100 to-green-200 dark:from-green-900 dark:to-green-950';
+                      if (count <= 10) return 'from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-950';
+                      return 'from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-950';
+                    };
+                    
+                    return (
+                      <div
+                        key={floor}
+                        className={`relative w-96 h-12 mb-1 border-2 border-gray-400 dark:border-gray-600 ${
+                          isTop ? 'rounded-t-lg' : ''
+                        } ${isBottom ? 'rounded-b-lg' : ''} bg-gradient-to-r ${getFloorColor(userCount)} shadow-md`}
+                        style={{
+                          transformStyle: "preserve-3d",
+                          transform: `translateZ(${index * -2}px)`,
+                        }}
+                        data-testid={`floor-${floor}`}
+                      >
+                        {/* Floor number and user count */}
+                        <div className="absolute inset-0 flex items-center justify-between px-6">
+                          <div className="flex items-center gap-4">
+                            <span className="font-bold text-lg text-gray-900 dark:text-gray-100" data-testid={`text-floor-label-${floor}`}>
+                              Floor {floor}
+                            </span>
+                            {floor === '16' && (
+                              <Badge variant="secondary" className="text-xs">
+                                Guests
+                              </Badge>
+                            )}
+                            {floor === '2' && (
+                              <Badge variant="secondary" className="text-xs">
+                                Events
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                            <span className="font-semibold text-gray-900 dark:text-gray-100" data-testid={`text-floor-count-${floor}`}>
+                              {userCount}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {/* 3D depth effect - right side */}
+                        <div 
+                          className="absolute top-0 right-0 h-full w-8 bg-gray-300 dark:bg-gray-700 border-l-2 border-gray-400 dark:border-gray-600"
+                          style={{
+                            transformOrigin: "left",
+                            transform: "rotateY(90deg) translateX(4px)",
+                            transformStyle: "preserve-3d",
+                          }}
+                        />
+                        
+                        {/* 3D depth effect - bottom */}
+                        <div 
+                          className="absolute bottom-0 left-0 w-full h-2 bg-gray-400 dark:bg-gray-800"
+                          style={{
+                            transformOrigin: "top",
+                            transform: "rotateX(-90deg) translateY(1px)",
+                            transformStyle: "preserve-3d",
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                {/* Building base/foundation */}
+                <div className="mt-2 w-96 h-4 bg-gradient-to-b from-gray-600 to-gray-800 dark:from-gray-700 dark:to-gray-900 rounded-b-xl border-2 border-gray-700 dark:border-gray-800 mx-auto" />
+              </div>
+            </div>
+            
+            {/* Legend */}
+            <div className="mt-8 flex flex-wrap gap-4 justify-center">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 border border-gray-300" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">0 users</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-950 border border-blue-300" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">1-2 users</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900 dark:to-green-950 border border-green-300" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">3-5 users</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-950 border border-yellow-300" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">6-10 users</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-950 border border-orange-300" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">10+ users</span>
               </div>
             </div>
           </div>
