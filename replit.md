@@ -34,12 +34,17 @@ Preferred communication style: Simple, everyday language.
 - Purple color scheme with Users icon to match event badge styling throughout app
 - Backend query filters captive_users by role and 4am cutoff timestamp
 - Displays count in fourth stat card on admin dashboard
-- Complements Users Today, Guests Today, and Events Today metrics
+- Complements Members Today, Guests Today, and Events Today metrics
 
-### Users Today & Guests Today Counters with 4am Reset (October 30, 2025)
-- Changed "Active Users" to "Users Today" - counts all users registered after 4am (member/guest/event)
-- Changed "Daily Guest Count" to "Guests Today" - counts only guest registrations after 4am
-- Both counters reset at 4am daily (not midnight) to align with business hours
+### Members Today Counter (October 30, 2025)
+- Changed "Users Today" to "Members Today" - counts only members (role="member") registered after 4am
+- Blue color scheme with Users icon to match member badge styling throughout app
+- Backend query filters captive_users by role="member" and 4am cutoff timestamp
+- Complements Guests Today and Event Guests Today for role-specific daily tracking
+- Dashboard now shows four role-specific daily counters: Members Today, Guests Today, Events Today, Event Guests Today
+
+### Daily Counters with 4am Reset (October 30, 2025)
+- All "Today" counters (Members, Guests, Event Guests) reset at 4am daily (not midnight) to align with business hours
 - Backend SQL uses CASE logic: if current time >= 4am, count from today at 4am; else count from yesterday at 4am
 - Displays real-time registration counts for current day in admin dashboard stat cards
 - Note: Counters use database timezone (typically UTC) for 4am boundary determination
