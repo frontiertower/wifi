@@ -18,7 +18,7 @@ interface StatsResponse {
     usersToday?: number;
     activeVouchers?: number;
     eventsToday?: number;
-    dataUsage?: string;
+    eventGuestsToday?: number;
     guestsToday?: number;
     totalUsers?: number;
     totalMembers?: number;
@@ -181,12 +181,12 @@ export default function AdminDashboard() {
 
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div className="flex items-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="text-blue-600" />
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <Users className="text-purple-600" />
               </div>
               <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900">{stats?.stats?.dataUsage || "0TB"}</p>
-                <p className="text-sm text-gray-600">Data Usage Today</p>
+                <p className="text-2xl font-bold text-gray-900" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
+                <p className="text-sm text-gray-600">Event Guests Today</p>
               </div>
             </div>
           </div>

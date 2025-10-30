@@ -99,6 +99,20 @@ export class DatabaseStorage {
         )
       );
 
+    // Count event guests registered after 4am today (same logic as users today)
+    const [eventGuestsTodayResult] = await db.select({ count: count() })
+      .from(captiveUsers)
+      .where(
+        and(
+          eq(captiveUsers.role, "event"),
+          sql`${captiveUsers.createdAt} >= CASE 
+            WHEN EXTRACT(HOUR FROM NOW()) >= 4 
+            THEN CURRENT_DATE + INTERVAL '4 hours'
+            ELSE CURRENT_DATE - INTERVAL '1 day' + INTERVAL '4 hours'
+          END`
+        )
+      );
+
     // Analytics totals
     const [totalMembers] = await db.select({ count: count() })
       .from(captiveUsers)
@@ -121,6 +135,7 @@ export class DatabaseStorage {
       activeVouchers: totalVouchersResult.count,
       dataUsage: `${dataUsageGB}GB`,
       guestsToday: guestsTodayResult.count,
+      eventGuestsToday: eventGuestsTodayResult.count,
       // Analytics
       totalMembers: totalMembers.count,
       totalGuests: totalGuests.count,
