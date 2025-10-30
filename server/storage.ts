@@ -74,14 +74,13 @@ export class DatabaseStorage {
         )
       );
     
-    // Count only events happening today (where today falls within start_date and end_date range)
+    // Count only events starting today (where start_date is today)
     const [eventsToday] = await db.select({ count: count() })
       .from(events)
       .where(
         and(
           eq(events.isActive, true),
-          sql`CURRENT_DATE >= DATE(${events.startDate})`,
-          sql`CURRENT_DATE <= DATE(${events.endDate})`
+          sql`DATE(${events.startDate}) = CURRENT_DATE`
         )
       );
     
