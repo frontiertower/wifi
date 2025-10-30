@@ -27,12 +27,13 @@ Preferred communication style: Simple, everyday language.
 - Responsive grid layout (3 columns on large screens, 2 on medium, 1 on mobile)
 - Backend queries count users by role and total events from database
 
-### Users Today & Guests Today Counters (October 29, 2025)
-- Changed "Active Users" to "Users Today" - counts all users registered today (member/guest/event)
-- Changed "Daily Guest Count" to "Guests Today" - counts only guest registrations today
-- Backend SQL query: `DATE(created_at) = CURRENT_DATE` for Users Today counter
+### Users Today & Guests Today Counters with 4am Reset (October 30, 2025)
+- Changed "Active Users" to "Users Today" - counts all users registered after 4am (member/guest/event)
+- Changed "Daily Guest Count" to "Guests Today" - counts only guest registrations after 4am
+- Both counters reset at 4am daily (not midnight) to align with business hours
+- Backend SQL uses CASE logic: if current time >= 4am, count from today at 4am; else count from yesterday at 4am
 - Displays real-time registration counts for current day in admin dashboard stat cards
-- Note: Counters use database timezone (typically UTC) for date comparison
+- Note: Counters use database timezone (typically UTC) for 4am boundary determination
 
 ### Colored Role Type Badges (October 29, 2025)
 - Added colored backgrounds to user role badges in admin dashboard
