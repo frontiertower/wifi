@@ -140,11 +140,17 @@ export class DatabaseStorage {
   }
 
   async getFloorStats(): Promise<Record<string, number>> {
-    // Get all users
+    // Get users who registered after 4am today (same logic as daily counters)
     const allUsers = await db.select({
       role: captiveUsers.role,
       floor: captiveUsers.floor
-    }).from(captiveUsers);
+    })
+    .from(captiveUsers)
+    .where(sql`${captiveUsers.createdAt} >= CASE 
+      WHEN EXTRACT(HOUR FROM NOW()) >= 4 
+      THEN CURRENT_DATE + INTERVAL '4 hours'
+      ELSE CURRENT_DATE - INTERVAL '1 day' + INTERVAL '4 hours'
+    END`);
 
     // Initialize floor counts for all floors 2-16 (skipping only 13)
     const floorCounts: Record<string, number> = {};
