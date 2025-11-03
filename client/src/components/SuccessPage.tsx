@@ -15,7 +15,7 @@ export default function SuccessPage({
   userName,
   networkName,
   duration,
-  redirectUrl = "https://ft0.sh/"
+  redirectUrl = "https://frontiertower.io/"
 }: SuccessPageProps) {
   const [countdown, setCountdown] = useState(5);
 

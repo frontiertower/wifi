@@ -6,7 +6,7 @@ export default function SuccessPageExample() {
       userName="John Doe"
       networkName="Frontier-Guest"
       duration="8 hours"
-      redirectUrl="https://ft0.sh/"
+      redirectUrl="https://frontiertower.io/"
     />
   );
 }

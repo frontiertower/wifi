@@ -51,7 +51,7 @@ export default function Home() {
   };
 
   const handleSuccess = (data: SuccessData) => {
-    const redirectUrl = unifiParams.url || "https://ft0.sh/";
+    const redirectUrl = unifiParams.url || "https://frontiertower.io/";
     window.location.href = redirectUrl;
   };
 
