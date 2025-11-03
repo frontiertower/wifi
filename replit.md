@@ -57,11 +57,12 @@ Preferred communication style: Simple, everyday language.
 - Includes light/dark mode variants for accessibility
 - Applied consistently across Guests and Users tabs
 
-### Events Today Feature (October 29, 2025)
+### Events Today Feature (November 3, 2025)
 - Updated admin dashboard stats to show "Events Today" instead of "Active Events"
-- Backend filters events where current date falls within the event's date range (inclusive)
-- SQL query: `CURRENT_DATE >= DATE(start_date) AND CURRENT_DATE <= DATE(end_date)`
-- Displays count of events happening today in orange-colored stat card
+- Backend counts only events where start_date is today (not events spanning multiple days)
+- SQL query: `DATE(start_date) = CURRENT_DATE`
+- Displays count of all events starting today (including finished events) in orange-colored stat card
+- Counts 11 events starting Oct 30, 2025 regardless of whether they've already finished
 
 ### Daily Guest Counter (October 29, 2025)
 - Tracks daily guest registration count with automatic 4am reset
