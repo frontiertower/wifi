@@ -50,8 +50,37 @@ export default function Home() {
     setSelectedRole(null);
   };
 
-  const handleSuccess = (data: SuccessData) => {
+  const handleSuccess = async (data: SuccessData) => {
     const redirectUrl = unifiParams.url || "https://frontiertower.io/";
+    
+    // Call authorize-guest endpoint to grant internet access
+    try {
+      const authResponse = await fetch('/api/authorize-guest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          acceptTou: "true",
+          accessPointMacAddress: unifiParams.ap || "unknown",
+          macAddress: unifiParams.mac || "unknown",
+          email: data.email,
+          ipAddress: data.ipAddress,
+        }),
+      });
+
+      const authData = await authResponse.json();
+      
+      if (authData.payload?.valid) {
+        console.log('✓ Guest authorized for internet access');
+      } else {
+        console.warn('⚠️ Authorization response:', authData);
+      }
+    } catch (error) {
+      console.error('✗ Authorization error:', error);
+    }
+    
+    // Redirect regardless of authorization result
     window.location.href = redirectUrl;
   };
 

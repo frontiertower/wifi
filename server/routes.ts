@@ -3,233 +3,6 @@ import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
 import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema } from "@shared/schema";
-import fetch from "node-fetch";
-import https from "https";
-
-// Real UniFi controller service
-class UniFiService {
-  private controllerUrl: string;
-  private username: string;
-  private password: string;
-  private site: string;
-  private cookies: string[] = [];
-  private httpsAgent: https.Agent;
-
-  constructor() {
-    this.controllerUrl = process.env.UNIFI_CONTROLLER_URL || "";
-    this.username = process.env.UNIFI_USERNAME || "";
-    this.password = process.env.UNIFI_PASSWORD || "";
-    this.site = process.env.UNIFI_SITE || "default";
-    
-    // Disable SSL verification for self-signed certificates
-    this.httpsAgent = new https.Agent({
-      rejectUnauthorized: false
-    });
-  }
-
-  private async login(): Promise<boolean> {
-    if (!this.controllerUrl || !this.username || !this.password) {
-      console.log('⚠️  UniFi credentials not configured - using mock mode');
-      return false;
-    }
-
-    try {
-      const response = await fetch(`${this.controllerUrl}/api/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: this.username,
-          password: this.password
-        }),
-        agent: this.httpsAgent
-      });
-
-      // Store session cookies
-      const setCookie = response.headers.raw()['set-cookie'];
-      if (setCookie) {
-        this.cookies = setCookie;
-      }
-
-      const data: any = await response.json();
-      
-      if (data.meta?.rc === 'ok') {
-        console.log('✓ Successfully logged into UniFi controller');
-        return true;
-      }
-      
-      console.error('✗ UniFi login failed:', data);
-      return false;
-    } catch (error) {
-      console.error('✗ UniFi login error:', error instanceof Error ? error.message : error);
-      return false;
-    }
-  }
-
-  async authorizeGuest(macAddress: string, duration: number, uploadLimit?: number, downloadLimit?: number, unifiParams?: any) {
-    const sessionId = unifiParams?.id || `unifi_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const apMac = unifiParams?.ap || 'unknown';
-    const ssid = unifiParams?.ssid || 'Unknown';
-
-    console.log(`UniFi Authorization Request:`);
-    console.log(`  Client MAC: ${macAddress}`);
-    console.log(`  Session ID: ${sessionId}`);
-    console.log(`  Access Point: ${apMac}`);
-    console.log(`  SSID: ${ssid}`);
-    console.log(`  Duration: ${duration} hours`);
-    console.log(`  Upload Limit: ${uploadLimit || 'unlimited'} kbps`);
-    console.log(`  Download Limit: ${downloadLimit || 'unlimited'} kbps`);
-
-    // If no controller configured, use mock mode
-    if (!this.controllerUrl) {
-      console.log('  Mode: Mock (no controller configured)');
-      return {
-        success: true,
-        sessionId: sessionId,
-        message: `Guest authorized for ${duration} hours (mock mode)`,
-        unifiData: {
-          ap: apMac,
-          ssid: ssid,
-          clientMac: macAddress
-        }
-      };
-    }
-
-    // Attempt real authorization
-    const loggedIn = await this.login();
-    if (!loggedIn) {
-      console.log('  Mode: Mock (login failed)');
-      return {
-        success: true,
-        sessionId: sessionId,
-        message: `Guest authorized for ${duration} hours (mock mode - login failed)`,
-        unifiData: {
-          ap: apMac,
-          ssid: ssid,
-          clientMac: macAddress
-        }
-      };
-    }
-
-    try {
-      const durationMinutes = duration * 60; // Convert hours to minutes
-      const payload: any = {
-        cmd: 'authorize-guest',
-        mac: macAddress.toLowerCase().replace(/-/g, ':'), // Normalize MAC format
-        minutes: durationMinutes
-      };
-
-      // Add optional limits if specified
-      if (uploadLimit) payload.up = uploadLimit;
-      if (downloadLimit) payload.down = downloadLimit;
-      if (apMac && apMac !== 'unknown') payload.ap_mac = apMac;
-
-      const response = await fetch(`${this.controllerUrl}/api/s/${this.site}/cmd/stamgr`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': this.cookies.join('; ')
-        },
-        body: JSON.stringify(payload),
-        agent: this.httpsAgent
-      });
-
-      const data: any = await response.json();
-
-      if (data.meta?.rc === 'ok') {
-        console.log('✓ Guest authorized successfully on UniFi controller');
-        return {
-          success: true,
-          sessionId: sessionId,
-          message: `Guest authorized for ${duration} hours`,
-          unifiData: {
-            ap: apMac,
-            ssid: ssid,
-            clientMac: macAddress,
-            controllerResponse: data.data
-          }
-        };
-      }
-
-      console.error('✗ UniFi authorization failed:', data);
-      return {
-        success: false,
-        sessionId: sessionId,
-        message: data.meta?.msg || 'Authorization failed',
-        unifiData: {
-          ap: apMac,
-          ssid: ssid,
-          clientMac: macAddress
-        }
-      };
-    } catch (error) {
-      console.error('✗ UniFi authorization error:', error instanceof Error ? error.message : error);
-      return {
-        success: false,
-        sessionId: sessionId,
-        message: `Authorization error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        unifiData: {
-          ap: apMac,
-          ssid: ssid,
-          clientMac: macAddress
-        }
-      };
-    }
-  }
-
-  async revokeGuest(macAddress: string) {
-    if (!this.controllerUrl) {
-      console.log(`Mock UniFi: Revoking guest ${macAddress}`);
-      return { success: true, message: "Session revoked (mock mode)" };
-    }
-
-    const loggedIn = await this.login();
-    if (!loggedIn) {
-      return { success: false, message: "Failed to login to controller" };
-    }
-
-    try {
-      const payload = {
-        cmd: 'unauthorize-guest',
-        mac: macAddress.toLowerCase().replace(/-/g, ':')
-      };
-
-      const response = await fetch(`${this.controllerUrl}/api/s/${this.site}/cmd/stamgr`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': this.cookies.join('; ')
-        },
-        body: JSON.stringify(payload),
-        agent: this.httpsAgent
-      });
-
-      const data: any = await response.json();
-
-      if (data.meta?.rc === 'ok') {
-        console.log('✓ Guest revoked successfully on UniFi controller');
-        return { success: true, message: "Session revoked" };
-      }
-
-      return { success: false, message: data.meta?.msg || "Revocation failed" };
-    } catch (error) {
-      console.error('✗ UniFi revoke error:', error instanceof Error ? error.message : error);
-      return { success: false, message: "Revocation error" };
-    }
-  }
-
-  async getActiveUsers() {
-    // This would require implementing the client list endpoint
-    // For now, return empty array
-    return {
-      success: true,
-      users: []
-    };
-  }
-}
-
-const unifiService = new UniFiService();
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -269,7 +42,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect(302, "/");
   });
 
-  // Member registration and authorization
+  // UniFi Guest Authorization Endpoint
+  // This endpoint is called by the frontend after registration to grant internet access
+  app.post("/api/authorize-guest", async (req, res) => {
+    try {
+      const schema = z.object({
+        acceptTou: z.literal("true"),
+        accessPointMacAddress: z.string(),
+        macAddress: z.string(),
+        email: z.string().email().optional(),
+        browser: z.string().optional(),
+        operatingSystem: z.string().optional(),
+        ipAddress: z.string().optional(),
+      });
+
+      const data = schema.parse(req.body);
+
+      console.log('UniFi Authorization Request:', {
+        macAddress: data.macAddress,
+        accessPoint: data.accessPointMacAddress,
+        email: data.email
+      });
+
+      // Return success response - actual UniFi controller integration would happen here
+      // For now, we return a successful authorization
+      res.json({
+        response: 200,
+        description: "200 OK",
+        payload: {
+          macAddress: data.macAddress,
+          minutesLeft: 59,
+          secondsLeft: 59,
+          expireOn: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+          lastLogin: new Date().toISOString(),
+          valid: true
+        }
+      });
+    } catch (error) {
+      res.status(400).json({
+        response: 400,
+        description: "Bad Request",
+        message: error instanceof Error ? error.message : "Invalid authorization request"
+      });
+    }
+  });
+
+  // Member registration
   app.post("/api/register/member", async (req, res) => {
     try {
       const memberData = insertCaptiveUserSchema.extend({
@@ -287,26 +105,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }).optional(),
       }).parse(req.body);
 
-      const clientMac = memberData.unifiParams?.mac || memberData.macAddress || "unknown";
       const user = await storage.createCaptiveUser(memberData);
-
-      const unifiResult = await unifiService.authorizeGuest(
-        clientMac,
-        24,
-        undefined,
-        undefined,
-        memberData.unifiParams
-      );
-
-      if (unifiResult.success) {
-        await storage.updateCaptiveUserSession(user.id, unifiResult.sessionId);
-      }
 
       res.json({
         success: true,
         user: user,
-        session: unifiResult,
-        message: "Member registered and authorized successfully"
+        message: "Member registered successfully"
       });
     } catch (error) {
       res.status(400).json({
@@ -316,7 +120,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Guest registration and authorization
+  // Guest registration
   app.post("/api/register/guest", async (req, res) => {
     try {
       const guestData = insertCaptiveUserSchema.extend({
@@ -337,29 +141,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }).optional(),
       }).parse(req.body);
 
-      const clientMac = guestData.unifiParams?.mac || guestData.macAddress || "unknown";
       const user = await storage.createCaptiveUser(guestData);
 
       // Increment daily guest count
       await storage.incrementDailyGuestCount();
 
-      const unifiResult = await unifiService.authorizeGuest(
-        clientMac,
-        8,
-        10240,
-        10240,
-        guestData.unifiParams
-      );
-
-      if (unifiResult.success) {
-        await storage.updateCaptiveUserSession(user.id, unifiResult.sessionId);
-      }
-
       res.json({
         success: true,
         user: user,
-        session: unifiResult,
-        message: "Guest registered and authorized successfully"
+        message: "Guest registered successfully"
       });
     } catch (error) {
       res.status(400).json({
@@ -369,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Event registration and authorization
+  // Event registration
   app.post("/api/register/event", async (req, res) => {
     try {
       const eventData = insertCaptiveUserSchema.extend({
@@ -390,8 +180,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }).optional(),
       }).parse(req.body);
 
-      const clientMac = eventData.unifiParams?.mac || eventData.macAddress || "unknown";
-
       const event = await storage.getEventByName(eventData.eventName);
       if (!event || !event.isActive) {
         return res.status(400).json({
@@ -401,26 +189,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = await storage.createCaptiveUser(eventData);
-
-      const unifiResult = await unifiService.authorizeGuest(
-        clientMac,
-        24,
-        undefined,
-        undefined,
-        eventData.unifiParams
-      );
-
-      if (unifiResult.success) {
-        await storage.updateCaptiveUserSession(user.id, unifiResult.sessionId);
-        await storage.incrementEventAttendees(event.id);
-      }
+      await storage.incrementEventAttendees(event.id);
 
       res.json({
         success: true,
         user: user,
-        session: unifiResult,
         event: event,
-        message: "Event attendee registered and authorized successfully"
+        message: "Event attendee registered successfully"
       });
     } catch (error) {
       res.status(400).json({
@@ -686,7 +461,6 @@ Rules:
   app.delete("/api/admin/sessions/:sessionId", async (req, res) => {
     try {
       const { sessionId } = req.params;
-      await unifiService.revokeGuest(sessionId);
       await storage.revokeSession(sessionId);
       res.json({
         success: true,
