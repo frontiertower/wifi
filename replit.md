@@ -37,6 +37,16 @@ Preferred communication style: Simple, everyday language.
 - Inline setup instructions for both API types
 - Settings persist across application restarts
 
+### Location Tab User Names Display (November 4, 2025)
+- Enhanced Location tab to display user first names on each floor in addition to counts
+- Shows up to 5 first names per floor in comma-separated format below the user count
+- When more than 5 users on a floor, displays "+X more" indicator after the 5 names
+- Backend extracts first name from full name using `split(' ')[0]`
+- Responsive text sizing (text-xs on mobile, text-sm on larger screens) with dark mode support
+- Names only displayed when floor has users (empty floors show no names section)
+- Updated `getFloorStats()` to return `Record<string, { count: number; names: string[] }>`
+- Tested and verified with multiple user scenarios including edge cases
+
 ### Location Tab with 2D Building Visualization (October 30, 2025)
 - Added Location tab showing 2D visualization of Frontier Tower's 16-story building
 - Building displays floors 2-16 (excluding floor 13 per building convention)
