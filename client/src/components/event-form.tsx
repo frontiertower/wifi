@@ -297,13 +297,6 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
               />
             </div>
 
-            <Alert className="bg-orange-50 border-orange-200">
-              <Calendar className="h-4 w-4 text-orange-600" />
-              <AlertDescription className="text-orange-800">
-                <strong>Event Access:</strong> Valid for the duration of the registered event. High-speed internet included.
-              </AlertDescription>
-            </Alert>
-
             <Button
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 h-12 text-white"
