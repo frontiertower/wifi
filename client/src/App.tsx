@@ -12,6 +12,42 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/settings">
+        {() => {
+          window.location.href = "/admin#settings";
+          return null;
+        }}
+      </Route>
+      <Route path="/admin/users">
+        {() => {
+          window.location.href = "/admin#users";
+          return null;
+        }}
+      </Route>
+      <Route path="/admin/guests">
+        {() => {
+          window.location.href = "/admin#vouchers";
+          return null;
+        }}
+      </Route>
+      <Route path="/admin/events">
+        {() => {
+          window.location.href = "/admin#events";
+          return null;
+        }}
+      </Route>
+      <Route path="/admin/analytics">
+        {() => {
+          window.location.href = "/admin#analytics";
+          return null;
+        }}
+      </Route>
+      <Route path="/admin/location">
+        {() => {
+          window.location.href = "/admin#location";
+          return null;
+        }}
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

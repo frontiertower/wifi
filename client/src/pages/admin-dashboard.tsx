@@ -51,6 +51,20 @@ export default function AdminDashboard() {
   const [bulkEventText, setBulkEventText] = useState("");
   const { toast } = useToast();
 
+  // Support URL hash navigation (e.g., /admin#settings)
+  useEffect(() => {
+    const hash = window.location.hash.slice(1); // Remove the # symbol
+    if (hash && ['users', 'vouchers', 'events', 'analytics', 'location', 'settings'].includes(hash)) {
+      setActiveTab(hash as Tab);
+    }
+  }, []);
+
+  // Update URL hash when tab changes
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    window.location.hash = tab;
+  };
+
   const { data: stats } = useQuery<StatsResponse>({
     queryKey: ['/api/admin/stats'],
   });
@@ -152,7 +166,7 @@ export default function AdminDashboard() {
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
+                    onClick={() => handleTabChange(tab.id)}
                     className={`${
                       activeTab === tab.id
                         ? "border-primary-500 text-primary-600"
