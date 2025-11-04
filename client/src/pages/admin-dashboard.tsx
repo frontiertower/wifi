@@ -46,7 +46,7 @@ interface FloorStatsResponse {
 }
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<Tab>("vouchers");
+  const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const [showEventForm, setShowEventForm] = useState(false);
   const [bulkEventText, setBulkEventText] = useState("");
   const { toast } = useToast();
@@ -117,9 +117,9 @@ export default function AdminDashboard() {
     { id: "users", label: "Users", icon: Users },
     { id: "vouchers", label: "Guests", icon: Ticket },
     { id: "events", label: "Events", icon: Calendar },
-    { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "location", label: "Location", icon: MapPin },
     { id: "settings", label: "Settings", icon: Settings },
+    { id: "analytics", label: "Analytics", icon: TrendingUp },
   ] as const;
 
   return (
