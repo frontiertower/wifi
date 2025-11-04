@@ -144,56 +144,6 @@ export default function AdminDashboard() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="text-blue-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
-                <p className="text-sm text-gray-600">Members Today</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <Ticket className="text-green-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
-                <p className="text-sm text-gray-600">Guests Today</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <Calendar className="text-orange-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
-                <p className="text-sm text-gray-600">Events Today</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Users className="text-purple-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-2xl font-bold text-gray-900" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
-                <p className="text-sm text-gray-600">Event Guests Today</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="mb-6">
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
@@ -503,6 +453,60 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-6">Analytics Dashboard</h2>
             
+            <div className="mb-8">
+              <h3 className="text-md font-medium text-gray-700 mb-4">Today's Activity</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Users className="text-blue-600" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
+                      <p className="text-sm text-gray-600">Members Today</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Ticket className="text-green-600" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
+                      <p className="text-sm text-gray-600">Guests Today</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Calendar className="text-orange-600" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
+                      <p className="text-sm text-gray-600">Events Today</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <Users className="text-purple-600" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
+                      <p className="text-sm text-gray-600">Event Guests Today</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h3 className="text-md font-medium text-gray-700 mb-4">Lifetime Totals</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg p-6 border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center justify-between">
