@@ -52,8 +52,6 @@ export default function Home() {
   };
 
   const handleSuccess = async (data: SuccessData) => {
-    const redirectUrl = unifiParams.url || "https://frontiertower.io/";
-    
     // Call authorize-guest endpoint to grant internet access
     try {
       const authResponse = await fetch('/api/authorize-guest', {
@@ -79,8 +77,8 @@ export default function Home() {
       console.error('✗ Authorization error:', error);
     }
     
-    // Redirect regardless of authorization result
-    window.location.href = redirectUrl;
+    // Show success modal (SuccessPage component will handle redirect after countdown)
+    setSuccessData(data);
   };
 
   const handleCloseModal = () => {
