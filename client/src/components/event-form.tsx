@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface UniFiParams {
   id?: string;
@@ -153,9 +154,12 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="max-w-lg mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-orange-600 text-white p-6">
             <Button
               onClick={onBack}

@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface UniFiParams {
   id?: string;
@@ -81,9 +82,12 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="max-w-lg mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-primary text-primary-foreground p-6">
             <Button
               onClick={onBack}
@@ -197,7 +201,7 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
               )}
             </Button>
 
-            <div className="text-center text-xs text-gray-500 mt-4">
+            <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
               By connecting, you agree to our terms of service
             </div>
           </form>

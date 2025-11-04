@@ -9,6 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Info } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface UniFiParams {
   id?: string;
@@ -83,9 +84,12 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="max-w-lg mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-green-600 text-white p-6">
             <Button
               onClick={onBack}
@@ -170,9 +174,9 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
               />
             </div>
 
-            <Alert className="bg-yellow-50 border-yellow-200">
-              <Info className="h-4 w-4 text-yellow-600" />
-              <AlertDescription className="text-yellow-800">
+            <Alert className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800">
+              <Info className="h-4 w-4 text-yellow-600 dark:text-yellow-500" />
+              <AlertDescription className="text-yellow-800 dark:text-yellow-300">
                 <strong>Guest Access Policy:</strong> Access is limited to 8 hours. Download speeds are limited to 10 Mbps.
               </AlertDescription>
             </Alert>
