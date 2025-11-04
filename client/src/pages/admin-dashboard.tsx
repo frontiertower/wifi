@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -139,22 +140,23 @@ export default function AdminDashboard() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <nav className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
-                <Building className="text-primary-600 text-xl mr-2" />
-                <span className="font-bold text-base sm:text-lg text-gray-900">
+                <Building className="text-primary-600 dark:text-primary-400 text-xl mr-2" />
+                <span className="font-bold text-base sm:text-lg text-gray-900 dark:text-gray-100">
                   <span className="hidden sm:inline">Frontier Tower Admin</span>
                   <span className="sm:hidden">FT Admin</span>
                 </span>
               </div>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="text-xs sm:text-sm text-gray-600 hidden md:block">Last login: Today, 2:30 PM</div>
-              <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
+              <ThemeToggle />
+              <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden md:block">Last login: Today, 2:30 PM</div>
+              <div className="w-8 h-8 bg-primary-500 dark:bg-primary-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-medium">AD</span>
               </div>
             </div>
@@ -164,7 +166,7 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6 -mx-4 sm:mx-0">
-          <div className="border-b border-gray-200 overflow-x-auto">
+          <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
             <nav className="-mb-px flex space-x-4 sm:space-x-8 px-4 sm:px-0">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -174,8 +176,8 @@ export default function AdminDashboard() {
                     onClick={() => handleTabChange(tab.id)}
                     className={`${
                       activeTab === tab.id
-                        ? "border-primary-500 text-primary-600"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                        ? "border-primary-500 text-primary-600 dark:border-primary-400 dark:text-primary-400"
+                        : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                     } whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors flex items-center flex-shrink-0`}
                     data-testid={`tab-${tab.id}`}
                   >
@@ -190,10 +192,10 @@ export default function AdminDashboard() {
         </div>
 
         {activeTab === "users" && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-4 sm:p-6 border-b border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900">All Connected Users</h2>
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">All Connected Users</h2>
                 <div className="flex gap-2">
                   <Input placeholder="Search users..." className="flex-1 sm:w-64" data-testid="input-search-users" />
                   <Button variant="outline" size="sm" data-testid="button-filter">
@@ -218,7 +220,7 @@ export default function AdminDashboard() {
               <TableBody>
                 {(!allUsers?.users || allUsers.users.length === 0) && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
                       No users found.
                     </TableCell>
                   </TableRow>
@@ -228,7 +230,7 @@ export default function AdminDashboard() {
                     <TableCell>
                       <div>
                         <div className="font-medium">{user.name || "N/A"}</div>
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -249,24 +251,24 @@ export default function AdminDashboard() {
                         {user.role === "event" && (
                           <>
                             {user.eventName && <div className="font-medium">{user.eventName}</div>}
-                            {user.organization && <div className="text-gray-500">{user.organization}</div>}
-                            <div className="text-gray-500">{user.floor ? `Floor ${user.floor}` : "-"}</div>
+                            {user.organization && <div className="text-gray-500 dark:text-gray-400">{user.organization}</div>}
+                            <div className="text-gray-500 dark:text-gray-400">{user.floor ? `Floor ${user.floor}` : "-"}</div>
                           </>
                         )}
                         {user.role === "guest" && (
                           <>
-                            {user.host && <div className="text-gray-600">Host: {user.host}</div>}
-                            <div className="text-gray-500">{user.floor ? `Floor ${user.floor}` : "-"}</div>
+                            {user.host && <div className="text-gray-600 dark:text-gray-400">Host: {user.host}</div>}
+                            <div className="text-gray-500 dark:text-gray-400">{user.floor ? `Floor ${user.floor}` : "-"}</div>
                           </>
                         )}
                         {user.role === "member" && (
-                          <div className="text-gray-500">
+                          <div className="text-gray-500 dark:text-gray-400">
                             {user.floor ? `Floor ${user.floor}` : "-"}
                           </div>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm text-gray-600">{user.phone || "-"}</TableCell>
+                    <TableCell className="text-sm text-gray-600 dark:text-gray-400">{user.phone || "-"}</TableCell>
                     <TableCell className="text-sm">{new Date(user.createdAt).toLocaleString()}</TableCell>
                     <TableCell>
                       <Badge variant={user.isActive ? "default" : "secondary"}>
@@ -282,10 +284,10 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === "events" && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-4 sm:p-6 border-b border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900">Event Management</h2>
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Event Management</h2>
                 <Button 
                   onClick={() => setShowEventForm(!showEventForm)}
                   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white w-full sm:w-auto" 
@@ -368,7 +370,7 @@ export default function AdminDashboard() {
               <TableBody>
                 {events?.events?.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
                       No events found. Create your first event to get started.
                     </TableCell>
                   </TableRow>
@@ -401,54 +403,54 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === "analytics" && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-6">Analytics Dashboard</h2>
             
             <div className="mb-8">
               <h3 className="text-sm sm:text-base font-medium text-gray-700 mb-4">Today's Activity</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                       <Users className="text-blue-600" />
                     </div>
                     <div className="ml-4">
                       <p className="text-2xl font-bold text-gray-900" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
-                      <p className="text-sm text-gray-600">Members Today</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Members Today</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                       <Ticket className="text-green-600" />
                     </div>
                     <div className="ml-4">
                       <p className="text-2xl font-bold text-gray-900" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
-                      <p className="text-sm text-gray-600">Guests Today</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Guests Today</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                       <Users className="text-purple-600" />
                     </div>
                     <div className="ml-4">
                       <p className="text-2xl font-bold text-gray-900" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
-                      <p className="text-sm text-gray-600">Event Guests Today</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Event Guests Today</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                       <Calendar className="text-orange-600" />
                     </div>
                     <div className="ml-4">
                       <p className="text-2xl font-bold text-gray-900" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
-                      <p className="text-sm text-gray-600">Events Today</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Events Today</p>
                     </div>
                   </div>
                 </div>
@@ -533,7 +535,7 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === "location" && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-6">Building Location Map</h2>
             <p className="text-sm text-gray-600 mb-8">
               Frontier Tower - 16 Story Office Building (Floor 13 omitted)
@@ -707,16 +709,16 @@ function SettingsTab() {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-        <p className="text-gray-600">Loading settings...</p>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <p className="text-gray-600 dark:text-gray-400">Loading settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="p-4 sm:p-6 border-b border-gray-200">
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900">UniFi Controller Settings</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">UniFi Controller Settings</h2>
         <p className="text-sm text-gray-600 mt-1">
           Configure your UniFi controller to enable guest authorization
         </p>

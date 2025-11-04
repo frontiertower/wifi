@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Building } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import GuestForm from "@/components/guest-form";
 import EventForm from "@/components/event-form";
@@ -101,10 +102,14 @@ export default function Home() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-primary text-primary-foreground p-6 text-center">
-            <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
+        
+        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">
+            <div className="w-16 h-16 bg-white dark:bg-gray-700 bg-opacity-20 dark:bg-opacity-40 rounded-full flex items-center justify-center mx-auto mb-4">
               <Building className="text-2xl" />
             </div>
             <h1 className="text-2xl font-bold mb-2">Frontier Tower</h1>
@@ -112,57 +117,57 @@ export default function Home() {
           </div>
 
           <div className="p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Select your access type</h2>
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Select your access type</h2>
 
             <button
               onClick={() => handleRoleSelect("event")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all duration-200 text-left group"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
               data-testid="button-select-event"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200">
-                  <i className="fas fa-calendar text-orange-600"></i>
+                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/40 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 dark:group-hover:bg-orange-900/60">
+                  <i className="fas fa-calendar text-orange-600 dark:text-orange-400"></i>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800">Event Access</div>
-                  <div className="text-sm text-gray-500">Conference and event attendees</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Event Access</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Conference and event attendees</div>
                 </div>
               </div>
             </button>
 
             <button
               onClick={() => handleRoleSelect("guest")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all duration-200 text-left group"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
               data-testid="button-select-guest"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200">
-                  <i className="fas fa-user text-green-600"></i>
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/40 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-900/60">
+                  <i className="fas fa-user text-green-600 dark:text-green-400"></i>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800">Guest</div>
-                  <div className="text-sm text-gray-500">Visitors and temporary users</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Guest</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and temporary users</div>
                 </div>
               </div>
             </button>
 
             <button
               onClick={() => handleRoleSelect("member")}
-              className="w-full mb-4 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 text-left group"
+              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
               data-testid="button-select-member"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200">
-                  <i className="fas fa-user-tie text-blue-600"></i>
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60">
+                  <i className="fas fa-user-tie text-blue-600 dark:text-blue-400"></i>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800">Member</div>
-                  <div className="text-sm text-gray-500">Building residents and employees</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Member</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Building residents and employees</div>
                 </div>
               </div>
             </button>
 
-            <div className="text-center text-xs text-gray-500 mt-4">
+            <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
               By connecting, you agree to our terms of service
             </div>
           </div>
