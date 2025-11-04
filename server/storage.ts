@@ -158,11 +158,12 @@ export class DatabaseStorage {
     return stats?.guestCount || 0;
   }
 
-  async getFloorStats(): Promise<Record<string, number>> {
+  async getFloorStats(): Promise<Record<string, { count: number; names: string[] }>> {
     // Get users who registered after 4am today (same logic as daily counters)
     const allUsers = await db.select({
       role: captiveUsers.role,
-      floor: captiveUsers.floor
+      floor: captiveUsers.floor,
+      firstName: captiveUsers.firstName
     })
     .from(captiveUsers)
     .where(sql`${captiveUsers.createdAt} >= CASE 
@@ -171,32 +172,46 @@ export class DatabaseStorage {
       ELSE CURRENT_DATE - INTERVAL '1 day' + INTERVAL '4 hours'
     END`);
 
-    // Initialize floor counts for all floors 2-16 (skipping only 13)
-    const floorCounts: Record<string, number> = {};
+    // Initialize floor data for all floors 2-16 (skipping only 13)
+    const floorData: Record<string, { count: number; names: string[] }> = {};
     const floors = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '14', '15', '16'];
-    floors.forEach(floor => floorCounts[floor] = 0);
-    floorCounts['unknown'] = 0;
+    floors.forEach(floor => floorData[floor] = { count: 0, names: [] });
+    floorData['unknown'] = { count: 0, names: [] };
 
-    // Count users per floor based on their role
+    // Organize users per floor based on their role
+    const usersByFloor: Record<string, string[]> = {};
+    floors.forEach(floor => usersByFloor[floor] = []);
+    usersByFloor['unknown'] = [];
+
     allUsers.forEach(user => {
+      const firstName = user.firstName || 'Unknown';
+      
       if (user.role === 'event') {
         // Event users go to 2nd floor
-        floorCounts['2'] = (floorCounts['2'] || 0) + 1;
+        usersByFloor['2'].push(firstName);
       } else if (user.role === 'guest') {
         // Guest users go to 16th floor
-        floorCounts['16'] = (floorCounts['16'] || 0) + 1;
+        usersByFloor['16'].push(firstName);
       } else if (user.role === 'member') {
         // Member users go to their selected floor
         const memberFloor = user.floor || 'unknown';
         if (floors.includes(memberFloor)) {
-          floorCounts[memberFloor] = (floorCounts[memberFloor] || 0) + 1;
+          usersByFloor[memberFloor].push(firstName);
         } else {
-          floorCounts['unknown'] = (floorCounts['unknown'] || 0) + 1;
+          usersByFloor['unknown'].push(firstName);
         }
       }
     });
 
-    return floorCounts;
+    // Populate floor data with counts and limited names (max 5)
+    Object.keys(usersByFloor).forEach(floor => {
+      floorData[floor] = {
+        count: usersByFloor[floor].length,
+        names: usersByFloor[floor].slice(0, 5) // Limit to 5 names
+      };
+    });
+
+    return floorData;
   }
 
   async incrementDailyGuestCount(): Promise<void> {
