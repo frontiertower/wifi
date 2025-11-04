@@ -10,6 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Guests Tab Removal and Hash Navigation Fix (November 4, 2025)
+- Completely removed Guests tab from admin dashboard (vouchers functionality no longer needed)
+- Cleaned up all orphaned code: Tab type, navigation array, hash validation, query, and interface
+- Fixed hash navigation to properly handle URL hash changes between tabs
+- Added hashchange event listener to update active tab when hash changes (not just on mount)
+- Navigation now works correctly when switching between hashes (e.g., #settings → #users)
+- Invalid hashes (like #vouchers) gracefully default to Analytics tab without errors
+- Admin dashboard now has exactly 5 tabs: Analytics, Users, Events, Location, Settings
+- No requests to removed /api/admin/vouchers endpoint
+- Tested and verified all hash navigation scenarios work correctly
+
 ### Mobile-Optimized Admin Dashboard (November 4, 2025)
 - Comprehensive mobile responsive design implementation for admin dashboard
 - Sticky navigation header with shortened title on mobile ("FT Admin" vs "Frontier Tower Admin")
