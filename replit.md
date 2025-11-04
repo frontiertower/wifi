@@ -10,6 +10,20 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Settings Tab for UniFi Configuration (November 4, 2025)
+- Added Settings tab in admin dashboard for configuring UniFi controller integration
+- New `settings` database table stores configuration as key-value pairs
+- Supports both Modern API (Network Application 9.1.105+) and Legacy API
+- Modern API uses Bearer token authentication with `/v1/sites/{siteId}/clients` endpoints
+- Legacy API uses session-based authentication with `/api/s/{site}/cmd/stamgr` endpoint
+- Settings stored in database with fallback to environment variables for backward compatibility
+- API endpoints: GET/POST `/api/admin/settings` for retrieving and saving configuration
+- Authorization endpoint reads from database settings instead of just env vars
+- Radio button UI to select API type: None (Mock Mode), Modern, or Legacy
+- Conditional form fields based on selected API type
+- Inline setup instructions for both API types
+- Settings persist across application restarts
+
 ### Location Tab with 2D Building Visualization (October 30, 2025)
 - Added Location tab showing 2D visualization of Frontier Tower's 16-story building
 - Building displays floors 2-16 (excluding floor 13 per building convention)

@@ -61,21 +61,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const data = schema.parse(req.body);
 
-      const controllerUrl = process.env.UNIFI_CONTROLLER_URL;
-      const apiKey = process.env.UNIFI_API_KEY; // Modern API
-      const username = process.env.UNIFI_USERNAME; // Legacy API
-      const password = process.env.UNIFI_PASSWORD; // Legacy API
-      const siteId = process.env.UNIFI_SITE || "default";
+      // Get settings from database (fallback to env vars for backwards compatibility)
+      const dbSettings = await storage.getSettings();
+      const apiType = dbSettings.unifi_api_type || (process.env.UNIFI_API_KEY ? 'modern' : process.env.UNIFI_USERNAME ? 'legacy' : 'none');
+      const controllerUrl = dbSettings.unifi_controller_url || process.env.UNIFI_CONTROLLER_URL;
+      const apiKey = dbSettings.unifi_api_key || process.env.UNIFI_API_KEY;
+      const username = dbSettings.unifi_username || process.env.UNIFI_USERNAME;
+      const password = dbSettings.unifi_password || process.env.UNIFI_PASSWORD;
+      const siteId = dbSettings.unifi_site || process.env.UNIFI_SITE || "default";
 
       console.log('UniFi Authorization Request:', {
         macAddress: data.macAddress,
         accessPoint: data.accessPointMacAddress,
         controllerConfigured: !!controllerUrl,
-        apiType: apiKey ? 'modern' : (username && password) ? 'legacy' : 'none'
+        apiType: apiType
       });
 
-      // If UniFi controller not configured, return mock success
-      if (!controllerUrl) {
+      // If UniFi controller not configured or set to none, return mock success
+      if (!controllerUrl || apiType === 'none') {
         console.warn('⚠️  UniFi controller not configured - returning mock authorization');
         return res.json({
           response: 200,
@@ -95,7 +98,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const macNormalized = data.macAddress.toUpperCase().replace(/-/g, ':');
 
       // Modern API (Network Application 9.1.105+)
-      if (apiKey) {
+      if (apiType === 'modern' && apiKey) {
         console.log('Using Modern UniFi API (9.1.105+)');
 
         // Step 1: Get client by MAC address
@@ -115,7 +118,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           throw new Error(`Failed to get client: ${clientsResponse.status}`);
         }
 
-        const clients: any[] = await clientsResponse.json();
+        const clients = await clientsResponse.json() as any[];
         
         if (!clients || clients.length === 0) {
           console.warn('⚠️ Client not found, may not be connected yet');
@@ -166,7 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Legacy API (older controllers)
-      if (username && password) {
+      if (apiType === 'legacy' && username && password) {
         console.log('Using Legacy UniFi API');
 
         // Step 1: Login
@@ -660,6 +663,73 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to validate event code"
+      });
+    }
+  });
+
+  // Settings endpoints
+  app.get("/api/admin/settings", async (req, res) => {
+    try {
+      const settings = await storage.getSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch settings"
+      });
+    }
+  });
+
+  app.post("/api/admin/settings", async (req, res) => {
+    try {
+      const baseSchema = z.object({
+        unifi_api_type: z.enum(['modern', 'legacy', 'none']),
+        unifi_controller_url: z.string().optional(),
+        unifi_api_key: z.string().optional(),
+        unifi_username: z.string().optional(),
+        unifi_password: z.string().optional(),
+        unifi_site: z.string().optional(),
+      });
+
+      const data = baseSchema.parse(req.body);
+
+      // Validate required fields based on API type
+      if (data.unifi_api_type === 'modern') {
+        if (!data.unifi_controller_url || !data.unifi_api_key) {
+          return res.status(400).json({
+            success: false,
+            message: "Modern API requires Controller URL and API Key"
+          });
+        }
+      } else if (data.unifi_api_type === 'legacy') {
+        if (!data.unifi_controller_url || !data.unifi_username || !data.unifi_password) {
+          return res.status(400).json({
+            success: false,
+            message: "Legacy API requires Controller URL, Username, and Password"
+          });
+        }
+      }
+
+      await storage.saveSettings(data);
+
+      res.json({
+        success: true,
+        message: "Settings saved successfully"
+      });
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid settings data",
+          errors: error.errors
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        message: "Failed to save settings"
       });
     }
   });

@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -350,6 +350,41 @@ export class DatabaseStorage {
           sql`${sessions.userId} IN (SELECT id FROM ${captiveUsers} WHERE ${captiveUsers.sessionId} = ${sessionId})`
         )
       );
+  }
+
+  async getSettings(): Promise<Record<string, string>> {
+    const allSettings = await db.select().from(settings);
+    const settingsMap: Record<string, string> = {};
+    for (const setting of allSettings) {
+      settingsMap[setting.key] = setting.value || '';
+    }
+    return settingsMap;
+  }
+
+  async saveSettings(data: Record<string, string | undefined>): Promise<void> {
+    // Always clear all UniFi settings first to prevent mode switching issues
+    const allUnifiKeys = [
+      'unifi_api_type',
+      'unifi_controller_url',
+      'unifi_api_key',
+      'unifi_username',
+      'unifi_password',
+      'unifi_site'
+    ];
+
+    // Delete all existing UniFi settings
+    for (const key of allUnifiKeys) {
+      await db.delete(settings).where(eq(settings.key, key));
+    }
+
+    // Insert only the provided values
+    for (const [key, value] of Object.entries(data)) {
+      if (value !== undefined && value !== '') {
+        await db
+          .insert(settings)
+          .values({ key, value });
+      }
+    }
   }
 }
 

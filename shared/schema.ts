@@ -81,6 +81,13 @@ export const dailyStats = pgTable("daily_stats", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const settings = pgTable("settings", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  value: text("value"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -136,6 +143,11 @@ export const insertDailyStatsSchema = createInsertSchema(dailyStats).omit({
   createdAt: true,
 });
 
+export const insertSettingSchema = createInsertSchema(settings).omit({
+  id: true,
+  updatedAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -149,3 +161,5 @@ export type Session = typeof sessions.$inferSelect;
 export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type DailyStats = typeof dailyStats.$inferSelect;
 export type InsertDailyStats = z.infer<typeof insertDailyStatsSchema>;
+export type Setting = typeof settings.$inferSelect;
+export type InsertSetting = z.infer<typeof insertSettingSchema>;

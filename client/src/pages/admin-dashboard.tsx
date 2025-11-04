@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,8 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-type Tab = "users" | "vouchers" | "events" | "analytics" | "location";
+type Tab = "users" | "vouchers" | "events" | "analytics" | "location" | "settings";
 
 interface StatsResponse {
   stats?: {
@@ -118,6 +119,7 @@ export default function AdminDashboard() {
     { id: "events", label: "Events", icon: Calendar },
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "location", label: "Location", icon: MapPin },
+    { id: "settings", label: "Settings", icon: Settings },
   ] as const;
 
   return (
@@ -663,6 +665,252 @@ export default function AdminDashboard() {
                 <div className="w-4 h-4 rounded bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-950 border border-orange-300" />
                 <span className="text-sm text-gray-600 dark:text-gray-400">10+ users</span>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "settings" && <SettingsTab />}
+      </div>
+    </div>
+  );
+}
+
+function SettingsTab() {
+  const { toast } = useToast();
+  const [apiType, setApiType] = useState<'modern' | 'legacy' | 'none'>('none');
+  const [controllerUrl, setControllerUrl] = useState('');
+  const [apiKey, setApiKey] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [site, setSite] = useState('default');
+
+  const { data: settings, isLoading } = useQuery<Record<string, string>>({
+    queryKey: ['/api/admin/settings'],
+  });
+
+  const saveSettingsMutation = useMutation({
+    mutationFn: async (data: Record<string, string>) => {
+      const response = await apiRequest("POST", "/api/admin/settings", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/settings'] });
+      toast({
+        title: "Settings Saved",
+        description: "UniFi controller settings have been saved successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to save settings. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Load settings when data is available
+  useEffect(() => {
+    if (settings) {
+      setApiType((settings.unifi_api_type as any) || 'none');
+      setControllerUrl(settings.unifi_controller_url || '');
+      setApiKey(settings.unifi_api_key || '');
+      setUsername(settings.unifi_username || '');
+      setPassword(settings.unifi_password || '');
+      setSite(settings.unifi_site || 'default');
+    }
+  }, [settings]);
+
+  const handleSave = () => {
+    const data: Record<string, string> = {
+      unifi_api_type: apiType,
+      unifi_controller_url: controllerUrl,
+      unifi_site: site,
+    };
+
+    if (apiType === 'modern') {
+      data.unifi_api_key = apiKey;
+    } else if (apiType === 'legacy') {
+      data.unifi_username = username;
+      data.unifi_password = password;
+    }
+
+    saveSettingsMutation.mutate(data);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <p className="text-gray-600">Loading settings...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900">UniFi Controller Settings</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Configure your UniFi controller to enable guest authorization
+        </p>
+      </div>
+
+      <div className="p-6 space-y-6">
+        <div>
+          <Label htmlFor="api-type" className="text-sm font-medium text-gray-700">
+            API Type
+          </Label>
+          <RadioGroup value={apiType} onValueChange={(value: any) => setApiType(value)} className="mt-2">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="none" id="api-none" data-testid="radio-api-none" />
+              <Label htmlFor="api-none" className="font-normal cursor-pointer">
+                None (Mock Mode) - For testing without a real controller
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="modern" id="api-modern" data-testid="radio-api-modern" />
+              <Label htmlFor="api-modern" className="font-normal cursor-pointer">
+                Modern API (Network Application 9.1.105+) - Recommended
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="legacy" id="api-legacy" data-testid="radio-api-legacy" />
+              <Label htmlFor="api-legacy" className="font-normal cursor-pointer">
+                Legacy API - For older controllers
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {apiType !== 'none' && (
+          <>
+            <div>
+              <Label htmlFor="controller-url" className="text-sm font-medium text-gray-700">
+                Controller URL
+              </Label>
+              <Input
+                id="controller-url"
+                data-testid="input-controller-url"
+                type="text"
+                placeholder="https://192.168.1.1 or https://your-cloud-gateway"
+                value={controllerUrl}
+                onChange={(e) => setControllerUrl(e.target.value)}
+                className="mt-1"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                The URL of your UniFi controller (without /api path)
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="site" className="text-sm font-medium text-gray-700">
+                Site ID
+              </Label>
+              <Input
+                id="site"
+                data-testid="input-site"
+                type="text"
+                placeholder="default"
+                value={site}
+                onChange={(e) => setSite(e.target.value)}
+                className="mt-1"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Usually "default" unless you have multiple sites
+              </p>
+            </div>
+
+            {apiType === 'modern' && (
+              <div>
+                <Label htmlFor="api-key" className="text-sm font-medium text-gray-700">
+                  API Key
+                </Label>
+                <Input
+                  id="api-key"
+                  data-testid="input-api-key"
+                  type="password"
+                  placeholder="Enter your API key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="mt-1"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Generate in Network → Control Plane → Integrations
+                </p>
+              </div>
+            )}
+
+            {apiType === 'legacy' && (
+              <>
+                <div>
+                  <Label htmlFor="username" className="text-sm font-medium text-gray-700">
+                    Username
+                  </Label>
+                  <Input
+                    id="username"
+                    data-testid="input-username"
+                    type="text"
+                    placeholder="Admin username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    data-testid="input-password"
+                    type="password"
+                    placeholder="Admin password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+              </>
+            )}
+          </>
+        )}
+
+        <div className="pt-4">
+          <Button
+            onClick={handleSave}
+            disabled={saveSettingsMutation.isPending}
+            data-testid="button-save-settings"
+          >
+            {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
+          </Button>
+        </div>
+
+        {apiType !== 'none' && (
+          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">Setup Instructions</h3>
+            <div className="mt-2 text-sm text-blue-700 dark:text-blue-300 space-y-2">
+              {apiType === 'modern' ? (
+                <>
+                  <p><strong>Modern API Setup:</strong></p>
+                  <ol className="list-decimal list-inside space-y-1 ml-2">
+                    <li>Open UniFi Network Application</li>
+                    <li>Navigate to <strong>Network → Control Plane → Integrations</strong></li>
+                    <li>Generate a new API key</li>
+                    <li>Copy the key and paste it above</li>
+                    <li>Enter your controller URL and site ID</li>
+                  </ol>
+                </>
+              ) : (
+                <>
+                  <p><strong>Legacy API Setup:</strong></p>
+                  <ol className="list-decimal list-inside space-y-1 ml-2">
+                    <li>Enter your UniFi controller URL (e.g., https://192.168.1.1:8443)</li>
+                    <li>Provide admin username and password</li>
+                    <li>Enter site name (usually "default")</li>
+                  </ol>
+                </>
+              )}
             </div>
           </div>
         )}
