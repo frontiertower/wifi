@@ -12,7 +12,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-type Tab = "users" | "vouchers" | "events" | "analytics" | "location" | "settings";
+type Tab = "users" | "events" | "analytics" | "location" | "settings";
 
 interface StatsResponse {
   stats?: {
@@ -27,10 +27,6 @@ interface StatsResponse {
     totalEventUsers?: number;
     totalEvents?: number;
   };
-}
-
-interface VouchersResponse {
-  vouchers?: any[];
 }
 
 interface UsersResponse {
@@ -53,10 +49,22 @@ export default function AdminDashboard() {
 
   // Support URL hash navigation (e.g., /admin#settings)
   useEffect(() => {
-    const hash = window.location.hash.slice(1); // Remove the # symbol
-    if (hash && ['users', 'vouchers', 'events', 'analytics', 'location', 'settings'].includes(hash)) {
-      setActiveTab(hash as Tab);
-    }
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1); // Remove the # symbol
+      if (hash && ['users', 'events', 'analytics', 'location', 'settings'].includes(hash)) {
+        setActiveTab(hash as Tab);
+      }
+    };
+    
+    // Check hash on mount
+    handleHashChange();
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   // Update URL hash when tab changes
@@ -69,14 +77,9 @@ export default function AdminDashboard() {
     queryKey: ['/api/admin/stats'],
   });
 
-  const { data: vouchers } = useQuery<VouchersResponse>({
-    queryKey: ['/api/admin/vouchers'],
-    enabled: activeTab === "vouchers",
-  });
-
   const { data: allUsers } = useQuery<UsersResponse>({
     queryKey: ['/api/admin/users'],
-    enabled: activeTab === "users" || activeTab === "vouchers",
+    enabled: activeTab === "users",
   });
 
   const { data: events } = useQuery<EventsResponse>({
@@ -130,7 +133,6 @@ export default function AdminDashboard() {
   const tabs = [
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "users", label: "Users", icon: Users },
-    { id: "vouchers", label: "Guests", icon: Ticket },
     { id: "events", label: "Events", icon: Calendar },
     { id: "location", label: "Location", icon: MapPin },
     { id: "settings", label: "Settings", icon: Settings },
@@ -186,87 +188,6 @@ export default function AdminDashboard() {
             </nav>
           </div>
         </div>
-
-        {activeTab === "vouchers" && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-4 sm:p-6 border-b border-gray-200">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-900">Guest & Event Access Users</h2>
-                <div className="flex gap-2">
-                  <Input placeholder="Search guests..." className="flex-1 sm:w-64" data-testid="input-search-guests" />
-                  <Button variant="outline" size="sm" data-testid="button-filter-guests">
-                    <Filter className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name / Email</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Event / Details</TableHead>
-                  <TableHead>Host</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Registered</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {(!allUsers?.users || allUsers.users.filter((u: any) => u.role === "guest" || u.role === "event").length === 0) && (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                      No guest or event users found.
-                    </TableCell>
-                  </TableRow>
-                )}
-                {allUsers?.users?.filter((user: any) => user.role === "guest" || user.role === "event").map((user: any) => (
-                  <TableRow key={user.id}>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{user.name || "N/A"}</div>
-                        <div className="text-sm text-gray-500">{user.email}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        className={
-                          user.role === "guest" 
-                            ? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300" 
-                            : "bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300"
-                        }
-                      >
-                        {user.role}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {user.role === "event" && user.eventName && (
-                        <div className="text-sm">
-                          <div className="font-medium">{user.eventName}</div>
-                          {user.organization && <div className="text-gray-500">{user.organization}</div>}
-                        </div>
-                      )}
-                      {user.role === "guest" && (
-                        <div className="text-sm text-gray-500">-</div>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600">{user.host || "-"}</TableCell>
-                    <TableCell className="text-sm text-gray-600">{user.phone || "-"}</TableCell>
-                    <TableCell className="text-sm">{new Date(user.createdAt).toLocaleString()}</TableCell>
-                    <TableCell>
-                      <Badge variant={user.isActive ? "default" : "secondary"}>
-                        {user.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            </div>
-          </div>
-        )}
 
         {activeTab === "users" && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
