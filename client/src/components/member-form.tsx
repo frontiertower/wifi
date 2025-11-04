@@ -24,6 +24,7 @@ interface MemberFormProps {
 }
 
 interface MemberFormData {
+  name: string;
   email: string;
   phone: string;
   telegramUsername: string;
@@ -32,6 +33,7 @@ interface MemberFormData {
 
 export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFormProps) {
   const [formData, setFormData] = useState<MemberFormData>({
+    name: "",
     email: "",
     phone: "",
     telegramUsername: "",
@@ -43,6 +45,7 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
     mutationFn: async (data: MemberFormData) => {
       const response = await apiRequest("POST", "/api/register/member", {
         role: "member",
+        name: data.name,
         email: data.email,
         phone: data.phone,
         telegramUsername: data.telegramUsername,
@@ -97,6 +100,20 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                required
+                placeholder="John Doe"
+                className="h-12"
+                data-testid="input-name"
+              />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
