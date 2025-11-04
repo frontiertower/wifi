@@ -10,6 +10,19 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Mobile-Optimized Admin Dashboard (November 4, 2025)
+- Comprehensive mobile responsive design implementation for admin dashboard
+- Sticky navigation header with shortened title on mobile ("FT Admin" vs "Frontier Tower Admin")
+- Horizontally scrollable tab navigation with optimized spacing for small screens
+- All data tables (Users, Guests, Events) wrapped in overflow-x-auto for horizontal scrolling
+- Responsive stat cards in Analytics tab: 1 column mobile → 2 columns tablet → 3-4 columns desktop
+- Flexible form layouts in Settings tab with full-width buttons on mobile
+- Responsive typography: headings scale from text-base to text-lg, stats from text-2xl to text-3xl
+- Adaptive padding throughout: p-4 on mobile, p-6 on larger screens
+- Search controls and headers stack vertically on mobile, horizontally on larger screens
+- Tested and verified on mobile (390x844), tablet (768x1024), and desktop viewports
+- Dark mode compatibility preserved across all responsive layouts
+
 ### Settings Tab for UniFi Configuration (November 4, 2025)
 - Added Settings tab in admin dashboard for configuring UniFi controller integration
 - New `settings` database table stores configuration as key-value pairs
