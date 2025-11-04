@@ -42,7 +42,7 @@ interface EventsResponse {
 }
 
 interface FloorStatsResponse {
-  floorStats?: Record<string, number>;
+  floorStats?: Record<string, { count: number; names: string[] }>;
 }
 
 export default function AdminDashboard() {
@@ -616,7 +616,9 @@ export default function AdminDashboard() {
               <div className="w-full max-w-2xl">
                 {/* Building floors - displayed from top to bottom */}
                 {['16', '15', '14', '12', '11', '10', '9', '8', '7', '6', '5', '4', '3', '2'].map((floor, index) => {
-                  const userCount = floorStats?.floorStats?.[floor] || 0;
+                  const floorData = floorStats?.floorStats?.[floor] || { count: 0, names: [] };
+                  const userCount = floorData.count;
+                  const userNames = floorData.names || [];
                   const totalFloors = 14;
                   const isTop = index === 0;
                   const isBottom = index === totalFloors - 1;
@@ -633,15 +635,15 @@ export default function AdminDashboard() {
                   return (
                     <div
                       key={floor}
-                      className={`h-14 mb-1 border-2 border-gray-400 dark:border-gray-600 ${
+                      className={`mb-1 border-2 border-gray-400 dark:border-gray-600 ${
                         isTop ? 'rounded-t-lg' : ''
                       } ${isBottom ? 'rounded-b-lg' : ''} bg-gradient-to-r ${getFloorColor(userCount)} shadow-sm`}
                       data-testid={`floor-${floor}`}
                     >
                       {/* Floor number and user count */}
-                      <div className="flex items-center justify-between px-6 h-full">
-                        <div className="flex items-center gap-4">
-                          <span className="font-bold text-lg text-gray-900 dark:text-gray-100" data-testid={`text-floor-label-${floor}`}>
+                      <div className="flex items-center justify-between px-4 sm:px-6 py-2">
+                        <div className="flex items-center gap-2 sm:gap-4">
+                          <span className="font-bold text-base sm:text-lg text-gray-900 dark:text-gray-100" data-testid={`text-floor-label-${floor}`}>
                             Floor {floor}
                           </span>
                           {floor === '16' && (
@@ -662,6 +664,16 @@ export default function AdminDashboard() {
                           </span>
                         </div>
                       </div>
+                      
+                      {/* User names */}
+                      {userNames.length > 0 && (
+                        <div className="px-4 sm:px-6 pb-2">
+                          <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300" data-testid={`text-floor-names-${floor}`}>
+                            {userNames.join(', ')}
+                            {userCount > 5 && <span className="text-gray-500 dark:text-gray-400"> +{userCount - 5} more</span>}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

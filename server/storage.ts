@@ -163,7 +163,7 @@ export class DatabaseStorage {
     const allUsers = await db.select({
       role: captiveUsers.role,
       floor: captiveUsers.floor,
-      firstName: captiveUsers.firstName
+      name: captiveUsers.name
     })
     .from(captiveUsers)
     .where(sql`${captiveUsers.createdAt} >= CASE 
@@ -184,7 +184,9 @@ export class DatabaseStorage {
     usersByFloor['unknown'] = [];
 
     allUsers.forEach(user => {
-      const firstName = user.firstName || 'Unknown';
+      // Extract first name from full name
+      const fullName = user.name || 'Unknown';
+      const firstName = fullName.split(' ')[0];
       
       if (user.role === 'event') {
         // Event users go to 2nd floor
