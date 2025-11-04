@@ -64,8 +64,6 @@ export default function Home() {
           acceptTou: "true",
           accessPointMacAddress: unifiParams.ap || "unknown",
           macAddress: unifiParams.mac || "unknown",
-          email: data.email,
-          ipAddress: data.ipAddress,
         }),
       });
 

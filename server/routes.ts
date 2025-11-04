@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
 import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema } from "@shared/schema";
+import fetch from "node-fetch";
+import https from "https";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -58,31 +60,107 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const data = schema.parse(req.body);
 
+      const controllerUrl = process.env.UNIFI_CONTROLLER_URL;
+      const username = process.env.UNIFI_USERNAME;
+      const password = process.env.UNIFI_PASSWORD;
+      const site = process.env.UNIFI_SITE || "default";
+
       console.log('UniFi Authorization Request:', {
         macAddress: data.macAddress,
         accessPoint: data.accessPointMacAddress,
-        email: data.email
+        controllerConfigured: !!controllerUrl
       });
 
-      // Return success response - actual UniFi controller integration would happen here
-      // For now, we return a successful authorization
-      res.json({
-        response: 200,
-        description: "200 OK",
-        payload: {
-          macAddress: data.macAddress,
-          minutesLeft: 59,
-          secondsLeft: 59,
-          expireOn: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
-          lastLogin: new Date().toISOString(),
-          valid: true
-        }
+      // If UniFi controller not configured, return mock success
+      if (!controllerUrl || !username || !password) {
+        console.warn('⚠️  UniFi controller not configured - returning mock authorization');
+        return res.json({
+          response: 200,
+          description: "200 OK (Mock Mode)",
+          payload: {
+            macAddress: data.macAddress,
+            minutesLeft: 1440,
+            secondsLeft: 59,
+            expireOn: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            lastLogin: new Date().toISOString(),
+            valid: true
+          }
+        });
+      }
+
+      // Disable SSL verification for self-signed certificates
+      const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+
+      // Step 1: Login to UniFi controller
+      const loginResponse = await fetch(`${controllerUrl}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+        agent: httpsAgent
       });
-    } catch (error) {
-      res.status(400).json({
+
+      if (!loginResponse.ok) {
+        console.error('✗ UniFi login failed:', loginResponse.status);
+        throw new Error('Failed to authenticate with UniFi controller');
+      }
+
+      const setCookies = loginResponse.headers.raw()['set-cookie'] || [];
+      const cookies = setCookies.join('; ');
+
+      // Step 2: Authorize the guest
+      const macNormalized = data.macAddress.toLowerCase().replace(/-/g, ':');
+      const authPayload = {
+        cmd: 'authorize-guest',
+        mac: macNormalized,
+        minutes: 1440, // 24 hours
+      };
+
+      if (data.accessPointMacAddress && data.accessPointMacAddress !== 'unknown') {
+        (authPayload as any).ap_mac = data.accessPointMacAddress;
+      }
+
+      const authResponse = await fetch(`${controllerUrl}/api/s/${site}/cmd/stamgr`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': cookies
+        },
+        body: JSON.stringify(authPayload),
+        agent: httpsAgent
+      });
+
+      const authData: any = await authResponse.json();
+
+      if (authData.meta?.rc === 'ok') {
+        console.log('✓ Guest authorized successfully on UniFi controller');
+        return res.json({
+          response: 200,
+          description: "200 OK",
+          payload: {
+            macAddress: data.macAddress,
+            minutesLeft: 1440,
+            secondsLeft: 59,
+            expireOn: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            lastLogin: new Date().toISOString(),
+            valid: true
+          }
+        });
+      }
+
+      // Authorization failed
+      console.error('✗ UniFi authorization failed:', authData.meta?.msg || 'Unknown error');
+      return res.status(400).json({
         response: 400,
-        description: "Bad Request",
-        message: error instanceof Error ? error.message : "Invalid authorization request"
+        description: authData.meta?.msg || "Authorization failed",
+        message: "Failed to authorize guest on network"
+      });
+
+    } catch (error) {
+      console.error('✗ Authorization error:', error instanceof Error ? error.message : error);
+      return res.status(500).json({
+        response: 500,
+        description: "Internal Server Error",
+        message: error instanceof Error ? error.message : "Authorization failed"
       });
     }
   });
