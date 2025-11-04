@@ -46,6 +46,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // UniFi Guest Authorization Endpoint
   // This endpoint is called by the frontend after registration to grant internet access
+  // Supports both Modern API (9.1.105+) and Legacy API
   app.post("/api/authorize-guest", async (req, res) => {
     try {
       const schema = z.object({
@@ -61,18 +62,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = schema.parse(req.body);
 
       const controllerUrl = process.env.UNIFI_CONTROLLER_URL;
-      const username = process.env.UNIFI_USERNAME;
-      const password = process.env.UNIFI_PASSWORD;
-      const site = process.env.UNIFI_SITE || "default";
+      const apiKey = process.env.UNIFI_API_KEY; // Modern API
+      const username = process.env.UNIFI_USERNAME; // Legacy API
+      const password = process.env.UNIFI_PASSWORD; // Legacy API
+      const siteId = process.env.UNIFI_SITE || "default";
 
       console.log('UniFi Authorization Request:', {
         macAddress: data.macAddress,
         accessPoint: data.accessPointMacAddress,
-        controllerConfigured: !!controllerUrl
+        controllerConfigured: !!controllerUrl,
+        apiType: apiKey ? 'modern' : (username && password) ? 'legacy' : 'none'
       });
 
       // If UniFi controller not configured, return mock success
-      if (!controllerUrl || !username || !password) {
+      if (!controllerUrl) {
         console.warn('⚠️  UniFi controller not configured - returning mock authorization');
         return res.json({
           response: 200,
@@ -88,51 +91,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Disable SSL verification for self-signed certificates
       const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+      const macNormalized = data.macAddress.toUpperCase().replace(/-/g, ':');
 
-      // Step 1: Login to UniFi controller
-      const loginResponse = await fetch(`${controllerUrl}/api/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-        agent: httpsAgent
-      });
+      // Modern API (Network Application 9.1.105+)
+      if (apiKey) {
+        console.log('Using Modern UniFi API (9.1.105+)');
 
-      if (!loginResponse.ok) {
-        console.error('✗ UniFi login failed:', loginResponse.status);
-        throw new Error('Failed to authenticate with UniFi controller');
-      }
+        // Step 1: Get client by MAC address
+        const clientsResponse = await fetch(
+          `${controllerUrl}/v1/sites/${siteId}/clients?filter=macAddress.eq('${macNormalized}')`,
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            agent: httpsAgent
+          }
+        );
 
-      const setCookies = loginResponse.headers.raw()['set-cookie'] || [];
-      const cookies = setCookies.join('; ');
+        if (!clientsResponse.ok) {
+          throw new Error(`Failed to get client: ${clientsResponse.status}`);
+        }
 
-      // Step 2: Authorize the guest
-      const macNormalized = data.macAddress.toLowerCase().replace(/-/g, ':');
-      const authPayload = {
-        cmd: 'authorize-guest',
-        mac: macNormalized,
-        minutes: 1440, // 24 hours
-      };
+        const clients: any[] = await clientsResponse.json();
+        
+        if (!clients || clients.length === 0) {
+          console.warn('⚠️ Client not found, may not be connected yet');
+          return res.status(404).json({
+            response: 404,
+            description: "Client not found",
+            message: "Client not connected to network"
+          });
+        }
 
-      if (data.accessPointMacAddress && data.accessPointMacAddress !== 'unknown') {
-        (authPayload as any).ap_mac = data.accessPointMacAddress;
-      }
+        const client = clients[0];
+        const clientId = client.id;
 
-      const authResponse = await fetch(`${controllerUrl}/api/s/${site}/cmd/stamgr`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': cookies
-        },
-        body: JSON.stringify(authPayload),
-        agent: httpsAgent
-      });
+        // Step 2: Authorize the client
+        const authResponse = await fetch(
+          `${controllerUrl}/v1/sites/${siteId}/clients/${clientId}/actions`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              action: "AUTHORIZE_GUEST_ACCESS",
+              timeLimitMinutes: 1440, // 24 hours
+            }),
+            agent: httpsAgent
+          }
+        );
 
-      const authData: any = await authResponse.json();
+        if (!authResponse.ok) {
+          throw new Error(`Authorization failed: ${authResponse.status}`);
+        }
 
-      if (authData.meta?.rc === 'ok') {
-        console.log('✓ Guest authorized successfully on UniFi controller');
+        console.log('✓ Guest authorized successfully (Modern API)');
         return res.json({
           response: 200,
           description: "200 OK",
@@ -147,13 +165,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Authorization failed
-      console.error('✗ UniFi authorization failed:', authData.meta?.msg || 'Unknown error');
-      return res.status(400).json({
-        response: 400,
-        description: authData.meta?.msg || "Authorization failed",
-        message: "Failed to authorize guest on network"
-      });
+      // Legacy API (older controllers)
+      if (username && password) {
+        console.log('Using Legacy UniFi API');
+
+        // Step 1: Login
+        const loginResponse = await fetch(`${controllerUrl}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+          agent: httpsAgent
+        });
+
+        if (!loginResponse.ok) {
+          throw new Error('Failed to authenticate with UniFi controller');
+        }
+
+        const setCookies = loginResponse.headers.raw()['set-cookie'] || [];
+        const cookies = setCookies.join('; ');
+
+        // Step 2: Authorize guest
+        const macLower = data.macAddress.toLowerCase().replace(/-/g, ':');
+        const authPayload: any = {
+          cmd: 'authorize-guest',
+          mac: macLower,
+          minutes: 1440,
+        };
+
+        if (data.accessPointMacAddress && data.accessPointMacAddress !== 'unknown') {
+          authPayload.ap_mac = data.accessPointMacAddress;
+        }
+
+        const authResponse = await fetch(`${controllerUrl}/api/s/${siteId}/cmd/stamgr`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cookie': cookies
+          },
+          body: JSON.stringify(authPayload),
+          agent: httpsAgent
+        });
+
+        const authData: any = await authResponse.json();
+
+        if (authData.meta?.rc === 'ok') {
+          console.log('✓ Guest authorized successfully (Legacy API)');
+          return res.json({
+            response: 200,
+            description: "200 OK",
+            payload: {
+              macAddress: data.macAddress,
+              minutesLeft: 1440,
+              secondsLeft: 59,
+              expireOn: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+              lastLogin: new Date().toISOString(),
+              valid: true
+            }
+          });
+        }
+
+        throw new Error(authData.meta?.msg || 'Authorization failed');
+      }
+
+      // No credentials configured
+      throw new Error('UniFi credentials not configured');
 
     } catch (error) {
       console.error('✗ Authorization error:', error instanceof Error ? error.message : error);
