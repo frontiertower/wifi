@@ -210,7 +210,6 @@ export default function AdminDashboard() {
                   <TableHead>Name / Email</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Event / Details</TableHead>
-                  <TableHead>Floor</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Registered</TableHead>
                   <TableHead>Status</TableHead>
@@ -219,7 +218,7 @@ export default function AdminDashboard() {
               <TableBody>
                 {(!allUsers?.users || allUsers.users.length === 0) && (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
                       No users found.
                     </TableCell>
                   </TableRow>
@@ -246,20 +245,27 @@ export default function AdminDashboard() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {user.role === "event" && user.eventName && (
-                        <div className="text-sm">
-                          <div className="font-medium">{user.eventName}</div>
-                          {user.organization && <div className="text-gray-500">{user.organization}</div>}
-                        </div>
-                      )}
-                      {user.role === "guest" && (
-                        <div className="text-sm">
-                          <div className="text-gray-600">Host: {user.host}</div>
-                        </div>
-                      )}
-                      {user.role === "member" && <span className="text-gray-500">-</span>}
+                      <div className="text-sm">
+                        {user.role === "event" && (
+                          <>
+                            {user.eventName && <div className="font-medium">{user.eventName}</div>}
+                            {user.organization && <div className="text-gray-500">{user.organization}</div>}
+                            <div className="text-gray-500">{user.floor ? `Floor ${user.floor}` : "-"}</div>
+                          </>
+                        )}
+                        {user.role === "guest" && (
+                          <>
+                            {user.host && <div className="text-gray-600">Host: {user.host}</div>}
+                            <div className="text-gray-500">{user.floor ? `Floor ${user.floor}` : "-"}</div>
+                          </>
+                        )}
+                        {user.role === "member" && (
+                          <div className="text-gray-500">
+                            {user.floor ? `Floor ${user.floor}` : "-"}
+                          </div>
+                        )}
+                      </div>
                     </TableCell>
-                    <TableCell>{user.floor || "N/A"}</TableCell>
                     <TableCell className="text-sm text-gray-600">{user.phone || "-"}</TableCell>
                     <TableCell className="text-sm">{new Date(user.createdAt).toLocaleString()}</TableCell>
                     <TableCell>

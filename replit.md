@@ -10,6 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Users Tab Table Optimization (November 4, 2025)
+- Removed redundant Floor column from Users tab table
+- Consolidated floor information into Event / Details column for cleaner layout
+- Ensured floor information always displays for all user types (event, guest, member)
+- Event users: Show event name, organization, and floor in Details column
+- Guest users: Show host and floor in Details column
+- Member users: Show floor in Details column
+- Reduced table from 7 columns to 6 columns for improved mobile responsiveness
+- Fixed empty cell bug where floor wouldn't show if event name or host was missing
+- All 27 test users verified to display floor information correctly
+
 ### Guests Tab Removal and Hash Navigation Fix (November 4, 2025)
 - Completely removed Guests tab from admin dashboard (vouchers functionality no longer needed)
 - Cleaned up all orphaned code: Tab type, navigation array, hash validation, query, and interface
