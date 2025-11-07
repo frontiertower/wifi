@@ -62,7 +62,7 @@ export default function Home() {
         body: JSON.stringify({
           acceptTou: "true",
           accessPointMacAddress: unifiParams.ap || "unknown",
-          macAddress: unifiParams.mac || "unknown",
+          macAddress: unifiParams.id || unifiParams.mac || "unknown",
         }),
       });
 
@@ -70,6 +70,13 @@ export default function Home() {
       
       if (authData.payload?.valid) {
         console.log('✓ Guest authorized for internet access');
+        
+        // UniFi Captive Portal: Redirect to original URL if provided
+        if (unifiParams.url) {
+          console.log('→ Redirecting to original URL:', unifiParams.url);
+          window.location.href = decodeURIComponent(unifiParams.url);
+          return;
+        }
       } else {
         console.warn('⚠️ Authorization response:', authData);
       }
@@ -77,7 +84,7 @@ export default function Home() {
       console.error('✗ Authorization error:', error);
     }
     
-    // Show success modal (SuccessPage component will handle redirect after countdown)
+    // Show success modal if no URL to redirect to (non-captive portal use)
     setSuccessData(data);
   };
 

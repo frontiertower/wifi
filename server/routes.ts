@@ -172,20 +172,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (apiType === 'legacy' && username && password) {
         console.log('Using Legacy UniFi API');
 
-        // Step 1: Login
-        const loginResponse = await fetch(`${controllerUrl}/api/login`, {
+        // Step 1: Login - try legacy endpoint first, then newer endpoint
+        let loginResponse = await fetch(`${controllerUrl}/api/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password }),
           agent: httpsAgent
         });
 
+        // Fallback to newer auth endpoint if legacy login fails
         if (!loginResponse.ok) {
-          throw new Error('Failed to authenticate with UniFi controller');
+          console.log('Legacy login failed, trying newer auth endpoint...');
+          loginResponse = await fetch(`${controllerUrl}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, remember: true }),
+            agent: httpsAgent
+          });
+
+          if (!loginResponse.ok) {
+            throw new Error('Failed to authenticate with UniFi controller');
+          }
         }
 
         const setCookies = loginResponse.headers.raw()['set-cookie'] || [];
         const cookies = setCookies.join('; ');
+
+        // Extract CSRF token if present (newer controllers)
+        let csrfToken = '';
+        for (const cookie of setCookies) {
+          const match = cookie.match(/csrf_token=([^;]+)/);
+          if (match) {
+            csrfToken = match[1];
+            console.log('CSRF token detected, will include in requests');
+            break;
+          }
+        }
 
         // Step 2: Authorize guest
         const macLower = data.macAddress.toLowerCase().replace(/-/g, ':');
@@ -199,20 +221,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
           authPayload.ap_mac = data.accessPointMacAddress;
         }
 
-        const authResponse = await fetch(`${controllerUrl}/api/s/${siteId}/cmd/stamgr`, {
-          method: 'POST',
-          headers: {
+        // Try classic path first, then UniFi OS path
+        const authPaths = [
+          `${controllerUrl}/api/s/${siteId}/cmd/stamgr`,
+          `${controllerUrl}/proxy/network/api/s/${siteId}/cmd/stamgr`
+        ];
+
+        let authSuccess = false;
+        let authData: any = null;
+
+        for (const authPath of authPaths) {
+          const headers: any = {
             'Content-Type': 'application/json',
             'Cookie': cookies
-          },
-          body: JSON.stringify(authPayload),
-          agent: httpsAgent
-        });
+          };
 
-        const authData: any = await authResponse.json();
+          // Add CSRF token header if present
+          if (csrfToken) {
+            headers['X-CSRF-Token'] = csrfToken;
+          }
 
-        if (authData.meta?.rc === 'ok') {
-          console.log('✓ Guest authorized successfully (Legacy API)');
+          try {
+            const authResponse = await fetch(authPath, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(authPayload),
+              agent: httpsAgent
+            });
+
+            authData = await authResponse.json();
+
+            if (authData.meta?.rc === 'ok') {
+              console.log(`✓ Guest authorized successfully using ${authPath.includes('proxy') ? 'UniFi OS' : 'classic'} path`);
+              authSuccess = true;
+              break;
+            }
+          } catch (error) {
+            console.log(`Failed to authorize using ${authPath}, trying next...`);
+            continue;
+          }
+        }
+
+        if (authSuccess) {
           return res.json({
             response: 200,
             description: "200 OK",
@@ -227,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
 
-        throw new Error(authData.meta?.msg || 'Authorization failed');
+        throw new Error(authData?.meta?.msg || 'Authorization failed on all paths');
       }
 
       // No credentials configured
