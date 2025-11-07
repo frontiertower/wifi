@@ -1,0 +1,345 @@
+1. Establish scope, prerequisites, and environment variables
+Define what we will deliver: a single, comprehensive developer doc that explains and demonstrates the UniFi external captive portal using the legacy redirect-based authorization (session cookie, not modern API access tokens).
+Collect inputs:
+- Controller base URL(s): e.g., https://controller.example.com:8443
+- Site name: often "default" (visible in UniFi Network application)
+- Local admin credentials: username/password for a LOCAL controller admin (not UniFi Cloud/SSO)
+- SSL posture: valid cert vs self-signed
+- Portal public URL: e.g., http://portal.example.com (must be reachable by WiFi clients over port 80)
+Define environment variables (for examples, code, and Postman):
+- UNIFI_BASE=https://controller.example.com:8443
+- UNIFI_SITE=default
+- UNIFI_USER=portal_admin
+- UNIFI_PASS=REDACTED
+- PORTAL_PUBLIC_URL=http://portal.example.com
+- SESSION_MINUTES=60
+Acceptance criteria:
+- Inputs confirmed with the user (controller type unknown is OK; we’ll detect during testing).
+- Risk note: If controller runs on UniFi OS (UDM/CloudKey Gen2), API path likely requires /proxy/network prefix.
+2. Research and source authoritative references and sample code
+Tasks:
+- Collect official and community docs on external captive portals for UniFi Network Application (legacy Guest Control/Hotspot).
+- Gather code examples:
+  - Go: ipstatic/unifi-captive-portal (confirm repository, pin commit SHA)
+  - PHP: s1lva-lucas/unimaster (confirm repository, pin commit SHA)
+  - PHP UniFi API wrapper: Art-of-WiFi/UniFi-API-client (confirm repository, pin release)
+- Capture compatibility notes for classic controllers (pre-UniFi OS) vs UniFi OS (UDM/CKG2) regarding:
+  - Login endpoints: /api/login (legacy) vs /api/auth/login (newer)
+  - Path prefix on UniFi OS: /proxy/network/api/...
+- Save references with links and pinned versions in a references section.
+Acceptance criteria:
+- Verified links and commit SHAs recorded.
+- Notation of which examples use cookie-based session vs modern token.
+3. Draft the Overview: how UniFi external portals work (redirect method)
+Content to include:
+- High-level flow:
+  1) Client associates to SSID with guest policies enabled.
+  2) First HTTP request is intercepted by AP/controller and redirected to the external portal URL with query params.
+  3) Portal renders a page (T&amp;Cs, login, splash) and, on submit, authorizes the client MAC via the controller API.
+  4) Controller whitelists the client MAC for a duration (minutes). Client is redirected to intended URL.
+- Emphasize: This solution uses legacy cookie-based session auth (no modern API access tokens required).
+- Clarify roles:
+  - AP/controller: enforces guest policy and redirection
+  - External portal: UI + calls controller to authorize MAC
+- Note on HTTPS vs HTTP captive flows and typical requirement for HTTP:80 to avoid certificate warnings on captive pages.
+Acceptance criteria:
+- Concise, diagram-ready narrative of the redirect method.
+4. Document the URL parameters UniFi sends to external portals
+Specify primary query parameters (as commonly provided by UniFi):
+- id: Client MAC address (aa:bb:cc:dd:ee:ff)
+- ap: AP MAC address (aa:bb:cc:dd:ee:ff) where the client is connected
+- ssid: SSID name the client joined
+- url: The originally requested URL (to redirect after auth)
+Example redirect:
+- GET http://portal.example.com/captive?id=aa:bb:cc:dd:ee:ff&amp;ap=11:22:33:44:55:66&amp;ssid=GuestWiFi&amp;url=http%3A%2F%2Fexample.com%2F
+Notes:
+- Some controller versions may include additional parameters; portal should ignore unknown keys.
+- Treat all inputs as untrusted; validate and normalize MAC addresses, and only allow http/https in url.
+Acceptance criteria:
+- Clear parameter reference with example.
+5. Define the end-to-end authorization flow (step-by-step with sequence)
+Steps:
+1) Client connects to SSID (Guest policy enabled).
+2) Client attempts HTTP request (e.g., http://neverssl.com).
+3) UniFi redirects to external portal: GET /captive?id=...&amp;ap=...&amp;ssid=...&amp;url=...
+4) Portal server displays splash/consent form, carries forward id/ap/ssid/url (hidden fields).
+5) On submit, portal server:
+   - Logs into controller (cookie-based session) via POST /api/login; if that fails, fallback to POST /api/auth/login and store csrf_token cookie for subsequent calls.
+   - Calls POST /api/s/&lt;site&gt;/cmd/stamgr (or /proxy/network/api/s/&lt;site&gt;/cmd/stamgr on UniFi OS) with cmd=authorize-guest, mac, minutes (and optional up, down, bytes).
+   - Expects response meta.rc == "ok".
+6) If authorization succeeds, portal returns HTTP 302 redirect to the original url (or a success page if url is missing/invalid).
+7) Client now has network access for the configured minutes; AP/controller enforces the policy based on MAC.
+Error handling:
+- If login/auth fails, display user-friendly retry message; optionally log reason server-side.
+- If authorize fails, present support instructions; do not leak credentials or internal errors.
+Acceptance criteria:
+- Flow ready for a sequence diagram and used as reference by code examples.
+6. Specify UniFi controller API endpoints, payloads, and compatibility notes
+Endpoints:
+- Legacy login (preferred for older controllers):
+  - POST {UNIFI_BASE}/api/login
+  - Body: {"username":"...","password":"..."}
+  - Success: Set session cookie (e.g., unifises). No CSRF header required on very old versions.
+- Newer login (UniFi OS / newer Network App):
+  - POST {UNIFI_BASE}/api/auth/login
+  - Body: {"username":"...","password":"...","remember":true}
+  - Success: Set csrf_token cookie and session cookie; subsequent requests require header: X-CSRF-Token: {csrf_token}
+- Guest authorization (classic path):
+  - POST {UNIFI_BASE}/api/s/{site}/cmd/stamgr
+- Guest authorization (UniFi OS path):
+  - POST {UNIFI_BASE}/proxy/network/api/s/{site}/cmd/stamgr
+- Body for authorize:
+  - {"cmd":"authorize-guest","mac":"aa:bb:cc:dd:ee:ff","minutes":60}
+  - Optional: "up": kbps, "down": kbps, "bytes": quota, "ap_mac":"11:22:33:44:55:66"
+Expected response:
+- 200 OK, JSON: {"meta":{"rc":"ok"},"data":[...]} (shape may vary)
+cURL examples:
+- Login (legacy):
+```
+curl -sk -c cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"username":"'"$UNIFI_USER"'","password":"'"$UNIFI_PASS"'"}' \
+  "$UNIFI_BASE/api/login"
+```
+- Login (newer) fallback:
+```
+curl -sk -c cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"username":"'"$UNIFI_USER"'","password":"'"$UNIFI_PASS"'", "remember": true}' \
+  "$UNIFI_BASE/api/auth/login"
+```
+- Extract csrf_token (if set) and call authorize (classic path):
+```
+CSRF=$(awk '/csrf_token/ {print $7}' cookies.txt | tail -n1)
+curl -sk -b cookies.txt \
+  -H "Content-Type: application/json" \
+  ${CSRF:+ -H "X-CSRF-Token: $CSRF"} \
+  -d '{"cmd":"authorize-guest","mac":"aa:bb:cc:dd:ee:ff","minutes":60}' \
+  "$UNIFI_BASE/api/s/$UNIFI_SITE/cmd/stamgr"
+```
+- UniFi OS path (if classic path returns 404/403):
+```
+curl -sk -b cookies.txt \
+  -H "Content-Type: application/json" \
+  ${CSRF:+ -H "X-CSRF-Token: $CSRF"} \
+  -d '{"cmd":"authorize-guest","mac":"aa:bb:cc:dd:ee:ff","minutes":60}' \
+  "$UNIFI_BASE/proxy/network/api/s/$UNIFI_SITE/cmd/stamgr"
+```
+Compatibility notes:
+- Use -k for self-signed certificates in lab only; prefer valid certs in production.
+- Do not use UniFi Cloud/SSO creds; create a local admin on the controller.
+Acceptance criteria:
+- Endpoint details and working cURL examples captured.
+7. Define implementation requirements (server, ports, file structure, env)
+Server/Network:
+- External portal must be reachable by WiFi clients over HTTP:80 (recommended) or HTTPS:443 (if you enable "Redirect using SSL" in UniFi).
+- If using HTTPS, use a valid public certificate to avoid captive browser warnings.
+- The portal server must be able to reach the controller over its management URL/port (often 8443).
+- Consider WAF/reverse proxy (nginx/Caddy) in front of the portal to terminate TLS and forward to app.
+UniFi credentials:
+- Use a local admin account restricted to the site; rotate credentials periodically; store in env/secret manager.
+File structure (reference layout for Replit or simple VPS):
+- / (app root)
+  - /public (static assets, success.html, error.html)
+  - /templates (HTML for splash/consent)
+  - /cmd (controller client module)
+  - main.go or index.php (HTTP handlers: GET /captive, POST /authorize)
+  - .env (UNIFI_BASE, UNIFI_SITE, UNIFI_USER, UNIFI_PASS, SESSION_MINUTES)
+  - Dockerfile (optional)
+Path requirements:
+- GET /captive: receives id, ap, ssid, url; renders splash with hidden fields.
+- POST /authorize: validates inputs, logs into controller, calls authorize-guest, redirects to url or /public/success.html
+Acceptance criteria:
+- Clear infra checklist and file/route requirements established.
+8. Produce Go reference implementation (based on ipstatic/unifi-captive-portal)
+Deliverables:
+- A minimal yet complete Go server showing:
+  - GET /captive: read id/ap/ssid/url; render HTML
+  - POST /authorize: login (+ fallback), set CSRF if present, POST authorize-guest, handle responses
+  - Env-driven config; cookie jar; TLS skip optional; structured logs
+Key snippets:
+- HTTP handlers and UniFi client:
+```
+type UniFiClient struct {
+  Base string
+  Site string
+  User string
+  Pass string
+  Jar  http.CookieJar
+  CSRF string
+}
+
+func (u *UniFiClient) Login(ctx context.Context) error {
+  // try legacy
+  body := map[string]string{"username": u.User, "password": u.Pass}
+  if err := postJSON(ctx, u, u.Base+"/api/login", body); err == nil {
+    u.CSRF = "" // not required on old
+    return nil
+  }
+  // fallback newer
+  body = map[string]interface{}{"username": u.User, "password": u.Pass, "remember": true}
+  if err := postJSON(ctx, u, u.Base+"/api/auth/login", body); err != nil {
+    return err
+  }
+  // extract csrf_token from cookies
+  u.CSRF = findCookie(u.Jar, u.Base, "csrf_token")
+  return nil
+}
+
+func (u *UniFiClient) Authorize(ctx context.Context, mac string, minutes int) error {
+  payload := map[string]interface{}{"cmd": "authorize-guest", "mac": mac, "minutes": minutes}
+  paths := []string{
+    u.Base + "/api/s/" + u.Site + "/cmd/stamgr",
+    u.Base + "/proxy/network/api/s/" + u.Site + "/cmd/stamgr",
+  }
+  for _, p := range paths {
+    if err := postJSONWithCSRF(ctx, u, p, payload); err == nil {
+      return nil
+    }
+  }
+  return fmt.Errorf("authorize failed on all paths")
+}
+```
+- HTML splash form (hidden fields id/ap/ssid/url).
+- Build/run instructions:
+  - go 1.21+, PORT=8080
+  - Reverse proxy to expose 80/443 if needed
+Testing:
+- Unit tests for MAC/url validation
+- Integration test using cURL against a test controller
+Acceptance criteria:
+- Go example compiles, runs, and can authorize a test MAC in lab.
+9. Produce PHP reference implementation (using Art-of-WiFi client and unimaster example)
+Deliverables:
+- index.php with routes:
+  - GET /captive (render splash)
+  - POST /authorize (perform login and authorize)
+Approach A: Raw curl (no library), mirroring the Go logic:
+```
+$ch = curl_init("$UNIFI_BASE/api/login");
+curl_setopt_array($ch, [
+  CURLOPT_POST => true,
+  CURLOPT_POSTFIELDS => json_encode(["username"=>$user,"password"=>$pass]),
+  CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
+  CURLOPT_COOKIEJAR => "cookies.txt",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_SSL_VERIFYPEER => false, // dev only
+]);
+$resp = curl_exec($ch);
+$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+if ($code >= 400) {
+  // fallback to /api/auth/login
+}
+```
+- Authorize call to /api/s/{site}/cmd/stamgr (then fallback to /proxy/network/... on 404/403), adding X-CSRF-Token if csrf_token cookie exists.
+Approach B: Using Art-of-WiFi/UniFi-API-client:
+- Instantiate the client with base URL, site, username/password.
+- Use built-in methods to authorize guests (if available in the selected version).
+- Document exact library version and code snippet.
+UI template:
+- Lightweight Bootstrap-free HTML with hidden fields for id/ap/ssid/url.
+Acceptance criteria:
+- PHP example runs under PHP 8.x, authorizes a test MAC in lab.
+10. Controller configuration: set External Portal and walled garden
+Steps (names may vary by version):
+- UniFi Network Application → Settings → Guest Hotspot (or Guest Control)
+- Enable Guest Portal
+- Authentication: External portal server
+- Redirect URL: {PORTAL_PUBLIC_URL}/captive
+- Enable/disable "Redirect using SSL" to match your portal (HTTP recommended for captive page simplicity)
+- Landing page: Use "Promiscuous/Original URL" or specify a known success page
+- Walled garden / Pre-Authorization:
+  - Allow your portal domain and any assets (CDN, fonts)
+  - If using HTTPS, allow OCSP/stapling hosts if needed
+- Apply settings to the correct SSID(s) and Site
+- Optional: Set session timeout to match SESSION_MINUTES
+Acceptance criteria:
+- External portal is enabled and points to our endpoint.
+- Clients hitting the SSID are redirected to our portal.
+11. Testing and validation plan (manual and scripted)
+Manual tests:
+- Connect a device to the guest SSID
+- Confirm redirect to /captive with id/ap/ssid/url
+- Submit portal form; verify successful redirect to original url
+- In UniFi dashboard: verify the client shows as Authorized (Guest) with remaining time
+API verification:
+- Use the provided cURL scripts to test login and authorize endpoints outside the portal flow
+Edge tests:
+- Fallback path on UniFi OS (/proxy/network/...)
+- Self-signed certificate path (dev), then switch to valid cert (prod)
+- Non-HTTP original URLs (e.g., https) – ensure sane redirect behavior
+Artifacts:
+- Postman collection with variables (UNIFI_BASE, UNIFI_SITE, etc.)
+- Test logs with timestamps and outcomes
+Acceptance criteria:
+- Documented pass/fail results and any controller-specific path chosen.
+12. Common issues and solutions
+Include a troubleshooting section:
+- Port 80 blocked or not publicly reachable: ensure reverse proxy or security group allows 80; captive pages often require HTTP.
+- SSL warnings: use HTTP for captive redirect or deploy a valid certificate for HTTPS.
+- Auth failures (401/403):
+  - Using UniFi Cloud/SSO credentials: create a local admin
+  - Missing CSRF header on newer controllers: extract csrf_token cookie and send X-CSRF-Token
+  - Wrong API base path on UniFi OS: use /proxy/network/api/...
+- 400/404 on stamgr: check site name, path prefix, and JSON Content-Type
+- MAC format invalid: normalize to lowercase colon-separated
+- Controller unreachable from portal server: open egress to controller’s 8443; verify DNS
+- Client stuck in loop: ensure successful authorize-guest and that redirect url is reachable/allowed
+- Walled garden missing assets: allow portal domain and external assets
+Acceptance criteria:
+- Clear, actionable fixes for each common symptom.
+13. Security considerations and best practices
+- Credentials:
+  - Use a least-privileged local admin restricted to the relevant site
+  - Store creds in env vars/secret manager; do not commit secrets
+  - Rotate regularly; support hot reload of secrets if possible
+- Transport security:
+  - Prefer valid TLS between portal and controller; avoid -k in production
+  - If using HTTPS captive redirect, ensure a valid cert trusted by clients
+- Input validation:
+  - Validate id/ap as MAC addresses; sanitize ssid; only allow http/https in url; enforce redirect whitelist if needed
+- Session handling:
+  - Use cookie jar; respect CSRF requirements; do not expose cookies to clients
+- Logging:
+  - Avoid logging passwords/tokens; redact MACs if considered PII
+- Rate limiting and abuse:
+  - Throttle authorization attempts; captcha on form if public
+- Data retention:
+  - Minimize stored data; document retention policy for logs
+Acceptance criteria:
+- Security checklist included and aligned with org policies.
+14. Assemble the final developer documentation and repo artifacts
+Outputs:
+- docs/unifi-external-captive-portal-redirect.md:
+  - Overview
+  - URL parameters
+  - Authorization flow (with diagram-ready steps)
+  - API endpoints and cURL examples
+  - Implementation requirements
+  - Go and PHP example sections with code snippets
+  - Controller configuration
+  - Testing plan
+  - Common issues
+  - Security considerations
+  - References (links, pinned SHAs)
+- examples/go/ (buildable Go reference)
+- examples/php/ (runnable PHP reference)
+- postman/UniFi-Captive-Portal-Redirect.postman_collection.json
+- .env.example with all required variables
+- README.md with quickstart (run locally, expose via tunnel if needed)
+Packaging:
+- Ensure examples do not include real credentials
+- Include Makefile or simple scripts to run examples
+Acceptance criteria:
+- Single repo/directory with ready-to-run examples and the comprehensive doc.
+15. Handover to Replit and operations notes
+- Provide Replit-specific instructions:
+  - How to set env vars (UNIFI_BASE, UNIFI_SITE, UNIFI_USER, UNIFI_PASS)
+  - How to expose port 80 (use Replit’s web server binding; optionally front with a custom domain)
+  - If TLS needed, recommend using a reverse proxy or an external tunnel with valid cert
+- Provide operational runbooks:
+  - How to change session duration and bandwidth limits
+  - How to test new controller versions (smoke tests)
+  - How to roll credentials and verify functionality
+Acceptance criteria:
+- Replit can run the reference portal, and the developer has clear steps to integrate improvements into their existing server.
