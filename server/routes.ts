@@ -684,6 +684,7 @@ Rules:
     try {
       const baseSchema = z.object({
         unifi_api_type: z.enum(['modern', 'legacy', 'none']),
+        redirect_mode: z.enum(['automatic', 'manual']).optional(),
         unifi_controller_url: z.string().optional(),
         unifi_api_key: z.string().optional(),
         unifi_username: z.string().optional(),
