@@ -726,8 +726,8 @@ function SettingsTab() {
 
       <div className="p-4 sm:p-6 space-y-6">
         <div>
-          <Label htmlFor="api-type" className="text-sm font-medium text-gray-700">
-            API Type
+          <Label htmlFor="api-type" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Controller Connection
           </Label>
           <RadioGroup value={apiType} onValueChange={(value: any) => setApiType(value)} className="mt-2">
             <div className="flex items-center space-x-2">
