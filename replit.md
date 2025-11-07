@@ -48,7 +48,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Technical Implementations
 
-*   **UniFi Configuration**: Dedicated Settings tab in the admin dashboard for configuring UniFi controller integration, supporting both Modern and Legacy APIs with database storage for settings. Settings page uses "Controller Connection" terminology (formerly "API Type") and includes a "Redirect Mode" option (Automatic or Manual) for post-authorization behavior.
+*   **UniFi Configuration**: Dedicated Settings tab in the admin dashboard for configuring UniFi controller integration, supporting both Modern and Legacy APIs with database storage for settings.
 *   **Event Management**: AI-powered bulk event import using OpenAI GPT-4o for parsing unstructured text into structured event data, with robust validation.
 *   **Daily Counters**: Atomic SQL upserts for daily guest registration counts to prevent race conditions and ensure data integrity.
 

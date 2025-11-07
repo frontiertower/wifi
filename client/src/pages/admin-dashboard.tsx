@@ -647,7 +647,6 @@ export default function AdminDashboard() {
 function SettingsTab() {
   const { toast } = useToast();
   const [apiType, setApiType] = useState<'modern' | 'legacy' | 'none'>('none');
-  const [redirectMode, setRedirectMode] = useState<'automatic' | 'manual'>('automatic');
   const [controllerUrl, setControllerUrl] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [username, setUsername] = useState('');
@@ -683,7 +682,6 @@ function SettingsTab() {
   useEffect(() => {
     if (settings) {
       setApiType((settings.unifi_api_type as any) || 'none');
-      setRedirectMode((settings.redirect_mode as any) || 'automatic');
       setControllerUrl(settings.unifi_controller_url || '');
       setApiKey(settings.unifi_api_key || '');
       setUsername(settings.unifi_username || '');
@@ -695,7 +693,6 @@ function SettingsTab() {
   const handleSave = () => {
     const data: Record<string, string> = {
       unifi_api_type: apiType,
-      redirect_mode: redirectMode,
       unifi_controller_url: controllerUrl,
       unifi_site: site,
     };
@@ -729,8 +726,8 @@ function SettingsTab() {
 
       <div className="p-4 sm:p-6 space-y-6">
         <div>
-          <Label htmlFor="api-type" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Controller Connection
+          <Label htmlFor="api-type" className="text-sm font-medium text-gray-700">
+            API Type
           </Label>
           <RadioGroup value={apiType} onValueChange={(value: any) => setApiType(value)} className="mt-2">
             <div className="flex items-center space-x-2">
@@ -749,26 +746,6 @@ function SettingsTab() {
               <RadioGroupItem value="legacy" id="api-legacy" data-testid="radio-api-legacy" />
               <Label htmlFor="api-legacy" className="font-normal cursor-pointer">
                 Legacy API - For older controllers
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div>
-          <Label htmlFor="redirect-mode" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Redirect Mode
-          </Label>
-          <RadioGroup value={redirectMode} onValueChange={(value: any) => setRedirectMode(value)} className="mt-2">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="automatic" id="redirect-automatic" data-testid="radio-redirect-automatic" />
-              <Label htmlFor="redirect-automatic" className="font-normal cursor-pointer">
-                Automatic - Redirect to original URL after authorization
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="manual" id="redirect-manual" data-testid="radio-redirect-manual" />
-              <Label htmlFor="redirect-manual" className="font-normal cursor-pointer">
-                Manual - Show success message, user clicks to continue
               </Label>
             </div>
           </RadioGroup>
