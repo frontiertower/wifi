@@ -321,6 +321,27 @@ export class DatabaseStorage {
     return event;
   }
 
+  async upsertEventByExternalId(eventData: any): Promise<Event> {
+    const [event] = await db
+      .insert(events)
+      .values(eventData)
+      .onConflictDoUpdate({
+        target: events.externalId,
+        set: {
+          name: eventData.name,
+          description: eventData.description,
+          startDate: eventData.startDate,
+          endDate: eventData.endDate,
+          host: eventData.host,
+          location: eventData.location,
+          source: eventData.source,
+          maxAttendees: eventData.maxAttendees,
+        }
+      })
+      .returning();
+    return event;
+  }
+
   async getActiveSessions(): Promise<any[]> {
     const activeSessions = await db
       .select({

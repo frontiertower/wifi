@@ -640,6 +640,94 @@ Rules:
     }
   });
 
+  app.post("/api/admin/events/sync", async (req, res) => {
+    try {
+      const externalApiUrl = "https://studio--frontier-tower-timeline.us-central1.hosted.app/api/events";
+      
+      const response = await fetch(externalApiUrl);
+      if (!response.ok) {
+        throw new Error(`External API returned status ${response.status}`);
+      }
+
+      const externalEvents = await response.json() as Array<{
+        id: string;
+        name: string;
+        description: string;
+        startsAt: string;
+        endsAt: string;
+        host: string;
+        location: string;
+        originalLocation: string;
+        source: string;
+      }>;
+
+      if (!Array.isArray(externalEvents)) {
+        throw new Error("External API did not return an array");
+      }
+
+      const syncedEvents = [];
+      const failedEvents: Array<{ id: string; error: string }> = [];
+
+      for (const externalEvent of externalEvents) {
+        try {
+          const code = externalEvent.id
+            .replace(/[^A-Za-z0-9]/g, '')
+            .substring(0, 20)
+            .toUpperCase();
+
+          const eventData = {
+            name: externalEvent.name,
+            code: code,
+            description: externalEvent.description || '',
+            startDate: new Date(externalEvent.startsAt),
+            endDate: new Date(externalEvent.endsAt),
+            host: externalEvent.host || null,
+            location: externalEvent.originalLocation || externalEvent.location || null,
+            externalId: externalEvent.id,
+            source: externalEvent.source,
+            maxAttendees: 100,
+          };
+
+          if (isNaN(eventData.startDate.getTime()) || isNaN(eventData.endDate.getTime())) {
+            throw new Error('Invalid date format');
+          }
+
+          const event = await storage.upsertEventByExternalId(eventData);
+          syncedEvents.push(event);
+        } catch (eventError) {
+          const errorMessage = eventError instanceof Error ? eventError.message : 'Unknown error';
+          console.error(`Failed to sync event: ${externalEvent.id}`, errorMessage);
+          failedEvents.push({ id: externalEvent.id, error: errorMessage });
+        }
+      }
+
+      if (syncedEvents.length === 0 && failedEvents.length > 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Failed to sync any events",
+          failedEvents
+        });
+      }
+
+      const message = failedEvents.length > 0
+        ? `Successfully synced ${syncedEvents.length} event(s), ${failedEvents.length} failed`
+        : `Successfully synced ${syncedEvents.length} event(s)`;
+
+      res.json({
+        success: true,
+        events: syncedEvents,
+        failedEvents: failedEvents.length > 0 ? failedEvents : undefined,
+        message
+      });
+    } catch (error) {
+      console.error('Error syncing events:', error);
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to sync events from external feed"
+      });
+    }
+  });
+
   app.get("/api/admin/sessions", async (req, res) => {
     try {
       const sessions = await storage.getActiveSessions();
