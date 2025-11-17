@@ -143,12 +143,6 @@ export default function Events() {
                             </div>
                           </div>
                         )}
-
-                        <div className="mt-4">
-                          <Badge variant="outline" className="text-xs" data-testid={`badge-code-${event.id}`}>
-                            Code: {event.code}
-                          </Badge>
-                        </div>
                       </Card>
                     );
                   })}
