@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building } from "lucide-react";
+import { Building, Brain, Sparkles } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import GuestForm from "@/components/guest-form";
