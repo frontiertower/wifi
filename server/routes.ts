@@ -782,6 +782,39 @@ Rules:
     }
   });
 
+  app.post("/api/bookings", async (req, res) => {
+    try {
+      const validatedData = insertBookingSchema.parse(req.body);
+      const booking = await storage.createBooking(validatedData);
+      res.json({ success: true, booking });
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid booking data",
+          errors: error.errors
+        });
+      }
+      res.status(500).json({
+        success: false,
+        message: "Failed to create booking"
+      });
+    }
+  });
+
+  app.get("/api/bookings", async (req, res) => {
+    try {
+      const bookings = await storage.getAllBookings();
+      res.json({ success: true, bookings });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch bookings"
+      });
+    }
+  });
+
   app.get("/api/admin/sessions", async (req, res) => {
     try {
       const sessions = await storage.getActiveSessions();

@@ -120,6 +120,17 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
                 className="h-12"
                 data-testid="input-password"
               />
+              <div className="text-right">
+                <a
+                  href="https://app.frontiertower.io/auth/forgot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary hover:underline"
+                  data-testid="link-forgot-password"
+                >
+                  Forgot password?
+                </a>
+              </div>
             </div>
 
             <Button
