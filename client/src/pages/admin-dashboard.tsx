@@ -408,6 +408,8 @@ export default function AdminDashboard() {
                   <TableHead>Event Name</TableHead>
                   <TableHead>Code</TableHead>
                   <TableHead>Date Range</TableHead>
+                  <TableHead>Host</TableHead>
+                  <TableHead>Source</TableHead>
                   <TableHead>Attendees</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
@@ -416,17 +418,40 @@ export default function AdminDashboard() {
               <TableBody>
                 {events?.events?.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={8} className="text-center py-8 text-gray-500 dark:text-gray-400">
                       No events found. Create your first event to get started.
                     </TableCell>
                   </TableRow>
                 )}
                 {events?.events?.map((event: any) => (
                   <TableRow key={event.id}>
-                    <TableCell className="font-medium">{event.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {event.color && (
+                          <div 
+                            className="w-3 h-3 rounded-full flex-shrink-0" 
+                            style={{ backgroundColor: event.color }}
+                            title={`Event color: ${event.color}`}
+                          />
+                        )}
+                        <span>{event.name}</span>
+                      </div>
+                    </TableCell>
                     <TableCell className="font-mono">{event.code}</TableCell>
                     <TableCell>
                       {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-600 dark:text-gray-400">
+                      {event.host || "-"}
+                    </TableCell>
+                    <TableCell>
+                      {event.source ? (
+                        <Badge variant="outline" className="text-xs">
+                          {event.source}
+                        </Badge>
+                      ) : (
+                        <span className="text-sm text-gray-400 dark:text-gray-500">Manual</span>
+                      )}
                     </TableCell>
                     <TableCell>{event.currentAttendees}/{event.maxAttendees || "∞"}</TableCell>
                     <TableCell>

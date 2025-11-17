@@ -2,7 +2,7 @@
 
 ## Overview
 
-Frontier Tower WiFi Portal is a captive portal application designed to manage WiFi access for a multi-tenant building. It supports three distinct user types: members, guests, and event attendees. The system integrates with UniFi network controllers for user authorization and network usage tracking. It features a user-facing registration portal and an administrative dashboard for access management, event handling, and analytics. The project aims to provide a modern, efficient, and scalable solution for WiFi access control, enhancing user experience and administrative oversight.
+Frontier Tower WiFi Portal is a captive portal application designed to manage WiFi access for a multi-tenant building with a focus on AI, Agents, and LLMs. It supports three distinct user types: members, guests, and event attendees. The system integrates with UniFi network controllers for user authorization and network usage tracking, and pulls events from an external feed. It features a user-facing registration portal showcasing AI projects (Omi.me, modelcontextprotocol-security.io, safemode.dev) and an administrative dashboard for access management, event handling, and analytics. The project aims to provide a modern, efficient, and scalable solution for WiFi access control, enhancing user experience and administrative oversight.
 
 ## User Preferences
 
@@ -48,6 +48,20 @@ Preferred communication style: Simple, everyday language.
 
 ### Technical Implementations
 
+*   **Hero Section & Branding (November 17, 2025)**:
+    *   Portal homepage showcases AI, Agents, and LLMs focus
+    *   Brain icon replaces Building icon in header
+    *   Featured Projects section displays three key projects:
+        *   Omi.me - https://omi.me
+        *   modelcontextprotocol-security.io - https://modelcontextprotocol-security.io
+        *   safemode.dev - https://safemode.dev
+    *   All project links open in new tabs
+*   **External Events Feed Integration (November 17, 2025)**:
+    *   New API endpoint `/api/external-events` proxies Luma events from external timeline service
+    *   Event form fetches real-time events from https://studio--frontier-tower-timeline.us-central1.hosted.app/api/events
+    *   Events filtered by selected date using startsAt timestamp
+    *   Supports both database events and custom event names
+    *   Custom event validation allows "Other Event" option for non-listed events
 *   **UniFi Captive Portal Compliance (November 7, 2025)**:
     *   Correctly implements UniFi External Captive Portal specification with redirect-based authorization
     *   MAC address extraction uses `id` query parameter (primary) with `mac` as fallback per UniFi spec

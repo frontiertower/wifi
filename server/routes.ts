@@ -665,6 +665,7 @@ Rules:
         host: string;
         location: string;
         originalLocation: string;
+        color: string;
         source: string;
       }>;
 
@@ -689,7 +690,8 @@ Rules:
             startDate: new Date(externalEvent.startsAt),
             endDate: new Date(externalEvent.endsAt),
             host: externalEvent.host || null,
-            location: externalEvent.originalLocation || externalEvent.location || null,
+            originalLocation: externalEvent.originalLocation || externalEvent.location || null,
+            color: externalEvent.color || null,
             externalId: externalEvent.id,
             source: externalEvent.source,
             maxAttendees: 100,
