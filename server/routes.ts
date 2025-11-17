@@ -729,7 +729,7 @@ Rules:
             throw new Error('Invalid date format');
           }
 
-          const eventData = {
+          const eventData: any = {
             name: externalEvent.name,
             code: code,
             description: externalEvent.description,
@@ -738,11 +738,14 @@ Rules:
             host: externalEvent.host || null,
             originalLocation: externalEvent.originalLocation || externalEvent.location || null,
             color: externalEvent.color || null,
-            url: externalEvent.url || null,
             externalId: externalEvent.id,
             source: externalEvent.source,
             maxAttendees: 100,
           };
+          
+          if (externalEvent.url) {
+            eventData.url = externalEvent.url;
+          }
 
           const event = await storage.upsertEventByExternalId(eventData);
           syncedEvents.push(event);

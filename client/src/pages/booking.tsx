@@ -22,14 +22,21 @@ export default function BookingPage() {
     queryKey: ['/api/events'],
   });
 
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(10, 0, 0, 0);
+  
+  const tomorrowEnd = new Date(tomorrow);
+  tomorrowEnd.setHours(12, 0, 0, 0);
+
   const form = useForm<InsertBooking>({
     resolver: zodResolver(insertBookingSchema),
     defaultValues: {
       eventId: undefined,
       eventName: "",
       eventDescription: "",
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: tomorrow,
+      endDate: tomorrowEnd,
       location: "",
       organizerName: "",
       organizerPhone: "",
@@ -200,41 +207,49 @@ export default function BookingPage() {
                     <FormField
                       control={form.control}
                       name="startDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Start Date *</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="datetime-local"
-                              value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                              onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : new Date())}
-                              disabled={bookingType === "existing"}
-                              data-testid="input-start-date"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      render={({ field }) => {
+                        const dateValue = field.value ? new Date(field.value) : null;
+                        const isValidDate = dateValue && !isNaN(dateValue.getTime());
+                        return (
+                          <FormItem>
+                            <FormLabel>Start Date *</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="datetime-local"
+                                value={isValidDate ? dateValue.toISOString().slice(0, 16) : ""}
+                                onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
+                                disabled={bookingType === "existing"}
+                                data-testid="input-start-date"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
                     />
 
                     <FormField
                       control={form.control}
                       name="endDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>End Date *</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="datetime-local"
-                              value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                              onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : new Date())}
-                              disabled={bookingType === "existing"}
-                              data-testid="input-end-date"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      render={({ field }) => {
+                        const dateValue = field.value ? new Date(field.value) : null;
+                        const isValidDate = dateValue && !isNaN(dateValue.getTime());
+                        return (
+                          <FormItem>
+                            <FormLabel>End Date *</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="datetime-local"
+                                value={isValidDate ? dateValue.toISOString().slice(0, 16) : ""}
+                                onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
+                                disabled={bookingType === "existing"}
+                                data-testid="input-end-date"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
                     />
                   </div>
 

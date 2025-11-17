@@ -330,23 +330,28 @@ export class DatabaseStorage {
   }
 
   async upsertEventByExternalId(eventData: any): Promise<Event> {
+    const updateFields: any = {
+      name: eventData.name,
+      description: eventData.description,
+      startDate: eventData.startDate,
+      endDate: eventData.endDate,
+      host: eventData.host,
+      originalLocation: eventData.originalLocation,
+      color: eventData.color,
+      source: eventData.source,
+      maxAttendees: eventData.maxAttendees,
+    };
+    
+    if (eventData.url !== undefined) {
+      updateFields.url = eventData.url;
+    }
+    
     const [event] = await db
       .insert(events)
       .values(eventData)
       .onConflictDoUpdate({
         target: events.externalId,
-        set: {
-          name: eventData.name,
-          description: eventData.description,
-          startDate: eventData.startDate,
-          endDate: eventData.endDate,
-          host: eventData.host,
-          originalLocation: eventData.originalLocation,
-          color: eventData.color,
-          url: eventData.url,
-          source: eventData.source,
-          maxAttendees: eventData.maxAttendees,
-        }
+        set: updateFields
       })
       .returning();
     return event;
