@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { ArrowLeft, Ticket } from "lucide-react";
+import { ArrowLeft, Ticket, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Calendar } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { format } from "date-fns";
 
 interface UniFiParams {
   id?: string;
@@ -43,13 +44,12 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
     organization: "",
   });
 
-  const [selectedDate, setSelectedDate] = useState<string>(() => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    return new Date();
   });
 
   const [customEventName, setCustomEventName] = useState<string>("");
-  const [isOtherEvent, setIsOtherEvent] = useState<boolean>(false);
+  const [selectedEventName, setSelectedEventName] = useState<string>("");
 
   const { toast } = useToast();
 

@@ -194,7 +194,8 @@ export default function BookingPage() {
                           <Input
                             placeholder="Enter event name"
                             {...field}
-                            disabled={bookingType === "existing"}
+                            readOnly={bookingType === "existing"}
+                            className={bookingType === "existing" ? "bg-muted cursor-not-allowed" : ""}
                             data-testid="input-event-name"
                           />
                         </FormControl>
@@ -214,7 +215,8 @@ export default function BookingPage() {
                             placeholder="Brief description of the event"
                             {...field}
                             value={field.value || ""}
-                            disabled={bookingType === "existing"}
+                            readOnly={bookingType === "existing"}
+                            className={bookingType === "existing" ? "bg-muted cursor-not-allowed" : ""}
                             data-testid="input-event-description"
                           />
                         </FormControl>
@@ -238,7 +240,8 @@ export default function BookingPage() {
                                 type="datetime-local"
                                 value={isValidDate ? dateValue.toISOString().slice(0, 16) : ""}
                                 onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
-                                disabled={bookingType === "existing"}
+                                readOnly={bookingType === "existing"}
+                                className={bookingType === "existing" ? "bg-muted cursor-not-allowed" : ""}
                                 data-testid="input-start-date"
                               />
                             </FormControl>
@@ -262,7 +265,8 @@ export default function BookingPage() {
                                 type="datetime-local"
                                 value={isValidDate ? dateValue.toISOString().slice(0, 16) : ""}
                                 onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
-                                disabled={bookingType === "existing"}
+                                readOnly={bookingType === "existing"}
+                                className={bookingType === "existing" ? "bg-muted cursor-not-allowed" : ""}
                                 data-testid="input-end-date"
                               />
                             </FormControl>
@@ -284,7 +288,8 @@ export default function BookingPage() {
                             placeholder="Frontier Tower"
                             {...field}
                             value={field.value || ""}
-                            disabled={bookingType === "existing"}
+                            readOnly={bookingType === "existing"}
+                            className={bookingType === "existing" ? "bg-muted cursor-not-allowed" : ""}
                             data-testid="input-location"
                           />
                         </FormControl>

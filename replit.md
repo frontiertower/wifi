@@ -94,6 +94,17 @@ Preferred communication style: Simple, everyday language.
         *   Storage layer preserves existing URLs when sync payload doesn't provide URL field
         *   "View on Luma" button on event cards links to https://lu.ma/{url} when URL is available
         *   Proper data integrity with conditional upserts that only update URL when provided
+*   **Unified Guest Form (November 17, 2025)**:
+    *   Combined "Guest of a Member" and "Guest at Event" into single progressive disclosure form
+    *   Basic fields shown first (Full Name, Email, Telegram Username, Phone Number)
+    *   Two guest type selection buttons: "Guest of a Member" and "Guest at Event"
+    *   Conditional fields based on selection:
+        *   Guest of Member: Shows Host Contact field
+        *   Guest at Event: Shows Event Date and Event Name fields with real-time event fetching
+    *   Users can change guest type mid-flow via "Change guest type" button
+    *   Fixed timezone bug: Uses local date (getFullYear/getMonth/getDate) instead of UTC conversion to prevent date shifts
+    *   Home page updated with single "Guest Access" button replacing separate guest/event buttons
+    *   Architect-reviewed and tested with end-to-end playwright validation
 
 ## External Dependencies
 
