@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -432,6 +432,26 @@ export class DatabaseStorage {
           .values({ key, value });
       }
     }
+  }
+
+  async createBooking(bookingData: InsertBooking): Promise<Booking> {
+    const [booking] = await db
+      .insert(bookings)
+      .values(bookingData)
+      .returning();
+    return booking;
+  }
+
+  async getAllBookings(): Promise<Booking[]> {
+    return await db.select().from(bookings).orderBy(sql`${bookings.createdAt} DESC`);
+  }
+
+  async getBookingById(id: number): Promise<Booking | null> {
+    const [booking] = await db
+      .select()
+      .from(bookings)
+      .where(eq(bookings.id, id));
+    return booking || null;
   }
 }
 

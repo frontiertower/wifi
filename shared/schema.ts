@@ -93,6 +93,25 @@ export const settings = pgTable("settings", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const bookings = pgTable("bookings", {
+  id: serial("id").primaryKey(),
+  eventId: integer("event_id").references(() => events.id),
+  eventName: text("event_name").notNull(),
+  eventDescription: text("event_description"),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  location: text("location"),
+  organizerName: text("organizer_name").notNull(),
+  organizerEmail: text("organizer_email").notNull(),
+  organizerPhone: text("organizer_phone"),
+  organizerLinkedIn: text("organizer_linkedin"),
+  organizerTwitter: text("organizer_twitter"),
+  organizerCompany: text("organizer_company"),
+  status: text("status").default("pending"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -153,6 +172,12 @@ export const insertSettingSchema = createInsertSchema(settings).omit({
   updatedAt: true,
 });
 
+export const insertBookingSchema = createInsertSchema(bookings).omit({
+  id: true,
+  status: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -168,3 +193,5 @@ export type DailyStats = typeof dailyStats.$inferSelect;
 export type InsertDailyStats = z.infer<typeof insertDailyStatsSchema>;
 export type Setting = typeof settings.$inferSelect;
 export type InsertSetting = z.infer<typeof insertSettingSchema>;
+export type Booking = typeof bookings.$inferSelect;
+export type InsertBooking = z.infer<typeof insertBookingSchema>;

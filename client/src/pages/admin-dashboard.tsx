@@ -418,10 +418,18 @@ export default function AdminDashboard() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Event Name</TableHead>
-                  <TableHead>Date Range</TableHead>
+                  <TableHead>Code</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Start Date</TableHead>
+                  <TableHead>End Date</TableHead>
                   <TableHead>Host</TableHead>
                   <TableHead>Source</TableHead>
-                  <TableHead>Attendees</TableHead>
+                  <TableHead>Current Attendees</TableHead>
+                  <TableHead>Max Attendees</TableHead>
+                  <TableHead>External ID</TableHead>
+                  <TableHead>Color</TableHead>
+                  <TableHead>Original Location</TableHead>
+                  <TableHead>Created At</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -429,7 +437,7 @@ export default function AdminDashboard() {
               <TableBody>
                 {events?.events?.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={15} className="text-center py-8 text-gray-500 dark:text-gray-400">
                       No events found. Create your first event to get started.
                     </TableCell>
                   </TableRow>
@@ -437,19 +445,19 @@ export default function AdminDashboard() {
                 {events?.events?.map((event: any) => (
                   <TableRow key={event.id}>
                     <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        {event.color && (
-                          <div 
-                            className="w-3 h-3 rounded-full flex-shrink-0" 
-                            style={{ backgroundColor: event.color }}
-                            title={`Event color: ${event.color}`}
-                          />
-                        )}
-                        <span>{event.name}</span>
-                      </div>
+                      {event.name}
                     </TableCell>
-                    <TableCell>
-                      {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                    <TableCell className="text-sm">
+                      {event.code}
+                    </TableCell>
+                    <TableCell className="text-sm max-w-xs truncate" title={event.description}>
+                      {event.description || "-"}
+                    </TableCell>
+                    <TableCell className="text-sm whitespace-nowrap">
+                      {new Date(event.startDate).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-sm whitespace-nowrap">
+                      {new Date(event.endDate).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600 dark:text-gray-400">
                       {event.host || "-"}
@@ -463,7 +471,35 @@ export default function AdminDashboard() {
                         <span className="text-sm text-gray-400 dark:text-gray-500">Manual</span>
                       )}
                     </TableCell>
-                    <TableCell>{event.currentAttendees}/{event.maxAttendees || "∞"}</TableCell>
+                    <TableCell className="text-sm">
+                      {event.currentAttendees}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {event.maxAttendees || "∞"}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {event.externalId || "-"}
+                    </TableCell>
+                    <TableCell>
+                      {event.color ? (
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-4 h-4 rounded-full flex-shrink-0 border border-gray-300 dark:border-gray-600" 
+                            style={{ backgroundColor: event.color }}
+                            title={event.color}
+                          />
+                          <span className="text-xs text-gray-500">{event.color}</span>
+                        </div>
+                      ) : (
+                        "-"
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {event.originalLocation || "-"}
+                    </TableCell>
+                    <TableCell className="text-sm whitespace-nowrap">
+                      {event.createdAt ? new Date(event.createdAt).toLocaleDateString() : "-"}
+                    </TableCell>
                     <TableCell>
                       <Badge variant={event.isActive ? "default" : "secondary"}>
                         {event.isActive ? "Active" : "Inactive"}

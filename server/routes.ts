@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema } from "@shared/schema";
+import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
 
@@ -669,6 +669,7 @@ Rules:
       host: z.string().optional(),
       location: z.string().optional(),
       originalLocation: z.string().optional(),
+      color: z.string().optional(),
       source: z.string().optional().default('external'),
     });
 
