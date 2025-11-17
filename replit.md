@@ -35,6 +35,7 @@ Preferred communication style: Simple, everyday language.
     *   `users`: Admin authentication.
     *   `captive_users`: WiFi user registrations with role-based fields.
     *   `events`: Event metadata.
+    *   `bookings`: Event/meeting bookings with organizer details.
     *   `sessions`: User session tracking.
     *   `settings`: Key-value configuration for UniFi integration.
 *   **Validation**: Drizzle-Zod integration for consistent schema validation.
