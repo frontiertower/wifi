@@ -406,7 +406,6 @@ export default function AdminDashboard() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Event Name</TableHead>
-                  <TableHead>Code</TableHead>
                   <TableHead>Date Range</TableHead>
                   <TableHead>Host</TableHead>
                   <TableHead>Source</TableHead>
@@ -418,7 +417,7 @@ export default function AdminDashboard() {
               <TableBody>
                 {events?.events?.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500 dark:text-gray-400">
                       No events found. Create your first event to get started.
                     </TableCell>
                   </TableRow>
@@ -437,7 +436,6 @@ export default function AdminDashboard() {
                         <span>{event.name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="font-mono">{event.code}</TableCell>
                     <TableCell>
                       {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
                     </TableCell>

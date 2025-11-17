@@ -648,65 +648,93 @@ Rules:
   });
 
   app.post("/api/admin/events/sync", async (req, res) => {
+    const externalEventSchema = z.object({
+      id: z.string().min(1),
+      name: z.string().min(1),
+      description: z.string().optional().default(''),
+      startsAt: z.string(),
+      endsAt: z.string(),
+      host: z.string().optional(),
+      location: z.string().optional(),
+      originalLocation: z.string().optional(),
+      source: z.string().optional().default('external'),
+    });
+
     try {
       const externalApiUrl = "https://studio--frontier-tower-timeline.us-central1.hosted.app/api/events";
       
-      const response = await fetch(externalApiUrl);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      let response;
+      try {
+        response = await fetch(externalApiUrl, { 
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+      } catch (fetchError) {
+        clearTimeout(timeout);
+        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+          throw new Error("External API request timed out after 10 seconds");
+        }
+        throw new Error(`Failed to connect to external API: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
+      }
+
       if (!response.ok) {
         throw new Error(`External API returned status ${response.status}`);
       }
 
-      const externalEvents = await response.json() as Array<{
-        id: string;
-        name: string;
-        description: string;
-        startsAt: string;
-        endsAt: string;
-        host: string;
-        location: string;
-        originalLocation: string;
-        color: string;
-        source: string;
-      }>;
+      let rawData;
+      try {
+        rawData = await response.json();
+      } catch (parseError) {
+        throw new Error("Failed to parse external API response as JSON");
+      }
 
-      if (!Array.isArray(externalEvents)) {
+      if (!Array.isArray(rawData)) {
         throw new Error("External API did not return an array");
       }
 
       const syncedEvents = [];
       const failedEvents: Array<{ id: string; error: string }> = [];
 
-      for (const externalEvent of externalEvents) {
+      for (const rawEvent of rawData) {
         try {
+          const externalEvent = externalEventSchema.parse(rawEvent);
+          
           const code = externalEvent.id
             .replace(/[^A-Za-z0-9]/g, '')
             .substring(0, 20)
             .toUpperCase();
 
+          const startDate = new Date(externalEvent.startsAt);
+          const endDate = new Date(externalEvent.endsAt);
+
+          if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            console.error(`Invalid dates for event ${externalEvent.id}: startsAt=${externalEvent.startsAt}, endsAt=${externalEvent.endsAt}`);
+            throw new Error('Invalid date format');
+          }
+
           const eventData = {
             name: externalEvent.name,
             code: code,
-            description: externalEvent.description || '',
-            startDate: new Date(externalEvent.startsAt),
-            endDate: new Date(externalEvent.endsAt),
+            description: externalEvent.description,
+            startDate,
+            endDate,
             host: externalEvent.host || null,
-            originalLocation: externalEvent.originalLocation || externalEvent.location || null,
-            color: externalEvent.color || null,
+            location: externalEvent.originalLocation || externalEvent.location || null,
             externalId: externalEvent.id,
             source: externalEvent.source,
             maxAttendees: 100,
           };
 
-          if (isNaN(eventData.startDate.getTime()) || isNaN(eventData.endDate.getTime())) {
-            throw new Error('Invalid date format');
-          }
-
           const event = await storage.upsertEventByExternalId(eventData);
           syncedEvents.push(event);
         } catch (eventError) {
+          const eventId = typeof rawEvent === 'object' && rawEvent && 'id' in rawEvent ? String(rawEvent.id) : 'Unknown ID';
           const errorMessage = eventError instanceof Error ? eventError.message : 'Unknown error';
-          console.error(`Failed to sync event: ${externalEvent.id}`, errorMessage);
-          failedEvents.push({ id: externalEvent.id, error: errorMessage });
+          console.error(`Failed to sync event ${eventId}:`, errorMessage, rawEvent);
+          failedEvents.push({ id: eventId, error: errorMessage });
         }
       }
 
@@ -722,6 +750,8 @@ Rules:
         ? `Successfully synced ${syncedEvents.length} event(s), ${failedEvents.length} failed`
         : `Successfully synced ${syncedEvents.length} event(s)`;
 
+      console.log(`Event sync completed: ${syncedEvents.length} synced, ${failedEvents.length} failed`);
+      
       res.json({
         success: true,
         events: syncedEvents,
@@ -730,9 +760,10 @@ Rules:
       });
     } catch (error) {
       console.error('Error syncing events:', error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to sync events from external feed";
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : "Failed to sync events from external feed"
+        message: errorMessage
       });
     }
   });
