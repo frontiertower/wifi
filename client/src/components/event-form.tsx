@@ -54,36 +54,45 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
   const { toast } = useToast();
 
   const timezoneOffset = new Date().getTimezoneOffset();
+  const dateString = selectedDate.toISOString().split('T')[0];
 
   const { data: eventsData, isLoading: eventsLoading } = useQuery<{ success: boolean; events: Array<{ id: number; name: string }> }>({
-    queryKey: [`/api/events/today?offset=${timezoneOffset}&date=${selectedDate}`],
+    queryKey: [`/api/events/today?offset=${timezoneOffset}&date=${dateString}`],
   });
 
-  const handleDateChange = (newDate: string) => {
-    setSelectedDate(newDate);
-    setFormData(prev => ({ ...prev, eventName: "" }));
-    setIsOtherEvent(false);
-    setCustomEventName("");
+  const handleDateChange = (newDate: Date | undefined) => {
+    if (newDate) {
+      setSelectedDate(newDate);
+      setFormData(prev => ({ ...prev, eventName: "" }));
+      setSelectedEventName("");
+      setCustomEventName("");
+    }
   };
 
   const availableEvents = eventsData?.events || [];
-  const availableEventNames = availableEvents.map((event) => event.name);
 
-  const isValidEvent = 
-    availableEvents.length === 0 
-      ? customEventName.trim().length > 0 
-      : (isOtherEvent ? customEventName.trim().length > 0 : availableEventNames.includes(formData.eventName));
-
-  const handleEventChange = (value: string) => {
-    if (value === "Other Event") {
-      setIsOtherEvent(true);
+  const handleEventSelection = (eventName: string) => {
+    if (selectedEventName === eventName) {
+      setSelectedEventName("");
       setFormData(prev => ({ ...prev, eventName: "" }));
+      if (eventName === "Other") {
+        setCustomEventName("");
+      }
     } else {
-      setIsOtherEvent(false);
-      setCustomEventName("");
-      handleInputChange("eventName", value);
+      setSelectedEventName(eventName);
+      if (eventName === "Other") {
+        setFormData(prev => ({ ...prev, eventName: "" }));
+      } else {
+        setFormData(prev => ({ ...prev, eventName }));
+        setCustomEventName("");
+      }
     }
   };
+
+  const isOtherSelected = selectedEventName === "Other";
+  const isValidEvent = availableEvents.length === 0 
+    ? customEventName.trim().length > 0 
+    : (isOtherSelected ? customEventName.trim().length > 0 : selectedEventName.length > 0);
 
   const registerMutation = useMutation({
     mutationFn: async (data: EventFormData) => {
@@ -121,7 +130,7 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
     if (!isValidEvent) {
       toast({
         title: "Invalid Event Name",
-        description: availableEvents.length === 0 || isOtherEvent 
+        description: availableEvents.length === 0 || isOtherSelected 
           ? "Please enter a custom event name." 
           : "Please select a valid event from the list.",
         variant: "destructive",
@@ -129,7 +138,7 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
       return;
     }
 
-    const finalEventName = (availableEvents.length === 0 || isOtherEvent) ? customEventName : formData.eventName;
+    const finalEventName = (availableEvents.length === 0 || isOtherSelected) ? customEventName : formData.eventName;
 
     registerMutation.mutate({
       ...formData,
@@ -141,8 +150,7 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const getFormattedDate = (dateStr: string) => {
-    const date = new Date(dateStr + 'T00:00:00');
+  const getFormattedDate = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       month: 'long',
       day: 'numeric',
@@ -183,25 +191,39 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="eventDate" className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2" />
+              <Label className="flex items-center">
+                <CalendarIcon className="h-4 w-4 mr-2" />
                 Event Date
               </Label>
-              <Input
-                id="eventDate"
-                type="date"
-                value={selectedDate}
-                onChange={(e) => handleDateChange(e.target.value)}
-                className="h-12"
-                data-testid="input-event-date"
-              />
-              <p className="text-sm text-gray-600">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full h-12 justify-start text-left font-normal"
+                    data-testid="button-select-date"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={handleDateChange}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <p className="text-sm text-muted-foreground">
                 Showing events for {getFormattedDate(selectedDate)}
               </p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="eventName">Event Name</Label>
-              {!eventsLoading && availableEvents.length === 0 ? (
+              <Label>Event Name</Label>
+              {eventsLoading ? (
+                <p className="text-sm text-muted-foreground">Loading events...</p>
+              ) : availableEvents.length === 0 ? (
                 <>
                   <Input
                     id="eventName"
@@ -214,43 +236,58 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
                     data-testid="input-event-name"
                   />
                   {customEventName.trim().length > 0 && (
-                    <p className="text-sm text-green-600">✓ Event name entered</p>
+                    <p className="text-sm text-green-600 dark:text-green-400">✓ Event name entered</p>
                   )}
                 </>
               ) : (
-                <>
-                  <Select
-                    value={isOtherEvent ? "Other Event" : formData.eventName}
-                    onValueChange={handleEventChange}
-                    required
-                    disabled={eventsLoading}
+                <div className="space-y-3">
+                  {availableEvents.map((event) => (
+                    <div
+                      key={event.id}
+                      className="flex items-start space-x-3 p-3 rounded-lg border hover-elevate cursor-pointer"
+                      onClick={() => handleEventSelection(event.name)}
+                      data-testid={`event-checkbox-${event.id}`}
+                    >
+                      <Checkbox
+                        checked={selectedEventName === event.name}
+                        onCheckedChange={() => handleEventSelection(event.name)}
+                        id={`event-${event.id}`}
+                        className="mt-0.5"
+                      />
+                      <Label
+                        htmlFor={`event-${event.id}`}
+                        className="flex-1 cursor-pointer font-medium"
+                      >
+                        {event.name}
+                      </Label>
+                    </div>
+                  ))}
+                  <div
+                    className="flex items-start space-x-3 p-3 rounded-lg border hover-elevate cursor-pointer"
+                    onClick={() => handleEventSelection("Other")}
+                    data-testid="event-checkbox-other"
                   >
-                    <SelectTrigger className="h-12" data-testid="select-event-name">
-                      <SelectValue placeholder={eventsLoading ? "Loading events..." : "Select an event"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableEvents.map((event) => (
-                        <SelectItem key={event.id} value={event.name}>
-                          {event.name}
-                        </SelectItem>
-                      ))}
-                      <SelectItem value="Other Event">Other Event</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {eventsLoading && (
-                    <p className="text-sm text-gray-500">Loading today's events...</p>
+                    <Checkbox
+                      checked={selectedEventName === "Other"}
+                      onCheckedChange={() => handleEventSelection("Other")}
+                      id="event-other"
+                      className="mt-0.5"
+                    />
+                    <Label
+                      htmlFor="event-other"
+                      className="flex-1 cursor-pointer font-medium"
+                    >
+                      Other
+                    </Label>
+                  </div>
+                  {isValidEvent && !isOtherSelected && (
+                    <p className="text-sm text-green-600 dark:text-green-400">✓ Valid event selected</p>
                   )}
-                  {isValidEvent && !isOtherEvent && (
-                    <p className="text-sm text-green-600">✓ Valid event selected</p>
-                  )}
-                  {formData.eventName && !isValidEvent && !eventsLoading && !isOtherEvent && (
-                    <p className="text-sm text-red-600">✗ Please select a valid event</p>
-                  )}
-                </>
+                </div>
               )}
             </div>
 
-            {isOtherEvent && availableEvents.length > 0 && (
+            {isOtherSelected && (
               <div className="space-y-2">
                 <Label htmlFor="customEventName">Custom Event Name</Label>
                 <Input
@@ -264,7 +301,7 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
                   data-testid="input-custom-event-name"
                 />
                 {customEventName.trim().length > 0 && (
-                  <p className="text-sm text-green-600">✓ Event name entered</p>
+                  <p className="text-sm text-green-600 dark:text-green-400">✓ Event name entered</p>
                 )}
               </div>
             )}

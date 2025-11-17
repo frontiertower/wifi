@@ -129,7 +129,7 @@ export default function Home() {
                   <i className="fas fa-user text-green-600 dark:text-green-400"></i>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Guest Access</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Guest Login</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and event attendees</div>
                 </div>
               </div>
@@ -145,7 +145,7 @@ export default function Home() {
                   <i className="fas fa-user-tie text-blue-600 dark:text-blue-400"></i>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Member</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Member Login</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Building residents and employees</div>
                 </div>
               </div>
