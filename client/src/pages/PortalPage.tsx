@@ -51,9 +51,13 @@ export default function PortalPage() {
   };
 
   if (pageState === "success" && userData) {
+    const userName = selectedRole === "member" 
+      ? userData.email 
+      : `${userData.firstName} ${userData.lastName}`;
+    
     return (
       <SuccessPage
-        userName={`${userData.firstName} ${userData.lastName}`}
+        userName={userName}
         networkName={getNetworkName()}
         duration={getDuration()}
       />
