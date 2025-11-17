@@ -789,7 +789,30 @@ Rules:
 
   app.post("/api/bookings", async (req, res) => {
     try {
-      const validatedData = insertBookingSchema.parse(req.body);
+      let bookingData = req.body;
+      
+      // If eventId is provided, populate event details from the selected event
+      if (bookingData.eventId) {
+        const event = await storage.getEventById(bookingData.eventId);
+        if (!event) {
+          return res.status(404).json({
+            success: false,
+            message: "Selected event not found"
+          });
+        }
+        
+        // Use event details to populate booking
+        bookingData = {
+          ...bookingData,
+          eventName: event.name,
+          eventDescription: event.description,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          location: event.originalLocation || "Frontier Tower"
+        };
+      }
+      
+      const validatedData = insertBookingSchema.parse(bookingData);
       const booking = await storage.createBooking(validatedData);
       res.json({ success: true, booking });
     } catch (error) {
