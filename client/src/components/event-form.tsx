@@ -53,10 +53,18 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
 
   const { toast } = useToast();
 
-  const timezoneOffset = new Date().getTimezoneOffset();
+  interface ExternalEvent {
+    id: string;
+    name: string;
+    description: string;
+    startsAt: string;
+    endsAt: string;
+    host: string;
+    location: string;
+  }
 
-  const { data: eventsData, isLoading: eventsLoading } = useQuery<{ success: boolean; events: Array<{ id: number; name: string }> }>({
-    queryKey: [`/api/events/today?offset=${timezoneOffset}&date=${selectedDate}`],
+  const { data: externalEvents, isLoading: eventsLoading } = useQuery<ExternalEvent[]>({
+    queryKey: ['/api/external-events'],
   });
 
   const handleDateChange = (newDate: string) => {
@@ -66,7 +74,12 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
     setCustomEventName("");
   };
 
-  const availableEvents = eventsData?.events?.map((event) => event.name) || [];
+  // Filter events by selected date
+  const availableEvents = externalEvents?.filter((event) => {
+    const eventDate = new Date(event.startsAt);
+    const selected = new Date(selectedDate + 'T00:00:00');
+    return eventDate.toDateString() === selected.toDateString();
+  }).map(event => event.name) || [];
 
   const isValidEvent = isOtherEvent ? customEventName.trim().length > 0 : availableEvents.includes(formData.eventName);
 
