@@ -281,6 +281,14 @@ export class DatabaseStorage {
     return await db.select().from(events);
   }
 
+  async getUpcomingEvents(): Promise<Event[]> {
+    return await db
+      .select()
+      .from(events)
+      .where(eq(events.isActive, true))
+      .orderBy(sql`${events.startDate} ASC`);
+  }
+
   async getEventsForDate(timezoneOffsetMinutes: number = 0, dateStr?: string): Promise<Event[]> {
     let targetDate: Date;
 

@@ -3,7 +3,6 @@ import { ArrowLeft, Wifi } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -25,20 +24,14 @@ interface MemberFormProps {
 }
 
 interface MemberFormData {
-  name: string;
   email: string;
-  phone: string;
-  telegramUsername: string;
-  floor: string;
+  password: string;
 }
 
 export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFormProps) {
   const [formData, setFormData] = useState<MemberFormData>({
-    name: "",
     email: "",
-    phone: "",
-    telegramUsername: "",
-    floor: "",
+    password: "",
   });
   const { toast } = useToast();
 
@@ -46,11 +39,8 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
     mutationFn: async (data: MemberFormData) => {
       const response = await apiRequest("POST", "/api/register/member", {
         role: "member",
-        name: data.name,
         email: data.email,
-        phone: data.phone,
-        telegramUsername: data.telegramUsername,
-        floor: data.floor,
+        password: data.password,
         unifiParams: unifiParams,
       });
       return response.json();
@@ -105,20 +95,6 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                required
-                placeholder="John Doe"
-                className="h-12"
-                data-testid="input-name"
-              />
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
@@ -133,53 +109,17 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange("phone", e.target.value)}
-                placeholder="+1-555-123-4567 (optional)"
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                required
+                placeholder="Enter your password"
                 className="h-12"
-                data-testid="input-phone"
+                data-testid="input-password"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="telegramUsername">Telegram Username</Label>
-              <Input
-                id="telegramUsername"
-                type="text"
-                value={formData.telegramUsername}
-                onChange={(e) => handleInputChange("telegramUsername", e.target.value)}
-                placeholder="@username (optional)"
-                className="h-12"
-                data-testid="input-telegram"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="floor">Floor Number</Label>
-              <Select value={formData.floor} onValueChange={(value) => handleInputChange("floor", value)} required>
-                <SelectTrigger className="h-12" data-testid="select-floor">
-                  <SelectValue placeholder="Select your floor" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="unknown">I don't know</SelectItem>
-                  <SelectItem value="2">2nd Floor - Private Offices</SelectItem>
-                  <SelectItem value="3">3rd Floor - Private Offices</SelectItem>
-                  <SelectItem value="4">4th Floor - Robotics</SelectItem>
-                  <SelectItem value="6">6th Floor - Arts & Music</SelectItem>
-                  <SelectItem value="7">7th Floor - Makerspace</SelectItem>
-                  <SelectItem value="8">8th Floor - Biotech & Neurotech</SelectItem>
-                  <SelectItem value="9">9th Floor - AI</SelectItem>
-                  <SelectItem value="10">10th Floor - Accelerate</SelectItem>
-                  <SelectItem value="11">11th Floor - Longevity</SelectItem>
-                  <SelectItem value="12">12th Floor - Ethereum House</SelectItem>
-                  <SelectItem value="14">14th Floor - Human Flourishing</SelectItem>
-                  <SelectItem value="15">15th Floor - Poly-floorous</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             <Button

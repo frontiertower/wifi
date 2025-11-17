@@ -125,10 +125,22 @@ export default function AdminDashboard() {
     },
     onSuccess: (data) => {
       const count = data.events?.length || 0;
-      toast({
-        title: "Events Synced",
-        description: `Successfully synced ${count} event${count !== 1 ? 's' : ''} from external feed`,
-      });
+      const failedCount = data.failedEvents?.length || 0;
+      
+      if (failedCount > 0) {
+        toast({
+          title: "Events Partially Synced",
+          description: `Synced ${count} event${count !== 1 ? 's' : ''}, ${failedCount} failed. Check console for details.`,
+          variant: "default",
+        });
+        console.error('Failed events:', data.failedEvents);
+      } else {
+        toast({
+          title: "Events Synced",
+          description: `Successfully synced ${count} event${count !== 1 ? 's' : ''} from external feed`,
+        });
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
     },
