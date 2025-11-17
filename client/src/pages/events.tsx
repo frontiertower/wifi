@@ -152,14 +152,14 @@ export default function Events() {
                               size="sm"
                               className="w-full"
                               asChild
-                              data-testid={`button-luma-link-${event.id}`}
+                              data-testid={`button-view-event-${event.id}`}
                             >
                               <a
                                 href={`https://lu.ma/${event.url}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
-                                View on Luma
+                                View Event
                                 <ExternalLink className="ml-2 h-4 w-4" />
                               </a>
                             </Button>
@@ -228,14 +228,14 @@ export default function Events() {
                               size="sm"
                               className="w-full"
                               asChild
-                              data-testid={`button-luma-link-${event.id}`}
+                              data-testid={`button-view-event-${event.id}`}
                             >
                               <a
                                 href={`https://lu.ma/${event.url}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
-                                View on Luma
+                                View Event
                                 <ExternalLink className="ml-2 h-4 w-4" />
                               </a>
                             </Button>

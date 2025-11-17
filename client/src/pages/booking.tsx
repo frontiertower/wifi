@@ -139,23 +139,36 @@ export default function BookingPage() {
                   </div>
 
                   {bookingType === "existing" && (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-sm font-medium">Select Event</label>
-                        <Select onValueChange={handleEventSelection}>
-                          <SelectTrigger data-testid="select-event" className="mt-2">
-                            <SelectValue placeholder="Choose an event" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {upcomingEvents.map((event) => (
-                              <SelectItem key={event.id} value={event.id.toString()}>
-                                {event.name} - {format(new Date(event.startDate), "MMM d, yyyy")}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="eventId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Select Event *</FormLabel>
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(parseInt(value));
+                              handleEventSelection(value);
+                            }}
+                            value={field.value?.toString()}
+                          >
+                            <FormControl>
+                              <SelectTrigger data-testid="select-event">
+                                <SelectValue placeholder="Choose an event" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {upcomingEvents.map((event) => (
+                                <SelectItem key={event.id} value={event.id.toString()}>
+                                  {event.name} - {format(new Date(event.startDate), "MMM d, yyyy")}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   )}
 
                   <FormField

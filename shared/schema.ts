@@ -178,6 +178,9 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   status: true,
   createdAt: true,
 }).extend({
+  eventName: z.string().min(1, "Event name is required"),
+  organizerName: z.string().min(1, "Organizer name is required"),
+  organizerEmail: z.string().email("Valid email is required").min(1, "Email is required"),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
 }).refine(
