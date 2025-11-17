@@ -70,7 +70,19 @@ export default function BookingPage() {
     },
   });
 
-  const onSubmit = (data: InsertBooking) => {
+  const onSubmit = async (data: InsertBooking) => {
+    // Trigger validation to ensure all fields are checked
+    const isValid = await form.trigger();
+    
+    if (!isValid || !form.formState.isValid) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields correctly",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     createBookingMutation.mutate(data);
   };
 
