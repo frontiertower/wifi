@@ -36,6 +36,7 @@ interface FormData {
   phone: string;
   host: string;
   eventName: string;
+  tourInterest: "yes" | "maybe" | "no" | "";
 }
 
 export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: UnifiedGuestFormProps) {
@@ -47,6 +48,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     phone: "",
     host: "",
     eventName: "",
+    tourInterest: "",
   });
 
   const [selectedDate, setSelectedDate] = useState<Date>(() => {
@@ -103,6 +105,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         telegramUsername: data.telegramUsername,
         host: data.host,
         phone: data.phone || undefined,
+        tourInterest: data.tourInterest || undefined,
         unifiParams: unifiParams,
       });
       return response.json();
@@ -426,6 +429,42 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   )}
                 </div>
               </>
+            )}
+
+            {/* Tour Interest Question */}
+            {guestType && (
+              <div className="space-y-3 pt-2 border-t">
+                <Label className="text-base">Are you interested in a tour of Frontier Tower?</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={`h-12 toggle-elevate ${formData.tourInterest === "yes" ? "toggle-elevated" : ""}`}
+                    onClick={() => handleInputChange("tourInterest", "yes")}
+                    data-testid="button-tour-yes"
+                  >
+                    Yes
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={`h-12 toggle-elevate ${formData.tourInterest === "maybe" ? "toggle-elevated" : ""}`}
+                    onClick={() => handleInputChange("tourInterest", "maybe")}
+                    data-testid="button-tour-maybe"
+                  >
+                    Maybe
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={`h-12 toggle-elevate ${formData.tourInterest === "no" ? "toggle-elevated" : ""}`}
+                    onClick={() => handleInputChange("tourInterest", "no")}
+                    data-testid="button-tour-no"
+                  >
+                    No
+                  </Button>
+                </div>
+              </div>
             )}
 
             {/* Submit Button */}

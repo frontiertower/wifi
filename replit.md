@@ -101,11 +101,16 @@ Preferred communication style: Simple, everyday language.
     *   Two guest type selection buttons: "Guest of a Member" and "Guest at Event"
     *   Conditional fields based on selection:
         *   Guest of Member: Shows Host Contact field
-        *   Guest at Event: Shows Event Date and Event Name fields with real-time event fetching
+        *   Guest at Event: Shows Event Date (Calendar + Popover) and Event Name fields with real-time event fetching
     *   Users can change guest type mid-flow via "Change guest type" button
-    *   Fixed timezone bug: Uses local date (getFullYear/getMonth/getDate) instead of UTC conversion to prevent date shifts
+    *   Tour interest question: "Are you interested in a tour of Frontier Tower?" with Yes/Maybe/No toggle buttons
+    *   Fixed timezone bug: Uses date-fns format() instead of toISOString() to prevent date shifts in positive time zones
     *   Home page updated with single "Guest Access" button replacing separate guest/event buttons
     *   Architect-reviewed and tested with end-to-end playwright validation
+    *   **Event Form UI Updates (November 17, 2025)**:
+        *   Replaced native date input with Calendar + Popover + Button datepicker to avoid cross-origin iframe errors
+        *   Replaced Select dropdown with checkboxes for event selection
+        *   Added "Other" checkbox option with conditional custom event name input field
 *   **Booking System (November 17, 2025)**:
     *   New `/booking` route allows users to book events/meetings with comprehensive organizer details
     *   **Database Schema**: `bookings` table with optional `eventId` reference, custom event fields (name, description, dates, location), and organizer details (name, email, phone, LinkedIn, Twitter, company)
