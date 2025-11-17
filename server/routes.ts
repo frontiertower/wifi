@@ -27,21 +27,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Fetch events from external feed
-  app.get("/api/external-events", async (req, res) => {
-    try {
-      const response = await fetch('https://studio--frontier-tower-timeline.us-central1.hosted.app/api/events');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch events: ${response.statusText}`);
-      }
-      const events = await response.json();
-      res.json(events);
-    } catch (error) {
-      console.error('Error fetching external events:', error);
-      res.status(500).json({ error: 'Failed to fetch events' });
-    }
-  });
-
   // Captive portal detection endpoints
   app.get("/generate_204", (req, res) => {
     res.redirect(302, "/");
