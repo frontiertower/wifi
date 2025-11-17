@@ -177,7 +177,13 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   id: true,
   status: true,
   createdAt: true,
-});
+}).extend({
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+}).refine(
+  (data) => new Date(data.endDate) > new Date(data.startDate),
+  { message: "End date must be after start date", path: ["endDate"] }
+);
 
 // Types
 export type User = typeof users.$inferSelect;

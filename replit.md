@@ -88,6 +88,12 @@ Preferred communication style: Simple, everyday language.
     *   Responsive card grid layout (3 columns on desktop, 2 on tablet, 1 on mobile) with hover interactions
     *   Loading skeletons and empty state handling for optimal UX
     *   Full dark mode support with theme toggle
+    *   **Luma Integration (November 17, 2025)**:
+        *   Added `url` field to events schema for storing Luma event URLs
+        *   Event sync captures URLs from external feed and conditionally includes them to prevent overwriting
+        *   Storage layer preserves existing URLs when sync payload doesn't provide URL field
+        *   "View on Luma" button on event cards links to https://lu.ma/{url} when URL is available
+        *   Proper data integrity with conditional upserts that only update URL when provided
 
 ## External Dependencies
 

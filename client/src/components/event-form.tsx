@@ -66,12 +66,13 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
     setCustomEventName("");
   };
 
-  const availableEvents = eventsData?.events?.map((event) => event.name) || [];
+  const availableEvents = eventsData?.events || [];
+  const availableEventNames = availableEvents.map((event) => event.name);
 
   const isValidEvent = 
     availableEvents.length === 0 
       ? customEventName.trim().length > 0 
-      : (isOtherEvent ? customEventName.trim().length > 0 : availableEvents.includes(formData.eventName));
+      : (isOtherEvent ? customEventName.trim().length > 0 : availableEventNames.includes(formData.eventName));
 
   const handleEventChange = (value: string) => {
     if (value === "Other Event") {
@@ -229,8 +230,8 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
                     </SelectTrigger>
                     <SelectContent>
                       {availableEvents.map((event) => (
-                        <SelectItem key={event} value={event}>
-                          {event}
+                        <SelectItem key={event.id} value={event.name}>
+                          {event.name}
                         </SelectItem>
                       ))}
                       <SelectItem value="Other Event">Other Event</SelectItem>

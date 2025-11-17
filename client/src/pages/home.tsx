@@ -119,7 +119,6 @@ export default function Home() {
               <Brain className="text-2xl" />
             </div>
             <h1 className="text-2xl font-bold mb-2">Frontier Tower</h1>
-            <p className="text-primary-foreground/80">AI • Agents • LLMs</p>
           </div>
 
           <div className="p-6">

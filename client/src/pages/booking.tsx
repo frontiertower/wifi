@@ -91,12 +91,6 @@ export default function BookingPage() {
 
   const handleBookingTypeChange = (type: "existing" | "custom") => {
     setBookingType(type);
-    if (type === "custom") {
-      form.setValue("eventId", undefined);
-      form.setValue("eventName", "");
-      form.setValue("eventDescription", "");
-      form.setValue("location", "");
-    }
   };
 
   return (
