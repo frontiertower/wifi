@@ -460,7 +460,7 @@ export default function BookingPage() {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={createBookingMutation.isPending}
+                  disabled={createBookingMutation.isPending || !form.formState.isValid}
                   data-testid="button-submit-booking"
                 >
                   {createBookingMutation.isPending ? "Creating Booking..." : "Create Booking"}
