@@ -333,7 +333,8 @@ export class DatabaseStorage {
           startDate: eventData.startDate,
           endDate: eventData.endDate,
           host: eventData.host,
-          location: eventData.location,
+          originalLocation: eventData.originalLocation,
+          color: eventData.color,
           source: eventData.source,
           maxAttendees: eventData.maxAttendees,
         }
