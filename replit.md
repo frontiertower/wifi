@@ -105,6 +105,25 @@ Preferred communication style: Simple, everyday language.
     *   Fixed timezone bug: Uses local date (getFullYear/getMonth/getDate) instead of UTC conversion to prevent date shifts
     *   Home page updated with single "Guest Access" button replacing separate guest/event buttons
     *   Architect-reviewed and tested with end-to-end playwright validation
+*   **Booking System (November 17, 2025)**:
+    *   New `/booking` route allows users to book events/meetings with comprehensive organizer details
+    *   **Database Schema**: `bookings` table with optional `eventId` reference, custom event fields (name, description, dates, location), and organizer details (name, email, phone, LinkedIn, Twitter, company)
+    *   **Backend API**:
+        *   POST `/api/bookings`: Creates bookings with smart event enrichment before validation
+        *   GET `/api/bookings`: Retrieves all bookings
+        *   GET `/api/bookings/:id`: Retrieves single booking by ID
+        *   Backend enrichment: When `eventId` provided, automatically fetches event details from database and populates booking fields before validation
+    *   **Form Validation**: Multi-layer validation system
+        *   Schema-level: `insertBookingSchema` with required field validation (min(1), email format, date range)
+        *   Form-level: React Hook Form with `zodResolver` and `mode: "onChange"` for real-time validation
+        *   Button-level: Submit disabled when `!form.formState.isValid`
+        *   Submission-level: Explicit `await form.trigger()` + `formState.isValid` check before mutation
+    *   **Two Booking Modes**:
+        *   Existing Event: Select from dropdown → auto-populates event details (readonly fields) → fill organizer info
+        *   Custom Event: Fill all event details manually → fill organizer info
+    *   **ReadOnly vs Disabled**: Event fields use `readOnly` (not `disabled`) in existing-event mode to ensure react-hook-form includes values in submission while preventing user edits
+    *   **Data Integrity**: z.coerce.date() handles JSON date serialization, endDate > startDate validation, non-empty string requirements
+    *   Architect-reviewed and verified for end-to-end production readiness
 
 ## External Dependencies
 

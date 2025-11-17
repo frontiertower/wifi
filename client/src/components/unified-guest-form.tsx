@@ -356,14 +356,25 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
                 <div className="space-y-2">
                   <Label htmlFor="eventDate">Event Date</Label>
-                  <Input
-                    id="eventDate"
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => handleDateChange(e.target.value)}
-                    className="h-12"
-                    data-testid="input-event-date"
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="eventDate"
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => handleDateChange(e.target.value)}
+                      className="h-12 flex-1"
+                      data-testid="input-event-date"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-12"
+                      onClick={() => document.getElementById('eventDate')?.showPicker?.()}
+                      data-testid="button-choose-date"
+                    >
+                      Choose a Date
+                    </Button>
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     Showing events for {getFormattedDate(selectedDate)}
                   </p>
