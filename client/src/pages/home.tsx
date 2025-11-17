@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building } from "lucide-react";
+import { Brain, Sparkles, Shield } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import GuestForm from "@/components/guest-form";
@@ -116,10 +116,49 @@ export default function Home() {
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">
             <div className="w-16 h-16 bg-white dark:bg-gray-700 bg-opacity-20 dark:bg-opacity-40 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Building className="text-2xl" />
+              <Brain className="text-2xl" />
             </div>
             <h1 className="text-2xl font-bold mb-2">Frontier Tower</h1>
-            <p className="text-primary-foreground/80">Welcome to our WiFi network</p>
+            <p className="text-primary-foreground/80">AI • Agents • LLMs</p>
+          </div>
+
+          <div className="px-6 pt-6 pb-4 border-b dark:border-gray-700">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Featured Projects</h3>
+            </div>
+            <div className="space-y-2 text-sm">
+              <a 
+                href="https://omi.me" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-primary hover:underline"
+                data-testid="link-project-omi"
+              >
+                <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                Omi.me
+              </a>
+              <a 
+                href="https://modelcontextprotocol-security.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-primary hover:underline"
+                data-testid="link-project-mcp"
+              >
+                <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                modelcontextprotocol-security.io
+              </a>
+              <a 
+                href="https://safemode.dev" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-primary hover:underline"
+                data-testid="link-project-safemode"
+              >
+                <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                safemode.dev
+              </a>
+            </div>
           </div>
 
           <div className="p-6">
