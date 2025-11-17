@@ -68,7 +68,10 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
 
   const availableEvents = eventsData?.events?.map((event) => event.name) || [];
 
-  const isValidEvent = isOtherEvent ? customEventName.trim().length > 0 : availableEvents.includes(formData.eventName);
+  const isValidEvent = 
+    availableEvents.length === 0 
+      ? customEventName.trim().length > 0 
+      : (isOtherEvent ? customEventName.trim().length > 0 : availableEvents.includes(formData.eventName));
 
   const handleEventChange = (value: string) => {
     if (value === "Other Event") {
@@ -117,13 +120,15 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
     if (!isValidEvent) {
       toast({
         title: "Invalid Event Name",
-        description: isOtherEvent ? "Please enter a custom event name." : "Please select a valid event from the list.",
+        description: availableEvents.length === 0 || isOtherEvent 
+          ? "Please enter a custom event name." 
+          : "Please select a valid event from the list.",
         variant: "destructive",
       });
       return;
     }
 
-    const finalEventName = isOtherEvent ? customEventName : formData.eventName;
+    const finalEventName = (availableEvents.length === 0 || isOtherEvent) ? customEventName : formData.eventName;
 
     registerMutation.mutate({
       ...formData,
@@ -195,41 +200,58 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
             </div>
             <div className="space-y-2">
               <Label htmlFor="eventName">Event Name</Label>
-              <Select
-                value={isOtherEvent ? "Other Event" : formData.eventName}
-                onValueChange={handleEventChange}
-                required
-                disabled={eventsLoading}
-              >
-                <SelectTrigger className="h-12" data-testid="select-event-name">
-                  <SelectValue placeholder={eventsLoading ? "Loading events..." : "Select an event"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableEvents.map((event) => (
-                    <SelectItem key={event} value={event}>
-                      {event}
-                    </SelectItem>
-                  ))}
-                  <SelectItem value="Other Event">Other Event</SelectItem>
-                </SelectContent>
-              </Select>
-              {eventsLoading && (
-                <p className="text-sm text-gray-500">Loading today's events...</p>
-              )}
-              {!eventsLoading && availableEvents.length === 0 && !isOtherEvent && (
-                <p className="text-sm text-orange-600">⚠ No scheduled events found. Select "Other Event" to enter a custom event name.</p>
-              )}
-              {isValidEvent && !isOtherEvent && (
-                <p className="text-sm text-green-600">✓ Valid event selected</p>
-              )}
-              {formData.eventName && !isValidEvent && !eventsLoading && !isOtherEvent && (
-                <p className="text-sm text-red-600">✗ Please select a valid event</p>
+              {!eventsLoading && availableEvents.length === 0 ? (
+                <>
+                  <Input
+                    id="eventName"
+                    type="text"
+                    value={customEventName}
+                    onChange={(e) => setCustomEventName(e.target.value)}
+                    required
+                    placeholder="Enter event name"
+                    className="h-12"
+                    data-testid="input-event-name"
+                  />
+                  {customEventName.trim().length > 0 && (
+                    <p className="text-sm text-green-600">✓ Event name entered</p>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Select
+                    value={isOtherEvent ? "Other Event" : formData.eventName}
+                    onValueChange={handleEventChange}
+                    required
+                    disabled={eventsLoading}
+                  >
+                    <SelectTrigger className="h-12" data-testid="select-event-name">
+                      <SelectValue placeholder={eventsLoading ? "Loading events..." : "Select an event"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableEvents.map((event) => (
+                        <SelectItem key={event} value={event}>
+                          {event}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="Other Event">Other Event</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {eventsLoading && (
+                    <p className="text-sm text-gray-500">Loading today's events...</p>
+                  )}
+                  {isValidEvent && !isOtherEvent && (
+                    <p className="text-sm text-green-600">✓ Valid event selected</p>
+                  )}
+                  {formData.eventName && !isValidEvent && !eventsLoading && !isOtherEvent && (
+                    <p className="text-sm text-red-600">✗ Please select a valid event</p>
+                  )}
+                </>
               )}
             </div>
 
-            {isOtherEvent && (
+            {isOtherEvent && availableEvents.length > 0 && (
               <div className="space-y-2">
-                <Label htmlFor="customEventName">Event Name</Label>
+                <Label htmlFor="customEventName">Custom Event Name</Label>
                 <Input
                   id="customEventName"
                   type="text"

@@ -6,10 +6,11 @@ import { insertBookingSchema, type InsertBooking, type Event } from "@shared/sch
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Calendar, Building2, User, Phone, Mail, Linkedin, Twitter, Briefcase } from "lucide-react";
+import { Calendar, User, Phone, Mail, Linkedin, Twitter, Briefcase } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
 
@@ -25,24 +26,24 @@ export default function BookingPage() {
     resolver: zodResolver(insertBookingSchema),
     defaultValues: {
       eventId: undefined,
-      customEventName: "",
-      customStartDate: undefined,
-      customEndDate: undefined,
+      eventName: "",
+      eventDescription: "",
+      startDate: new Date(),
+      endDate: new Date(),
+      location: "",
       organizerName: "",
       organizerPhone: "",
-      organizerLinkedin: "",
+      organizerLinkedIn: "",
       organizerTwitter: "",
       organizerEmail: "",
       organizerCompany: "",
+      notes: "",
     },
   });
 
   const createBookingMutation = useMutation({
     mutationFn: async (data: InsertBooking) => {
-      return await apiRequest<{ success: boolean; booking: any }>("/api/bookings", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      return await apiRequest("POST", "/api/bookings", data);
     },
     onSuccess: () => {
       toast({
@@ -62,19 +63,34 @@ export default function BookingPage() {
   });
 
   const onSubmit = (data: InsertBooking) => {
-    const bookingData: InsertBooking = {
-      ...data,
-      eventId: bookingType === "existing" ? data.eventId : undefined,
-      customEventName: bookingType === "custom" ? data.customEventName : undefined,
-      customStartDate: bookingType === "custom" ? data.customStartDate : undefined,
-      customEndDate: bookingType === "custom" ? data.customEndDate : undefined,
-    };
-    createBookingMutation.mutate(bookingData);
+    createBookingMutation.mutate(data);
   };
 
   const upcomingEvents = eventsData?.events?.filter(
     event => new Date(event.endDate) >= new Date()
   ) || [];
+
+  const handleEventSelection = (eventId: string) => {
+    const selectedEvent = upcomingEvents.find(e => e.id === parseInt(eventId));
+    if (selectedEvent) {
+      form.setValue("eventId", selectedEvent.id);
+      form.setValue("eventName", selectedEvent.name);
+      form.setValue("eventDescription", selectedEvent.description || "");
+      form.setValue("startDate", new Date(selectedEvent.startDate));
+      form.setValue("endDate", new Date(selectedEvent.endDate));
+      form.setValue("location", selectedEvent.originalLocation || "Frontier Tower");
+    }
+  };
+
+  const handleBookingTypeChange = (type: "existing" | "custom") => {
+    setBookingType(type);
+    if (type === "custom") {
+      form.setValue("eventId", undefined);
+      form.setValue("eventName", "");
+      form.setValue("eventDescription", "");
+      form.setValue("location", "");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
@@ -104,7 +120,7 @@ export default function BookingPage() {
                     <Button
                       type="button"
                       variant={bookingType === "existing" ? "default" : "outline"}
-                      onClick={() => setBookingType("existing")}
+                      onClick={() => handleBookingTypeChange("existing")}
                       className="flex-1"
                       data-testid="button-existing-event"
                     >
@@ -113,7 +129,7 @@ export default function BookingPage() {
                     <Button
                       type="button"
                       variant={bookingType === "custom" ? "default" : "outline"}
-                      onClick={() => setBookingType("custom")}
+                      onClick={() => handleBookingTypeChange("custom")}
                       className="flex-1"
                       data-testid="button-custom-event"
                     >
@@ -121,97 +137,126 @@ export default function BookingPage() {
                     </Button>
                   </div>
 
-                  {bookingType === "existing" ? (
+                  {bookingType === "existing" && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium">Select Event</label>
+                        <Select onValueChange={handleEventSelection}>
+                          <SelectTrigger data-testid="select-event" className="mt-2">
+                            <SelectValue placeholder="Choose an event" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {upcomingEvents.map((event) => (
+                              <SelectItem key={event.id} value={event.id.toString()}>
+                                {event.name} - {format(new Date(event.startDate), "MMM d, yyyy")}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  )}
+
+                  <FormField
+                    control={form.control}
+                    name="eventName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Event Name *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter event name"
+                            {...field}
+                            disabled={bookingType === "existing"}
+                            data-testid="input-event-name"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="eventDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Event Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Brief description of the event"
+                            {...field}
+                            value={field.value || ""}
+                            disabled={bookingType === "existing"}
+                            data-testid="input-event-description"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="eventId"
+                      name="startDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Select Event</FormLabel>
-                          <Select
-                            onValueChange={(value) => field.onChange(parseInt(value))}
-                            value={field.value?.toString()}
-                          >
-                            <FormControl>
-                              <SelectTrigger data-testid="select-event">
-                                <SelectValue placeholder="Choose an event" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {upcomingEvents.map((event) => (
-                                <SelectItem key={event.id} value={event.id.toString()}>
-                                  {event.name} - {format(new Date(event.startDate), "MMM d, yyyy")}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <FormLabel>Start Date *</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="datetime-local"
+                              value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
+                              onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : new Date())}
+                              disabled={bookingType === "existing"}
+                              data-testid="input-start-date"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  ) : (
-                    <div className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="customEventName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Event Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter event name"
-                                {...field}
-                                data-testid="input-custom-event-name"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="customStartDate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Start Date</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="datetime-local"
-                                  {...field}
-                                  value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                                  onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
-                                  data-testid="input-custom-start-date"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                    <FormField
+                      control={form.control}
+                      name="endDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>End Date *</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="datetime-local"
+                              value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
+                              onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : new Date())}
+                              disabled={bookingType === "existing"}
+                              data-testid="input-end-date"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                        <FormField
-                          control={form.control}
-                          name="customEndDate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>End Date</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="datetime-local"
-                                  {...field}
-                                  value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                                  onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
-                                  data-testid="input-custom-end-date"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
-                  )}
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Frontier Tower"
+                            {...field}
+                            value={field.value || ""}
+                            disabled={bookingType === "existing"}
+                            data-testid="input-location"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 <div className="space-y-4 pt-4 border-t">
@@ -312,7 +357,7 @@ export default function BookingPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="organizerLinkedin"
+                      name="organizerLinkedIn"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>LinkedIn Profile</FormLabel>
@@ -356,6 +401,25 @@ export default function BookingPage() {
                       )}
                     />
                   </div>
+
+                  <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Additional Notes</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Any special requirements or additional information"
+                            {...field}
+                            value={field.value || ""}
+                            data-testid="input-notes"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 <Button
