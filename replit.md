@@ -58,6 +58,13 @@ Preferred communication style: Simple, everyday language.
     *   Events filtered by selected date using startsAt timestamp
     *   Supports both database events and custom event names
     *   Custom event validation allows "Other Event" option for non-listed events
+    *   **Event Sync (November 17, 2025)**:
+        *   New admin endpoint `/api/admin/events/sync` automatically syncs events from external feed
+        *   Production-ready with AbortController timeout (10s), Zod validation, and comprehensive error handling
+        *   Idempotent upserts using unique constraint on `externalId` field prevent duplicates
+        *   Per-event validation with detailed logging for debugging
+        *   "Sync Events" button in admin dashboard with loading states and toast notifications
+        *   Architect-reviewed and verified for production deployment
 *   **UniFi Captive Portal Compliance (November 7, 2025)**:
     *   Correctly implements UniFi External Captive Portal specification with redirect-based authorization
     *   MAC address extraction uses `id` query parameter (primary) with `mac` as fallback per UniFi spec
