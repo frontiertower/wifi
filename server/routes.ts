@@ -374,7 +374,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: z.string().min(1),
         telegramUsername: z.string().optional(),
         eventName: z.string().min(1),
-        organization: z.string().min(1),
+        organization: z.string().optional(),
         registrationType: z.string().optional(),
         macAddress: z.string().optional(),
         unifiParams: z.object({

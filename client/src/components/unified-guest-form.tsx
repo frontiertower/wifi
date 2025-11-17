@@ -229,60 +229,64 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            {/* Basic Information - Always Visible */}
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                required
-                placeholder="Enter your full name"
-                className="h-12"
-                data-testid="input-name"
-              />
-            </div>
+            {/* Basic Information - Visible Only Before Guest Type Selection */}
+            {!guestType && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    required
+                    placeholder="Enter your full name"
+                    className="h-12"
+                    data-testid="input-name"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                required
-                placeholder="your.email@example.com"
-                className="h-12"
-                data-testid="input-email"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    required
+                    placeholder="your.email@example.com"
+                    className="h-12"
+                    data-testid="input-email"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="telegramUsername">Telegram Username</Label>
-              <Input
-                id="telegramUsername"
-                type="text"
-                value={formData.telegramUsername}
-                onChange={(e) => handleInputChange("telegramUsername", e.target.value)}
-                placeholder="@username (optional)"
-                className="h-12"
-                data-testid="input-telegram"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="telegramUsername">Telegram Username</Label>
+                  <Input
+                    id="telegramUsername"
+                    type="text"
+                    value={formData.telegramUsername}
+                    onChange={(e) => handleInputChange("telegramUsername", e.target.value)}
+                    placeholder="@username (optional)"
+                    className="h-12"
+                    data-testid="input-telegram"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange("phone", e.target.value)}
-                placeholder="+1 (555) 123-4567 (optional)"
-                className="h-12"
-                data-testid="input-phone"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    placeholder="+1 (555) 123-4567 (optional)"
+                    className="h-12"
+                    data-testid="input-phone"
+                  />
+                </div>
+              </>
+            )}
 
             {/* Guest Type Selection */}
             {!guestType && (
