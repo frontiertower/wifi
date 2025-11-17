@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Clock, MapPin, Users } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, ExternalLink } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { format, formatDistanceToNow, isPast, isFuture, isToday } from "date-fns";
 import type { Event } from "@shared/schema";
 
@@ -143,6 +144,27 @@ export default function Events() {
                             </div>
                           </div>
                         )}
+
+                        {event.url && (
+                          <div className="mt-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full"
+                              asChild
+                              data-testid={`button-luma-link-${event.id}`}
+                            >
+                              <a
+                                href={`https://lu.ma/${event.url}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View on Luma
+                                <ExternalLink className="ml-2 h-4 w-4" />
+                              </a>
+                            </Button>
+                          </div>
+                        )}
                       </Card>
                     );
                   })}
@@ -198,6 +220,27 @@ export default function Events() {
                             </div>
                           )}
                         </div>
+
+                        {event.url && (
+                          <div className="mt-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full"
+                              asChild
+                              data-testid={`button-luma-link-${event.id}`}
+                            >
+                              <a
+                                href={`https://lu.ma/${event.url}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View on Luma
+                                <ExternalLink className="ml-2 h-4 w-4" />
+                              </a>
+                            </Button>
+                          </div>
+                        )}
                       </Card>
                     );
                   })}

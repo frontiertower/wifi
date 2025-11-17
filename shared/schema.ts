@@ -63,6 +63,7 @@ export const events = pgTable("events", {
   host: text("host"),
   color: text("color"),
   originalLocation: text("original_location"),
+  url: text("url"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

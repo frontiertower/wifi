@@ -670,6 +670,7 @@ Rules:
       location: z.string().optional(),
       originalLocation: z.string().optional(),
       color: z.string().optional(),
+      url: z.string().optional(),
       source: z.string().optional().default('external'),
     });
 
@@ -737,6 +738,7 @@ Rules:
             host: externalEvent.host || null,
             originalLocation: externalEvent.originalLocation || externalEvent.location || null,
             color: externalEvent.color || null,
+            url: externalEvent.url || null,
             externalId: externalEvent.id,
             source: externalEvent.source,
             maxAttendees: 100,

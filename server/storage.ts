@@ -343,6 +343,7 @@ export class DatabaseStorage {
           host: eventData.host,
           originalLocation: eventData.originalLocation,
           color: eventData.color,
+          url: eventData.url,
           source: eventData.source,
           maxAttendees: eventData.maxAttendees,
         }
