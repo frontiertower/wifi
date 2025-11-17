@@ -48,6 +48,15 @@ export default function AdminDashboard() {
   const [bulkEventText, setBulkEventText] = useState("");
   const { toast } = useToast();
 
+  const cleanHostName = (host: string | null): string | null => {
+    if (!host) return null;
+    
+    return host
+      .replace(/Frontier Tower \| San Francisco/gi, '')
+      .replace(/^[\s,&]+|[\s,&]+$/g, '')
+      .trim() || null;
+  };
+
   // Support URL hash navigation (e.g., /admin#settings)
   useEffect(() => {
     const handleHashChange = () => {
@@ -460,7 +469,7 @@ export default function AdminDashboard() {
                       {new Date(event.endDate).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600 dark:text-gray-400">
-                      {event.host || "-"}
+                      {cleanHostName(event.host) || "-"}
                     </TableCell>
                     <TableCell>
                       {event.source ? (

@@ -31,6 +31,7 @@ export default function BookingPage() {
 
   const form = useForm<InsertBooking>({
     resolver: zodResolver(insertBookingSchema),
+    mode: "onChange",
     defaultValues: {
       eventId: undefined,
       eventName: "",

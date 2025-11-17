@@ -801,17 +801,18 @@ Rules:
           });
         }
         
-        // Use event details to populate booking
+        // Use event details to populate booking before validation
         bookingData = {
           ...bookingData,
           eventName: event.name,
-          eventDescription: event.description,
+          eventDescription: event.description || "",
           startDate: event.startDate,
           endDate: event.endDate,
           location: event.originalLocation || "Frontier Tower"
         };
       }
       
+      // Validate after enrichment
       const validatedData = insertBookingSchema.parse(bookingData);
       const booking = await storage.createBooking(validatedData);
       res.json({ success: true, booking });

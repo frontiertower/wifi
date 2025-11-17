@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { Brain } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
-import GuestForm from "@/components/guest-form";
-import EventForm from "@/components/event-form";
+import UnifiedGuestForm from "@/components/unified-guest-form";
 import SuccessModal from "@/components/success-modal";
 
-type Role = "member" | "guest" | "event" | null;
+type Role = "member" | "guest" | null;
 
 interface SuccessData {
   message: string;
@@ -100,11 +99,7 @@ export default function Home() {
       )}
 
       {selectedRole === "guest" && (
-        <GuestForm onBack={handleBack} onSuccess={handleSuccess} unifiParams={unifiParams} />
-      )}
-
-      {selectedRole === "event" && (
-        <EventForm onBack={handleBack} onSuccess={handleSuccess} unifiParams={unifiParams} />
+        <UnifiedGuestForm onBack={handleBack} onSuccess={handleSuccess} unifiParams={unifiParams} />
       )}
 
       {!selectedRole && (
@@ -125,22 +120,6 @@ export default function Home() {
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Select your access type</h2>
 
             <button
-              onClick={() => handleRoleSelect("event")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
-              data-testid="button-select-event"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/40 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 dark:group-hover:bg-orange-900/60">
-                  <i className="fas fa-calendar text-orange-600 dark:text-orange-400"></i>
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Event Access</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Conference and event attendees</div>
-                </div>
-              </div>
-            </button>
-
-            <button
               onClick={() => handleRoleSelect("guest")}
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
               data-testid="button-select-guest"
@@ -150,8 +129,8 @@ export default function Home() {
                   <i className="fas fa-user text-green-600 dark:text-green-400"></i>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Guest</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and temporary users</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Guest Access</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and event attendees</div>
                 </div>
               </div>
             </button>

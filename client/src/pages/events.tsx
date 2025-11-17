@@ -36,6 +36,15 @@ export default function Events() {
     }
   };
 
+  const cleanHostName = (host: string | null): string | null => {
+    if (!host) return null;
+    
+    return host
+      .replace(/Frontier Tower \| San Francisco/gi, '')
+      .replace(/^[\s,&]+|[\s,&]+$/g, '')
+      .trim() || null;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
@@ -115,11 +124,11 @@ export default function Events() {
                             </span>
                           </div>
 
-                          {event.host && (
+                          {cleanHostName(event.host) && (
                             <div className="flex items-center gap-2 text-sm">
                               <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                               <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
-                                Hosted by {event.host}
+                                Hosted by {cleanHostName(event.host)}
                               </span>
                             </div>
                           )}
@@ -211,11 +220,11 @@ export default function Events() {
                             </span>
                           </div>
 
-                          {event.host && (
+                          {cleanHostName(event.host) && (
                             <div className="flex items-center gap-2 text-sm">
                               <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                               <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
-                                {event.host}
+                                {cleanHostName(event.host)}
                               </span>
                             </div>
                           )}
