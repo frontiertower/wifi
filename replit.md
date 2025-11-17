@@ -16,7 +16,7 @@ Preferred communication style: Simple, everyday language.
 *   **UI Component System**: shadcn/ui built on Radix UI primitives and Tailwind CSS, adhering to a "new-york" style.
 *   **Design Philosophy**: Mobile-first, progressive disclosure, focusing on clarity and trust with Inter or DM Sans fonts and a neutral color scheme.
 *   **State Management**: TanStack Query for server state, React Hook Form with Zod for form management.
-*   **Routing**: Wouter for client-side routing, distinguishing between public portal (`/`) and admin dashboard (`/admin`).
+*   **Routing**: Wouter for client-side routing, distinguishing between public portal (`/`), events page (`/events`), and admin dashboard (`/admin`).
 *   **Component Organization**: Structured separation of page components, reusable UI components, and shadcn/ui primitives.
 
 ### Backend Architecture
@@ -79,6 +79,15 @@ Preferred communication style: Simple, everyday language.
 *   **UniFi Configuration**: Dedicated Settings tab in the admin dashboard for configuring UniFi controller integration, supporting both Modern and Legacy APIs with database storage for settings.
 *   **Event Management**: AI-powered bulk event import using OpenAI GPT-4o for parsing unstructured text into structured event data, with robust validation.
 *   **Daily Counters**: Atomic SQL upserts for daily guest registration counts to prevent race conditions and ensure data integrity.
+*   **Public Events Page (November 17, 2025)**:
+    *   New public-facing `/events` route displays all upcoming and past events
+    *   API endpoint `/api/events` returns all active events sorted by start date
+    *   Events automatically grouped by end date: upcoming (endDate >= now) and past (endDate < now)
+    *   Event cards display status badges (Happening Now, Upcoming, Past) based on current time
+    *   Comprehensive event details including date, time, host, location, attendee counts, and event codes
+    *   Responsive card grid layout (3 columns on desktop, 2 on tablet, 1 on mobile) with hover interactions
+    *   Loading skeletons and empty state handling for optimal UX
+    *   Full dark mode support with theme toggle
 
 ## External Dependencies
 
