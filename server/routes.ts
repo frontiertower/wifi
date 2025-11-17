@@ -336,6 +336,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         purpose: z.string().optional(),
         host: z.string().min(1),
         phone: z.string().optional(),
+        tourInterest: z.enum(["yes", "maybe", "no"]).optional(),
         macAddress: z.string().optional(),
         unifiParams: z.object({
           id: z.string().optional(),

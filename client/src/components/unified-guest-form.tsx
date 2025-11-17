@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { format } from "date-fns";
 
 interface UniFiParams {
   id?: string;
@@ -46,12 +49,8 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     eventName: "",
   });
 
-  const [selectedDate, setSelectedDate] = useState<string>(() => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    return new Date();
   });
 
   const [customEventName, setCustomEventName] = useState<string>("");
@@ -60,17 +59,20 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const { toast } = useToast();
 
   const timezoneOffset = new Date().getTimezoneOffset();
+  const dateString = format(selectedDate, "yyyy-MM-dd");
 
   const { data: eventsData, isLoading: eventsLoading } = useQuery<{ success: boolean; events: Array<{ id: number; name: string }> }>({
-    queryKey: [`/api/events/today?offset=${timezoneOffset}&date=${selectedDate}`],
+    queryKey: [`/api/events/today?offset=${timezoneOffset}&date=${dateString}`],
     enabled: guestType === "event",
   });
 
-  const handleDateChange = (newDate: string) => {
-    setSelectedDate(newDate);
-    setFormData(prev => ({ ...prev, eventName: "" }));
-    setIsOtherEvent(false);
-    setCustomEventName("");
+  const handleDateChange = (newDate: Date | undefined) => {
+    if (newDate) {
+      setSelectedDate(newDate);
+      setFormData(prev => ({ ...prev, eventName: "" }));
+      setIsOtherEvent(false);
+      setCustomEventName("");
+    }
   };
 
   const availableEvents = eventsData?.events || [];
@@ -182,8 +184,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const getFormattedDate = (dateStr: string) => {
-    const date = new Date(dateStr + 'T00:00:00');
+  const getFormattedDate = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       month: 'long',
       day: 'numeric',
@@ -355,26 +356,28 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="eventDate">Event Date</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="eventDate"
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => handleDateChange(e.target.value)}
-                      className="h-12 flex-1"
-                      data-testid="input-event-date"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="h-12"
-                      onClick={() => document.getElementById('eventDate')?.showPicker?.()}
-                      data-testid="button-choose-date"
-                    >
-                      Choose a Date
-                    </Button>
-                  </div>
+                  <Label>Event Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full h-12 justify-start text-left font-normal"
+                        data-testid="button-select-date"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={handleDateChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <p className="text-sm text-muted-foreground">
                     Showing events for {getFormattedDate(selectedDate)}
                   </p>

@@ -32,6 +32,7 @@ interface GuestFormData {
   telegramUsername: string;
   host: string;
   phone: string;
+  tourInterest?: "yes" | "maybe" | "no";
 }
 
 export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormProps) {
@@ -41,6 +42,7 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
     telegramUsername: "",
     host: "",
     phone: "",
+    tourInterest: undefined,
   });
   const { toast } = useToast();
 
@@ -53,6 +55,7 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
         telegramUsername: data.telegramUsername,
         host: data.host,
         phone: data.phone || undefined,
+        tourInterest: data.tourInterest,
         unifiParams: unifiParams,
       });
       return response.json();
@@ -172,6 +175,39 @@ export default function GuestForm({ onBack, onSuccess, unifiParams }: GuestFormP
                 className="h-12"
                 data-testid="input-phone"
               />
+            </div>
+
+            <div className="space-y-3">
+              <Label>Are you interested in a tour of Frontier Tower?</Label>
+              <div className="grid grid-cols-3 gap-3">
+                <Button
+                  type="button"
+                  variant={formData.tourInterest === "yes" ? "default" : "outline"}
+                  className="h-12"
+                  onClick={() => setFormData(prev => ({ ...prev, tourInterest: "yes" }))}
+                  data-testid="button-tour-yes"
+                >
+                  Yes
+                </Button>
+                <Button
+                  type="button"
+                  variant={formData.tourInterest === "maybe" ? "default" : "outline"}
+                  className="h-12"
+                  onClick={() => setFormData(prev => ({ ...prev, tourInterest: "maybe" }))}
+                  data-testid="button-tour-maybe"
+                >
+                  Maybe
+                </Button>
+                <Button
+                  type="button"
+                  variant={formData.tourInterest === "no" ? "default" : "outline"}
+                  className="h-12"
+                  onClick={() => setFormData(prev => ({ ...prev, tourInterest: "no" }))}
+                  data-testid="button-tour-no"
+                >
+                  No
+                </Button>
+              </div>
             </div>
 
             <Alert className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800">

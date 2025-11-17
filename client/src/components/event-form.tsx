@@ -54,7 +54,7 @@ export default function EventForm({ onBack, onSuccess, unifiParams }: EventFormP
   const { toast } = useToast();
 
   const timezoneOffset = new Date().getTimezoneOffset();
-  const dateString = selectedDate.toISOString().split('T')[0];
+  const dateString = format(selectedDate, "yyyy-MM-dd");
 
   const { data: eventsData, isLoading: eventsLoading } = useQuery<{ success: boolean; events: Array<{ id: number; name: string }> }>({
     queryKey: [`/api/events/today?offset=${timezoneOffset}&date=${dateString}`],

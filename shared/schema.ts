@@ -28,6 +28,7 @@ export const captiveUsers = pgTable("captive_users", {
   // Guest specific fields
   purpose: text("purpose"),
   host: text("host"),
+  tourInterest: text("tour_interest"),
   // Event specific fields
   eventCode: text("event_code"),
   eventName: text("event_name"),
