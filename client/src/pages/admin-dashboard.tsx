@@ -118,6 +118,29 @@ export default function AdminDashboard() {
     },
   });
 
+  const syncEventsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/events/sync", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      const count = data.events?.length || 0;
+      toast({
+        title: "Events Synced",
+        description: `Successfully synced ${count} event${count !== 1 ? 's' : ''} from external feed`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to Sync Events",
+        description: error instanceof Error ? error.message : "Could not sync events from external feed",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmitBulkText = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bulkEventText.trim()) {
@@ -288,14 +311,37 @@ export default function AdminDashboard() {
             <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                 <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Event Management</h2>
-                <Button 
-                  onClick={() => setShowEventForm(!showEventForm)}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white w-full sm:w-auto" 
-                  data-testid="button-create-event"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Event
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  <Button 
+                    onClick={() => syncEventsMutation.mutate()}
+                    disabled={syncEventsMutation.isPending}
+                    variant="outline"
+                    className="w-full sm:w-auto" 
+                    data-testid="button-sync-events"
+                  >
+                    {syncEventsMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Syncing...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Sync Events
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    onClick={() => setShowEventForm(!showEventForm)}
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white w-full sm:w-auto" 
+                    data-testid="button-create-event"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Event
+                  </Button>
+                </div>
               </div>
             </div>
 

@@ -386,21 +386,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }).optional(),
       }).parse(req.body);
 
+      // Check if event exists in database
       const event = await storage.getEventByName(eventData.eventName);
-      if (!event || !event.isActive) {
+      
+      // Allow custom events (not in database) or active database events
+      if (event && !event.isActive) {
         return res.status(400).json({
           success: false,
-          message: "Invalid or inactive event name"
+          message: "Event is no longer active"
         });
       }
 
       const user = await storage.createCaptiveUser(eventData);
-      await storage.incrementEventAttendees(event.id);
+      
+      // Only increment attendees if this is a database event
+      if (event) {
+        await storage.incrementEventAttendees(event.id);
+      }
 
       res.json({
         success: true,
         user: user,
-        event: event,
+        event: event || { name: eventData.eventName, isCustom: true },
         message: "Event attendee registered successfully"
       });
     } catch (error) {

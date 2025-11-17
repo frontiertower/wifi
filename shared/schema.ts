@@ -58,6 +58,11 @@ export const events = pgTable("events", {
   isActive: boolean("is_active").default(true),
   maxAttendees: integer("max_attendees"),
   currentAttendees: integer("current_attendees").default(0),
+  externalId: text("external_id").unique(),
+  source: text("source"),
+  host: text("host"),
+  color: text("color"),
+  originalLocation: text("original_location"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
