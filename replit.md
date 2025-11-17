@@ -51,11 +51,7 @@ Preferred communication style: Simple, everyday language.
 *   **Hero Section & Branding (November 17, 2025)**:
     *   Portal homepage showcases AI, Agents, and LLMs focus
     *   Brain icon replaces Building icon in header
-    *   Featured Projects section displays three key projects:
-        *   Omi.me - https://omi.me
-        *   modelcontextprotocol-security.io - https://modelcontextprotocol-security.io
-        *   safemode.dev - https://safemode.dev
-    *   All project links open in new tabs
+    *   Subtitle displays "AI • Agents • LLMs"
 *   **External Events Feed Integration (November 17, 2025)**:
     *   New API endpoint `/api/external-events` proxies Luma events from external timeline service
     *   Event form fetches real-time events from https://studio--frontier-tower-timeline.us-central1.hosted.app/api/events

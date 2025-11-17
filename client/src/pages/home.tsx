@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Brain, Sparkles } from "lucide-react";
+import { Brain } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import GuestForm from "@/components/guest-form";
@@ -120,45 +120,6 @@ export default function Home() {
             </div>
             <h1 className="text-2xl font-bold mb-2">Frontier Tower</h1>
             <p className="text-primary-foreground/80">AI • Agents • LLMs</p>
-          </div>
-
-          <div className="px-6 pt-6 pb-4 border-b dark:border-gray-700">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Featured Projects</h3>
-            </div>
-            <div className="space-y-2 text-sm">
-              <a 
-                href="https://omi.me" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-primary hover:underline"
-                data-testid="link-project-omi"
-              >
-                <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                Omi.me
-              </a>
-              <a 
-                href="https://modelcontextprotocol-security.io" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-primary hover:underline"
-                data-testid="link-project-mcp"
-              >
-                <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                modelcontextprotocol-security.io
-              </a>
-              <a 
-                href="https://safemode.dev" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-primary hover:underline"
-                data-testid="link-project-safemode"
-              >
-                <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                safemode.dev
-              </a>
-            </div>
           </div>
 
           <div className="p-6">
