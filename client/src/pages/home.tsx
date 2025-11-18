@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, UserCheck, Briefcase, MessageCircle, Building2, Camera, Link2 } from "lucide-react";
+import { Brain, Calendar, UserPlus, UserCheck, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen } from "lucide-react";
 import { Link } from "wouter";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
@@ -159,6 +159,22 @@ export default function Home() {
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Book a Tower Tour</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Schedule a guided tour of the building</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/tour-booking"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-rent-office"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/40">
+                  <DoorOpen className="text-amber-600 dark:text-amber-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Rent a Private Office</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Explore private office spaces</div>
                 </div>
               </div>
             </Link>
