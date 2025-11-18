@@ -304,9 +304,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { password } = schema.parse(req.body);
       const settings = await storage.getSettings();
-      const storedPassword = settings.guest_password || "makesomething";
+      
+      // If admin has set a custom password, only accept that
+      // Otherwise, accept both default passwords: "makesomething" and "frontiertower995"
+      let allowedPasswords: string[];
+      if (settings.guest_password && settings.guest_password !== "makesomething") {
+        allowedPasswords = [settings.guest_password];
+      } else {
+        allowedPasswords = ["makesomething", "frontiertower995"];
+      }
 
-      if (password === storedPassword) {
+      if (allowedPasswords.includes(password)) {
         res.json({ success: true });
       } else {
         res.json({ success: false, message: "Incorrect password" });
