@@ -11,6 +11,7 @@ import Booking from "@/pages/booking";
 import Directory from "@/pages/directory";
 import AddListing from "@/pages/addlisting";
 import DirectoryAdmin from "@/pages/directory-admin";
+import DirectoryEdit from "@/pages/directory-edit";
 import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/booking" component={Booking} />
       <Route path="/directory" component={Directory} />
       <Route path="/directory/admin" component={DirectoryAdmin} />
+      <Route path="/directory/edit/:slug" component={DirectoryEdit} />
       <Route path="/addlisting" component={AddListing} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/settings">

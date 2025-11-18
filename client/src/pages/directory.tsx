@@ -1,11 +1,20 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
 import type { DirectoryListing } from "@shared/schema";
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/--+/g, '-')
+    .trim();
+}
 
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
@@ -299,6 +308,23 @@ export default function Directory() {
                           )}
                         </div>
                       )}
+
+                      <div className="pt-3 border-t">
+                        <Link 
+                          href={`/directory/edit/${slugify(getDisplayName(listing))}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            data-testid={`button-edit-listing-${listing.id}`}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit Listing
+                          </Button>
+                        </Link>
+                      </div>
                     </CardContent>
                   )}
                 </Card>
