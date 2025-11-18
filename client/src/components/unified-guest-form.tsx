@@ -114,6 +114,8 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       registerEventGuestMutation.mutate(pendingRegistrationData.data);
     } else if (pendingRegistrationData.type === "tower_member") {
       registerTowerMemberMutation.mutate(pendingRegistrationData.data);
+    } else if (pendingRegistrationData.type === "visitor") {
+      registerVisitorMutation.mutate(pendingRegistrationData.data);
     }
   };
 
@@ -269,6 +271,40 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     },
   });
 
+  const registerVisitorMutation = useMutation({
+    mutationFn: async (data: FormData) => {
+      const response = await apiRequest("POST", "/api/register/guest", {
+        role: "guest",
+        name: data.name,
+        email: data.email,
+        telegramUsername: data.telegramUsername,
+        host: "Visitor",
+        phone: data.phone || undefined,
+        tourInterest: data.tourInterest || undefined,
+        unifiParams: unifiParams,
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      onSuccess({
+        message: "Welcome! You are now connected to Frontier Tower WiFi.",
+        networkName: "FrontierTower",
+        duration: "24 hours",
+        speedLimit: "Full-speed"
+      });
+    },
+    onError: (error) => {
+      setFlowStep('password');
+      setPasswordInput("");
+      setPasswordError("");
+      toast({
+        title: "Registration Failed",
+        description: error instanceof Error ? error.message : "Failed to register as visitor. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -344,7 +380,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     return formatted.replace(/\d+/, `${day}${suffix}`);
   };
 
-  const isSubmitting = registerMemberGuestMutation.isPending || registerEventGuestMutation.isPending || registerTowerMemberMutation.isPending;
+  const isSubmitting = registerMemberGuestMutation.isPending || registerEventGuestMutation.isPending || registerTowerMemberMutation.isPending || registerVisitorMutation.isPending;
 
   // Show password verification screen after form submission
   if (flowStep === 'password') {
@@ -355,19 +391,19 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         </div>
         <div className="max-w-lg mx-auto">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-            <div className="bg-blue-600 text-white p-6">
+            <div className="p-6">
               <Button
                 onClick={() => setFlowStep('form')}
                 variant="ghost"
                 size="sm"
-                className="mb-4 text-white hover:text-white/80 hover:bg-white/10 p-0"
+                className="mb-4"
                 data-testid="button-back"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
               <h1 className="text-xl font-bold">WiFi Password</h1>
-              <p className="text-white/90 text-sm mt-1">Almost done! Just ask your host for the password for the WiFi</p>
+              <p className="text-muted-foreground text-sm mt-1">Almost done! Just ask your host for the password for the WiFi</p>
             </div>
 
             <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
@@ -491,19 +527,19 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       </div>
       <div className="max-w-lg mx-auto">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-          <div className="bg-blue-600 text-white p-6">
+          <div className="p-6">
             <Button
               onClick={onBack}
               variant="ghost"
               size="sm"
-              className="mb-4 text-white hover:text-white/80 hover:bg-white/10 p-0"
+              className="mb-4"
               data-testid="button-back"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
             <h1 className="text-xl font-bold">Get WiFi Access</h1>
-            <p className="text-white/90 text-sm mt-1">Welcome! Please provide your information</p>
+            <p className="text-muted-foreground text-sm mt-1">Welcome! Please provide your information</p>
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
