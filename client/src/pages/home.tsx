@@ -190,7 +190,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Host Your Event</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Schedule a call to discuss your event</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Setup a call to discuss an event</div>
                 </div>
               </div>
             </Link>
