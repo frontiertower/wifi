@@ -111,6 +111,15 @@ Preferred communication style: Simple, everyday language.
         *   Replaced native date input with Calendar + Popover + Button datepicker to avoid cross-origin iframe errors
         *   Replaced Select dropdown with checkboxes for event selection
         *   Added "Other" checkbox option with conditional custom event name input field
+    *   **Guest Password Protection (November 18, 2025)**:
+        *   Added password verification step before guest registration form
+        *   Shared access code (default: "makesomething") required to view registration form
+        *   Configurable via admin settings with show/hide toggle (Eye/EyeOff icons)
+        *   Backend endpoint `/api/verify-guest-password` validates password before form access
+        *   Password stored in settings table with UPSERT pattern for updates
+        *   Three-state flow: password entry → form filling → submission
+        *   Wrong password shows error toast, correct password reveals registration fields
+        *   E2E tested with 28 validation steps covering admin config and guest flow
 *   **Booking System (November 17, 2025)**:
     *   New `/booking` route allows users to book events/meetings with comprehensive organizer details
     *   **Database Schema**: `bookings` table with optional `eventId` reference, custom event fields (name, description, dates, location), and organizer details (name, email, phone, LinkedIn, Twitter, company)
