@@ -196,7 +196,7 @@ export default function Directory() {
                   data-testid={`card-listing-${listing.id}`}
                   onClick={() => toggleListing(listing.id)}
                 >
-                  <CardHeader className="pb-3">
+                  <CardHeader className="pb-3 pt-4">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         {listing.logoUrl ? (
