@@ -293,6 +293,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Verify guest password
+  app.post("/api/verify-guest-password", async (req, res) => {
+    try {
+      const schema = z.object({
+        password: z.string().min(1),
+      });
+
+      const { password } = schema.parse(req.body);
+      const settings = await storage.getSettings();
+      const storedPassword = settings.guest_password || "makesomething";
+
+      if (password === storedPassword) {
+        res.json({ success: true });
+      } else {
+        res.json({ success: false, message: "Incorrect password" });
+      }
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to verify password"
+      });
+    }
+  });
+
   // Member registration
   app.post("/api/register/member", async (req, res) => {
     try {

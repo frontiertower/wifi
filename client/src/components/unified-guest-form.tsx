@@ -40,6 +40,9 @@ interface FormData {
 }
 
 export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: UnifiedGuestFormProps) {
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [guestType, setGuestType] = useState<GuestType>(null);
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -59,6 +62,31 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const [isOtherEvent, setIsOtherEvent] = useState<boolean>(false);
 
   const { toast } = useToast();
+
+  const verifyPasswordMutation = useMutation({
+    mutationFn: async (password: string) => {
+      const response = await apiRequest("POST", "/api/verify-guest-password", { password });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        setIsPasswordVerified(true);
+        setPasswordError("");
+      } else {
+        setPasswordError("Incorrect password. Please try again.");
+      }
+    },
+    onError: () => {
+      setPasswordError("Failed to verify password. Please try again.");
+    },
+  });
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput.trim()) {
+      verifyPasswordMutation.mutate(passwordInput);
+    }
+  };
 
   const timezoneOffset = new Date().getTimezoneOffset();
   const dateString = format(selectedDate, "yyyy-MM-dd");
@@ -205,6 +233,69 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   };
 
   const isSubmitting = registerMemberGuestMutation.isPending || registerEventGuestMutation.isPending;
+
+  // Show password verification screen first
+  if (!isPasswordVerified) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
+        <div className="max-w-lg mx-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+            <div className="bg-blue-600 text-white p-6">
+              <Button
+                onClick={onBack}
+                variant="ghost"
+                size="sm"
+                className="mb-4 text-white hover:text-white/80 hover:bg-white/10 p-0"
+                data-testid="button-back"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+              </Button>
+              <h1 className="text-xl font-bold">Guest Access</h1>
+              <p className="text-white/90 text-sm mt-1">Please enter the guest password to continue</p>
+            </div>
+
+            <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="password">Guest Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={passwordInput}
+                  onChange={(e) => {
+                    setPasswordInput(e.target.value);
+                    setPasswordError("");
+                  }}
+                  required
+                  placeholder="Enter guest password"
+                  className="h-12"
+                  data-testid="input-guest-password"
+                  autoFocus
+                />
+                {passwordError && (
+                  <p className="text-sm text-red-600 dark:text-red-400" data-testid="text-password-error">
+                    {passwordError}
+                  </p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full h-12"
+                disabled={verifyPasswordMutation.isPending || !passwordInput.trim()}
+                data-testid="button-verify-password"
+              >
+                {verifyPasswordMutation.isPending ? "Verifying..." : "Continue"}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
