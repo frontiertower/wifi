@@ -4,7 +4,6 @@ import { Link } from "wouter";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
-import SuccessModal from "@/components/success-modal";
 
 type Role = "member" | "guest" | null;
 
@@ -26,7 +25,6 @@ interface UniFiParams {
 
 export default function Home() {
   const [selectedRole, setSelectedRole] = useState<Role>(null);
-  const [successData, setSuccessData] = useState<SuccessData | null>(null);
   const [unifiParams, setUnifiParams] = useState<UniFiParams>({});
 
   useEffect(() => {
@@ -84,13 +82,7 @@ export default function Home() {
       console.error('✗ Authorization error:', error);
     }
     
-    // Show success modal if no URL to redirect to (non-captive portal use)
-    setSuccessData(data);
-  };
-
-  const handleCloseModal = () => {
-    setSuccessData(null);
-    setSelectedRole(null);
+    // Registration complete - no modal needed
   };
 
   return (
@@ -267,16 +259,6 @@ export default function Home() {
           </div>
         </div>
         </div>
-      )}
-
-      {successData && (
-        <SuccessModal
-          message={successData.message}
-          networkName={successData.networkName}
-          duration={successData.duration}
-          speedLimit={successData.speedLimit}
-          onClose={handleCloseModal}
-        />
       )}
     </>
   );
