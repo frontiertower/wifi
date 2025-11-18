@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download, ClipboardList } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download, ClipboardList, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,6 +8,12 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ThemeToggle } from "@/components/theme-toggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -314,9 +320,28 @@ export default function AdminDashboard() {
             <div className="flex items-center space-x-2 sm:space-x-4">
               <ThemeToggle />
               <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden md:block">Last login: Today, 2:30 PM</div>
-              <div className="w-8 h-8 bg-primary-500 dark:bg-primary-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-medium">AD</span>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" data-testid="button-menu-toggle">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  {tabs.map((tab) => {
+                    const Icon = tab.icon;
+                    return (
+                      <DropdownMenuItem
+                        key={tab.id}
+                        onClick={() => handleTabChange(tab.id)}
+                        data-testid={`menu-item-${tab.id}`}
+                      >
+                        <Icon className="mr-2 h-4 w-4" />
+                        <span>{tab.label}</span>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
