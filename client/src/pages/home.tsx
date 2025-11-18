@@ -149,7 +149,7 @@ export default function Home() {
                   <UserPlus className="text-orange-600 dark:text-orange-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Book a Tower Tour</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Book an Office Tour</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Get a guided tour of the building</div>
                 </div>
               </div>
