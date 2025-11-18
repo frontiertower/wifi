@@ -139,6 +139,7 @@ export const tourBookings = pgTable("tour_bookings", {
   company: text("company"),
   phone: text("phone").notNull(),
   email: text("email").notNull(),
+  linkedIn: text("linked_in"),
   tourDate: timestamp("tour_date").notNull(),
   tourTime: text("tour_time").notNull(),
   interestedInPrivateOffice: boolean("interested_in_private_office").default(false),

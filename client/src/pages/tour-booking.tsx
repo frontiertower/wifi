@@ -37,6 +37,7 @@ const tourBookingFormSchema = z.object({
   company: z.string().optional(),
   phone: z.string().min(1, "Phone number is required"),
   email: z.string().email("Valid email is required").min(1, "Email is required"),
+  linkedIn: z.string().optional(),
   tourDate: z.date({
     required_error: "Tour date is required",
   }),
@@ -83,6 +84,7 @@ export default function TourBooking() {
       company: "",
       phone: "",
       email: "",
+      linkedIn: "",
       interestedInPrivateOffice: false,
       notes: "",
     },
@@ -217,6 +219,24 @@ export default function TourBooking() {
                     )}
                   />
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="linkedIn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your LinkedIn</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="linkedin.com/in/yourprofile"
+                          data-testid="input-linkedin"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
