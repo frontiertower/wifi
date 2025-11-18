@@ -107,6 +107,22 @@ export default function Home() {
           </div>
 
           <div className="p-6">
+            <button
+              onClick={() => handleRoleSelect("guest")}
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
+              data-testid="button-select-guest"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
+                  <UserCheck className="text-green-600 dark:text-green-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">WiFi Access</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and event attendees</div>
+                </div>
+              </div>
+            </button>
+
             <Link
               href="/apply-to-join"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200 text-left group block"
@@ -223,7 +239,7 @@ export default function Home() {
 
             <Link
               href="/tour-booking"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 text-left group block"
+              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 text-left group block"
               data-testid="button-rent-office"
             >
               <div className="flex items-center">
@@ -236,22 +252,6 @@ export default function Home() {
                 </div>
               </div>
             </Link>
-
-            <button
-              onClick={() => handleRoleSelect("guest")}
-              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
-              data-testid="button-select-guest"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
-                  <UserCheck className="text-green-600 dark:text-green-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">WiFi Access</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and event attendees</div>
-                </div>
-              </div>
-            </button>
 
             <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
               By connecting, you agree to our terms of service
