@@ -1059,6 +1059,74 @@ Rules:
     }
   });
 
+  app.patch("/api/directory/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = req.body;
+      
+      // Validate that company listings have companyName
+      if (data.type === "company" && data.companyName !== undefined && !data.companyName?.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: "Company name is required for company listings"
+        });
+      }
+      
+      // Validate that person listings have firstName and lastName
+      if (data.type === "person") {
+        if (data.firstName !== undefined && !data.firstName?.trim()) {
+          return res.status(400).json({
+            success: false,
+            message: "First name is required for person listings"
+          });
+        }
+        if (data.lastName !== undefined && !data.lastName?.trim()) {
+          return res.status(400).json({
+            success: false,
+            message: "Last name is required for person listings"
+          });
+        }
+      }
+      
+      const listing = await storage.updateDirectoryListing(id, data);
+      if (!listing) {
+        return res.status(404).json({
+          success: false,
+          message: "Directory listing not found"
+        });
+      }
+      
+      res.json({ success: true, listing });
+    } catch (error) {
+      console.error("Error updating directory listing:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update directory listing"
+      });
+    }
+  });
+
+  app.delete("/api/directory/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteDirectoryListing(id);
+      
+      if (!success) {
+        return res.status(404).json({
+          success: false,
+          message: "Directory listing not found"
+        });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete directory listing"
+      });
+    }
+  });
+
   app.get("/api/admin/sessions", async (req, res) => {
     try {
       const sessions = await storage.getActiveSessions();

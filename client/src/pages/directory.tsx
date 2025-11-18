@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -133,6 +133,16 @@ export default function Directory() {
                 <ArrowUpDown className="mr-2 h-4 w-4" />
                 {floorSortAsc ? "Sort 1-15" : "Sort 15-1"}
               </Button>
+              <Link href="/directory/admin">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  data-testid="button-admin"
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  Admin
+                </Button>
+              </Link>
               <Link href="/addlisting">
                 <Button
                   className="bg-blue-600 hover:bg-blue-700 text-white"

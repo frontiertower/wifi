@@ -10,6 +10,7 @@ import PastEvents from "@/pages/past-events";
 import Booking from "@/pages/booking";
 import Directory from "@/pages/directory";
 import AddListing from "@/pages/addlisting";
+import DirectoryAdmin from "@/pages/directory-admin";
 import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/past-events" component={PastEvents} />
       <Route path="/booking" component={Booking} />
       <Route path="/directory" component={Directory} />
+      <Route path="/directory/admin" component={DirectoryAdmin} />
       <Route path="/addlisting" component={AddListing} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/settings">

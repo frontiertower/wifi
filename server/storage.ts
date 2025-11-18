@@ -488,6 +488,31 @@ export class DatabaseStorage {
   async getAllDirectoryListings(): Promise<DirectoryListing[]> {
     return await db.select().from(directoryListings).orderBy(sql`${directoryListings.companyName} ASC`);
   }
+
+  async getDirectoryListingById(id: number): Promise<DirectoryListing | null> {
+    const [listing] = await db
+      .select()
+      .from(directoryListings)
+      .where(eq(directoryListings.id, id));
+    return listing || null;
+  }
+
+  async updateDirectoryListing(id: number, listingData: Partial<InsertDirectoryListing>): Promise<DirectoryListing | null> {
+    const [listing] = await db
+      .update(directoryListings)
+      .set(listingData)
+      .where(eq(directoryListings.id, id))
+      .returning();
+    return listing || null;
+  }
+
+  async deleteDirectoryListing(id: number): Promise<boolean> {
+    const result = await db
+      .delete(directoryListings)
+      .where(eq(directoryListings.id, id))
+      .returning();
+    return result.length > 0;
+  }
 }
 
 export const storage = new DatabaseStorage();
