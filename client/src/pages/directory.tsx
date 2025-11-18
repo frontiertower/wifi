@@ -76,7 +76,7 @@ export default function Directory() {
       return listing.floor;
     }
     if (listing.officeNumber) {
-      return `Office ${listing.officeNumber}`;
+      return listing.officeNumber;
     }
     return null;
   };
