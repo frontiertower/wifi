@@ -347,8 +347,9 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6 -mx-4 sm:mx-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+        {/* Desktop Tabs - Hidden on mobile */}
+        <div className="mb-6 -mx-4 sm:mx-0 hidden md:block">
           <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
             <nav className="-mb-px flex space-x-4 sm:space-x-8 px-4 sm:px-0">
               {tabs.map((tab) => {
@@ -365,8 +366,7 @@ export default function AdminDashboard() {
                     data-testid={`tab-${tab.id}`}
                   >
                     <Icon className="mr-1.5 sm:mr-2 h-4 w-4" />
-                    <span className="hidden sm:inline">{tab.label}</span>
-                    <span className="sm:hidden text-xs">{tab.label}</span>
+                    <span>{tab.label}</span>
                   </button>
                 );
               })}
@@ -1196,6 +1196,34 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === "settings" && <SettingsTab />}
+      </div>
+
+      {/* Mobile Floating Bottom Dock - Visible only on small screens */}
+      <div className="fixed bottom-0 left-0 right-0 md:hidden z-50">
+        <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg">
+          <nav className="flex justify-around items-center px-2 py-3">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`${
+                    activeTab === tab.id
+                      ? "text-primary-600 dark:text-primary-400"
+                      : "text-gray-500 dark:text-gray-400"
+                  } flex flex-col items-center justify-center transition-colors hover-elevate active-elevate-2 rounded-lg p-2 min-w-[60px]`}
+                  data-testid={`mobile-tab-${tab.id}`}
+                >
+                  <Icon className={`h-6 w-6 ${activeTab === tab.id ? "mb-1" : "mb-0.5"}`} />
+                  {activeTab === tab.id && (
+                    <div className="w-1 h-1 rounded-full bg-primary-600 dark:bg-primary-400 mt-1"></div>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
       </div>
     </div>
   );
