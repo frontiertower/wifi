@@ -236,6 +236,25 @@ export default function Home() {
                 </div>
               </div>
             </Link>
+
+            <div className="mt-8 text-center">
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Share with your friends
+              </p>
+              <div className="flex justify-center">
+                <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-600">
+                  <img 
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://thefrontiertower.com"
+                    alt="QR Code for thefrontiertower.com"
+                    className="w-40 h-40"
+                    data-testid="qr-code-share"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                Scan to visit thefrontiertower.com
+              </p>
+            </div>
           </div>
         </div>
         </div>
