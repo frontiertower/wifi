@@ -683,20 +683,6 @@ export default function AdminDashboard() {
 
             <h3 className="text-sm sm:text-base font-medium text-gray-700 mb-4">Lifetime Totals</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg p-4 sm:p-6 border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Users</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-blue-900 dark:text-blue-100 mt-2" data-testid="text-total-users">
-                      {stats?.stats?.totalUsers || 0}
-                    </p>
-                  </div>
-                  <div className="w-12 h-12 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center">
-                    <Users className="text-blue-700 dark:text-blue-300" />
-                  </div>
-                </div>
-              </div>
-
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg p-4 sm:p-6 border border-purple-200 dark:border-purple-800">
                 <div className="flex items-center justify-between">
                   <div>
@@ -749,6 +735,20 @@ export default function AdminDashboard() {
                   </div>
                   <div className="w-12 h-12 bg-orange-200 dark:bg-orange-800 rounded-lg flex items-center justify-center">
                     <Calendar className="text-orange-700 dark:text-orange-300" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg p-4 sm:p-6 border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Users</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-blue-900 dark:text-blue-100 mt-2" data-testid="text-total-users">
+                      {stats?.stats?.totalUsers || 0}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center">
+                    <Users className="text-blue-700 dark:text-blue-300" />
                   </div>
                 </div>
               </div>
