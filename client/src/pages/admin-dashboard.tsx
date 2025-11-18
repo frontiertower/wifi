@@ -590,17 +590,12 @@ export default function AdminDashboard() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Event Name</TableHead>
-                  <TableHead>Code</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Start Date</TableHead>
                   <TableHead>Host</TableHead>
-                  <TableHead>Current Attendees</TableHead>
-                  <TableHead>Max Attendees</TableHead>
-                  <TableHead>External ID</TableHead>
                   <TableHead>Color</TableHead>
                   <TableHead>Original Location</TableHead>
                   <TableHead>Created At</TableHead>
-                  <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -616,7 +611,7 @@ export default function AdminDashboard() {
                   if (filteredEvents.length === 0) {
                     return (
                       <TableRow>
-                        <TableCell colSpan={13} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <TableCell colSpan={8} className="text-center py-8 text-gray-500 dark:text-gray-400">
                           No {eventFilter} events found.
                         </TableCell>
                       </TableRow>
@@ -628,9 +623,6 @@ export default function AdminDashboard() {
                     <TableCell className="font-medium">
                       {event.name}
                     </TableCell>
-                    <TableCell className="text-sm">
-                      {event.code}
-                    </TableCell>
                     <TableCell className="text-sm max-w-xs truncate" title={event.description}>
                       {event.description || "-"}
                     </TableCell>
@@ -639,15 +631,6 @@ export default function AdminDashboard() {
                     </TableCell>
                     <TableCell className="text-sm text-gray-600 dark:text-gray-400">
                       {cleanHostName(event.host) || "-"}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {event.currentAttendees}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {event.maxAttendees || "∞"}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {event.externalId || "-"}
                     </TableCell>
                     <TableCell>
                       {event.color ? (
@@ -668,11 +651,6 @@ export default function AdminDashboard() {
                     </TableCell>
                     <TableCell className="text-sm whitespace-nowrap">
                       {event.createdAt ? new Date(event.createdAt).toLocaleDateString() : "-"}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={event.isActive ? "default" : "secondary"}>
-                        {event.isActive ? "Active" : "Inactive"}
-                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
