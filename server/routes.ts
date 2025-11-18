@@ -1281,6 +1281,18 @@ Rules:
     }
   });
 
+  app.get("/api/admin/chat-invite-requests", async (req, res) => {
+    try {
+      const requests = await storage.getAllChatInviteRequests();
+      res.json({ success: true, requests });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch chat invite requests"
+      });
+    }
+  });
+
   app.get("/api/admin/sessions", async (req, res) => {
     try {
       const sessions = await storage.getActiveSessions();

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,7 +13,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-type Tab = "users" | "events" | "analytics" | "location" | "settings";
+type Tab = "users" | "events" | "analytics" | "location" | "bookings" | "settings";
 
 interface StatsResponse {
   stats?: {
@@ -42,6 +42,26 @@ interface FloorStatsResponse {
   floorStats?: Record<string, { count: number; names: string[] }>;
 }
 
+interface TourBookingsResponse {
+  bookings?: any[];
+}
+
+interface EventHostBookingsResponse {
+  bookings?: any[];
+}
+
+interface MembershipApplicationsResponse {
+  applications?: any[];
+}
+
+interface ChatInviteRequestsResponse {
+  requests?: any[];
+}
+
+interface BookingsResponse {
+  bookings?: any[];
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const [showEventForm, setShowEventForm] = useState(false);
@@ -62,7 +82,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the # symbol
-      if (hash && ['users', 'events', 'analytics', 'location', 'settings'].includes(hash)) {
+      if (hash && ['users', 'events', 'analytics', 'location', 'bookings', 'settings'].includes(hash)) {
         setActiveTab(hash as Tab);
       }
     };
@@ -101,6 +121,31 @@ export default function AdminDashboard() {
   const { data: floorStats } = useQuery<FloorStatsResponse>({
     queryKey: ['/api/admin/floor-stats'],
     enabled: activeTab === "location",
+  });
+
+  const { data: tourBookings } = useQuery<TourBookingsResponse>({
+    queryKey: ['/api/tour-bookings'],
+    enabled: activeTab === "bookings",
+  });
+
+  const { data: eventHostBookings } = useQuery<EventHostBookingsResponse>({
+    queryKey: ['/api/event-host-bookings'],
+    enabled: activeTab === "bookings",
+  });
+
+  const { data: membershipApplications } = useQuery<MembershipApplicationsResponse>({
+    queryKey: ['/api/membership-applications'],
+    enabled: activeTab === "bookings",
+  });
+
+  const { data: chatInviteRequests } = useQuery<ChatInviteRequestsResponse>({
+    queryKey: ['/api/admin/chat-invite-requests'],
+    enabled: activeTab === "bookings",
+  });
+
+  const { data: bookings } = useQuery<BookingsResponse>({
+    queryKey: ['/api/bookings'],
+    enabled: activeTab === "bookings",
   });
 
   const createEventsMutation = useMutation({
@@ -246,6 +291,7 @@ export default function AdminDashboard() {
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "users", label: "Users", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
+    { id: "bookings", label: "Bookings", icon: ClipboardList },
     { id: "location", label: "Location", icon: MapPin },
     { id: "settings", label: "Settings", icon: Settings },
   ] as const;
@@ -889,6 +935,283 @@ export default function AdminDashboard() {
                 <span className="text-sm text-gray-600 dark:text-gray-400">10+ users</span>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === "bookings" && (
+          <div className="space-y-6">
+            {/* Tour Bookings */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Tour Bookings ({tourBookings?.bookings?.length || 0})
+              </h2>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Date & Time</TableHead>
+                      <TableHead>Private Office Interest</TableHead>
+                      <TableHead>People</TableHead>
+                      <TableHead>Submitted</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {tourBookings?.bookings?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center text-gray-500 dark:text-gray-400">
+                          No tour bookings yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      tourBookings?.bookings?.map((booking: any) => (
+                        <TableRow key={booking.id} data-testid={`tour-booking-${booking.id}`}>
+                          <TableCell className="font-medium">{booking.name}</TableCell>
+                          <TableCell>{booking.email}</TableCell>
+                          <TableCell>{booking.phone}</TableCell>
+                          <TableCell>
+                            {booking.tourDate && booking.tourTime 
+                              ? `${new Date(booking.tourDate).toLocaleDateString()} ${booking.tourTime}`
+                              : 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            {booking.interestedInPrivateOffice ? (
+                              <Badge variant="default">Yes</Badge>
+                            ) : (
+                              <Badge variant="secondary">No</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>{booking.numberOfPeople || 'N/A'}</TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {new Date(booking.createdAt).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+
+            {/* Event Host Bookings */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Event Host Bookings ({eventHostBookings?.bookings?.length || 0})
+              </h2>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Event</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Submitted</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {eventHostBookings?.bookings?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
+                          No event host bookings yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      eventHostBookings?.bookings?.map((booking: any) => (
+                        <TableRow key={booking.id} data-testid={`event-host-booking-${booking.id}`}>
+                          <TableCell className="font-medium">{booking.hostName}</TableCell>
+                          <TableCell>{booking.hostEmail}</TableCell>
+                          <TableCell>{booking.hostPhone}</TableCell>
+                          <TableCell>
+                            {booking.eventId ? (
+                              <Badge variant="default">Existing Event #{booking.eventId}</Badge>
+                            ) : (
+                              <span className="font-medium">{booking.customEventName}</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate">{booking.eventDescription}</TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {new Date(booking.createdAt).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+
+            {/* Membership Applications */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Membership Applications ({membershipApplications?.applications?.length || 0})
+              </h2>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Telegram</TableHead>
+                      <TableHead>Company</TableHead>
+                      <TableHead>LinkedIn</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Submitted</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {membershipApplications?.applications?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
+                          No membership applications yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      membershipApplications?.applications?.map((app: any) => (
+                        <TableRow key={app.id} data-testid={`membership-application-${app.id}`}>
+                          <TableCell className="font-medium">{app.name}</TableCell>
+                          <TableCell>{app.email}</TableCell>
+                          <TableCell>{app.phone}</TableCell>
+                          <TableCell>{app.telegram || 'N/A'}</TableCell>
+                          <TableCell>{app.company || 'N/A'}</TableCell>
+                          <TableCell>
+                            {app.linkedIn ? (
+                              <a 
+                                href={app.linkedIn} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 dark:text-blue-400 hover:underline"
+                              >
+                                View
+                              </a>
+                            ) : 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={app.status === 'pending' ? 'secondary' : 'default'}>
+                              {app.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {new Date(app.createdAt).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+
+            {/* Chat Invite Requests */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Chat Invite Requests ({chatInviteRequests?.requests?.length || 0})
+              </h2>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>LinkedIn</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Submitted</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {chatInviteRequests?.requests?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
+                          No chat invite requests yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      chatInviteRequests?.requests?.map((request: any) => (
+                        <TableRow key={request.id} data-testid={`chat-request-${request.id}`}>
+                          <TableCell className="font-medium">{request.name}</TableCell>
+                          <TableCell>{request.email}</TableCell>
+                          <TableCell>{request.phone}</TableCell>
+                          <TableCell>
+                            {request.linkedIn ? (
+                              <a 
+                                href={request.linkedIn} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 dark:text-blue-400 hover:underline"
+                              >
+                                View
+                              </a>
+                            ) : 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={request.status === 'pending' ? 'secondary' : 'default'}>
+                              {request.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {new Date(request.createdAt).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+
+            {/* Regular Event/Meeting Bookings */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Event/Meeting Bookings ({bookings?.bookings?.length || 0})
+              </h2>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Organizer</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Event</TableHead>
+                      <TableHead>Telegram</TableHead>
+                      <TableHead>Submitted</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {bookings?.bookings?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
+                          No event/meeting bookings yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      bookings?.bookings?.map((booking: any) => (
+                        <TableRow key={booking.id} data-testid={`booking-${booking.id}`}>
+                          <TableCell className="font-medium">{booking.organizerName}</TableCell>
+                          <TableCell>{booking.organizerEmail}</TableCell>
+                          <TableCell>{booking.organizerPhone}</TableCell>
+                          <TableCell>
+                            {booking.eventId ? (
+                              <Badge variant="default">Event #{booking.eventId}</Badge>
+                            ) : (
+                              <span className="font-medium">{booking.customEventName}</span>
+                            )}
+                          </TableCell>
+                          <TableCell>{booking.organizerTelegram || 'N/A'}</TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {new Date(booking.createdAt).toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
           </div>
         )}
 
