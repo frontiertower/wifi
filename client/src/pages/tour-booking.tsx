@@ -141,7 +141,7 @@ export default function TourBooking() {
           <CardHeader>
             <CardTitle className="text-2xl">Book an Office Tour</CardTitle>
             <CardDescription>
-              Schedule a guided tour of Frontier Tower and discover our AI-focused community
+              Schedule a guided tour of Frontier Tower and discover our community
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -230,7 +230,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Chat with Us</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Meet our community on Telegram</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Ask us anything or share feedback</div>
                 </div>
               </div>
             </Link>
