@@ -1027,7 +1027,25 @@ Rules:
 
   app.post("/api/directory", async (req, res) => {
     try {
-      const listing = await storage.createDirectoryListing(req.body);
+      const data = req.body;
+      
+      // Validate that company listings have companyName
+      if (data.type === "company" && !data.companyName?.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: "Company name is required for company listings"
+        });
+      }
+      
+      // Validate that person listings have firstName and lastName
+      if (data.type === "person" && (!data.firstName?.trim() || !data.lastName?.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: "First name and last name are required for person listings"
+        });
+      }
+      
+      const listing = await storage.createDirectoryListing(data);
       res.json({ success: true, listing });
     } catch (error) {
       res.status(500).json({
