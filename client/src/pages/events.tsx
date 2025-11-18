@@ -45,6 +45,24 @@ export default function Events() {
       .trim() || null;
   };
 
+  const cleanDescription = (description: string | null): string | null => {
+    if (!description) return null;
+    
+    let cleaned = description
+      // Remove "Get up-to-date information at: URL"
+      .replace(/Get up-to-date information at:\s*https?:\/\/[^\s\n]+/gi, '')
+      // Remove "Address:" and everything after it up to "Hosted by" or end
+      .replace(/Address:[\s\S]*?(?=Hosted by|$)/gi, '')
+      // Remove "Hosted by" section (we show this separately)
+      .replace(/Hosted by[\s\S]*/gi, '')
+      // Clean up extra whitespace and newlines
+      .replace(/\n+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    return cleaned || null;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
@@ -108,9 +126,9 @@ export default function Events() {
                             </h3>
                           </div>
 
-                          {event.description && (
+                          {cleanDescription(event.description) && (
                             <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
-                              {event.description}
+                              {cleanDescription(event.description)}
                             </p>
                           )}
 
@@ -220,9 +238,9 @@ export default function Events() {
                             </h3>
                           </div>
 
-                          {event.description && (
+                          {cleanDescription(event.description) && (
                             <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
-                              {event.description}
+                              {cleanDescription(event.description)}
                             </p>
                           )}
 
