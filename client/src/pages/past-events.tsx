@@ -89,96 +89,117 @@ export default function PastEvents() {
             <p className="text-muted-foreground">There are no past events to display</p>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-4 gap-3 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
             {pastEvents.map((event) => {
               const start = new Date(event.startDate);
               const end = new Date(event.endDate);
 
               return (
-                <Card
-                  key={event.id}
-                  className="overflow-hidden opacity-75"
-                  data-testid={`card-event-${event.id}`}
-                >
-                  {event.imageUrl && (
-                    <div className="w-full h-48 overflow-hidden">
+                <div key={event.id}>
+                  {/* Mobile: Icon-only view */}
+                  <div 
+                    className="aspect-square rounded-lg overflow-hidden opacity-60 md:hidden"
+                    data-testid={`icon-event-${event.id}`}
+                  >
+                    {event.imageUrl ? (
                       <img
                         src={event.imageUrl}
                         alt={event.name}
                         className="w-full h-full object-cover"
-                        data-testid={`img-event-${event.id}`}
+                        data-testid={`img-event-icon-${event.id}`}
                       />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
-                        {event.name}
-                      </h3>
-                    </div>
-
-                    {cleanDescription(event.description) && (
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
-                        {cleanDescription(event.description)}
-                      </p>
-                    )}
-
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                        <span data-testid={`text-date-${event.id}`}>
-                          {format(start, "MMM d, yyyy")}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                        <span data-testid={`text-time-${event.id}`}>
-                          {format(start, "h:mm a")} - {format(end, "h:mm a")}
-                        </span>
-                      </div>
-
-                      {cleanHostName(event.host) && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                          <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
-                            Hosted by {cleanHostName(event.host)}
-                          </span>
-                        </div>
-                      )}
-
-                      {event.originalLocation && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                          <span className="text-muted-foreground" data-testid={`text-location-${event.id}`}>
-                            {event.originalLocation}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {event.url && (
-                      <div className="mt-4">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full"
-                          asChild
-                          data-testid={`button-view-event-${event.id}`}
-                        >
-                          <a
-                            href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View Event
-                            <ExternalLink className="ml-2 h-4 w-4" />
-                          </a>
-                        </Button>
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <Calendar className="w-6 h-6 text-muted-foreground" />
                       </div>
                     )}
                   </div>
-                </Card>
+
+                  {/* Desktop: Full card view */}
+                  <Card
+                    className="hidden md:block overflow-hidden opacity-75"
+                    data-testid={`card-event-${event.id}`}
+                  >
+                    {event.imageUrl && (
+                      <div className="w-full h-48 overflow-hidden">
+                        <img
+                          src={event.imageUrl}
+                          alt={event.name}
+                          className="w-full h-full object-cover"
+                          data-testid={`img-event-${event.id}`}
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
+                          {event.name}
+                        </h3>
+                      </div>
+
+                      {cleanDescription(event.description) && (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
+                          {cleanDescription(event.description)}
+                        </p>
+                      )}
+
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <span data-testid={`text-date-${event.id}`}>
+                            {format(start, "MMM d, yyyy")}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <span data-testid={`text-time-${event.id}`}>
+                            {format(start, "h:mm a")} - {format(end, "h:mm a")}
+                          </span>
+                        </div>
+
+                        {cleanHostName(event.host) && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                            <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
+                              Hosted by {cleanHostName(event.host)}
+                            </span>
+                          </div>
+                        )}
+
+                        {event.originalLocation && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                            <span className="text-muted-foreground" data-testid={`text-location-${event.id}`}>
+                              {event.originalLocation}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {event.url && (
+                        <div className="mt-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            asChild
+                            data-testid={`button-view-event-${event.id}`}
+                          >
+                            <a
+                              href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View Event
+                              <ExternalLink className="ml-2 h-4 w-4" />
+                            </a>
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                </div>
               );
             })}
           </div>
