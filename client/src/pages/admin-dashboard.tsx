@@ -593,9 +593,7 @@ export default function AdminDashboard() {
                   <TableHead>Code</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Start Date</TableHead>
-                  <TableHead>End Date</TableHead>
                   <TableHead>Host</TableHead>
-                  <TableHead>Source</TableHead>
                   <TableHead>Current Attendees</TableHead>
                   <TableHead>Max Attendees</TableHead>
                   <TableHead>External ID</TableHead>
@@ -618,7 +616,7 @@ export default function AdminDashboard() {
                   if (filteredEvents.length === 0) {
                     return (
                       <TableRow>
-                        <TableCell colSpan={15} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <TableCell colSpan={13} className="text-center py-8 text-gray-500 dark:text-gray-400">
                           No {eventFilter} events found.
                         </TableCell>
                       </TableRow>
@@ -639,20 +637,8 @@ export default function AdminDashboard() {
                     <TableCell className="text-sm whitespace-nowrap">
                       {new Date(event.startDate).toLocaleDateString()}
                     </TableCell>
-                    <TableCell className="text-sm whitespace-nowrap">
-                      {new Date(event.endDate).toLocaleDateString()}
-                    </TableCell>
                     <TableCell className="text-sm text-gray-600 dark:text-gray-400">
                       {cleanHostName(event.host) || "-"}
-                    </TableCell>
-                    <TableCell>
-                      {event.source ? (
-                        <Badge variant="outline" className="text-xs">
-                          {event.source}
-                        </Badge>
-                      ) : (
-                        <span className="text-sm text-gray-400 dark:text-gray-500">Manual</span>
-                      )}
                     </TableCell>
                     <TableCell className="text-sm">
                       {event.currentAttendees}
