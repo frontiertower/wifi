@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download, ClipboardList, Menu } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -671,7 +671,22 @@ export default function AdminDashboard() {
                       {event.createdAt ? new Date(event.createdAt).toLocaleDateString() : "-"}
                     </TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="sm" className="text-red-600" data-testid={`button-delete-event-${event.id}`}>Delete</Button>
+                      <div className="flex space-x-2">
+                        {event.url && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            asChild
+                            data-testid={`button-details-event-${event.id}`}
+                          >
+                            <a href={event.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                              <ExternalLink className="h-4 w-4 mr-1" />
+                              Details
+                            </a>
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="sm" className="text-red-600" data-testid={`button-delete-event-${event.id}`}>Delete</Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                   ));
