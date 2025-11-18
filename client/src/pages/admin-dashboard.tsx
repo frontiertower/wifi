@@ -671,10 +671,7 @@ export default function AdminDashboard() {
                       {event.createdAt ? new Date(event.createdAt).toLocaleDateString() : "-"}
                     </TableCell>
                     <TableCell>
-                      <div className="flex space-x-2">
-                        <Button variant="ghost" size="sm">Edit</Button>
-                        <Button variant="ghost" size="sm" className="text-red-600">Delete</Button>
-                      </div>
+                      <Button variant="ghost" size="sm" className="text-red-600" data-testid={`button-delete-event-${event.id}`}>Delete</Button>
                     </TableCell>
                   </TableRow>
                   ));
