@@ -9,6 +9,7 @@ import Events from "@/pages/events";
 import PastEvents from "@/pages/past-events";
 import Booking from "@/pages/booking";
 import TourBooking from "@/pages/tour-booking";
+import EventHostBooking from "@/pages/event-host-booking";
 import Directory from "@/pages/directory";
 import AddListing from "@/pages/addlisting";
 import DirectoryAdmin from "@/pages/directory-admin";
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/past-events" component={PastEvents} />
       <Route path="/booking" component={Booking} />
       <Route path="/tour-booking" component={TourBooking} />
+      <Route path="/event-host-booking" component={EventHostBooking} />
       <Route path="/directory" component={Directory} />
       <Route path="/directory/admin" component={DirectoryAdmin} />
       <Route path="/directory/edit/:slug" component={DirectoryEdit} />

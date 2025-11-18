@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, UserCheck, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen } from "lucide-react";
+import { Brain, Calendar, UserPlus, UserCheck, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper } from "lucide-react";
 import { Link } from "wouter";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
@@ -175,6 +175,22 @@ export default function Home() {
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Rent a Private Office</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Explore private office spaces</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/event-host-booking"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-host-event"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
+                  <PartyPopper className="text-pink-600 dark:text-pink-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Host Your Event</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Schedule a call to discuss your event</div>
                 </div>
               </div>
             </Link>

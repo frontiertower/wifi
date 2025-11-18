@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -531,6 +531,26 @@ export class DatabaseStorage {
       .select()
       .from(tourBookings)
       .where(eq(tourBookings.id, id));
+    return booking || null;
+  }
+
+  async createEventHostBooking(bookingData: InsertEventHostBooking): Promise<EventHostBooking> {
+    const [booking] = await db
+      .insert(eventHostBookings)
+      .values(bookingData)
+      .returning();
+    return booking;
+  }
+
+  async getAllEventHostBookings(): Promise<EventHostBooking[]> {
+    return await db.select().from(eventHostBookings).orderBy(sql`${eventHostBookings.createdAt} DESC`);
+  }
+
+  async getEventHostBookingById(id: number): Promise<EventHostBooking | null> {
+    const [booking] = await db
+      .select()
+      .from(eventHostBookings)
+      .where(eq(eventHostBookings.id, id));
     return booking || null;
   }
 }
