@@ -783,6 +783,28 @@ Rules:
             throw new Error('Invalid date format');
           }
 
+          // Extract Luma URL from description
+          let lumaUrl = externalEvent.url;
+          if (!lumaUrl && externalEvent.description) {
+            const urlMatch = externalEvent.description.match(/https?:\/\/(?:lu\.ma|luma\.com)\/[^\s\n]+/);
+            if (urlMatch) {
+              // Strip trailing punctuation that might be part of the sentence
+              lumaUrl = urlMatch[0].replace(/[.,;:!?)}\]]+$/, '').trim();
+              // Ensure https prefix
+              if (lumaUrl && !lumaUrl.startsWith('http')) {
+                lumaUrl = `https://${lumaUrl}`;
+              }
+            }
+          }
+          
+          // Normalize URL if present
+          if (lumaUrl) {
+            lumaUrl = lumaUrl.trim();
+            if (!lumaUrl.startsWith('http')) {
+              lumaUrl = `https://${lumaUrl}`;
+            }
+          }
+
           const eventData: any = {
             name: externalEvent.name,
             code: code,
@@ -798,8 +820,8 @@ Rules:
             currentAttendees: externalEvent.currentAttendees || null,
           };
           
-          if (externalEvent.url) {
-            eventData.url = externalEvent.url;
+          if (lumaUrl) {
+            eventData.url = lumaUrl;
           }
 
           const event = await storage.upsertEventByExternalId(eventData);
@@ -873,6 +895,7 @@ Rules:
 
       for (const event of eventsToScrape) {
         try {
+          if (!event.url) continue;
           const eventUrl = event.url.trim();
           const lumaUrl = eventUrl.startsWith('http') ? eventUrl : `https://lu.ma/${eventUrl}`;
           console.log(`Scraping image for event: ${event.name} from ${lumaUrl}`);

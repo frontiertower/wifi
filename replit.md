@@ -43,7 +43,7 @@ Preferred communication style: Simple, everyday language.
 ### Technical Implementations
 
 *   **Hero Section & Branding**: Portal homepage highlights AI, Agents, and LLMs focus.
-*   **External Events Feed Integration**: API endpoint `/api/external-events` proxies Luma events from an external timeline service. An admin endpoint `/api/admin/events/sync` automatically syncs events from this feed with idempotent upserts.
+*   **External Events Feed Integration**: API endpoint `/api/external-events` proxies Luma events from an external timeline service. An admin endpoint `/api/admin/events/sync` automatically syncs events from this feed with idempotent upserts. URL extraction logic uses regex to capture Luma URLs from event descriptions (both `lu.ma` and `luma.com` formats) since the external API embeds URLs in description text rather than providing a separate URL field.
 *   **UniFi Captive Portal Compliance**: Correctly implements UniFi External Captive Portal specification with redirect-based authorization, MAC address extraction, and dual-path API support.
 *   **UniFi Configuration**: Dedicated settings tab in admin dashboard for UniFi controller integration.
 *   **Event Management**: AI-powered bulk event import using OpenAI GPT-4o. Public events page displays upcoming and past events, with Luma integration for event URLs and image scraping.
