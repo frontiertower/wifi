@@ -127,7 +127,7 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
             <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <p className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-1">Coming Soon! 🚀</p>
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                We are waiting for an API to authenticate with the Frontier Tower. Tell your floor lead you want this to work!
+                We are waiting for an API key to authenticate with the Frontier Tower. Tell your floor lead you want this WiFi portal to work!
               </p>
             </div>
 
