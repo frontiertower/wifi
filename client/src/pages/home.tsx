@@ -236,10 +236,6 @@ export default function Home() {
                 </div>
               </div>
             </Link>
-
-            <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
-              By connecting, you agree to our terms of service
-            </div>
           </div>
         </div>
         </div>
