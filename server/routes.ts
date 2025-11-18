@@ -814,6 +814,129 @@ Rules:
     }
   });
 
+  // Scrape event images from Luma URLs
+  app.post("/api/admin/events/scrape-images", async (req, res) => {
+    try {
+      const events = await storage.getAllEvents();
+      const eventsWithUrls = events.filter(event => event.url);
+      
+      if (eventsWithUrls.length === 0) {
+        return res.json({
+          success: true,
+          message: "No events with URLs to scrape",
+          scrapedCount: 0
+        });
+      }
+
+      const { default: cheerio } = await import('cheerio');
+      const scrapedImages = [];
+      const failedScrapes: Array<{ id: number; name: string; error: string }> = [];
+
+      for (const event of eventsWithUrls) {
+        try {
+          const lumaUrl = `https://lu.ma/${event.url}`;
+          console.log(`Scraping image for event: ${event.name} from ${lumaUrl}`);
+          
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 10000);
+
+          let response;
+          try {
+            response = await fetch(lumaUrl, {
+              signal: controller.signal,
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; FrontierTowerBot/1.0)'
+              }
+            });
+            clearTimeout(timeout);
+          } catch (fetchError) {
+            clearTimeout(timeout);
+            throw new Error("Request timed out");
+          }
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const html = await response.text();
+          const $ = cheerio.load(html);
+          
+          // Try multiple selectors to find the event image
+          let imageUrl = null;
+          
+          // Try Open Graph image
+          imageUrl = $('meta[property="og:image"]').attr('content');
+          
+          // Try Twitter image
+          if (!imageUrl) {
+            imageUrl = $('meta[name="twitter:image"]').attr('content');
+          }
+          
+          // Try main event image
+          if (!imageUrl) {
+            imageUrl = $('img[class*="event"]').first().attr('src');
+          }
+          
+          // Try any image with event-related class or in hero section
+          if (!imageUrl) {
+            imageUrl = $('img[class*="hero"], img[class*="cover"]').first().attr('src');
+          }
+
+          if (imageUrl) {
+            // Ensure it's a full URL
+            if (imageUrl.startsWith('//')) {
+              imageUrl = 'https:' + imageUrl;
+            } else if (imageUrl.startsWith('/')) {
+              imageUrl = 'https://lu.ma' + imageUrl;
+            }
+            
+            // Update event with image URL
+            await storage.updateEventImage(event.id, imageUrl);
+            scrapedImages.push({
+              id: event.id,
+              name: event.name,
+              imageUrl
+            });
+            console.log(`✓ Found image for "${event.name}": ${imageUrl.substring(0, 80)}...`);
+          } else {
+            throw new Error("No image found");
+          }
+          
+          // Small delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+        } catch (scrapeError) {
+          const errorMessage = scrapeError instanceof Error ? scrapeError.message : 'Unknown error';
+          console.error(`Failed to scrape image for "${event.name}":`, errorMessage);
+          failedScrapes.push({
+            id: event.id,
+            name: event.name,
+            error: errorMessage
+          });
+        }
+      }
+
+      const message = failedScrapes.length > 0
+        ? `Scraped ${scrapedImages.length} image(s), ${failedScrapes.length} failed`
+        : `Successfully scraped ${scrapedImages.length} image(s)`;
+
+      res.json({
+        success: true,
+        scrapedCount: scrapedImages.length,
+        failedCount: failedScrapes.length,
+        scrapedImages,
+        failedScrapes: failedScrapes.length > 0 ? failedScrapes : undefined,
+        message
+      });
+    } catch (error) {
+      console.error('Error scraping event images:', error);
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to scrape event images"
+      });
+    }
+  });
+
   app.post("/api/bookings", async (req, res) => {
     try {
       let bookingData = req.body;

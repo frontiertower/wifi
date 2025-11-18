@@ -66,6 +66,7 @@ export const events = pgTable("events", {
   color: text("color"),
   originalLocation: text("original_location"),
   url: text("url"),
+  imageUrl: text("image_url"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

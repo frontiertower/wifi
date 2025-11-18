@@ -334,6 +334,13 @@ export class DatabaseStorage {
     return event;
   }
 
+  async updateEventImage(eventId: number, imageUrl: string): Promise<void> {
+    await db
+      .update(events)
+      .set({ imageUrl })
+      .where(eq(events.id, eventId));
+  }
+
   async upsertEventByExternalId(eventData: any): Promise<Event> {
     const updateFields: any = {
       name: eventData.name,
