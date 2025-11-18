@@ -79,9 +79,6 @@ export default function Events() {
           <div className="space-y-8">
             {upcomingEvents.length > 0 && (
               <section>
-                <h2 className="text-xl font-semibold mb-4" data-testid="heading-upcoming-events">
-                  Upcoming Events
-                </h2>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {upcomingEvents.map((event) => {
                     const status = getEventStatus(event);
