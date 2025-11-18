@@ -186,7 +186,7 @@ export default function Directory() {
             </Link>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="space-y-4">
             {listings.map((listing) => {
               const isExpanded = expandedListings.has(listing.id);
               return (
@@ -197,7 +197,8 @@ export default function Directory() {
                   onClick={() => toggleListing(listing.id)}
                 >
                   <CardHeader className="pb-3 pt-4">
-                    <div className="flex items-center justify-between gap-2">
+                    {/* Mobile Layout - Vertical */}
+                    <div className="flex md:hidden items-center justify-between gap-2">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         {listing.logoUrl ? (
                           <img 
@@ -233,18 +234,66 @@ export default function Directory() {
                         />
                       </div>
                     </div>
+
+                    {/* Desktop Layout - Horizontal */}
+                    <div className="hidden md:flex items-start gap-6">
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        {listing.logoUrl ? (
+                          <img 
+                            src={listing.logoUrl} 
+                            alt={getDisplayName(listing)}
+                            className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                            onError={(e) => {
+                              // Fallback to icon if image fails to load
+                              e.currentTarget.style.display = 'none';
+                              const fallback = e.currentTarget.nextElementSibling;
+                              if (fallback) fallback.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                        <div className={`w-12 h-12 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
+                          <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-300" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                            {getDisplayName(listing)}
+                          </CardTitle>
+                          {getLocationText(listing) && (
+                            <div className="flex items-center gap-1 text-base font-semibold text-gray-600 dark:text-gray-400 leading-none">
+                              <MapPin className="h-4 w-4 flex-shrink-0" />
+                              <span className="whitespace-nowrap">{getLocationText(listing)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        {listing.description && (
+                          <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap line-clamp-2">
+                            {listing.description}
+                          </p>
+                        )}
+                      </div>
+
+                      <ChevronDown 
+                        className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform flex-shrink-0 mt-1 ${
+                          isExpanded ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </div>
                   </CardHeader>
 
                   {isExpanded && (
                     <CardContent className="pt-0 space-y-3">
+                      {/* Show description on mobile only (desktop shows it in header) */}
                       {listing.description && (
-                        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                        <p className="md:hidden text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                           {listing.description}
                         </p>
                       )}
 
                       {(listing.phone || listing.email || listing.telegramUsername || listing.website) && (
-                        <div className="space-y-2 pt-2 border-t">
+                        <div className="space-y-2 pt-2 border-t md:border-t-0 md:pt-0">
                           {listing.phone && (
                             <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                               <Phone className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
