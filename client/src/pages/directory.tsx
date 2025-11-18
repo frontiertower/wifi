@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -9,12 +9,33 @@ import type { DirectoryListing } from "@shared/schema";
 
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
+  const [sortMode, setSortMode] = useState<"name" | "floor">("name");
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
     queryKey: ["/api/directory"],
   });
 
-  const listings = data?.listings || [];
+  const rawListings = data?.listings || [];
+  
+  const listings = useMemo(() => {
+    if (sortMode === "name") {
+      return [...rawListings].sort((a, b) => {
+        const nameA = a.companyName || `${a.lastName}, ${a.firstName}` || "";
+        const nameB = b.companyName || `${b.lastName}, ${b.firstName}` || "";
+        return nameA.localeCompare(nameB);
+      });
+    } else {
+      // Sort by floor
+      return [...rawListings].sort((a, b) => {
+        const getFloorNumber = (floor: string | null) => {
+          if (!floor) return 999; // Put items without floor at the end
+          const match = floor.match(/(\d+)/);
+          return match ? parseInt(match[1]) : 999;
+        };
+        return getFloorNumber(a.floor) - getFloorNumber(b.floor);
+      });
+    }
+  }, [rawListings, sortMode]);
   
   const toggleListing = (id: number) => {
     setExpandedListings(prev => {
@@ -78,15 +99,26 @@ export default function Directory() {
               </p>
             </div>
 
-            <Link href="/addlisting">
+            <div className="flex items-center gap-2">
               <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                data-testid="button-add-listing"
+                variant="outline"
+                size="sm"
+                onClick={() => setSortMode(sortMode === "name" ? "floor" : "name")}
+                data-testid="button-toggle-sort"
               >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Listing
+                <ArrowUpDown className="mr-2 h-4 w-4" />
+                {sortMode === "name" ? "Sort by Floor" : "Sort by Name"}
               </Button>
-            </Link>
+              <Link href="/addlisting">
+                <Button
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  data-testid="button-add-listing"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Listing
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
 
