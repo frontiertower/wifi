@@ -111,9 +111,6 @@ export default function Home() {
         
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">
-            <div className="w-16 h-16 bg-white dark:bg-gray-700 bg-opacity-20 dark:bg-opacity-40 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Brain className="text-2xl" />
-            </div>
             <h1 className="text-2xl font-bold mb-2">Frontier Tower</h1>
           </div>
 
@@ -145,7 +142,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">View Events</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Discover what's happening at the tower</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Discover what's happening</div>
                 </div>
               </div>
             </Link>
