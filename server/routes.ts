@@ -1012,6 +1012,31 @@ Rules:
     }
   });
 
+  // Directory Listings Routes
+  app.get("/api/directory", async (req, res) => {
+    try {
+      const listings = await storage.getAllDirectoryListings();
+      res.json({ success: true, listings });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch directory listings"
+      });
+    }
+  });
+
+  app.post("/api/directory", async (req, res) => {
+    try {
+      const listing = await storage.createDirectoryListing(req.body);
+      res.json({ success: true, listing });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to create directory listing"
+      });
+    }
+  });
+
   app.get("/api/admin/sessions", async (req, res) => {
     try {
       const sessions = await storage.getActiveSessions();
