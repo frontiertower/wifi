@@ -98,9 +98,6 @@ export default function Chat() {
               </div>
               <CardTitle className="text-2xl">Chat with Us</CardTitle>
             </div>
-            <CardDescription>
-              Join our Telegram community to connect with members, stay updated on events, and engage in discussions about AI, Agents, and LLMs.
-            </CardDescription>
           </CardHeader>
 
           <CardContent>
