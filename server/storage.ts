@@ -46,6 +46,11 @@ export class DatabaseStorage {
     return event || undefined;
   }
 
+  async getEventById(id: number): Promise<Event | undefined> {
+    const [event] = await db.select().from(events).where(eq(events.id, id));
+    return event || undefined;
+  }
+
   async incrementEventAttendees(eventId: number): Promise<void> {
     // Get current count and increment
     const [event] = await db.select().from(events).where(eq(events.id, eventId));
