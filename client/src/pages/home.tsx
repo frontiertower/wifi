@@ -147,12 +147,10 @@ export default function Home() {
               </div>
             </Link>
 
-            <a
-              href="https://frontiertower.io/membership?referral_code=D3CUD9LW"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/tour-booking"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-apply-membership"
+              data-testid="button-book-tour"
             >
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-orange-100 dark:bg-orange-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 dark:group-hover:bg-orange-500/40">
@@ -160,10 +158,10 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Book a Tower Tour</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Join the Frontier Tower community</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Schedule a guided tour of the building</div>
                 </div>
               </div>
-            </a>
+            </Link>
 
             <a
               href="https://t.me/+M0KxFTd3LnJkNzky"
