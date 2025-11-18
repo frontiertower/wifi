@@ -602,10 +602,18 @@ export default function AdminDashboard() {
                 {(() => {
                   const now = new Date();
                   const allEvents = events?.events ?? [];
-                  const filteredEvents = allEvents.filter((event: any) => {
-                    const endDate = new Date(event.endDate);
-                    return eventFilter === "upcoming" ? endDate >= now : endDate < now;
-                  });
+                  const filteredEvents = allEvents
+                    .filter((event: any) => {
+                      const endDate = new Date(event.endDate);
+                      return eventFilter === "upcoming" ? endDate >= now : endDate < now;
+                    })
+                    .sort((a: any, b: any) => {
+                      const aDate = new Date(a.startDate).getTime();
+                      const bDate = new Date(b.startDate).getTime();
+                      // Past events: reverse chronological (newest first)
+                      // Upcoming events: chronological (earliest first)
+                      return eventFilter === "past" ? bDate - aDate : aDate - bDate;
+                    });
 
                   if (filteredEvents.length === 0) {
                     return (

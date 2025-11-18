@@ -19,7 +19,9 @@ export default function PastEvents() {
 
   const events = data?.events || [];
   const now = new Date();
-  const pastEvents = events.filter(event => new Date(event.endDate) < now);
+  const pastEvents = events
+    .filter(event => new Date(event.endDate) < now)
+    .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
 
   const cleanHostName = (host: string | null): string | null => {
     if (!host) return null;
