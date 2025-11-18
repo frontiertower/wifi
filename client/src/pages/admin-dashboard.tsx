@@ -12,6 +12,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking } from "@shared/schema";
 
 type Tab = "users" | "events" | "analytics" | "location" | "bookings" | "settings";
 
@@ -43,23 +44,23 @@ interface FloorStatsResponse {
 }
 
 interface TourBookingsResponse {
-  bookings?: any[];
+  bookings?: TourBooking[];
 }
 
 interface EventHostBookingsResponse {
-  bookings?: any[];
+  bookings?: EventHostBooking[];
 }
 
 interface MembershipApplicationsResponse {
-  applications?: any[];
+  applications?: MembershipApplication[];
 }
 
 interface ChatInviteRequestsResponse {
-  requests?: any[];
+  requests?: ChatInviteRequest[];
 }
 
 interface BookingsResponse {
-  bookings?: any[];
+  bookings?: Booking[];
 }
 
 export default function AdminDashboard() {
@@ -966,7 +967,7 @@ export default function AdminDashboard() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      tourBookings?.bookings?.map((booking: any) => (
+                      tourBookings?.bookings?.map((booking) => (
                         <TableRow key={booking.id} data-testid={`tour-booking-${booking.id}`}>
                           <TableCell className="font-medium">{booking.name}</TableCell>
                           <TableCell>{booking.email}</TableCell>
@@ -985,7 +986,7 @@ export default function AdminDashboard() {
                           </TableCell>
                           <TableCell>{booking.numberOfPeople || 'N/A'}</TableCell>
                           <TableCell className="text-sm text-gray-500">
-                            {new Date(booking.createdAt).toLocaleString()}
+                            {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
                           </TableCell>
                         </TableRow>
                       ))
@@ -1020,21 +1021,21 @@ export default function AdminDashboard() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      eventHostBookings?.bookings?.map((booking: any) => (
+                      eventHostBookings?.bookings?.map((booking) => (
                         <TableRow key={booking.id} data-testid={`event-host-booking-${booking.id}`}>
-                          <TableCell className="font-medium">{booking.hostName}</TableCell>
-                          <TableCell>{booking.hostEmail}</TableCell>
-                          <TableCell>{booking.hostPhone}</TableCell>
+                          <TableCell className="font-medium">{booking.name}</TableCell>
+                          <TableCell>{booking.email}</TableCell>
+                          <TableCell>{booking.phone}</TableCell>
                           <TableCell>
-                            {booking.eventId ? (
-                              <Badge variant="default">Existing Event #{booking.eventId}</Badge>
+                            {booking.eventType ? (
+                              <span className="font-medium">{booking.eventType}</span>
                             ) : (
-                              <span className="font-medium">{booking.customEventName}</span>
+                              'N/A'
                             )}
                           </TableCell>
-                          <TableCell className="max-w-xs truncate">{booking.eventDescription}</TableCell>
+                          <TableCell className="max-w-xs truncate">{booking.eventDescription || 'N/A'}</TableCell>
                           <TableCell className="text-sm text-gray-500">
-                            {new Date(booking.createdAt).toLocaleString()}
+                            {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
                           </TableCell>
                         </TableRow>
                       ))
@@ -1071,7 +1072,7 @@ export default function AdminDashboard() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      membershipApplications?.applications?.map((app: any) => (
+                      membershipApplications?.applications?.map((app) => (
                         <TableRow key={app.id} data-testid={`membership-application-${app.id}`}>
                           <TableCell className="font-medium">{app.name}</TableCell>
                           <TableCell>{app.email}</TableCell>
@@ -1096,7 +1097,7 @@ export default function AdminDashboard() {
                             </Badge>
                           </TableCell>
                           <TableCell className="text-sm text-gray-500">
-                            {new Date(app.createdAt).toLocaleString()}
+                            {app.createdAt ? new Date(app.createdAt).toLocaleString() : 'N/A'}
                           </TableCell>
                         </TableRow>
                       ))
@@ -1131,7 +1132,7 @@ export default function AdminDashboard() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      chatInviteRequests?.requests?.map((request: any) => (
+                      chatInviteRequests?.requests?.map((request) => (
                         <TableRow key={request.id} data-testid={`chat-request-${request.id}`}>
                           <TableCell className="font-medium">{request.name}</TableCell>
                           <TableCell>{request.email}</TableCell>
@@ -1154,7 +1155,7 @@ export default function AdminDashboard() {
                             </Badge>
                           </TableCell>
                           <TableCell className="text-sm text-gray-500">
-                            {new Date(request.createdAt).toLocaleString()}
+                            {request.createdAt ? new Date(request.createdAt).toLocaleString() : 'N/A'}
                           </TableCell>
                         </TableRow>
                       ))
@@ -1177,7 +1178,7 @@ export default function AdminDashboard() {
                       <TableHead>Email</TableHead>
                       <TableHead>Phone</TableHead>
                       <TableHead>Event</TableHead>
-                      <TableHead>Telegram</TableHead>
+                      <TableHead>LinkedIn</TableHead>
                       <TableHead>Submitted</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -1189,21 +1190,21 @@ export default function AdminDashboard() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      bookings?.bookings?.map((booking: any) => (
+                      bookings?.bookings?.map((booking) => (
                         <TableRow key={booking.id} data-testid={`booking-${booking.id}`}>
                           <TableCell className="font-medium">{booking.organizerName}</TableCell>
                           <TableCell>{booking.organizerEmail}</TableCell>
-                          <TableCell>{booking.organizerPhone}</TableCell>
+                          <TableCell>{booking.organizerPhone || 'N/A'}</TableCell>
                           <TableCell>
                             {booking.eventId ? (
                               <Badge variant="default">Event #{booking.eventId}</Badge>
                             ) : (
-                              <span className="font-medium">{booking.customEventName}</span>
+                              <span className="font-medium">{booking.eventName}</span>
                             )}
                           </TableCell>
-                          <TableCell>{booking.organizerTelegram || 'N/A'}</TableCell>
+                          <TableCell>{booking.organizerLinkedIn || 'N/A'}</TableCell>
                           <TableCell className="text-sm text-gray-500">
-                            {new Date(booking.createdAt).toLocaleString()}
+                            {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
                           </TableCell>
                         </TableRow>
                       ))
