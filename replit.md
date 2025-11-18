@@ -29,7 +29,7 @@ Preferred communication style: Simple, everyday language.
 
 *   **Database**: PostgreSQL via Neon's serverless driver.
 *   **ORM**: Drizzle ORM with TypeScript schema definitions.
-*   **Schema Design**: Includes tables for admin users, captive WiFi users, events, bookings, user sessions, and UniFi configuration settings.
+*   **Schema Design**: Includes tables for admin users, captive WiFi users, events, bookings, user sessions, directory listings, and UniFi configuration settings.
 *   **Validation**: Drizzle-Zod integration for consistent schema validation.
 
 ### UI/UX Decisions
@@ -49,6 +49,7 @@ Preferred communication style: Simple, everyday language.
 *   **Daily Counters**: Atomic SQL upserts for daily guest registration counts.
 *   **Unified Guest Form**: Combines guest registration types into a single progressive disclosure form with conditional fields and password protection.
 *   **Booking System**: A `/booking` route allows users to book events/meetings, supporting both existing events and custom events, with comprehensive organizer details and multi-layer validation.
+*   **Building Directory**: A `/directory` route displays all building tenants (companies and individuals) with location (floor/office) and contact information (phone, email, telegram, website). A `/addlisting` form allows users to add new directory entries with backend validation ensuring data integrity.
 
 ## External Dependencies
 
