@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -552,6 +552,26 @@ export class DatabaseStorage {
       .from(eventHostBookings)
       .where(eq(eventHostBookings.id, id));
     return booking || null;
+  }
+
+  async createMembershipApplication(applicationData: InsertMembershipApplication): Promise<MembershipApplication> {
+    const [application] = await db
+      .insert(membershipApplications)
+      .values(applicationData)
+      .returning();
+    return application;
+  }
+
+  async getAllMembershipApplications(): Promise<MembershipApplication[]> {
+    return await db.select().from(membershipApplications).orderBy(sql`${membershipApplications.createdAt} DESC`);
+  }
+
+  async getMembershipApplicationById(id: number): Promise<MembershipApplication | null> {
+    const [application] = await db
+      .select()
+      .from(membershipApplications)
+      .where(eq(membershipApplications.id, id));
+    return application || null;
   }
 }
 
