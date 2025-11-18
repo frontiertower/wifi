@@ -1261,7 +1261,7 @@ function SettingsTab() {
         <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">WiFi Access Password</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Configure the password guests need to enter before registration
+            Configure the password guests need to enter before accessing the WiFi
           </p>
         </div>
 
