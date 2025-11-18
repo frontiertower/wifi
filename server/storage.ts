@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -572,6 +572,26 @@ export class DatabaseStorage {
       .from(membershipApplications)
       .where(eq(membershipApplications.id, id));
     return application || null;
+  }
+
+  async createChatInviteRequest(requestData: InsertChatInviteRequest): Promise<ChatInviteRequest> {
+    const [request] = await db
+      .insert(chatInviteRequests)
+      .values(requestData)
+      .returning();
+    return request;
+  }
+
+  async getAllChatInviteRequests(): Promise<ChatInviteRequest[]> {
+    return await db.select().from(chatInviteRequests).orderBy(sql`${chatInviteRequests.createdAt} DESC`);
+  }
+
+  async getChatInviteRequestById(id: number): Promise<ChatInviteRequest | null> {
+    const [request] = await db
+      .select()
+      .from(chatInviteRequests)
+      .where(eq(chatInviteRequests.id, id));
+    return request || null;
   }
 }
 
