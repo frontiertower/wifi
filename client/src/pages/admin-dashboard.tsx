@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -225,6 +225,22 @@ export default function AdminDashboard() {
     createEventsMutation.mutate(bulkEventText);
   };
 
+  const handleExportUsers = () => {
+    // Create a link to download the CSV file
+    const timestamp = new Date().toISOString().split('T')[0];
+    const link = document.createElement('a');
+    link.href = '/api/admin/users/export';
+    link.download = `frontier-tower-users-${timestamp}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Export Started",
+      description: "Your CSV file is being downloaded",
+    });
+  };
+
   const tabs = [
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "users", label: "Users", icon: Users },
@@ -294,6 +310,15 @@ export default function AdminDashboard() {
                   <Input placeholder="Search users..." className="flex-1 sm:w-64" data-testid="input-search-users" />
                   <Button variant="outline" size="sm" data-testid="button-filter">
                     <Filter className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleExportUsers}
+                    data-testid="button-export-users"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    <span className="hidden sm:inline">Export</span>
                   </Button>
                 </div>
               </div>

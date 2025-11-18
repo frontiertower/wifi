@@ -1030,6 +1030,71 @@ Rules:
     }
   });
 
+  // Export users as CSV
+  app.get("/api/admin/users/export", async (req, res) => {
+    try {
+      const users = await storage.getAllCaptiveUsers();
+      
+      // CSV headers
+      const headers = [
+        'ID',
+        'Name',
+        'Email',
+        'Role',
+        'Phone Number',
+        'Telegram Username',
+        'Floor',
+        'Host Contact',
+        'Event Name',
+        'Tour Interest',
+        'MAC Address',
+        'Registered At'
+      ];
+      
+      // Helper function to escape CSV values
+      const escapeCSV = (value: any): string => {
+        if (value === null || value === undefined) return '';
+        const str = String(value);
+        // Escape quotes and wrap in quotes if contains comma, quote, or newline
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      };
+      
+      // Build CSV rows
+      const rows = users.map(user => [
+        escapeCSV(user.id),
+        escapeCSV(user.name),
+        escapeCSV(user.email),
+        escapeCSV(user.role),
+        escapeCSV(user.phoneNumber),
+        escapeCSV(user.telegramUsername),
+        escapeCSV(user.floor),
+        escapeCSV(user.hostContact),
+        escapeCSV(user.eventName),
+        escapeCSV(user.tourInterest),
+        escapeCSV(user.macAddress),
+        escapeCSV(user.createdAt)
+      ].join(','));
+      
+      // Combine headers and rows
+      const csv = [headers.join(','), ...rows].join('\n');
+      
+      // Set headers for file download
+      const timestamp = new Date().toISOString().split('T')[0];
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="frontier-tower-users-${timestamp}.csv"`);
+      res.send(csv);
+    } catch (error) {
+      console.error('Error exporting users:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to export users"
+      });
+    }
+  });
+
   app.delete("/api/admin/sessions/:sessionId", async (req, res) => {
     try {
       const { sessionId } = req.params;
