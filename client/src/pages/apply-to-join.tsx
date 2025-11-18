@@ -251,11 +251,11 @@ export default function ApplyToJoin() {
                   data-testid="button-submit-application"
                 >
                   {applicationMutation.isPending ? (
-                    <>Submitting Application...</>
+                    <>Submitting...</>
                   ) : (
                     <>
                       <Send className="mr-2 h-4 w-4" />
-                      Submit Application
+                      Submit
                     </>
                   )}
                 </Button>
