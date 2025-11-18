@@ -357,14 +357,6 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
             </div>
 
             <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
-              <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                  <strong>Connect to WiFi:</strong><br /><br />
-                  Network Name: <strong>FrontierTower</strong><br />
-                  Password: <strong>frontiertower995</strong>
-                </p>
-              </div>
-
               <div className="space-y-2">
                 <Label htmlFor="password">Guest Password</Label>
                 <Input
