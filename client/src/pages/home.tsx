@@ -124,6 +124,38 @@ export default function Home() {
             </button>
 
             <Link
+              href="/directory"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-view-directory"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
+                  <Building2 className="text-indigo-600 dark:text-indigo-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Building Directory</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Browse companies and members</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/events"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-view-events"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-purple-200 dark:group-hover:bg-purple-500/40">
+                  <Calendar className="text-purple-600 dark:text-purple-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Events Calendar</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Discover what's happening</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link
               href="/apply-to-join"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200 text-left group block"
               data-testid="button-apply-to-join"
@@ -156,22 +188,6 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/directory"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-view-directory"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
-                  <Building2 className="text-indigo-600 dark:text-indigo-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Building Directory</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Browse companies and members</div>
-                </div>
-              </div>
-            </Link>
-
-            <Link
               href="/chat"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
               data-testid="button-join-discussion"
@@ -183,22 +199,6 @@ export default function Home() {
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Chat with Us</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Meet our community on Telegram</div>
-                </div>
-              </div>
-            </Link>
-
-            <Link
-              href="/events"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-view-events"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-purple-200 dark:group-hover:bg-purple-500/40">
-                  <Calendar className="text-purple-600 dark:text-purple-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Events Calendar</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Discover what's happening</div>
                 </div>
               </div>
             </Link>
