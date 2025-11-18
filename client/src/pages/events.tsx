@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Clock, MapPin, Users, ExternalLink, History } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, ExternalLink, History, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -69,9 +69,17 @@ export default function Events() {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold">Events</h1>
-            <p className="text-sm text-muted-foreground">Discover what's happening at Frontier Tower</p>
+          <div className="flex items-center gap-4 flex-1">
+            <Link href="/">
+              <Button variant="ghost" size="sm" data-testid="button-back-home">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+            </Link>
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold">Events</h1>
+              <p className="text-sm text-muted-foreground">Discover what's happening at Frontier Tower</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Link href="/past-events">
