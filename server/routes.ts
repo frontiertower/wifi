@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema } from "@shared/schema";
+import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
@@ -1248,6 +1248,47 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to fetch membership applications"
+      });
+    }
+  });
+
+  // Chat Invite Requests Routes
+  app.post("/api/chat-invite-requests", async (req, res) => {
+    try {
+      const validatedData = insertChatInviteRequestSchema.parse(req.body);
+      
+      const request = await storage.createChatInviteRequest(validatedData);
+      
+      // Send email notification (non-blocking)
+      const { emailService } = await import("./email");
+      emailService.sendChatInviteRequestNotification(request).catch((error) => {
+        console.error("Failed to send chat invite request notification email:", error);
+      });
+      
+      res.json({ success: true, request });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({
+          success: false,
+          message: error.errors[0]?.message || "Invalid chat invite request data"
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        message: "Failed to create chat invite request"
+      });
+    }
+  });
+
+  app.get("/api/chat-invite-requests", async (req, res) => {
+    try {
+      const requests = await storage.getAllChatInviteRequests();
+      res.json({ success: true, requests });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch chat invite requests"
       });
     }
   });
