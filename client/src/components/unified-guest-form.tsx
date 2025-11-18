@@ -558,15 +558,6 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300"
-                    onClick={() => setGuestType("tower_member")}
-                    data-testid="button-tower-member"
-                  >
-                    <span className="font-semibold">Tower Member</span>
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
                     className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 text-green-700 dark:text-green-300"
                     onClick={() => setGuestType("member")}
                     data-testid="button-guest-of-member"
@@ -581,6 +572,15 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                     data-testid="button-guest-at-event"
                   >
                     <span className="font-semibold">Guest at Event</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+                    onClick={() => setGuestType("tower_member")}
+                    data-testid="button-tower-member"
+                  >
+                    <span className="font-semibold">Tower Member</span>
                   </Button>
                 </div>
               </div>
