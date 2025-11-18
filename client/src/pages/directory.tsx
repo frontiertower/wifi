@@ -215,15 +215,13 @@ export default function Directory() {
                         <div className={`w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
                           <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 break-words">
-                            {getDisplayName(listing)}
-                          </CardTitle>
-                        </div>
+                        <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 break-words flex-1 min-w-0 leading-none">
+                          {getDisplayName(listing)}
+                        </CardTitle>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {getLocationText(listing) && (
-                          <div className="flex items-center gap-1 text-base text-gray-600 dark:text-gray-400">
+                          <div className="flex items-center gap-1 text-base text-gray-600 dark:text-gray-400 leading-none">
                             <MapPin className="h-4 w-4 flex-shrink-0" />
                             <span className="whitespace-nowrap">{getLocationText(listing)}</span>
                           </div>
