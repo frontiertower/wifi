@@ -74,7 +74,16 @@ export default function Directory() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <Link href="/directory/admin">
+          <Button
+            variant="ghost"
+            size="icon"
+            data-testid="button-admin"
+          >
+            <Settings className="h-5 w-5" />
+          </Button>
+        </Link>
         <ThemeToggle />
       </div>
 
@@ -133,16 +142,6 @@ export default function Directory() {
                 <ArrowUpDown className="mr-2 h-4 w-4" />
                 {floorSortAsc ? "Sort 1-15" : "Sort 15-1"}
               </Button>
-              <Link href="/directory/admin">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  data-testid="button-admin"
-                >
-                  <Settings className="mr-2 h-4 w-4" />
-                  Admin
-                </Button>
-              </Link>
               <Link href="/addlisting">
                 <Button
                   className="bg-blue-600 hover:bg-blue-700 text-white"
