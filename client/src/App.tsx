@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import Home from "@/pages/home";
 import Events from "@/pages/events";
+import PastEvents from "@/pages/past-events";
 import Booking from "@/pages/booking";
 import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
@@ -15,6 +16,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/events" component={Events} />
+      <Route path="/past-events" component={PastEvents} />
       <Route path="/booking" component={Booking} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/settings">

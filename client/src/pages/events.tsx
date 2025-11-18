@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Clock, MapPin, Users, ExternalLink } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, ExternalLink, History } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format, formatDistanceToNow, isPast, isFuture, isToday } from "date-fns";
+import { Link } from "wouter";
 import type { Event } from "@shared/schema";
 
 interface EventsResponse {
@@ -20,7 +21,6 @@ export default function Events() {
   const events = data?.events || [];
   const now = new Date();
   const upcomingEvents = events.filter(event => new Date(event.endDate) >= now);
-  const pastEvents = events.filter(event => new Date(event.endDate) < now);
 
   const getEventStatus = (event: Event) => {
     const now = new Date();
@@ -67,11 +67,19 @@ export default function Events() {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
-          <div>
+          <div className="flex-1">
             <h1 className="text-2xl font-bold">Events</h1>
             <p className="text-sm text-muted-foreground">Discover what's happening at Frontier Tower</p>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <Link href="/past-events">
+              <Button variant="outline" size="sm" data-testid="button-past-events">
+                <History className="w-4 h-4 mr-2" />
+                Past Events
+              </Button>
+            </Link>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -87,17 +95,20 @@ export default function Events() {
               </Card>
             ))}
           </div>
-        ) : events.length === 0 ? (
+        ) : upcomingEvents.length === 0 ? (
           <div className="text-center py-12" data-testid="no-events-message">
             <Calendar className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-2xl font-semibold mb-2">No Events Scheduled</h2>
-            <p className="text-muted-foreground">Check back later for upcoming events</p>
+            <h2 className="text-2xl font-semibold mb-2">No Upcoming Events</h2>
+            <p className="text-muted-foreground mb-4">Check back later for upcoming events</p>
+            <Link href="/past-events">
+              <Button variant="outline" data-testid="button-view-past-events">
+                <History className="w-4 h-4 mr-2" />
+                View Past Events
+              </Button>
+            </Link>
           </div>
         ) : (
-          <div className="space-y-8">
-            {upcomingEvents.length > 0 && (
-              <section>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {upcomingEvents.map((event) => {
                     const status = getEventStatus(event);
                     const start = new Date(event.startDate);
@@ -201,94 +212,6 @@ export default function Events() {
                       </Card>
                     );
                   })}
-                </div>
-              </section>
-            )}
-
-            {pastEvents.length > 0 && (
-              <section>
-                <h2 className="text-xl font-semibold mb-4" data-testid="heading-past-events">
-                  Past Events
-                </h2>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {pastEvents.map((event) => {
-                    const start = new Date(event.startDate);
-                    const end = new Date(event.endDate);
-
-                    return (
-                      <Card
-                        key={event.id}
-                        className="overflow-hidden opacity-75"
-                        data-testid={`card-event-${event.id}`}
-                      >
-                        {event.imageUrl && (
-                          <div className="w-full h-48 overflow-hidden">
-                            <img
-                              src={event.imageUrl}
-                              alt={event.name}
-                              className="w-full h-full object-cover"
-                              data-testid={`img-event-${event.id}`}
-                            />
-                          </div>
-                        )}
-                        <div className="p-6">
-                          <div className="mb-4">
-                            <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
-                              {event.name}
-                            </h3>
-                          </div>
-
-                          {cleanDescription(event.description) && (
-                            <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
-                              {cleanDescription(event.description)}
-                            </p>
-                          )}
-
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-sm">
-                              <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                              <span data-testid={`text-date-${event.id}`}>
-                                {format(start, "MMM d, yyyy")}
-                              </span>
-                            </div>
-
-                            {cleanHostName(event.host) && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                                <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
-                                  {cleanHostName(event.host)}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-
-                          {event.url && (
-                            <div className="mt-4">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full"
-                                asChild
-                                data-testid={`button-view-event-${event.id}`}
-                              >
-                                <a
-                                  href={`https://lu.ma/${event.url}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  View Event
-                                  <ExternalLink className="ml-2 h-4 w-4" />
-                                </a>
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
           </div>
         )}
       </main>
