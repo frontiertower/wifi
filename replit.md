@@ -35,7 +35,7 @@ Preferred communication style: Simple, everyday language.
 ### UI/UX Decisions
 
 *   **Admin Dashboard**: Mobile-optimized with sticky navigation, responsive data tables, stat cards, and form layouts. Includes a 2D building visualization for user distribution.
-*   **Theming**: Full dark mode support for registration forms with a theme toggle.
+*   **Theming**: Full dark mode support with automatic time-based switching. Dark mode is automatically enabled after 6pm and light mode after 6am. Users can manually override the theme at any time using the theme toggle, and their preference is saved.
 *   **Analytics**: Comprehensive dashboard with lifetime and daily counters, featuring a 4 AM daily reset.
 *   **Badges**: Colored role-type badges for members, guests, and events in the admin dashboard.
 *   **Directory UI**: Gear icon-only admin button positioned top-right next to theme toggle. Expandable listing cards with logos, descriptions, and edit buttons in expanded view.

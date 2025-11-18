@@ -23,7 +23,14 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem("theme");
-    return (stored as Theme) || defaultTheme;
+    if (stored) {
+      return stored as Theme;
+    }
+    
+    // Auto-detect based on time: dark mode 6pm-6am, light mode 6am-6pm
+    const hour = new Date().getHours();
+    const isNightTime = hour >= 18 || hour < 6;
+    return isNightTime ? "dark" : "light";
   });
 
   useEffect(() => {
