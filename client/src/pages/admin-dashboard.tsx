@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -773,6 +773,7 @@ export default function AdminDashboard() {
 function SettingsTab() {
   const { toast } = useToast();
   const [guestPassword, setGuestPassword] = useState('makesomething');
+  const [showGuestPassword, setShowGuestPassword] = useState(false);
   const [apiType, setApiType] = useState<'modern' | 'legacy' | 'none'>('none');
   const [controllerUrl, setControllerUrl] = useState('');
   const [apiKey, setApiKey] = useState('');
@@ -861,15 +862,31 @@ function SettingsTab() {
               <Label htmlFor="guest-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Guest Password
               </Label>
-              <Input
-                id="guest-password"
-                data-testid="input-guest-password-setting"
-                type="text"
-                placeholder="makesomething"
-                value={guestPassword}
-                onChange={(e) => setGuestPassword(e.target.value)}
-                className="mt-1"
-              />
+              <div className="relative mt-1">
+                <Input
+                  id="guest-password"
+                  data-testid="input-guest-password-setting"
+                  type={showGuestPassword ? "text" : "password"}
+                  placeholder="makesomething"
+                  value={guestPassword}
+                  onChange={(e) => setGuestPassword(e.target.value)}
+                  className="pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowGuestPassword(!showGuestPassword)}
+                  data-testid="button-toggle-guest-password"
+                >
+                  {showGuestPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-400" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-400" />
+                  )}
+                </Button>
+              </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Guests will need to enter this password before they can access the registration form
               </p>
