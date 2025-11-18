@@ -257,6 +257,71 @@ This is an automated notification from Frontier Tower WiFi Portal.
       html,
     });
   }
+
+  async sendChatInviteRequestNotification(request: {
+    name: string;
+    phone: string;
+    email: string;
+    linkedIn?: string | null;
+  }): Promise<boolean> {
+    const subject = `New Telegram Chat Invite Request: ${request.name}`;
+    
+    const text = `
+New Telegram Chat Invite Request
+
+Someone has requested an invite to the Frontier Tower Telegram group chat.
+
+Name: ${request.name}
+Phone: ${request.phone}
+Email: ${request.email}
+${request.linkedIn ? `LinkedIn: ${request.linkedIn}` : ""}
+
+Please send them a text message with the Telegram invite link:
+https://t.me/+M0KxFTd3LnJkNzky
+
+---
+This is an automated notification from Frontier Tower WiFi Portal.
+    `.trim();
+
+    const html = `
+      <h2>New Telegram Chat Invite Request</h2>
+      <p>Someone has requested an invite to the Frontier Tower Telegram group chat.</p>
+      <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Name:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${request.name}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Phone:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${request.phone}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Email:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${request.email}</td>
+        </tr>
+        ${request.linkedIn ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">LinkedIn:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${request.linkedIn}</td>
+        </tr>
+        ` : ""}
+      </table>
+      <p style="margin-top: 20px;">
+        <strong>Please send them a text message with the Telegram invite link:</strong><br>
+        <a href="https://t.me/+M0KxFTd3LnJkNzky" style="color: #0066cc;">https://t.me/+M0KxFTd3LnJkNzky</a>
+      </p>
+      <p style="color: #666; font-size: 12px; margin-top: 20px;">
+        This is an automated notification from Frontier Tower WiFi Portal.
+      </p>
+    `;
+
+    return this.sendEmail({
+      to: "events@thefrontiertower.com",
+      subject,
+      text,
+      html,
+    });
+  }
 }
 
 export const emailService = new EmailService();
