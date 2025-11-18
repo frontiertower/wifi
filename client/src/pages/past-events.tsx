@@ -89,7 +89,7 @@ export default function PastEvents() {
             <p className="text-muted-foreground">There are no past events to display</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
             {pastEvents.map((event) => {
               const start = new Date(event.startDate);
               const end = new Date(event.endDate);
