@@ -125,7 +125,20 @@ export default function Directory() {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                        {listing.logoUrl ? (
+                          <img 
+                            src={listing.logoUrl} 
+                            alt={getDisplayName(listing)}
+                            className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                            onError={(e) => {
+                              // Fallback to icon if image fails to load
+                              e.currentTarget.style.display = 'none';
+                              const fallback = e.currentTarget.nextElementSibling;
+                              if (fallback) fallback.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                        <div className={`w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
                           <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -151,64 +164,74 @@ export default function Directory() {
                   </CardHeader>
 
                   {isExpanded && (
-                    <CardContent className="pt-0 space-y-2">
-                      {listing.phone && (
-                        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                          <Phone className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-                          <a
-                            href={`tel:${listing.phone}`}
-                            className="hover:text-blue-600 dark:hover:text-blue-400 break-words"
-                            data-testid={`link-phone-${listing.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {listing.phone}
-                          </a>
-                        </div>
+                    <CardContent className="pt-0 space-y-3">
+                      {listing.description && (
+                        <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                          {listing.description}
+                        </p>
                       )}
 
-                      {listing.email && (
-                        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                          <Mail className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-                          <a
-                            href={`mailto:${listing.email}`}
-                            className="hover:text-blue-600 dark:hover:text-blue-400 break-all"
-                            data-testid={`link-email-${listing.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {listing.email}
-                          </a>
-                        </div>
-                      )}
+                      {(listing.phone || listing.email || listing.telegramUsername || listing.website) && (
+                        <div className="space-y-2 pt-2 border-t">
+                          {listing.phone && (
+                            <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                              <Phone className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                              <a
+                                href={`tel:${listing.phone}`}
+                                className="hover:text-blue-600 dark:hover:text-blue-400 break-words"
+                                data-testid={`link-phone-${listing.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {listing.phone}
+                              </a>
+                            </div>
+                          )}
 
-                      {listing.telegramUsername && (
-                        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                          <MessageCircle className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-                          <a
-                            href={`https://t.me/${listing.telegramUsername.replace('@', '')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-blue-600 dark:hover:text-blue-400 break-words"
-                            data-testid={`link-telegram-${listing.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            @{listing.telegramUsername.replace('@', '')}
-                          </a>
-                        </div>
-                      )}
+                          {listing.email && (
+                            <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                              <Mail className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                              <a
+                                href={`mailto:${listing.email}`}
+                                className="hover:text-blue-600 dark:hover:text-blue-400 break-all"
+                                data-testid={`link-email-${listing.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {listing.email}
+                              </a>
+                            </div>
+                          )}
 
-                      {listing.website && (
-                        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                          <Globe className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
-                          <a
-                            href={listing.website.startsWith('http') ? listing.website : `https://${listing.website}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-blue-600 dark:hover:text-blue-400 break-all"
-                            data-testid={`link-website-${listing.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {listing.website}
-                          </a>
+                          {listing.telegramUsername && (
+                            <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                              <MessageCircle className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                              <a
+                                href={`https://t.me/${listing.telegramUsername.replace('@', '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-blue-600 dark:hover:text-blue-400 break-words"
+                                data-testid={`link-telegram-${listing.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                @{listing.telegramUsername.replace('@', '')}
+                              </a>
+                            </div>
+                          )}
+
+                          {listing.website && (
+                            <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                              <Globe className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                              <a
+                                href={listing.website.startsWith('http') ? listing.website : `https://${listing.website}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-blue-600 dark:hover:text-blue-400 break-all"
+                                data-testid={`link-website-${listing.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {listing.website}
+                              </a>
+                            </div>
+                          )}
                         </div>
                       )}
                     </CardContent>
