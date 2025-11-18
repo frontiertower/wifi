@@ -362,7 +362,7 @@ export default function TourBooking() {
                     ) : (
                       <>
                         <Send className="mr-2 h-4 w-4" />
-                        Book Tour
+                        Request a Tour
                       </>
                     )}
                   </Button>
