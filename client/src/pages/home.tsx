@@ -128,8 +128,8 @@ export default function Home() {
                   <Building2 className="text-indigo-600 dark:text-indigo-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">View Directory</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Browse companies and members in the building</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Building Directory</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Browse companies and members</div>
                 </div>
               </div>
             </Link>
