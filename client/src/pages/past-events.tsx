@@ -34,9 +34,15 @@ export default function PastEvents() {
     if (!description) return null;
     
     let cleaned = description
+      // Remove "Get up-to-date information at: URL"
       .replace(/Get up-to-date information at:\s*https?:\/\/[^\s\n]+/gi, '')
-      .replace(/Address:[\s\S]*?(?=Hosted by|$)/gi, '')
-      .replace(/Hosted by[\s\S]*/gi, '')
+      // Remove "This event is hosted at the Frontier Tower:" and everything after
+      .replace(/This event is hosted at the Frontier Tower:[\s\S]*/gi, '')
+      // Remove "Address:" section when it appears at the start or after newlines
+      .replace(/(?:^|\n)Address:[\s\S]*?(?=\n\n|Hosted by|$)/gi, '')
+      // Remove "Hosted by" section at the end (we show this separately)
+      .replace(/(?:^|\n)Hosted by[\s\S]*/gi, '')
+      // Clean up extra whitespace and newlines
       .replace(/\n+/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
