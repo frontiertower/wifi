@@ -292,11 +292,9 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
             <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
               <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  Sorry for the inconvenience, our Guest WiFi is not working right now. We need a Unifi API key from someone, but all you need is a password. <br /><br />
-                  Step 1. Please ask someone for the password to the FrontierTower network.<br />
-                  Step 2. Disconnect from this network.<br />
-                  Step 3. Connect to the "FrontierTower" network.<br />
-                  Step 4. Enter the password.
+                  <strong>Connect to WiFi:</strong><br /><br />
+                  Network Name: <strong>FrontierTower</strong><br />
+                  Password: <strong>frontiertower995</strong>
                 </p>
               </div>
 
