@@ -42,11 +42,7 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
       return { success: true };
     },
     onSuccess: () => {
-      toast({
-        title: "Coming Soon! 🚀",
-        description: "We are waiting for an API to authenticate with the Frontier Tower. Tell your floor lead you want this to work!",
-        duration: 10000,
-      });
+      // Coming soon functionality - message now shown above the button
     },
     onError: (error) => {
       toast({
@@ -126,6 +122,13 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
                   Forgot password?
                 </a>
               </div>
+            </div>
+
+            <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <p className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-1">Coming Soon! 🚀</p>
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                We are waiting for an API to authenticate with the Frontier Tower. Tell your floor lead you want this to work!
+              </p>
             </div>
 
             <Button
