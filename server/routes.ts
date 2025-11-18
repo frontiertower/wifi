@@ -631,10 +631,18 @@ Rules:
       
       for (const eventData of parsedEvents) {
         try {
-          const code = (eventData.name || 'EVENT')
-            .toUpperCase()
-            .replace(/[^A-Z0-9]/g, '')
-            .substring(0, 10) + new Date().getTime().toString().slice(-4);
+          // Generate a friendly event code from the event name
+          const nameWords = (eventData.name || 'EVENT')
+            .split(/\s+/)
+            .slice(0, 3)
+            .join('')
+            .replace(/[^A-Za-z0-9]/g, '')
+            .substring(0, 8)
+            .toUpperCase();
+          
+          // Add a 3-character random suffix for uniqueness
+          const randomSuffix = Math.random().toString(36).substring(2, 5).toUpperCase();
+          const code = `${nameWords}${randomSuffix}`.substring(0, 12);
 
           const newEvent = {
             name: eventData.name,
@@ -753,10 +761,19 @@ Rules:
         try {
           const externalEvent = externalEventSchema.parse(rawEvent);
           
-          const code = externalEvent.id
+          // Generate a friendly event code from the event name
+          // Take first 2-3 words, remove special characters, limit to 8 chars, add random suffix
+          const nameWords = externalEvent.name
+            .split(/\s+/)
+            .slice(0, 3)
+            .join('')
             .replace(/[^A-Za-z0-9]/g, '')
-            .substring(0, 20)
+            .substring(0, 8)
             .toUpperCase();
+          
+          // Add a 3-character random suffix for uniqueness
+          const randomSuffix = Math.random().toString(36).substring(2, 5).toUpperCase();
+          const code = `${nameWords}${randomSuffix}`.substring(0, 12);
 
           const startDate = new Date(externalEvent.startsAt);
           const endDate = new Date(externalEvent.endsAt);
