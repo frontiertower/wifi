@@ -619,7 +619,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                     onClick={() => setGuestType("event")}
                     data-testid="button-guest-at-event"
                   >
-                    <span className="font-semibold">Guest at Event</span>
+                    <span className="font-semibold">Event Guest</span>
                   </Button>
                   <Button
                     type="button"
@@ -707,7 +707,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
               </>
             )}
 
-            {/* Guest at Event - Event Details */}
+            {/* Event Guest - Event Details */}
             {guestType === "event" && (
               <>
                 <div className="pt-2 pb-2 border-t">
