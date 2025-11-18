@@ -422,11 +422,17 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                 Congratulations!
               </h1>
               <p className="text-xl text-gray-700 dark:text-gray-300 mb-4">
-                One more step!
+                You're all set!
               </p>
-              <p className="text-gray-600 dark:text-gray-400">
-                Your registration is being processed. Please wait a moment...
-              </p>
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-left">
+                <p className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                  Connect to WiFi:
+                </p>
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <strong>Network:</strong> FrontierTower<br />
+                  <strong>Password:</strong> frontiertower995
+                </p>
+              </div>
             </div>
             
             {isSubmitting ? (
