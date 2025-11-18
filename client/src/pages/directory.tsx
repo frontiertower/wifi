@@ -36,15 +36,32 @@ export default function Directory() {
         return nameSortAsc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
       });
     } else {
-      // Sort by floor
+      // Sort by floor first, then by office number within each floor
       return [...rawListings].sort((a, b) => {
         const getFloorNumber = (floor: string | null) => {
           if (!floor) return 999; // Put items without floor at the end
           const match = floor.match(/(\d+)/);
           return match ? parseInt(match[1]) : 999;
         };
-        const diff = getFloorNumber(a.floor) - getFloorNumber(b.floor);
-        return floorSortAsc ? diff : -diff;
+        
+        const getOfficeNumber = (officeNumber: string | null) => {
+          if (!officeNumber) return 0; // No office number
+          const match = officeNumber.match(/(\d+)/);
+          return match ? parseInt(match[1]) : 0;
+        };
+        
+        const floorA = getFloorNumber(a.floor);
+        const floorB = getFloorNumber(b.floor);
+        
+        // First sort by floor
+        if (floorA !== floorB) {
+          return floorSortAsc ? floorA - floorB : floorB - floorA;
+        }
+        
+        // If same floor, sort by office number
+        const officeA = getOfficeNumber(a.officeNumber);
+        const officeB = getOfficeNumber(b.officeNumber);
+        return floorSortAsc ? officeA - officeB : officeB - officeA;
       });
     }
   }, [rawListings, activeSortMode, nameSortAsc, floorSortAsc]);

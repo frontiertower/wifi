@@ -38,7 +38,7 @@ Preferred communication style: Simple, everyday language.
 *   **Theming**: Full dark mode support with automatic time-based switching. Dark mode is automatically enabled after 6pm and light mode after 6am. Users can manually override the theme at any time using the theme toggle, and their preference is saved.
 *   **Analytics**: Comprehensive dashboard with lifetime and daily counters, featuring a 4 AM daily reset.
 *   **Badges**: Colored role-type badges for members, guests, and events in the admin dashboard.
-*   **Directory UI**: Gear icon-only admin button positioned top-right next to theme toggle. Expandable listing cards with logos, descriptions, and edit buttons in expanded view.
+*   **Directory UI**: Gear icon-only admin button positioned top-right next to theme toggle. Expandable listing cards with logos, descriptions, and edit buttons in expanded view. Responsive layout: single-column horizontal cards on desktop (descriptions visible inline), vertical compact cards on mobile (descriptions shown on expand). Floor/office sorting: hierarchical two-level sort by floor number first, then office number within each floor.
 
 ### Technical Implementations
 
