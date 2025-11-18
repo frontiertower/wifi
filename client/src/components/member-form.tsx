@@ -37,26 +37,21 @@ export default function MemberForm({ onBack, onSuccess, unifiParams }: MemberFor
 
   const registerMutation = useMutation({
     mutationFn: async (data: MemberFormData) => {
-      const response = await apiRequest("POST", "/api/register/member", {
-        role: "member",
-        email: data.email,
-        password: data.password,
-        unifiParams: unifiParams,
-      });
-      return response.json();
+      // Simulate a brief delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return { success: true };
     },
-    onSuccess: (data) => {
-      onSuccess({
-        message: "You are now connected to Frontier Tower WiFi network.",
-        networkName: "Frontier-Member",
-        duration: "24 hours",
-        speedLimit: "Unlimited"
+    onSuccess: () => {
+      toast({
+        title: "Coming Soon! 🚀",
+        description: "We are waiting for an API to authenticate with the Frontier Tower. Tell your floor lead you want this to work!",
+        duration: 10000,
       });
     },
     onError: (error) => {
       toast({
-        title: "Registration Failed",
-        description: error instanceof Error ? error.message : "Failed to register member",
+        title: "Connection Error",
+        description: error instanceof Error ? error.message : "Unable to connect",
         variant: "destructive",
       });
     },
