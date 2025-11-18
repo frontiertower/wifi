@@ -818,12 +818,19 @@ Rules:
   app.post("/api/admin/events/scrape-images", async (req, res) => {
     try {
       const events = await storage.getAllEvents();
-      const eventsWithUrls = events.filter(event => event.url);
+      const now = new Date();
+      
+      // Filter for future events with URLs and no existing image
+      const eventsWithUrls = events.filter(event => 
+        event.url && 
+        new Date(event.endDate) >= now &&
+        !event.imageUrl
+      );
       
       if (eventsWithUrls.length === 0) {
         return res.json({
           success: true,
-          message: "No events with URLs to scrape",
+          message: "No future events without images to scrape",
           scrapedCount: 0,
           failedCount: 0
         });
@@ -833,9 +840,9 @@ Rules:
       const scrapedImages = [];
       const failedScrapes: Array<{ id: number; name: string; error: string }> = [];
 
-      // Limit to first 10 events to avoid rate limiting
-      const eventsToScrape = eventsWithUrls.slice(0, 10);
-      console.log(`Starting image scrape for ${eventsToScrape.length} events (out of ${eventsWithUrls.length} total)`);
+      // Process all future events (remove the 10 event limit for this operation)
+      const eventsToScrape = eventsWithUrls;
+      console.log(`Starting image scrape for ${eventsToScrape.length} future events`);
 
       for (const event of eventsToScrape) {
         try {
