@@ -259,6 +259,12 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
             </div>
 
             <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
+              <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  We need an API key for the Guest WiFi to work, please find the person who invited you to the event and ask them for the password to the FrontierTower network
+                </p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="password">Guest Password</Label>
                 <Input
