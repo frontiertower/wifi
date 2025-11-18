@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,6 +67,14 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const [isOtherEvent, setIsOtherEvent] = useState<boolean>(false);
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const passwordParam = urlParams.get('password');
+    if (passwordParam) {
+      setPasswordInput(passwordParam);
+    }
+  }, []);
 
   const verifyPasswordMutation = useMutation({
     mutationFn: async (password: string) => {
