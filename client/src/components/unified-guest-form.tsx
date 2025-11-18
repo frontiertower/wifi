@@ -362,9 +362,32 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
               </p>
             </div>
             
-            {isSubmitting && (
+            {isSubmitting ? (
               <div className="flex justify-center">
                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : (
+              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-900 dark:text-blue-100 font-semibold mb-2">
+                  Quick Setup for iOS/Mac Users
+                </p>
+                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                  Install this profile to automatically connect to FrontierTower WiFi
+                </p>
+                <Button
+                  asChild
+                  variant="default"
+                  size="sm"
+                  className="w-full"
+                  data-testid="button-install-wifi-profile"
+                >
+                  <a href="/wifi-frontiertower_1763457398454.mobileconfig" download="FrontierTower-WiFi.mobileconfig">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Install WiFi Profile
+                  </a>
+                </Button>
               </div>
             )}
           </div>
