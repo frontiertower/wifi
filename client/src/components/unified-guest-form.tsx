@@ -352,13 +352,13 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
-              <h1 className="text-xl font-bold">Guest WiFi Password</h1>
-              <p className="text-white/90 text-sm mt-1">Please enter the guest password to complete your connection</p>
+              <h1 className="text-xl font-bold">WiFi Password</h1>
+              <p className="text-white/90 text-sm mt-1">Almost done! Just ask your host for the password for the WiFi</p>
             </div>
 
             <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="password">Guest Password</Label>
+                <Label htmlFor="password">WiFi Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -368,7 +368,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                     setPasswordError("");
                   }}
                   required
-                  placeholder="Enter guest password"
+                  placeholder="Enter WiFi password"
                   className="h-12"
                   data-testid="input-guest-password"
                   autoFocus
