@@ -123,8 +123,8 @@ export default function Directory() {
                   onClick={() => toggleListing(listing.id)}
                 >
                   <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
                         {listing.logoUrl ? (
                           <img 
                             src={listing.logoUrl} 
@@ -149,8 +149,8 @@ export default function Directory() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {getLocationText(listing) && (
-                          <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-                            <MapPin className="h-3 w-3 flex-shrink-0" />
+                          <div className="flex items-center gap-1 text-base text-gray-600 dark:text-gray-400">
+                            <MapPin className="h-4 w-4 flex-shrink-0" />
                             <span className="whitespace-nowrap">{getLocationText(listing)}</span>
                           </div>
                         )}
