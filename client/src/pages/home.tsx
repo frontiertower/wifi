@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, UserCheck, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper } from "lucide-react";
+import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper } from "lucide-react";
 import { Link } from "wouter";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
@@ -114,7 +114,7 @@ export default function Home() {
             >
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
-                  <UserCheck className="text-green-600 dark:text-green-300" />
+                  <Wifi className="text-green-600 dark:text-green-300" />
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">WiFi Access</div>
