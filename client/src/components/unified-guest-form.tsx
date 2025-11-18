@@ -482,7 +482,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
-            <h1 className="text-xl font-bold">Guest Login</h1>
+            <h1 className="text-xl font-bold">Get WiFi Access</h1>
             <p className="text-white/90 text-sm mt-1">Welcome! Please provide your information</p>
           </div>
 
