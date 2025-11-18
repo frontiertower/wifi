@@ -336,7 +336,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   if (flowStep === 'password') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-6 right-6">
           <ThemeToggle />
         </div>
         <div className="max-w-lg mx-auto">
@@ -405,7 +405,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   if (flowStep === 'congrats') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 flex items-center justify-center">
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-6 right-6">
           <ThemeToggle />
         </div>
         <div className="max-w-lg mx-auto w-full">
@@ -472,7 +472,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-6 right-6">
         <ThemeToggle />
       </div>
       <div className="max-w-lg mx-auto">
