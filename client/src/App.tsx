@@ -8,6 +8,8 @@ import Home from "@/pages/home";
 import Events from "@/pages/events";
 import PastEvents from "@/pages/past-events";
 import Booking from "@/pages/booking";
+import Directory from "@/pages/directory";
+import AddListing from "@/pages/addlisting";
 import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -18,6 +20,8 @@ function Router() {
       <Route path="/events" component={Events} />
       <Route path="/past-events" component={PastEvents} />
       <Route path="/booking" component={Booking} />
+      <Route path="/directory" component={Directory} />
+      <Route path="/addlisting" component={AddListing} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/settings">
         {() => {
