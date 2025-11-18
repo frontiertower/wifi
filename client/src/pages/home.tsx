@@ -191,7 +191,7 @@ export default function Home() {
                   <UserCheck className="text-green-600 dark:text-green-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Guest WiFi Login</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">WiFi Access</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and event attendees</div>
                 </div>
               </div>
