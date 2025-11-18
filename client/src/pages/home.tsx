@@ -171,10 +171,8 @@ export default function Home() {
               </div>
             </Link>
 
-            <a
-              href="https://t.me/+M0KxFTd3LnJkNzky"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/chat"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
               data-testid="button-join-discussion"
             >
@@ -187,7 +185,7 @@ export default function Home() {
                   <div className="text-sm text-gray-500 dark:text-gray-400">Meet our community on Telegram</div>
                 </div>
               </div>
-            </a>
+            </Link>
 
             <Link
               href="/events"
