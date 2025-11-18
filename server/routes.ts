@@ -5,6 +5,8 @@ import { storage } from "./storage";
 import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
+import { SiweMessage } from "siwe";
+import { randomBytes } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
