@@ -140,6 +140,7 @@ export const tourBookings = pgTable("tour_bookings", {
   phone: text("phone").notNull(),
   email: text("email").notNull(),
   linkedIn: text("linked_in"),
+  referredBy: text("referred_by"),
   tourDate: timestamp("tour_date").notNull(),
   tourTime: text("tour_time").notNull(),
   interestedInPrivateOffice: boolean("interested_in_private_office").default(false),

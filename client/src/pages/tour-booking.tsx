@@ -38,6 +38,7 @@ const tourBookingFormSchema = z.object({
   phone: z.string().min(1, "Phone number is required"),
   email: z.string().email("Valid email is required").min(1, "Email is required"),
   linkedIn: z.string().optional(),
+  referredBy: z.string().optional(),
   tourDate: z.date({
     required_error: "Tour date is required",
   }),
@@ -85,6 +86,7 @@ export default function TourBooking() {
       phone: "",
       email: "",
       linkedIn: "",
+      referredBy: "",
       interestedInPrivateOffice: false,
       notes: "",
     },
@@ -230,6 +232,24 @@ export default function TourBooking() {
                         <Input
                           placeholder="linkedin.com/in/yourprofile"
                           data-testid="input-linkedin"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="referredBy"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name of a Tower Member who referred you</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter member name"
+                          data-testid="input-referred-by"
                           {...field}
                         />
                       </FormControl>
