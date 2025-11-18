@@ -213,7 +213,7 @@ export default function Home() {
                   <Link2 className="text-emerald-600 dark:text-emerald-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">FT0.sh</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Tower Quick Links</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Frontier Tower quick links</div>
                 </div>
               </div>
