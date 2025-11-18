@@ -167,7 +167,7 @@ export default function PastEvents() {
                           data-testid={`button-view-event-${event.id}`}
                         >
                           <a
-                            href={event.url.startsWith('http') ? event.url : `https://lu.ma/${event.url}`}
+                            href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
