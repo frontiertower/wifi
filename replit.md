@@ -97,12 +97,12 @@ Preferred communication style: Simple, everyday language.
         *   Proper data integrity with conditional upserts that only update URL when provided
 *   **Unified Guest Form (November 17, 2025)**:
     *   Combined "Guest of a Member" and "Guest at Event" into single progressive disclosure form
-    *   **Progressive Disclosure UI**: Basic fields (Full Name, Email, Telegram Username, Phone Number) visible initially, then hidden once guest type is selected for cleaner, focused experience
+    *   Basic fields shown first (Full Name, Email, Telegram Username, Phone Number)
     *   Two guest type selection buttons: "Guest of a Member" and "Guest at Event"
     *   Conditional fields based on selection:
         *   Guest of Member: Shows Host Contact field
         *   Guest at Event: Shows Event Date (Calendar + Popover) and Event Name fields with real-time event fetching
-    *   Users can change guest type mid-flow via "Change guest type" button (restores basic fields with preserved data)
+    *   Users can change guest type mid-flow via "Change guest type" button
     *   Tour interest question: "Are you interested in a tour of Frontier Tower?" with Yes/Maybe/No toggle buttons
     *   Fixed timezone bug: Uses date-fns format() instead of toISOString() to prevent date shifts in positive time zones
     *   Home page updated with single "Guest Access" button replacing separate guest/event buttons
