@@ -116,38 +116,6 @@ export default function Home() {
 
           <div className="p-6">
             <Link
-              href="/directory"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-view-directory"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
-                  <Building2 className="text-indigo-600 dark:text-indigo-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Building Directory</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Browse companies and members</div>
-                </div>
-              </div>
-            </Link>
-
-            <Link
-              href="/events"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-view-events"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-purple-200 dark:group-hover:bg-purple-500/40">
-                  <Calendar className="text-purple-600 dark:text-purple-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Events Calendar</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Discover what's happening</div>
-                </div>
-              </div>
-            </Link>
-
-            <Link
               href="/tour-booking"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
               data-testid="button-book-tour"
@@ -164,33 +132,17 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/tour-booking"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-rent-office"
+              href="/directory"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-view-directory"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/40">
-                  <DoorOpen className="text-amber-600 dark:text-amber-300" />
+                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
+                  <Building2 className="text-indigo-600 dark:text-indigo-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Rent a Private Office</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Explore private office spaces</div>
-                </div>
-              </div>
-            </Link>
-
-            <Link
-              href="/event-host-booking"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-host-event"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
-                  <PartyPopper className="text-pink-600 dark:text-pink-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Host Your Event</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Setup a call to discuss an event</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Building Directory</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Browse companies and members</div>
                 </div>
               </div>
             </Link>
@@ -213,6 +165,22 @@ export default function Home() {
               </div>
             </a>
 
+            <Link
+              href="/events"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-view-events"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-purple-200 dark:group-hover:bg-purple-500/40">
+                  <Calendar className="text-purple-600 dark:text-purple-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Events Calendar</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Discover what's happening</div>
+                </div>
+              </div>
+            </Link>
+
             <button
               onClick={() => handleRoleSelect("guest")}
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
@@ -229,9 +197,25 @@ export default function Home() {
               </div>
             </button>
 
+            <Link
+              href="/event-host-booking"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-host-event"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
+                  <PartyPopper className="text-pink-600 dark:text-pink-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Host Your Event</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Setup a call to discuss an event</div>
+                </div>
+              </div>
+            </Link>
+
             <button
               onClick={() => handleRoleSelect("member")}
-              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
               data-testid="button-select-member"
             >
               <div className="flex items-center">
@@ -244,6 +228,22 @@ export default function Home() {
                 </div>
               </div>
             </button>
+
+            <Link
+              href="/tour-booking"
+              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-rent-office"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/40">
+                  <DoorOpen className="text-amber-600 dark:text-amber-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Rent a Private Office</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Explore private office spaces</div>
+                </div>
+              </div>
+            </Link>
 
             <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
               By connecting, you agree to our terms of service
