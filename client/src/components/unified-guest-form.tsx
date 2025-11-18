@@ -39,8 +39,10 @@ interface FormData {
   tourInterest: "yes" | "maybe" | "no" | "";
 }
 
+type FlowStep = 'form' | 'password' | 'congrats';
+
 export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: UnifiedGuestFormProps) {
-  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const [flowStep, setFlowStep] = useState<FlowStep>('form');
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [guestType, setGuestType] = useState<GuestType>(null);
@@ -53,6 +55,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     eventName: "",
     tourInterest: "",
   });
+  const [pendingRegistrationData, setPendingRegistrationData] = useState<any>(null);
 
   const [selectedDate, setSelectedDate] = useState<Date>(() => {
     return new Date();
@@ -70,8 +73,12 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     },
     onSuccess: (data) => {
       if (data.success) {
-        setIsPasswordVerified(true);
         setPasswordError("");
+        setFlowStep('congrats');
+        // Complete the registration after showing congrats
+        setTimeout(() => {
+          completeRegistration();
+        }, 100);
       } else {
         setPasswordError("Incorrect password. Please try again.");
       }
@@ -85,6 +92,16 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     e.preventDefault();
     if (passwordInput.trim()) {
       verifyPasswordMutation.mutate(passwordInput);
+    }
+  };
+
+  const completeRegistration = () => {
+    if (!pendingRegistrationData) return;
+    
+    if (pendingRegistrationData.type === "member") {
+      registerMemberGuestMutation.mutate(pendingRegistrationData.data);
+    } else if (pendingRegistrationData.type === "event") {
+      registerEventGuestMutation.mutate(pendingRegistrationData.data);
     }
   };
 
@@ -147,9 +164,12 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       });
     },
     onError: (error) => {
+      setFlowStep('password');
+      setPasswordInput("");
+      setPasswordError("");
       toast({
         title: "Registration Failed",
-        description: error instanceof Error ? error.message : "Failed to register guest",
+        description: error instanceof Error ? error.message : "Failed to register guest. Please try again.",
         variant: "destructive",
       });
     },
@@ -177,9 +197,12 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       });
     },
     onError: (error) => {
+      setFlowStep('password');
+      setPasswordInput("");
+      setPasswordError("");
       toast({
         title: "Registration Failed",
-        description: error instanceof Error ? error.message : "Failed to register for event",
+        description: error instanceof Error ? error.message : "Failed to register for event. Please try again.",
         variant: "destructive",
       });
     },
@@ -189,7 +212,11 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     e.preventDefault();
 
     if (guestType === "member") {
-      registerMemberGuestMutation.mutate(formData);
+      setPendingRegistrationData({
+        type: "member",
+        data: formData
+      });
+      setFlowStep('password');
     } else if (guestType === "event") {
       if (!isValidEvent) {
         toast({
@@ -204,10 +231,14 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
       const finalEventName = (availableEvents.length === 0 || isOtherEvent) ? customEventName : formData.eventName;
 
-      registerEventGuestMutation.mutate({
-        ...formData,
-        eventName: finalEventName
+      setPendingRegistrationData({
+        type: "event",
+        data: {
+          ...formData,
+          eventName: finalEventName
+        }
       });
+      setFlowStep('password');
     }
   };
 
@@ -234,8 +265,8 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
   const isSubmitting = registerMemberGuestMutation.isPending || registerEventGuestMutation.isPending;
 
-  // Show password verification screen first
-  if (!isPasswordVerified) {
+  // Show password verification screen after form submission
+  if (flowStep === 'password') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
         <div className="absolute top-4 right-4">
@@ -245,7 +276,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
             <div className="bg-blue-600 text-white p-6">
               <Button
-                onClick={onBack}
+                onClick={() => setFlowStep('form')}
                 variant="ghost"
                 size="sm"
                 className="mb-4 text-white hover:text-white/80 hover:bg-white/10 p-0"
@@ -254,8 +285,8 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
-              <h1 className="text-xl font-bold">Guest WiFi Login</h1>
-              <p className="text-white/90 text-sm mt-1">Please enter the guest password to continue</p>
+              <h1 className="text-xl font-bold">Guest WiFi Password</h1>
+              <p className="text-white/90 text-sm mt-1">Please enter the guest password to complete your connection</p>
             </div>
 
             <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
@@ -298,7 +329,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                 disabled={verifyPasswordMutation.isPending || !passwordInput.trim()}
                 data-testid="button-verify-password"
               >
-                {verifyPasswordMutation.isPending ? "Verifying..." : "Continue"}
+                {verifyPasswordMutation.isPending ? "Verifying..." : "Complete Connection"}
               </Button>
             </form>
           </div>
@@ -306,6 +337,46 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       </div>
     );
   }
+
+  // Show congratulations screen after password verification
+  if (flowStep === 'congrats') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 flex items-center justify-center">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
+        <div className="max-w-lg mx-auto w-full">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden text-center p-8">
+            <div className="mb-6">
+              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-10 h-10 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                Congratulations!
+              </h1>
+              <p className="text-xl text-gray-700 dark:text-gray-300 mb-4">
+                One more step!
+              </p>
+              <p className="text-gray-600 dark:text-gray-400">
+                Your registration is being processed. Please wait a moment...
+              </p>
+            </div>
+            
+            {isSubmitting && (
+              <div className="flex justify-center">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show form (default)
+  if (flowStep === 'form') {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
@@ -584,4 +655,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       </div>
     </div>
   );
+  }
+  
+  return null;
 }
