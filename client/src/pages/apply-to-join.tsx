@@ -100,7 +100,7 @@ export default function ApplyToJoin() {
               <CardTitle className="text-2xl">Apply to Join Frontier Tower</CardTitle>
             </div>
             <CardDescription>
-              Become part of our community focused on AI, Agents, and LLMs. Fill out the form below to submit your membership application.
+              Become part of our community. Fill out the form below to submit your membership application.
             </CardDescription>
           </CardHeader>
 
