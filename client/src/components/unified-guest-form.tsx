@@ -27,7 +27,7 @@ interface UnifiedGuestFormProps {
   unifiParams: UniFiParams;
 }
 
-type GuestType = "member" | "event" | "tower_member" | null;
+type GuestType = "member" | "event" | "tower_member" | "visitor" | null;
 
 interface FormData {
   name: string;
@@ -289,6 +289,12 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       }
       setPendingRegistrationData({
         type: "tower_member",
+        data: formData
+      });
+      setFlowStep('password');
+    } else if (guestType === "visitor") {
+      setPendingRegistrationData({
+        type: "visitor",
         data: formData
       });
       setFlowStep('password');
@@ -587,6 +593,15 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                     data-testid="button-tower-member"
                   >
                     <span className="font-semibold">Tower Member</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-700 dark:text-orange-300"
+                    onClick={() => setGuestType("visitor")}
+                    data-testid="button-visitor"
+                  >
+                    <span className="font-semibold">Visitor</span>
                   </Button>
                 </div>
               </div>
