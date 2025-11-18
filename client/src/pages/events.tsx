@@ -91,9 +91,8 @@ export default function Events() {
               <p className="text-muted-foreground">Discover what's happening at Frontier Tower</p>
             </div>
             <Link href="/past-events">
-              <Button variant="outline" size="sm" data-testid="button-past-events">
-                <History className="w-4 h-4 mr-2" />
-                Past Events
+              <Button variant="outline" size="icon" data-testid="button-past-events" title="Past Events">
+                <History className="w-5 h-5" />
               </Button>
             </Link>
           </div>
