@@ -845,7 +845,8 @@ Rules:
 
       for (const event of eventsToScrape) {
         try {
-          const lumaUrl = `https://lu.ma/${event.url}`;
+          const eventUrl = event.url.trim();
+          const lumaUrl = eventUrl.startsWith('http') ? eventUrl : `https://lu.ma/${eventUrl}`;
           console.log(`Scraping image for event: ${event.name} from ${lumaUrl}`);
           
           const controller = new AbortController();
