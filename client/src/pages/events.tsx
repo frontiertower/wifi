@@ -102,13 +102,10 @@ export default function Events() {
                           </div>
                         )}
                         <div className="p-6">
-                          <div className="flex items-start justify-between gap-2 mb-4">
+                          <div className="mb-4">
                             <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
                               {event.name}
                             </h3>
-                            <Badge variant={status.variant} className="flex-shrink-0" data-testid={`badge-status-${event.id}`}>
-                              {status.label}
-                            </Badge>
                           </div>
 
                           {event.description && (
@@ -217,13 +214,10 @@ export default function Events() {
                           </div>
                         )}
                         <div className="p-6">
-                          <div className="flex items-start justify-between gap-2 mb-4">
+                          <div className="mb-4">
                             <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
                               {event.name}
                             </h3>
-                            <Badge variant="outline" className="flex-shrink-0" data-testid={`badge-status-${event.id}`}>
-                              Past
-                            </Badge>
                           </div>
 
                           {event.description && (
