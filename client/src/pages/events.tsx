@@ -187,12 +187,12 @@ export default function Events() {
                             )}
                           </div>
 
-                          {event.maxAttendees && (
+                          {event.currentAttendees && event.currentAttendees > 0 && (
                             <div className="mt-4 pt-4 border-t">
                               <div className="flex items-center justify-between gap-2 text-sm">
                                 <span className="text-muted-foreground">Attendees</span>
                                 <span className="font-medium" data-testid={`text-attendees-${event.id}`}>
-                                  {event.currentAttendees || 0} / {event.maxAttendees}
+                                  {event.currentAttendees}
                                 </span>
                               </div>
                             </div>
