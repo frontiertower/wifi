@@ -13,6 +13,7 @@ export const captiveUsers = pgTable("captive_users", {
   id: serial("id").primaryKey(),
   role: text("role").notNull(), // member, guest, event
   email: text("email").notNull(),
+  ethereumAddress: text("ethereum_address"),
   name: text("name"),
   phone: text("phone"),
   telegramUsername: text("telegram_username"),
