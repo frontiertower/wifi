@@ -125,8 +125,8 @@ export default function Home() {
               data-testid="button-select-guest"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/40 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-900/60">
-                  <i className="fas fa-user text-green-600 dark:text-green-400"></i>
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
+                  <i className="fas fa-user text-green-600 dark:text-green-300"></i>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Guest Login</div>
@@ -141,8 +141,8 @@ export default function Home() {
               data-testid="button-select-member"
             >
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60">
-                  <i className="fas fa-user-tie text-blue-600 dark:text-blue-400"></i>
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
+                  <i className="fas fa-user-tie text-blue-600 dark:text-blue-300"></i>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Member Login</div>
