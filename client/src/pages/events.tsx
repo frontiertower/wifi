@@ -67,33 +67,38 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1">
-            <Link href="/">
-              <Button variant="ghost" size="sm" data-testid="button-back-home">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-            </Link>
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold">Events</h1>
-              <p className="text-sm text-muted-foreground">Discover what's happening at Frontier Tower</p>
+      <div className="absolute top-6 right-6">
+        <ThemeToggle />
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <Link href="/">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mb-4"
+              data-testid="button-back-home"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+          </Link>
+          
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Events</h1>
+              <p className="text-muted-foreground">Discover what's happening at Frontier Tower</p>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
             <Link href="/past-events">
               <Button variant="outline" size="sm" data-testid="button-past-events">
                 <History className="w-4 h-4 mr-2" />
                 Past Events
               </Button>
             </Link>
-            <ThemeToggle />
           </div>
         </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-8">
         {isLoading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -224,7 +229,7 @@ export default function Events() {
                   })}
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }
