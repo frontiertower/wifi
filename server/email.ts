@@ -262,6 +262,7 @@ This is an automated notification from Frontier Tower WiFi Portal.
     name: string;
     phone: string;
     email: string;
+    telegram?: string | null;
     linkedIn?: string | null;
   }): Promise<boolean> {
     const subject = `New Telegram Chat Invite Request: ${request.name}`;
@@ -274,6 +275,7 @@ Someone has requested an invite to the Frontier Tower Telegram group chat.
 Name: ${request.name}
 Phone: ${request.phone}
 Email: ${request.email}
+${request.telegram ? `Telegram: ${request.telegram}` : ""}
 ${request.linkedIn ? `LinkedIn: ${request.linkedIn}` : ""}
 
 Please send them a text message with the Telegram invite link:
@@ -299,6 +301,12 @@ This is an automated notification from Frontier Tower WiFi Portal.
           <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Email:</td>
           <td style="padding: 8px; border-bottom: 1px solid #ddd;">${request.email}</td>
         </tr>
+        ${request.telegram ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Telegram:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${request.telegram}</td>
+        </tr>
+        ` : ""}
         ${request.linkedIn ? `
         <tr>
           <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">LinkedIn:</td>

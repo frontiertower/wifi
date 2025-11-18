@@ -183,6 +183,7 @@ export const chatInviteRequests = pgTable("chat_invite_requests", {
   name: text("name").notNull(),
   phone: text("phone").notNull(),
   email: text("email").notNull(),
+  telegram: text("telegram"),
   linkedIn: text("linked_in"),
   status: text("status").default("pending"),
   createdAt: timestamp("created_at").defaultNow(),

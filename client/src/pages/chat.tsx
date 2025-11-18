@@ -24,6 +24,7 @@ const chatInviteRequestFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Phone number is required"),
   email: z.string().email("Valid email is required").min(1, "Email is required"),
+  telegram: z.string().optional(),
   linkedIn: z.string().optional(),
 });
 
@@ -39,6 +40,7 @@ export default function Chat() {
       name: "",
       phone: "",
       email: "",
+      telegram: "",
       linkedIn: "",
     },
   });
@@ -155,6 +157,27 @@ export default function Chat() {
                           data-testid="input-email"
                         />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="telegram"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Telegram Username</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="@username"
+                          {...field}
+                          data-testid="input-telegram"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Optional - Your Telegram username
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
