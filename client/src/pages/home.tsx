@@ -199,7 +199,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">Member Login</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Building residents and employees</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Citizens of the Frontier Tower</div>
                 </div>
               </div>
             </button>
