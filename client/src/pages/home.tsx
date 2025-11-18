@@ -118,8 +118,6 @@ export default function Home() {
           </div>
 
           <div className="p-6">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Select your access type</h2>
-
             <Link
               href="/events"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"

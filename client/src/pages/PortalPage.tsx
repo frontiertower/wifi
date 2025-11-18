@@ -73,9 +73,6 @@ export default function PortalPage() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
               <h1 className="text-4xl font-bold mb-3">Welcome to Frontier Tower</h1>
-              <p className="text-lg text-muted-foreground">
-                Select your access type to connect to WiFi
-              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
