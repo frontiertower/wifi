@@ -88,89 +88,101 @@ export default function Events() {
                     return (
                       <Card
                         key={event.id}
-                        className="p-6 hover-elevate transition-all"
+                        className="overflow-hidden hover-elevate transition-all"
                         data-testid={`card-event-${event.id}`}
                       >
-                        <div className="flex items-start justify-between gap-2 mb-4">
-                          <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
-                            {event.name}
-                          </h3>
-                          <Badge variant={status.variant} className="flex-shrink-0" data-testid={`badge-status-${event.id}`}>
-                            {status.label}
-                          </Badge>
-                        </div>
-
-                        {event.description && (
-                          <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
-                            {event.description}
-                          </p>
+                        {event.imageUrl && (
+                          <div className="w-full h-48 overflow-hidden">
+                            <img
+                              src={event.imageUrl}
+                              alt={event.name}
+                              className="w-full h-full object-cover"
+                              data-testid={`img-event-${event.id}`}
+                            />
+                          </div>
                         )}
-
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-sm">
-                            <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                            <span data-testid={`text-date-${event.id}`}>
-                              {format(start, "MMM d, yyyy")}
-                            </span>
+                        <div className="p-6">
+                          <div className="flex items-start justify-between gap-2 mb-4">
+                            <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
+                              {event.name}
+                            </h3>
+                            <Badge variant={status.variant} className="flex-shrink-0" data-testid={`badge-status-${event.id}`}>
+                              {status.label}
+                            </Badge>
                           </div>
 
-                          <div className="flex items-center gap-2 text-sm">
-                            <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                            <span data-testid={`text-time-${event.id}`}>
-                              {format(start, "h:mm a")} - {format(end, "h:mm a")}
-                            </span>
-                          </div>
+                          {event.description && (
+                            <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
+                              {event.description}
+                            </p>
+                          )}
 
-                          {cleanHostName(event.host) && (
+                          <div className="space-y-2">
                             <div className="flex items-center gap-2 text-sm">
-                              <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                              <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
-                                Hosted by {cleanHostName(event.host)}
+                              <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                              <span data-testid={`text-date-${event.id}`}>
+                                {format(start, "MMM d, yyyy")}
                               </span>
+                            </div>
+
+                            <div className="flex items-center gap-2 text-sm">
+                              <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                              <span data-testid={`text-time-${event.id}`}>
+                                {format(start, "h:mm a")} - {format(end, "h:mm a")}
+                              </span>
+                            </div>
+
+                            {cleanHostName(event.host) && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
+                                  Hosted by {cleanHostName(event.host)}
+                                </span>
+                              </div>
+                            )}
+
+                            {event.originalLocation && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                <span className="text-muted-foreground" data-testid={`text-location-${event.id}`}>
+                                  {event.originalLocation}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {event.maxAttendees && (
+                            <div className="mt-4 pt-4 border-t">
+                              <div className="flex items-center justify-between gap-2 text-sm">
+                                <span className="text-muted-foreground">Attendees</span>
+                                <span className="font-medium" data-testid={`text-attendees-${event.id}`}>
+                                  {event.currentAttendees || 0} / {event.maxAttendees}
+                                </span>
+                              </div>
                             </div>
                           )}
 
-                          {event.originalLocation && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                              <span className="text-muted-foreground" data-testid={`text-location-${event.id}`}>
-                                {event.originalLocation}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        {event.maxAttendees && (
-                          <div className="mt-4 pt-4 border-t">
-                            <div className="flex items-center justify-between gap-2 text-sm">
-                              <span className="text-muted-foreground">Attendees</span>
-                              <span className="font-medium" data-testid={`text-attendees-${event.id}`}>
-                                {event.currentAttendees || 0} / {event.maxAttendees}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-
-                        {event.url && (
-                          <div className="mt-4">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full"
-                              asChild
-                              data-testid={`button-view-event-${event.id}`}
-                            >
-                              <a
-                                href={`https://lu.ma/${event.url}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                          {event.url && (
+                            <div className="mt-4">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full"
+                                asChild
+                                data-testid={`button-view-event-${event.id}`}
                               >
-                                View Event
-                                <ExternalLink className="ml-2 h-4 w-4" />
-                              </a>
-                            </Button>
-                          </div>
-                        )}
+                                <a
+                                  href={`https://lu.ma/${event.url}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  View Event
+                                  <ExternalLink className="ml-2 h-4 w-4" />
+                                </a>
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </Card>
                     );
                   })}
@@ -191,62 +203,74 @@ export default function Events() {
                     return (
                       <Card
                         key={event.id}
-                        className="p-6 opacity-75"
+                        className="overflow-hidden opacity-75"
                         data-testid={`card-event-${event.id}`}
                       >
-                        <div className="flex items-start justify-between gap-2 mb-4">
-                          <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
-                            {event.name}
-                          </h3>
-                          <Badge variant="outline" className="flex-shrink-0" data-testid={`badge-status-${event.id}`}>
-                            Past
-                          </Badge>
-                        </div>
-
-                        {event.description && (
-                          <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
-                            {event.description}
-                          </p>
+                        {event.imageUrl && (
+                          <div className="w-full h-48 overflow-hidden">
+                            <img
+                              src={event.imageUrl}
+                              alt={event.name}
+                              className="w-full h-full object-cover"
+                              data-testid={`img-event-${event.id}`}
+                            />
+                          </div>
                         )}
-
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-sm">
-                            <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                            <span data-testid={`text-date-${event.id}`}>
-                              {format(start, "MMM d, yyyy")}
-                            </span>
+                        <div className="p-6">
+                          <div className="flex items-start justify-between gap-2 mb-4">
+                            <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
+                              {event.name}
+                            </h3>
+                            <Badge variant="outline" className="flex-shrink-0" data-testid={`badge-status-${event.id}`}>
+                              Past
+                            </Badge>
                           </div>
 
-                          {cleanHostName(event.host) && (
+                          {event.description && (
+                            <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
+                              {event.description}
+                            </p>
+                          )}
+
+                          <div className="space-y-2">
                             <div className="flex items-center gap-2 text-sm">
-                              <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                              <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
-                                {cleanHostName(event.host)}
+                              <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                              <span data-testid={`text-date-${event.id}`}>
+                                {format(start, "MMM d, yyyy")}
                               </span>
+                            </div>
+
+                            {cleanHostName(event.host) && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
+                                  {cleanHostName(event.host)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {event.url && (
+                            <div className="mt-4">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full"
+                                asChild
+                                data-testid={`button-view-event-${event.id}`}
+                              >
+                                <a
+                                  href={`https://lu.ma/${event.url}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  View Event
+                                  <ExternalLink className="ml-2 h-4 w-4" />
+                                </a>
+                              </Button>
                             </div>
                           )}
                         </div>
-
-                        {event.url && (
-                          <div className="mt-4">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full"
-                              asChild
-                              data-testid={`button-view-event-${event.id}`}
-                            >
-                              <a
-                                href={`https://lu.ma/${event.url}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                View Event
-                                <ExternalLink className="ml-2 h-4 w-4" />
-                              </a>
-                            </Button>
-                          </div>
-                        )}
                       </Card>
                     );
                   })}

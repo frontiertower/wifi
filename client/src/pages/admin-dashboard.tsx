@@ -127,6 +127,44 @@ export default function AdminDashboard() {
     },
   });
 
+  const scrapeImagesMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/events/scrape-images", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      const scrapedCount = data.scrapedCount || 0;
+      const failedCount = data.failedCount || 0;
+      
+      if (failedCount > 0) {
+        toast({
+          title: "Images Partially Scraped",
+          description: `Scraped ${scrapedCount} image${scrapedCount !== 1 ? 's' : ''}, ${failedCount} failed. Check console for details.`,
+          variant: "default",
+        });
+        console.error('Failed scrapes:', data.failedScrapes);
+      } else if (scrapedCount > 0) {
+        toast({
+          title: "Images Scraped Successfully",
+          description: `Successfully scraped ${scrapedCount} event image${scrapedCount !== 1 ? 's' : ''}`,
+        });
+      } else {
+        toast({
+          title: "No Images to Scrape",
+          description: "No events with URLs found to scrape images from",
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to Scrape Images",
+        description: error.message || "An error occurred while scraping event images",
+        variant: "destructive",
+      });
+    },
+  });
+
   const syncEventsMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/admin/events/sync", {});
@@ -351,6 +389,27 @@ export default function AdminDashboard() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
                         Sync Events
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    onClick={() => scrapeImagesMutation.mutate()}
+                    disabled={scrapeImagesMutation.isPending}
+                    variant="outline"
+                    className="w-full sm:w-auto" 
+                    data-testid="button-scrape-images"
+                  >
+                    {scrapeImagesMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Scraping...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        Scrape Images
                       </>
                     )}
                   </Button>
