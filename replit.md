@@ -8,6 +8,16 @@ Frontier Tower WiFi Portal is a captive portal application designed to manage Wi
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+### Admin Events Filtering (November 18, 2025)
+- Added "Upcoming" and "Past Events" filter buttons to admin events table
+- **Default Filter**: "Upcoming" selected by default to show only future events
+- **Filtering Logic**: Events filtered by endDate (upcoming: endDate >= now, past: endDate < now)
+- **Implementation**: IIFE pattern with safe data handling (`events?.events ?? []`) prevents undefined errors
+- **UI**: Filter buttons positioned above events table with proper styling (default variant when selected, outline when not)
+- Avoids code duplication by computing filtered events once and reusing for both empty state and table rows
+
 ## System Architecture
 
 ### Frontend Architecture

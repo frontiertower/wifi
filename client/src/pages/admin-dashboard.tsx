@@ -46,6 +46,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const [showEventForm, setShowEventForm] = useState(false);
   const [bulkEventText, setBulkEventText] = useState("");
+  const [eventFilter, setEventFilter] = useState<"upcoming" | "past">("upcoming");
   const { toast } = useToast();
 
   const cleanHostName = (host: string | null): string | null => {
@@ -518,6 +519,25 @@ export default function AdminDashboard() {
               </Card>
             )}
 
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex gap-2">
+                <Button
+                  variant={eventFilter === "upcoming" ? "default" : "outline"}
+                  onClick={() => setEventFilter("upcoming")}
+                  data-testid="button-filter-upcoming"
+                >
+                  Upcoming
+                </Button>
+                <Button
+                  variant={eventFilter === "past" ? "default" : "outline"}
+                  onClick={() => setEventFilter("past")}
+                  data-testid="button-filter-past"
+                >
+                  Past Events
+                </Button>
+              </div>
+            </div>
+
             <div className="overflow-x-auto">
               <Table>
               <TableHeader>
@@ -540,14 +560,25 @@ export default function AdminDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {events?.events?.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={15} className="text-center py-8 text-gray-500 dark:text-gray-400">
-                      No events found. Create your first event to get started.
-                    </TableCell>
-                  </TableRow>
-                )}
-                {events?.events?.map((event: any) => (
+                {(() => {
+                  const now = new Date();
+                  const allEvents = events?.events ?? [];
+                  const filteredEvents = allEvents.filter((event: any) => {
+                    const endDate = new Date(event.endDate);
+                    return eventFilter === "upcoming" ? endDate >= now : endDate < now;
+                  });
+
+                  if (filteredEvents.length === 0) {
+                    return (
+                      <TableRow>
+                        <TableCell colSpan={15} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                          No {eventFilter} events found.
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  return filteredEvents.map((event: any) => (
                   <TableRow key={event.id}>
                     <TableCell className="font-medium">
                       {event.name}
@@ -617,7 +648,8 @@ export default function AdminDashboard() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                  ));
+                })()}
               </TableBody>
             </Table>
             </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Calendar } from "lucide-react";
+import { format } from "date-fns";
+
+type EventFilter = "upcoming" | "past";
 
 export default function AdminEventsTable() {
   const [showEventForm, setShowEventForm] = useState(false);
+  const [eventFilter, setEventFilter] = useState<EventFilter>("upcoming");
   const [newEvent, setNewEvent] = useState({
     name: "",
     date: "",
@@ -16,13 +21,19 @@ export default function AdminEventsTable() {
     isActive: true
   });
 
-  //todo: remove mock functionality
-  const events = [
-    { id: 1, name: "Tech Summit 2025", date: "2025-11-15", attendees: 45, status: "Upcoming", isActive: true },
-    { id: 2, name: "Startup Networking Mixer", date: "2025-11-20", attendees: 0, status: "Upcoming", isActive: true },
-    { id: 3, name: "Web3 Workshop", date: "2025-11-22", attendees: 12, status: "Upcoming", isActive: true },
-    { id: 4, name: "AI Hackathon", date: "2025-10-10", attendees: 89, status: "Completed", isActive: false }
-  ];
+  const { data: events = [], isLoading } = useQuery<any[]>({
+    queryKey: ["/api/admin/events"],
+  });
+
+  const now = new Date();
+  const filteredEvents = events.filter((event) => {
+    const endDate = new Date(event.endDate);
+    if (eventFilter === "upcoming") {
+      return endDate >= now;
+    } else {
+      return endDate < now;
+    }
+  });
 
   const handleCreateEvent = () => {
     console.log('Creating event:', newEvent);
@@ -42,6 +53,23 @@ export default function AdminEventsTable() {
           >
             <Plus className="w-4 h-4 mr-2" />
             Create Event
+          </Button>
+        </div>
+
+        <div className="flex gap-2 mb-6">
+          <Button
+            variant={eventFilter === "upcoming" ? "default" : "outline"}
+            onClick={() => setEventFilter("upcoming")}
+            data-testid="button-filter-upcoming"
+          >
+            Upcoming
+          </Button>
+          <Button
+            variant={eventFilter === "past" ? "default" : "outline"}
+            onClick={() => setEventFilter("past")}
+            data-testid="button-filter-past"
+          >
+            Past Events
           </Button>
         </div>
 
@@ -95,41 +123,56 @@ export default function AdminEventsTable() {
           </Card>
         )}
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-3 px-4 font-medium text-sm">Event Name</th>
-                <th className="text-left py-3 px-4 font-medium text-sm">Date</th>
-                <th className="text-left py-3 px-4 font-medium text-sm">Attendees</th>
-                <th className="text-left py-3 px-4 font-medium text-sm">Status</th>
-                <th className="text-left py-3 px-4 font-medium text-sm">Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((event) => (
-                <tr key={event.id} className="border-b hover-elevate" data-testid={`row-event-${event.id}`}>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
-                      <span>{event.name}</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 text-sm text-muted-foreground">{event.date}</td>
-                  <td className="py-3 px-4 text-sm">{event.attendees}</td>
-                  <td className="py-3 px-4">
-                    <Badge variant={event.status === "Upcoming" ? "default" : "outline"}>
-                      {event.status}
-                    </Badge>
-                  </td>
-                  <td className="py-3 px-4">
-                    <Switch checked={event.isActive} data-testid={`switch-active-${event.id}`} />
-                  </td>
+        {isLoading ? (
+          <div className="text-center py-8 text-muted-foreground">Loading events...</div>
+        ) : filteredEvents.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            No {eventFilter} events found.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-3 px-4 font-medium text-sm">Event Name</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm">Date</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm">Location</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm">Host</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm">Attendees</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filteredEvents.map((event) => {
+                  const startDate = new Date(event.startDate);
+                  const endDate = new Date(event.endDate);
+                  
+                  return (
+                    <tr key={event.id} className="border-b hover-elevate" data-testid={`row-event-${event.id}`}>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-muted-foreground" />
+                          <span>{event.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                        {format(startDate, "MMM d, yyyy")}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                        {event.location || event.originalLocation || "-"}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                        {event.host || "-"}
+                      </td>
+                      <td className="py-3 px-4 text-sm">
+                        {event.currentAttendees || 0} {event.maxAttendees ? `/ ${event.maxAttendees}` : ""}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
     </div>
   );
