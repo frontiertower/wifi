@@ -200,7 +200,7 @@ export default function Events() {
                                 data-testid={`button-view-event-${event.id}`}
                               >
                                 <a
-                                  href={`https://lu.ma/${event.url}`}
+                                  href={event.url.startsWith('http') ? event.url : `https://lu.ma/${event.url}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
