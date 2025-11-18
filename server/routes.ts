@@ -820,17 +820,16 @@ Rules:
       const events = await storage.getAllEvents();
       const now = new Date();
       
-      // Filter for future events with URLs and no existing image
+      // Filter for future events with URLs
       const eventsWithUrls = events.filter(event => 
         event.url && 
-        new Date(event.endDate) >= now &&
-        !event.imageUrl
+        new Date(event.endDate) >= now
       );
       
       if (eventsWithUrls.length === 0) {
         return res.json({
           success: true,
-          message: "No future events without images to scrape",
+          message: "No future events with URLs to scrape",
           scrapedCount: 0,
           failedCount: 0
         });
