@@ -593,7 +593,6 @@ export default function AdminDashboard() {
                   <TableHead>Description</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Host</TableHead>
-                  <TableHead>Color</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Created At</TableHead>
                   <TableHead>Actions</TableHead>
@@ -611,7 +610,7 @@ export default function AdminDashboard() {
                   if (filteredEvents.length === 0) {
                     return (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <TableCell colSpan={7} className="text-center py-8 text-gray-500 dark:text-gray-400">
                           No {eventFilter} events found.
                         </TableCell>
                       </TableRow>
@@ -631,20 +630,6 @@ export default function AdminDashboard() {
                     </TableCell>
                     <TableCell className="text-sm text-gray-600 dark:text-gray-400">
                       {cleanHostName(event.host) || "-"}
-                    </TableCell>
-                    <TableCell>
-                      {event.color ? (
-                        <div className="flex items-center gap-2">
-                          <div 
-                            className="w-4 h-4 rounded-full flex-shrink-0 border border-gray-300 dark:border-gray-600" 
-                            style={{ backgroundColor: event.color }}
-                            title={event.color}
-                          />
-                          <span className="text-xs text-gray-500">{event.color}</span>
-                        </div>
-                      ) : (
-                        "-"
-                      )}
                     </TableCell>
                     <TableCell className="text-sm">
                       {event.originalLocation || "-"}
