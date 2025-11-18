@@ -1113,6 +1113,7 @@ export default function AdminDashboard() {
                       <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Phone</TableHead>
+                      <TableHead>Message</TableHead>
                       <TableHead>LinkedIn</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Submitted</TableHead>
@@ -1121,7 +1122,7 @@ export default function AdminDashboard() {
                   <TableBody>
                     {chatInviteRequests?.requests?.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
+                        <TableCell colSpan={7} className="text-center text-gray-500 dark:text-gray-400">
                           No chat invite requests yet
                         </TableCell>
                       </TableRow>
@@ -1131,6 +1132,9 @@ export default function AdminDashboard() {
                           <TableCell className="font-medium">{request.name}</TableCell>
                           <TableCell>{request.email}</TableCell>
                           <TableCell>{request.phone}</TableCell>
+                          <TableCell className="text-sm max-w-xs truncate" title={request.message || undefined}>
+                            {request.message || 'N/A'}
+                          </TableCell>
                           <TableCell>
                             {request.linkedIn ? (
                               <a 

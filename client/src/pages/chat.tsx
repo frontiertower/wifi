@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -26,6 +27,7 @@ const chatInviteRequestFormSchema = z.object({
   email: z.string().email("Valid email is required").min(1, "Email is required"),
   telegram: z.string().optional(),
   linkedIn: z.string().optional(),
+  message: z.string().max(1000, "Message must be 1000 characters or less").optional(),
 });
 
 type ChatInviteRequestFormValues = z.infer<typeof chatInviteRequestFormSchema>;
@@ -42,6 +44,7 @@ export default function Chat() {
       email: "",
       telegram: "",
       linkedIn: "",
+      message: "",
     },
   });
 
@@ -198,6 +201,29 @@ export default function Chat() {
                       </FormControl>
                       <FormDescription>
                         Optional - Help us get to know you better
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Send Us a Message</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Tell us a bit about yourself or what you're interested in..."
+                          className="min-h-[120px] resize-none"
+                          maxLength={1000}
+                          {...field}
+                          data-testid="input-message"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Optional - Max 1000 characters ({field.value?.length || 0}/1000)
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
