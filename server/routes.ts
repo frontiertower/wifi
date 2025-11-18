@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema } from "@shared/schema";
+import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
@@ -1123,6 +1123,49 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to delete directory listing"
+      });
+    }
+  });
+
+  // Tour Bookings Routes
+  app.post("/api/tour-bookings", async (req, res) => {
+    try {
+      const validatedData = insertTourBookingSchema.parse(req.body);
+      
+      // Validate that the tour date is in the future
+      const tourDateTime = new Date(validatedData.tourDate);
+      if (tourDateTime <= new Date()) {
+        return res.status(400).json({
+          success: false,
+          message: "Tour date must be in the future"
+        });
+      }
+      
+      const booking = await storage.createTourBooking(validatedData);
+      res.json({ success: true, booking });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({
+          success: false,
+          message: error.errors[0]?.message || "Invalid tour booking data"
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        message: "Failed to create tour booking"
+      });
+    }
+  });
+
+  app.get("/api/tour-bookings", async (req, res) => {
+    try {
+      const bookings = await storage.getAllTourBookings();
+      res.json({ success: true, bookings });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch tour bookings"
       });
     }
   });
