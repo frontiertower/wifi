@@ -89,7 +89,7 @@ export default function PastEvents() {
             <p className="text-muted-foreground">There are no past events to display</p>
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-3 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
             {pastEvents.map((event) => {
               const start = new Date(event.startDate);
               const end = new Date(event.endDate);
@@ -98,7 +98,7 @@ export default function PastEvents() {
                 <div key={event.id}>
                   {/* Mobile: Icon-only view */}
                   <div 
-                    className="aspect-square rounded-lg overflow-hidden opacity-60 md:hidden"
+                    className="aspect-[2/1] rounded-lg overflow-hidden opacity-60 md:hidden"
                     data-testid={`icon-event-${event.id}`}
                   >
                     {event.imageUrl ? (
