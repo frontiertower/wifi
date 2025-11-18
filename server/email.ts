@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 
 interface EmailOptions {
   to: string;
@@ -8,95 +8,87 @@ interface EmailOptions {
 }
 
 class EmailService {
-  private transporter: nodemailer.Transporter | null = null;
-  private initialized = false;
-
-  async initialize() {
-    if (this.initialized) return;
-
+  private async getResendClient() {
     try {
-      // Check if SMTP credentials are configured
-      if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-        // Use configured SMTP server
-        this.transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: parseInt(process.env.SMTP_PORT || "587"),
-          secure: process.env.SMTP_SECURE === "true",
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        });
-        console.log("✅ Email service initialized with SMTP configuration");
-      } else {
-        // Use Ethereal test account for development
-        const testAccount = await nodemailer.createTestAccount();
-        this.transporter = nodemailer.createTransport({
-          host: "smtp.ethereal.email",
-          port: 587,
-          secure: false,
-          auth: {
-            user: testAccount.user,
-            pass: testAccount.pass,
-          },
-        });
-        console.log("⚠️  Email service using test account (emails won't be delivered)");
-        console.log("   Configure SMTP_HOST, SMTP_USER, SMTP_PASS environment variables for production");
+      const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
+      const xReplitToken = process.env.REPL_IDENTITY 
+        ? 'repl ' + process.env.REPL_IDENTITY 
+        : process.env.WEB_REPL_RENEWAL 
+        ? 'depl ' + process.env.WEB_REPL_RENEWAL 
+        : null;
+
+      if (!xReplitToken) {
+        console.log('⚠️  Resend not configured - X_REPLIT_TOKEN not found');
+        return null;
       }
 
-      this.initialized = true;
+      const connectionSettings = await fetch(
+        'https://' + hostname + '/api/v2/connection?include_secrets=true&connector_names=resend',
+        {
+          headers: {
+            'Accept': 'application/json',
+            'X_REPLIT_TOKEN': xReplitToken
+          }
+        }
+      ).then(res => res.json()).then(data => data.items?.[0]);
+
+      if (!connectionSettings || !connectionSettings.settings.api_key) {
+        console.log('⚠️  Resend not connected - please set up the Resend integration');
+        return null;
+      }
+
+      return {
+        client: new Resend(connectionSettings.settings.api_key),
+        fromEmail: connectionSettings.settings.from_email || 'noreply@thefrontiertower.com'
+      };
     } catch (error) {
-      console.error("❌ Failed to initialize email service:", error);
-      this.transporter = null;
+      console.error('❌ Failed to get Resend client:', error);
+      return null;
     }
   }
 
   async sendEmail(options: EmailOptions): Promise<boolean> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
-    if (!this.transporter) {
-      console.error("❌ Email service not initialized - cannot send email");
-      return false;
-    }
-
     try {
-      const info = await this.transporter.sendMail({
-        from: process.env.FROM_EMAIL || process.env.SMTP_USER || "noreply@frontiertower.com",
+      const resend = await this.getResendClient();
+      
+      if (!resend) {
+        console.log('⚠️  Email not sent - Resend integration not configured');
+        console.log(`   Would have sent: ${options.subject} to ${options.to}`);
+        return false;
+      }
+
+      const { data, error } = await resend.client.emails.send({
+        from: resend.fromEmail,
         to: options.to,
         subject: options.subject,
         text: options.text,
         html: options.html,
       });
 
-      // If using Ethereal test account, log preview URL
-      if (process.env.SMTP_HOST !== "smtp.ethereal.email" && !process.env.SMTP_HOST) {
-        const previewUrl = nodemailer.getTestMessageUrl(info);
-        if (previewUrl) {
-          console.log("📧 Email preview URL:", previewUrl);
-        }
+      if (error) {
+        console.error('❌ Failed to send email via Resend:', error);
+        return false;
       }
 
-      console.log("✅ Email sent successfully:", info.messageId);
+      console.log('✅ Email sent successfully via Resend:', data?.id);
       return true;
     } catch (error) {
-      console.error("❌ Failed to send email:", error);
+      console.error('❌ Failed to send email:', error);
       return false;
     }
   }
 
   async sendTourBookingNotification(booking: {
     name: string;
-    company?: string;
+    company?: string | null;
     phone: string;
     email: string;
-    linkedIn?: string;
-    referredBy?: string;
+    linkedIn?: string | null;
+    referredBy?: string | null;
     tourDate: Date;
     tourTime: string;
-    interestedInPrivateOffice?: boolean;
-    numberOfPeople?: number;
+    interestedInPrivateOffice?: boolean | null;
+    numberOfPeople?: number | null;
   }): Promise<boolean> {
     const subject = `New Tour Booking: ${booking.name}`;
     
@@ -191,10 +183,10 @@ This is an automated notification from Frontier Tower WiFi Portal.
     name: string;
     email: string;
     phone: string;
-    telegram?: string;
-    linkedIn?: string;
-    company?: string;
-    website?: string;
+    telegram?: string | null;
+    linkedIn?: string | null;
+    company?: string | null;
+    website?: string | null;
   }): Promise<boolean> {
     const subject = `New Membership Application: ${application.name}`;
     

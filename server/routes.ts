@@ -1142,6 +1142,13 @@ Rules:
       }
       
       const booking = await storage.createTourBooking(validatedData);
+      
+      // Send email notification (non-blocking)
+      const { emailService } = await import("./email");
+      emailService.sendTourBookingNotification(booking).catch((error) => {
+        console.error("Failed to send tour booking notification email:", error);
+      });
+      
       res.json({ success: true, booking });
     } catch (error: any) {
       if (error.name === "ZodError") {
@@ -1210,6 +1217,13 @@ Rules:
       const validatedData = insertMembershipApplicationSchema.parse(req.body);
       
       const application = await storage.createMembershipApplication(validatedData);
+      
+      // Send email notification (non-blocking)
+      const { emailService } = await import("./email");
+      emailService.sendMembershipApplicationNotification(application).catch((error) => {
+        console.error("Failed to send membership application notification email:", error);
+      });
+      
       res.json({ success: true, application });
     } catch (error: any) {
       if (error.name === "ZodError") {
