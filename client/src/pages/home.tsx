@@ -195,7 +195,7 @@ export default function Home() {
                   <Camera className="text-pink-600 dark:text-pink-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Numina</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Member Stories</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Computer vision for urban spaces</div>
                 </div>
               </div>
