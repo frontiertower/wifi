@@ -154,6 +154,24 @@ export default function Home() {
               </div>
             </a>
 
+            <a
+              href="https://t.me/+M0KxFTd3LnJkNzkya"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-join-discussion"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-cyan-100 dark:bg-cyan-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-cyan-200 dark:group-hover:bg-cyan-500/40">
+                  <MessageCircle className="text-cyan-600 dark:text-cyan-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Join the Discussion</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Connect with our community on Telegram</div>
+                </div>
+              </div>
+            </a>
+
             <button
               onClick={() => handleRoleSelect("guest")}
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
@@ -172,7 +190,7 @@ export default function Home() {
 
             <button
               onClick={() => handleRoleSelect("member")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
+              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
               data-testid="button-select-member"
             >
               <div className="flex items-center">
@@ -185,24 +203,6 @@ export default function Home() {
                 </div>
               </div>
             </button>
-
-            <a
-              href="https://t.me/+M0KxFTd3LnJkNzkya"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-join-discussion"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-cyan-100 dark:bg-cyan-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-cyan-200 dark:group-hover:bg-cyan-500/40">
-                  <MessageCircle className="text-cyan-600 dark:text-cyan-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Join the Discussion</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Connect with our community on Telegram</div>
-                </div>
-              </div>
-            </a>
 
             <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
               By connecting, you agree to our terms of service
