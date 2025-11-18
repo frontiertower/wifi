@@ -591,10 +591,10 @@ export default function AdminDashboard() {
                 <TableRow>
                   <TableHead>Event Name</TableHead>
                   <TableHead>Description</TableHead>
-                  <TableHead>Start Date</TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Host</TableHead>
                   <TableHead>Color</TableHead>
-                  <TableHead>Original Location</TableHead>
+                  <TableHead>Location</TableHead>
                   <TableHead>Created At</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
