@@ -962,6 +962,7 @@ Rules:
   app.post("/api/admin/settings", async (req, res) => {
     try {
       const baseSchema = z.object({
+        guest_password: z.string().min(1).optional(),
         unifi_api_type: z.enum(['modern', 'legacy', 'none']),
         unifi_controller_url: z.string().optional(),
         unifi_api_key: z.string().optional(),

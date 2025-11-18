@@ -435,12 +435,16 @@ export class DatabaseStorage {
       await db.delete(settings).where(eq(settings.key, key));
     }
 
-    // Insert only the provided values
+    // Insert or update all provided values
     for (const [key, value] of Object.entries(data)) {
       if (value !== undefined && value !== '') {
         await db
           .insert(settings)
-          .values({ key, value });
+          .values({ key, value })
+          .onConflictDoUpdate({
+            target: settings.key,
+            set: { value, updatedAt: new Date() }
+          });
       }
     }
   }

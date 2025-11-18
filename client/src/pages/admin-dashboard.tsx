@@ -772,6 +772,7 @@ export default function AdminDashboard() {
 
 function SettingsTab() {
   const { toast } = useToast();
+  const [guestPassword, setGuestPassword] = useState('makesomething');
   const [apiType, setApiType] = useState<'modern' | 'legacy' | 'none'>('none');
   const [controllerUrl, setControllerUrl] = useState('');
   const [apiKey, setApiKey] = useState('');
@@ -807,6 +808,7 @@ function SettingsTab() {
   // Load settings when data is available
   useEffect(() => {
     if (settings) {
+      setGuestPassword(settings.guest_password || 'makesomething');
       setApiType((settings.unifi_api_type as any) || 'none');
       setControllerUrl(settings.unifi_controller_url || '');
       setApiKey(settings.unifi_api_key || '');
@@ -818,6 +820,7 @@ function SettingsTab() {
 
   const handleSave = () => {
     const data: Record<string, string> = {
+      guest_password: guestPassword,
       unifi_api_type: apiType,
       unifi_controller_url: controllerUrl,
       unifi_site: site,
@@ -842,15 +845,49 @@ function SettingsTab() {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-      <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">UniFi Controller Settings</h2>
-        <p className="text-sm text-gray-600 mt-1">
-          Configure your UniFi controller to enable guest authorization
-        </p>
+    <div className="space-y-6">
+      {/* Guest Password Section */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Guest Access Password</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Configure the password guests need to enter before registration
+          </p>
+        </div>
+
+        <div className="p-4 sm:p-6">
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="guest-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Guest Password
+              </Label>
+              <Input
+                id="guest-password"
+                data-testid="input-guest-password-setting"
+                type="text"
+                placeholder="makesomething"
+                value={guestPassword}
+                onChange={(e) => setGuestPassword(e.target.value)}
+                className="mt-1"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Guests will need to enter this password before they can access the registration form
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="p-4 sm:p-6 space-y-6">
+      {/* UniFi Controller Settings Section */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">UniFi Controller Settings</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Configure your UniFi controller to enable guest authorization
+          </p>
+        </div>
+
+        <div className="p-4 sm:p-6 space-y-6">
         <div>
           <Label htmlFor="api-type" className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Controller Connection
@@ -971,17 +1008,6 @@ function SettingsTab() {
           </>
         )}
 
-        <div className="pt-4">
-          <Button
-            onClick={handleSave}
-            disabled={saveSettingsMutation.isPending}
-            data-testid="button-save-settings"
-            className="w-full sm:w-auto"
-          >
-            {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
-          </Button>
-        </div>
-
         {apiType !== 'none' && (
           <div className="mt-6 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
             <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">Setup Instructions</h3>
@@ -1010,6 +1036,19 @@ function SettingsTab() {
             </div>
           </div>
         )}
+        </div>
+      </div>
+
+      {/* Save Button for All Settings */}
+      <div className="flex justify-end">
+        <Button
+          onClick={handleSave}
+          disabled={saveSettingsMutation.isPending}
+          data-testid="button-save-all-settings"
+          className="w-full sm:w-auto"
+        >
+          {saveSettingsMutation.isPending ? "Saving..." : "Save All Settings"}
+        </Button>
       </div>
     </div>
   );
