@@ -141,7 +141,7 @@ export default function Home() {
                   <Calendar className="text-purple-600 dark:text-purple-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">View Events</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Events Calendar</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Discover what's happening</div>
                 </div>
               </div>
