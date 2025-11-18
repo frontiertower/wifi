@@ -183,42 +183,6 @@ export default function Home() {
               </div>
             </a>
 
-            <a
-              href="https://www.numina.cam/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-numina"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
-                  <Camera className="text-pink-600 dark:text-pink-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Member Stories</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Computer vision for urban spaces</div>
-                </div>
-              </div>
-            </a>
-
-            <a
-              href="http://ft0.sh"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-ft0"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/40">
-                  <Link2 className="text-emerald-600 dark:text-emerald-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Tower Quick Links</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Frontier Tower quick links</div>
-                </div>
-              </div>
-            </a>
-
             <button
               onClick={() => handleRoleSelect("guest")}
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
