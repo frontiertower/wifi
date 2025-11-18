@@ -120,38 +120,6 @@ export default function Home() {
           <div className="p-6">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Select your access type</h2>
 
-            <button
-              onClick={() => handleRoleSelect("guest")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
-              data-testid="button-select-guest"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
-                  <UserCheck className="text-green-600 dark:text-green-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Guest WiFi Login</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and event attendees</div>
-                </div>
-              </div>
-            </button>
-
-            <button
-              onClick={() => handleRoleSelect("member")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
-              data-testid="button-select-member"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
-                  <Briefcase className="text-blue-600 dark:text-blue-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Member Login</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Building residents and employees</div>
-                </div>
-              </div>
-            </button>
-
             <Link
               href="/events"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
@@ -172,7 +140,7 @@ export default function Home() {
               href="https://frontiertower.io/membership?referral_code=D3CUD9LW"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
               data-testid="button-apply-membership"
             >
               <div className="flex items-center">
@@ -185,6 +153,38 @@ export default function Home() {
                 </div>
               </div>
             </a>
+
+            <button
+              onClick={() => handleRoleSelect("guest")}
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-left group"
+              data-testid="button-select-guest"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
+                  <UserCheck className="text-green-600 dark:text-green-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Guest WiFi Login</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Visitors and event attendees</div>
+                </div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => handleRoleSelect("member")}
+              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
+              data-testid="button-select-member"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
+                  <Briefcase className="text-blue-600 dark:text-blue-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Member Login</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Building residents and employees</div>
+                </div>
+              </div>
+            </button>
 
             <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
               By connecting, you agree to our terms of service
