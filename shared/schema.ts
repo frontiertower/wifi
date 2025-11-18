@@ -178,6 +178,16 @@ export const membershipApplications = pgTable("membership_applications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const chatInviteRequests = pgTable("chat_invite_requests", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  linkedIn: text("linked_in"),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -291,6 +301,16 @@ export const insertMembershipApplicationSchema = createInsertSchema(membershipAp
   phone: z.string().min(1, "Phone number is required"),
 });
 
+export const insertChatInviteRequestSchema = createInsertSchema(chatInviteRequests).omit({
+  id: true,
+  status: true,
+  createdAt: true,
+}).extend({
+  name: z.string().min(1, "Name is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  email: z.string().email("Valid email is required").min(1, "Email is required"),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -316,3 +336,5 @@ export type EventHostBooking = typeof eventHostBookings.$inferSelect;
 export type InsertEventHostBooking = z.infer<typeof insertEventHostBookingSchema>;
 export type MembershipApplication = typeof membershipApplications.$inferSelect;
 export type InsertMembershipApplication = z.infer<typeof insertMembershipApplicationSchema>;
+export type ChatInviteRequest = typeof chatInviteRequests.$inferSelect;
+export type InsertChatInviteRequest = z.infer<typeof insertChatInviteRequestSchema>;
