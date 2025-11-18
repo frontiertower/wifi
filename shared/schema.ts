@@ -133,6 +133,19 @@ export const directoryListings = pgTable("directory_listings", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const tourBookings = pgTable("tour_bookings", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  company: text("company"),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  tourDate: timestamp("tour_date").notNull(),
+  tourTime: text("tour_time").notNull(),
+  status: text("status").default("pending"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -213,6 +226,18 @@ export const insertDirectoryListingSchema = createInsertSchema(directoryListings
   createdAt: true,
 });
 
+export const insertTourBookingSchema = createInsertSchema(tourBookings).omit({
+  id: true,
+  status: true,
+  createdAt: true,
+}).extend({
+  name: z.string().min(1, "Name is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  email: z.string().email("Valid email is required").min(1, "Email is required"),
+  tourDate: z.coerce.date(),
+  tourTime: z.string().min(1, "Tour time is required"),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -232,3 +257,5 @@ export type Booking = typeof bookings.$inferSelect;
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
 export type DirectoryListing = typeof directoryListings.$inferSelect;
 export type InsertDirectoryListing = z.infer<typeof insertDirectoryListingSchema>;
+export type TourBooking = typeof tourBookings.$inferSelect;
+export type InsertTourBooking = z.infer<typeof insertTourBookingSchema>;
