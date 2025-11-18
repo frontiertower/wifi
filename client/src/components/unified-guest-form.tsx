@@ -27,7 +27,7 @@ interface UnifiedGuestFormProps {
   unifiParams: UniFiParams;
 }
 
-type GuestType = "member" | "event" | null;
+type GuestType = "member" | "event" | "tower_member" | null;
 
 interface FormData {
   name: string;
@@ -36,6 +36,7 @@ interface FormData {
   phone: string;
   host: string;
   eventName: string;
+  floor: string;
   tourInterest: "yes" | "maybe" | "no" | "";
 }
 
@@ -53,6 +54,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     phone: "",
     host: "",
     eventName: "",
+    floor: "",
     tourInterest: "",
   });
   const [pendingRegistrationData, setPendingRegistrationData] = useState<any>(null);
@@ -102,6 +104,8 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       registerMemberGuestMutation.mutate(pendingRegistrationData.data);
     } else if (pendingRegistrationData.type === "event") {
       registerEventGuestMutation.mutate(pendingRegistrationData.data);
+    } else if (pendingRegistrationData.type === "tower_member") {
+      registerTowerMemberMutation.mutate(pendingRegistrationData.data);
     }
   };
 
@@ -111,6 +115,11 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const { data: eventsData, isLoading: eventsLoading } = useQuery<{ success: boolean; events: Array<{ id: number; name: string }> }>({
     queryKey: [`/api/events/today?offset=${timezoneOffset}&date=${dateString}`],
     enabled: guestType === "event",
+  });
+
+  const { data: directoryData } = useQuery<{ success: boolean; listings: Array<{ floor: string | null }> }>({
+    queryKey: ["/api/directory"],
+    enabled: guestType === "tower_member",
   });
 
   const handleDateChange = (newDate: Date | undefined) => {
@@ -123,6 +132,16 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   };
 
   const availableEvents = eventsData?.events || [];
+  
+  const availableFloors = directoryData?.listings
+    .map(listing => listing.floor)
+    .filter((floor): floor is string => floor !== null && floor !== "")
+    .filter((floor, index, self) => self.indexOf(floor) === index)
+    .sort((a, b) => {
+      const numA = parseInt(a.match(/(\d+)/)?.[1] || "999");
+      const numB = parseInt(b.match(/(\d+)/)?.[1] || "999");
+      return numA - numB;
+    }) || [];
   const availableEventNames = availableEvents.map((event) => event.name);
 
   const isValidEvent = 
@@ -208,12 +227,60 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     },
   });
 
+  const registerTowerMemberMutation = useMutation({
+    mutationFn: async (data: FormData) => {
+      const response = await apiRequest("POST", "/api/register/member", {
+        role: "member",
+        name: data.name,
+        email: data.email,
+        telegramUsername: data.telegramUsername,
+        phone: data.phone || undefined,
+        floor: data.floor,
+        tourInterest: data.tourInterest || undefined,
+        unifiParams: unifiParams,
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      onSuccess({
+        message: "Welcome! You are now connected to Frontier Tower WiFi.",
+        networkName: "FrontierTower",
+        duration: "30 days",
+        speedLimit: "Full-speed"
+      });
+    },
+    onError: (error) => {
+      setFlowStep('password');
+      setPasswordInput("");
+      setPasswordError("");
+      toast({
+        title: "Registration Failed",
+        description: error instanceof Error ? error.message : "Failed to register as tower member. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (guestType === "member") {
       setPendingRegistrationData({
         type: "member",
+        data: formData
+      });
+      setFlowStep('password');
+    } else if (guestType === "tower_member") {
+      if (!formData.floor) {
+        toast({
+          title: "Floor Required",
+          description: "Please select your community floor.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setPendingRegistrationData({
+        type: "tower_member",
         data: formData
       });
       setFlowStep('password');
@@ -263,7 +330,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     return formatted.replace(/\d+/, `${day}${suffix}`);
   };
 
-  const isSubmitting = registerMemberGuestMutation.isPending || registerEventGuestMutation.isPending;
+  const isSubmitting = registerMemberGuestMutation.isPending || registerEventGuestMutation.isPending || registerTowerMemberMutation.isPending;
 
   // Show password verification screen after form submission
   if (flowStep === 'password') {
@@ -485,6 +552,15 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   <Button
                     type="button"
                     variant="outline"
+                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+                    onClick={() => setGuestType("tower_member")}
+                    data-testid="button-tower-member"
+                  >
+                    <span className="font-semibold">Tower Member</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
                     className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 text-green-700 dark:text-green-300"
                     onClick={() => setGuestType("member")}
                     data-testid="button-guest-of-member"
@@ -502,6 +578,39 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   </Button>
                 </div>
               </div>
+            )}
+
+            {/* Tower Member - Floor Selection */}
+            {guestType === "tower_member" && (
+              <>
+                <div className="pt-2 pb-2 border-t">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setGuestType(null)}
+                    className="text-muted-foreground hover:text-foreground"
+                    data-testid="button-change-guest-type"
+                  >
+                    ← Change guest type
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="floor">Community Floor</Label>
+                  <Select value={formData.floor} onValueChange={(value) => handleInputChange("floor", value)}>
+                    <SelectTrigger className="h-12" data-testid="select-floor">
+                      <SelectValue placeholder="Select your floor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableFloors.map((floor) => (
+                        <SelectItem key={floor} value={floor}>
+                          {floor}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
             )}
 
             {/* Guest of a Member - Host Contact */}
