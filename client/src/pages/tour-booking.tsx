@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -40,8 +41,21 @@ const tourBookingFormSchema = z.object({
     required_error: "Tour date is required",
   }),
   tourTime: z.string().min(1, "Tour time is required"),
+  interestedInPrivateOffice: z.boolean().default(false),
+  numberOfPeople: z.coerce.number().int().min(1, "Must be at least 1 person").optional(),
   notes: z.string().optional(),
-});
+}).refine(
+  (data) => {
+    if (data.interestedInPrivateOffice && !data.numberOfPeople) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: "Number of people is required when interested in private office",
+    path: ["numberOfPeople"],
+  }
+);
 
 type TourBookingFormValues = z.infer<typeof tourBookingFormSchema>;
 
@@ -69,9 +83,12 @@ export default function TourBooking() {
       company: "",
       phone: "",
       email: "",
+      interestedInPrivateOffice: false,
       notes: "",
     },
   });
+
+  const isInterestedInPrivateOffice = form.watch("interestedInPrivateOffice");
 
   const bookingMutation = useMutation({
     mutationFn: async (data: TourBookingFormValues) => {
@@ -272,6 +289,55 @@ export default function TourBooking() {
                       </FormItem>
                     )}
                   />
+                </div>
+
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="interestedInPrivateOffice"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            data-testid="checkbox-private-office"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="cursor-pointer">
+                            Interested in Private Office
+                          </FormLabel>
+                          <p className="text-sm text-muted-foreground">
+                            Check this if you're interested in learning about private office options
+                          </p>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+
+                  {isInterestedInPrivateOffice && (
+                    <FormField
+                      control={form.control}
+                      name="numberOfPeople"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Number of People *</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="1"
+                              placeholder="How many people will use the office?"
+                              data-testid="input-number-of-people"
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
                 </div>
 
                 <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
