@@ -4,6 +4,7 @@ import { ArrowLeft, Building2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -29,6 +30,8 @@ export default function AddListing() {
     telegramUsername: "",
     email: "",
     website: "",
+    logoUrl: "",
+    description: "",
   });
 
   const createListingMutation = useMutation({
@@ -67,6 +70,8 @@ export default function AddListing() {
       telegramUsername: formData.telegramUsername || null,
       email: formData.email || null,
       website: formData.website || null,
+      logoUrl: formData.logoUrl || null,
+      description: formData.description || null,
     };
 
     createListingMutation.mutate(listingData);
@@ -175,6 +180,35 @@ export default function AddListing() {
                   </div>
                 </div>
               )}
+
+              <div className="space-y-2">
+                <Label htmlFor="logo-url">Logo / Avatar URL</Label>
+                <Input
+                  id="logo-url"
+                  type="url"
+                  placeholder="https://example.com/logo.png"
+                  value={formData.logoUrl}
+                  onChange={(e) => handleInputChange("logoUrl", e.target.value)}
+                  data-testid="input-logo-url"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Enter a URL to an image that represents {listingType === "company" ? "your company" : "yourself"}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  placeholder={listingType === "company" 
+                    ? "Tell us about your company..." 
+                    : "Tell us about yourself..."}
+                  value={formData.description}
+                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  rows={4}
+                  data-testid="input-description"
+                />
+              </div>
 
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
