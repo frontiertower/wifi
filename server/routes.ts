@@ -889,9 +889,16 @@ Rules:
       const scrapedImages = [];
       const failedScrapes: Array<{ id: number; name: string; error: string }> = [];
 
-      // Process all future events (remove the 10 event limit for this operation)
+      // Process all future events
       const eventsToScrape = eventsWithUrls;
       console.log(`Starting image scrape for ${eventsToScrape.length} future events`);
+
+      // Create HTTPS agent that doesn't reject unauthorized certificates
+      const httpsAgent = new https.Agent({
+        rejectUnauthorized: false,
+        keepAlive: true,
+        timeout: 15000
+      });
 
       for (const event of eventsToScrape) {
         try {
@@ -900,20 +907,28 @@ Rules:
           const lumaUrl = eventUrl.startsWith('http') ? eventUrl : `https://lu.ma/${eventUrl}`;
           console.log(`Scraping image for event: ${event.name} from ${lumaUrl}`);
           
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 15000);
-
           let response;
           try {
+            // Use node-fetch with comprehensive browser-like headers
             response = await fetch(lumaUrl, {
-              signal: controller.signal,
+              method: 'GET',
               headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-              }
-            });
-            clearTimeout(timeout);
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Cache-Control': 'max-age=0'
+              },
+              agent: httpsAgent,
+              redirect: 'follow',
+              timeout: 15000
+            } as any);
           } catch (fetchError) {
-            clearTimeout(timeout);
             if (fetchError instanceof Error && fetchError.name === 'AbortError') {
               throw new Error("Request timed out");
             }
@@ -921,7 +936,7 @@ Rules:
           }
 
           if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
 
           const html = await response.text();
@@ -1403,10 +1418,10 @@ Rules:
         escapeCSV(user.name),
         escapeCSV(user.email),
         escapeCSV(user.role),
-        escapeCSV(user.phoneNumber),
+        escapeCSV(user.phone),
         escapeCSV(user.telegramUsername),
         escapeCSV(user.floor),
-        escapeCSV(user.hostContact),
+        escapeCSV(user.host),
         escapeCSV(user.eventName),
         escapeCSV(user.tourInterest),
         escapeCSV(user.macAddress),
