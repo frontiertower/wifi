@@ -699,6 +699,8 @@ Rules:
       color: z.string().optional(),
       url: z.string().optional(),
       source: z.string().optional().default('external'),
+      maxAttendees: z.number().optional(),
+      currentAttendees: z.number().optional(),
     });
 
     try {
@@ -767,7 +769,8 @@ Rules:
             color: externalEvent.color || null,
             externalId: externalEvent.id,
             source: externalEvent.source,
-            maxAttendees: 100,
+            maxAttendees: externalEvent.maxAttendees || null,
+            currentAttendees: externalEvent.currentAttendees || null,
           };
           
           if (externalEvent.url) {

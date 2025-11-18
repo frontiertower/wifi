@@ -352,6 +352,7 @@ export class DatabaseStorage {
       color: eventData.color,
       source: eventData.source,
       maxAttendees: eventData.maxAttendees,
+      currentAttendees: eventData.currentAttendees,
     };
     
     if (eventData.url !== undefined) {
