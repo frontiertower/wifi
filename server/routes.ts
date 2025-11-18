@@ -824,34 +824,42 @@ Rules:
         return res.json({
           success: true,
           message: "No events with URLs to scrape",
-          scrapedCount: 0
+          scrapedCount: 0,
+          failedCount: 0
         });
       }
 
-      const { default: cheerio } = await import('cheerio');
+      const { load } = await import('cheerio');
       const scrapedImages = [];
       const failedScrapes: Array<{ id: number; name: string; error: string }> = [];
 
-      for (const event of eventsWithUrls) {
+      // Limit to first 10 events to avoid rate limiting
+      const eventsToScrape = eventsWithUrls.slice(0, 10);
+      console.log(`Starting image scrape for ${eventsToScrape.length} events (out of ${eventsWithUrls.length} total)`);
+
+      for (const event of eventsToScrape) {
         try {
           const lumaUrl = `https://lu.ma/${event.url}`;
           console.log(`Scraping image for event: ${event.name} from ${lumaUrl}`);
           
           const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 10000);
+          const timeout = setTimeout(() => controller.abort(), 15000);
 
           let response;
           try {
             response = await fetch(lumaUrl, {
               signal: controller.signal,
               headers: {
-                'User-Agent': 'Mozilla/5.0 (compatible; FrontierTowerBot/1.0)'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
               }
             });
             clearTimeout(timeout);
           } catch (fetchError) {
             clearTimeout(timeout);
-            throw new Error("Request timed out");
+            if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+              throw new Error("Request timed out");
+            }
+            throw new Error(`Fetch failed: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
           }
 
           if (!response.ok) {
@@ -859,7 +867,7 @@ Rules:
           }
 
           const html = await response.text();
-          const $ = cheerio.load(html);
+          const $ = load(html);
           
           // Try multiple selectors to find the event image
           let imageUrl = null;
@@ -899,11 +907,11 @@ Rules:
             });
             console.log(`✓ Found image for "${event.name}": ${imageUrl.substring(0, 80)}...`);
           } else {
-            throw new Error("No image found");
+            throw new Error("No image found in HTML");
           }
           
-          // Small delay to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 500));
+          // Longer delay to avoid rate limiting (2 seconds between requests)
+          await new Promise(resolve => setTimeout(resolve, 2000));
           
         } catch (scrapeError) {
           const errorMessage = scrapeError instanceof Error ? scrapeError.message : 'Unknown error';
@@ -913,12 +921,16 @@ Rules:
             name: event.name,
             error: errorMessage
           });
+          // Small delay even on error
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
 
       const message = failedScrapes.length > 0
         ? `Scraped ${scrapedImages.length} image(s), ${failedScrapes.length} failed`
         : `Successfully scraped ${scrapedImages.length} image(s)`;
+
+      console.log(`Image scraping completed: ${scrapedImages.length} succeeded, ${failedScrapes.length} failed`);
 
       res.json({
         success: true,

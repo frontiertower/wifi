@@ -135,20 +135,32 @@ export default function AdminDashboard() {
     onSuccess: (data) => {
       const scrapedCount = data.scrapedCount || 0;
       const failedCount = data.failedCount || 0;
+      const totalAttempted = scrapedCount + failedCount;
       
-      if (failedCount > 0) {
+      if (scrapedCount === 0 && failedCount > 0) {
+        // All scrapes failed
+        toast({
+          title: "Image Scraping Failed",
+          description: `Failed to scrape images from all ${failedCount} event${failedCount !== 1 ? 's' : ''}. External site may be rate limiting requests.`,
+          variant: "destructive",
+        });
+        console.error('Failed scrapes:', data.failedScrapes);
+      } else if (failedCount > 0 && scrapedCount > 0) {
+        // Partial success
         toast({
           title: "Images Partially Scraped",
-          description: `Scraped ${scrapedCount} image${scrapedCount !== 1 ? 's' : ''}, ${failedCount} failed. Check console for details.`,
+          description: `Successfully scraped ${scrapedCount} image${scrapedCount !== 1 ? 's' : ''}, ${failedCount} failed. Check console for details.`,
           variant: "default",
         });
         console.error('Failed scrapes:', data.failedScrapes);
       } else if (scrapedCount > 0) {
+        // All successful
         toast({
           title: "Images Scraped Successfully",
           description: `Successfully scraped ${scrapedCount} event image${scrapedCount !== 1 ? 's' : ''}`,
         });
       } else {
+        // No events to scrape
         toast({
           title: "No Images to Scrape",
           description: "No events with URLs found to scrape images from",
