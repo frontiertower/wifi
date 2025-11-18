@@ -9,7 +9,9 @@ import type { DirectoryListing } from "@shared/schema";
 
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
-  const [sortMode, setSortMode] = useState<"name" | "floor">("name");
+  const [nameSortAsc, setNameSortAsc] = useState<boolean>(true);
+  const [floorSortAsc, setFloorSortAsc] = useState<boolean>(true);
+  const [activeSortMode, setActiveSortMode] = useState<"name" | "floor">("name");
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
     queryKey: ["/api/directory"],
@@ -18,11 +20,11 @@ export default function Directory() {
   const rawListings = data?.listings || [];
   
   const listings = useMemo(() => {
-    if (sortMode === "name") {
+    if (activeSortMode === "name") {
       return [...rawListings].sort((a, b) => {
         const nameA = a.companyName || `${a.lastName}, ${a.firstName}` || "";
         const nameB = b.companyName || `${b.lastName}, ${b.firstName}` || "";
-        return nameA.localeCompare(nameB);
+        return nameSortAsc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
       });
     } else {
       // Sort by floor
@@ -32,10 +34,11 @@ export default function Directory() {
           const match = floor.match(/(\d+)/);
           return match ? parseInt(match[1]) : 999;
         };
-        return getFloorNumber(a.floor) - getFloorNumber(b.floor);
+        const diff = getFloorNumber(a.floor) - getFloorNumber(b.floor);
+        return floorSortAsc ? diff : -diff;
       });
     }
-  }, [rawListings, sortMode]);
+  }, [rawListings, activeSortMode, nameSortAsc, floorSortAsc]);
   
   const toggleListing = (id: number) => {
     setExpandedListings(prev => {
@@ -99,15 +102,36 @@ export default function Directory() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <Button
-                variant="outline"
+                variant={activeSortMode === "name" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setSortMode(sortMode === "name" ? "floor" : "name")}
-                data-testid="button-toggle-sort"
+                onClick={() => {
+                  if (activeSortMode === "name") {
+                    setNameSortAsc(!nameSortAsc);
+                  } else {
+                    setActiveSortMode("name");
+                  }
+                }}
+                data-testid="button-sort-name"
               >
                 <ArrowUpDown className="mr-2 h-4 w-4" />
-                {sortMode === "name" ? "Sort by Floor" : "Sort by Name"}
+                {nameSortAsc ? "Sort A-Z" : "Sort Z-A"}
+              </Button>
+              <Button
+                variant={activeSortMode === "floor" ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  if (activeSortMode === "floor") {
+                    setFloorSortAsc(!floorSortAsc);
+                  } else {
+                    setActiveSortMode("floor");
+                  }
+                }}
+                data-testid="button-sort-floor"
+              >
+                <ArrowUpDown className="mr-2 h-4 w-4" />
+                {floorSortAsc ? "Sort 1-15" : "Sort 15-1"}
               </Button>
               <Link href="/addlisting">
                 <Button
