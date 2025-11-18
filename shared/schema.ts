@@ -213,6 +213,20 @@ export const insertCaptiveUserSchema = createInsertSchema(captiveUsers).omit({
   createdAt: true,
   isActive: true,
   dataUsed: true,
+}).extend({
+  // Make optional fields truly optional (allow empty strings)
+  organization: z.string().optional(),
+  eventCode: z.string().optional(),
+  eventName: z.string().optional(),
+  floor: z.string().optional(),
+  purpose: z.string().optional(),
+  host: z.string().optional(),
+  tourInterest: z.string().optional(),
+  phone: z.string().optional(),
+  telegramUsername: z.string().optional(),
+  name: z.string().optional(),
+  ethereumAddress: z.string().optional(),
+  registrationType: z.string().optional(),
 });
 
 export const insertVoucherSchema = createInsertSchema(vouchers).omit({
