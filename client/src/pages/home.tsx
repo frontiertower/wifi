@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar } from "lucide-react";
+import { Brain, Calendar, UserPlus } from "lucide-react";
 import { Link } from "wouter";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
@@ -154,7 +154,7 @@ export default function Home() {
 
             <Link
               href="/events"
-              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
               data-testid="button-view-events"
             >
               <div className="flex items-center">
@@ -167,6 +167,24 @@ export default function Home() {
                 </div>
               </div>
             </Link>
+
+            <a
+              href="https://frontiertower.io/membership?referral_code=D3CUD9LW"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-apply-membership"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 dark:group-hover:bg-orange-500/40">
+                  <UserPlus className="text-orange-600 dark:text-orange-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Apply for Membership</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Join the Frontier Tower community</div>
+                </div>
+              </div>
+            </a>
 
             <div className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
               By connecting, you agree to our terms of service
