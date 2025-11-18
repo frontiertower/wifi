@@ -221,7 +221,7 @@ export default function Directory() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {getLocationText(listing) && (
-                          <div className="flex items-center gap-1 text-base text-gray-600 dark:text-gray-400 leading-none">
+                          <div className="flex items-center gap-1 text-base font-semibold text-gray-600 dark:text-gray-400 leading-none">
                             <MapPin className="h-4 w-4 flex-shrink-0" />
                             <span className="whitespace-nowrap">{getLocationText(listing)}</span>
                           </div>
