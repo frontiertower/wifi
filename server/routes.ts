@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertEventHostBookingSchema } from "@shared/schema";
+import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
@@ -1200,6 +1200,40 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to fetch event host bookings"
+      });
+    }
+  });
+
+  // Membership Applications Routes
+  app.post("/api/membership-applications", async (req, res) => {
+    try {
+      const validatedData = insertMembershipApplicationSchema.parse(req.body);
+      
+      const application = await storage.createMembershipApplication(validatedData);
+      res.json({ success: true, application });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({
+          success: false,
+          message: error.errors[0]?.message || "Invalid membership application data"
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        message: "Failed to create membership application"
+      });
+    }
+  });
+
+  app.get("/api/membership-applications", async (req, res) => {
+    try {
+      const applications = await storage.getAllMembershipApplications();
+      res.json({ success: true, applications });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch membership applications"
       });
     }
   });
