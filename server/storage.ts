@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -474,6 +474,18 @@ export class DatabaseStorage {
       .from(bookings)
       .where(eq(bookings.id, id));
     return booking || null;
+  }
+
+  async createDirectoryListing(listingData: InsertDirectoryListing): Promise<DirectoryListing> {
+    const [listing] = await db
+      .insert(directoryListings)
+      .values(listingData)
+      .returning();
+    return listing;
+  }
+
+  async getAllDirectoryListings(): Promise<DirectoryListing[]> {
+    return await db.select().from(directoryListings).orderBy(sql`${directoryListings.createdAt} DESC`);
   }
 }
 

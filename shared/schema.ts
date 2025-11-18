@@ -116,6 +116,21 @@ export const bookings = pgTable("bookings", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const directoryListings = pgTable("directory_listings", {
+  id: serial("id").primaryKey(),
+  type: text("type").notNull(), // company or person
+  companyName: text("company_name"),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  floor: text("floor"),
+  officeNumber: text("office_number"),
+  phone: text("phone"),
+  telegramUsername: text("telegram_username"),
+  email: text("email"),
+  website: text("website"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -191,6 +206,11 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   { message: "End date must be after start date", path: ["endDate"] }
 );
 
+export const insertDirectoryListingSchema = createInsertSchema(directoryListings).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -208,3 +228,5 @@ export type Setting = typeof settings.$inferSelect;
 export type InsertSetting = z.infer<typeof insertSettingSchema>;
 export type Booking = typeof bookings.$inferSelect;
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
+export type DirectoryListing = typeof directoryListings.$inferSelect;
+export type InsertDirectoryListing = z.infer<typeof insertDirectoryListingSchema>;
