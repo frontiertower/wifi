@@ -95,6 +95,16 @@ Preferred communication style: Simple, everyday language.
         *   Storage layer preserves existing URLs when sync payload doesn't provide URL field
         *   "View on Luma" button on event cards links to https://lu.ma/{url} when URL is available
         *   Proper data integrity with conditional upserts that only update URL when provided
+    *   **Event Image Scraping (November 18, 2025)**:
+        *   Added `imageUrl` field to events schema for storing event images from Luma
+        *   New admin endpoint `/api/admin/events/scrape-images` uses cheerio to parse Luma event pages
+        *   Scraper extracts images from Open Graph meta tags, Twitter cards, and inline image elements
+        *   Rate-limited scraping: processes first 10 events with 2-second delays between requests
+        *   Comprehensive error handling with timeout protection (15 seconds per request)
+        *   "Scrape Images" button in admin dashboard with loading states
+        *   Toast notifications for all result scenarios (all success, partial success, all failed, no URLs)
+        *   Events page displays scraped images in card headers with responsive styling
+        *   Architect-approved as production-ready with proper error handling and rate limiting
 *   **Unified Guest Form (November 17, 2025)**:
     *   Combined "Guest of a Member" and "Guest at Event" into single progressive disclosure form
     *   Basic fields shown first (Full Name, Email, Telegram Username, Phone Number)
