@@ -59,7 +59,7 @@ export default function Directory() {
                 Building Directory
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
-                Find companies and residents in Frontier Tower
+                Find companies and members in Frontier Tower
               </p>
             </div>
 
