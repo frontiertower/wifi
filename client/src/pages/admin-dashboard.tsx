@@ -985,11 +985,6 @@ function SettingsTab() {
         </div>
 
         <div className="p-4 sm:p-6">
-          <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
-              We need an API key for the Guest WiFi to work, please find the person who invited you to the event and ask them for the password to the FrontierTower network
-            </p>
-          </div>
           <div className="space-y-4">
             <div>
               <Label htmlFor="guest-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
