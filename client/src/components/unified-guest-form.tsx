@@ -292,7 +292,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-20 flex flex-col items-center justify-center gap-2"
+                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 text-green-700 dark:text-green-300"
                     onClick={() => setGuestType("member")}
                     data-testid="button-guest-of-member"
                   >
@@ -301,7 +301,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-20 flex flex-col items-center justify-center gap-2"
+                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300"
                     onClick={() => setGuestType("event")}
                     data-testid="button-guest-at-event"
                   >
