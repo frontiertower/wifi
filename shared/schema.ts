@@ -141,8 +141,11 @@ export const tourBookings = pgTable("tour_bookings", {
   email: text("email").notNull(),
   linkedIn: text("linked_in"),
   referredBy: text("referred_by"),
-  tourDate: timestamp("tour_date").notNull(),
-  tourTime: text("tour_time").notNull(),
+  tourType: text("tour_type").notNull(), // "group_tour" or "custom"
+  groupTourSelection: text("group_tour_selection"), // If group tour, which one
+  groupTourUrl: text("group_tour_url"), // Luma URL for the selected group tour
+  tourDate: timestamp("tour_date"),
+  tourTime: text("tour_time"),
   interestedInPrivateOffice: boolean("interested_in_private_office").default(false),
   numberOfPeople: integer("number_of_people"),
   status: text("status").default("pending"),
@@ -309,9 +312,21 @@ export const insertTourBookingSchema = createInsertSchema(tourBookings).omit({
   name: z.string().min(1, "Name is required"),
   phone: z.string().min(1, "Phone number is required"),
   email: z.string().email("Valid email is required").min(1, "Email is required"),
-  tourDate: z.coerce.date(),
-  tourTime: z.string().min(1, "Tour time is required"),
-});
+  tourType: z.string().min(1, "Tour type is required"),
+  tourDate: z.coerce.date().optional(),
+  tourTime: z.string().optional(),
+}).refine(
+  (data) => {
+    if (data.tourType === "custom" && (!data.tourDate || !data.tourTime)) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: "Date and time are required for custom tours",
+    path: ["tourDate"],
+  }
+);
 
 export const insertEventHostBookingSchema = createInsertSchema(eventHostBookings).omit({
   id: true,

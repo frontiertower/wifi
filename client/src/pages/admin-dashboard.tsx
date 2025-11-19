@@ -947,7 +947,8 @@ export default function AdminDashboard() {
                       <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Phone</TableHead>
-                      <TableHead>Date & Time</TableHead>
+                      <TableHead>Tour Type</TableHead>
+                      <TableHead>Tour Info</TableHead>
                       <TableHead>Private Office Interest</TableHead>
                       <TableHead>People</TableHead>
                       <TableHead>Submitted</TableHead>
@@ -956,7 +957,7 @@ export default function AdminDashboard() {
                   <TableBody>
                     {tourBookings?.bookings?.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center text-gray-500 dark:text-gray-400">
+                        <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
                           No tour bookings yet
                         </TableCell>
                       </TableRow>
@@ -967,9 +968,34 @@ export default function AdminDashboard() {
                           <TableCell>{booking.email}</TableCell>
                           <TableCell>{booking.phone}</TableCell>
                           <TableCell>
-                            {booking.tourDate && booking.tourTime 
-                              ? `${new Date(booking.tourDate).toLocaleDateString()} ${booking.tourTime}`
-                              : 'N/A'}
+                            {booking.tourType === "custom" ? (
+                              <Badge variant="outline">Custom Time</Badge>
+                            ) : (
+                              <Badge variant="default">Group Tour</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="max-w-xs">
+                            {booking.tourType === "custom" ? (
+                              booking.tourDate && booking.tourTime 
+                                ? `${new Date(booking.tourDate).toLocaleDateString()} ${booking.tourTime}`
+                                : 'N/A'
+                            ) : (
+                              <div className="space-y-1">
+                                {booking.groupTourSelection && (
+                                  <div className="text-sm">{booking.groupTourSelection}</div>
+                                )}
+                                {booking.groupTourUrl && (
+                                  <a
+                                    href={booking.groupTourUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-primary hover:underline"
+                                  >
+                                    View on Luma
+                                  </a>
+                                )}
+                              </div>
+                            )}
                           </TableCell>
                           <TableCell>
                             {booking.interestedInPrivateOffice ? (

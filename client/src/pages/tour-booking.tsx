@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, Send } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Clock, Send, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -30,23 +31,71 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 
+const groupTours = [
+  {
+    id: "nov20",
+    name: "Your Startup's Future HQ: Exclusive Tour of the Frontier Tower",
+    date: "Thursday, November 20",
+    time: "12:00 PM - 12:30 PM",
+    url: "https://luma.com/your-startups-future-hq-exclusive-tour-o?tk=F2BbOy",
+  },
+  {
+    id: "nov21",
+    name: "Frontier Tower Tour for Aspiring Citizens",
+    date: "Friday, November 21",
+    time: "12:00 PM - 12:30 PM",
+    url: "https://luma.com/frontier-tower-tour-for-aspiring-citizen-5338?tk=wVI3xj",
+  },
+  {
+    id: "nov25",
+    name: "Your Startup's Future HQ: Exclusive Tour of the Frontier Tower for Startup Founders",
+    date: "Tuesday, November 25",
+    time: "11:00 AM - 11:30 AM",
+    url: "https://luma.com/your-startups-future-hq-exclusive-tour-o-b217",
+  },
+];
+
 const tourBookingFormSchema = z.object({
+  tourType: z.string().min(1, "Please select a tour option"),
+  groupTourSelection: z.string().optional(),
+  groupTourUrl: z.string().optional(),
   name: z.string().min(1, "Name is required"),
   company: z.string().optional(),
   phone: z.string().min(1, "Phone number is required"),
   email: z.string().email("Valid email is required").min(1, "Email is required"),
   linkedIn: z.string().optional(),
   referredBy: z.string().optional(),
-  tourDate: z.date({
-    required_error: "Tour date is required",
-  }),
-  tourTime: z.string().min(1, "Tour time is required"),
+  tourDate: z.date().optional(),
+  tourTime: z.string().optional(),
   interestedInPrivateOffice: z.boolean().default(false),
   numberOfPeople: z.coerce.number().int().min(1, "Must be at least 1 person").optional(),
   notes: z.string().optional(),
 }).refine(
+  (data) => {
+    if (data.tourType === "custom" && !data.tourDate) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: "Tour date is required for custom tours",
+    path: ["tourDate"],
+  }
+).refine(
+  (data) => {
+    if (data.tourType === "custom" && !data.tourTime) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: "Tour time is required for custom tours",
+    path: ["tourTime"],
+  }
+).refine(
   (data) => {
     if (data.interestedInPrivateOffice && !data.numberOfPeople) {
       return false;
@@ -81,6 +130,9 @@ export default function TourBooking() {
   const form = useForm<TourBookingFormValues>({
     resolver: zodResolver(tourBookingFormSchema),
     defaultValues: {
+      tourType: "",
+      groupTourSelection: "",
+      groupTourUrl: "",
       name: "",
       company: "",
       phone: "",
@@ -92,6 +144,7 @@ export default function TourBooking() {
     },
   });
 
+  const tourType = form.watch("tourType");
   const isInterestedInPrivateOffice = form.watch("interestedInPrivateOffice");
 
   const bookingMutation = useMutation({
@@ -147,6 +200,77 @@ export default function TourBooking() {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="tourType"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-base font-semibold">Select Tour Option</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            const selectedTour = groupTours.find(t => t.id === value);
+                            if (selectedTour) {
+                              form.setValue("groupTourSelection", selectedTour.name);
+                              form.setValue("groupTourUrl", selectedTour.url);
+                            } else if (value === "custom") {
+                              form.setValue("groupTourSelection", "");
+                              form.setValue("groupTourUrl", "");
+                            }
+                          }}
+                          defaultValue={field.value}
+                          className="space-y-3"
+                        >
+                          {groupTours.map((tour) => (
+                            <FormItem
+                              key={tour.id}
+                              className="flex items-start space-x-3 space-y-0 rounded-lg border p-4 hover:bg-accent/50 transition-colors"
+                            >
+                              <FormControl>
+                                <RadioGroupItem value={tour.id} data-testid={`radio-tour-${tour.id}`} />
+                              </FormControl>
+                              <div className="flex-1 space-y-1">
+                                <FormLabel className="font-medium cursor-pointer">
+                                  {tour.name}
+                                </FormLabel>
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-sm text-muted-foreground">
+                                  <div className="flex items-center gap-1">
+                                    <CalendarIcon className="h-3 w-3" />
+                                    {tour.date}
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    {tour.time}
+                                  </div>
+                                </div>
+                                <a
+                                  href={tour.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  View on Luma <ExternalLink className="h-3 w-3" />
+                                </a>
+                              </div>
+                            </FormItem>
+                          ))}
+                          <FormItem className="flex items-start space-x-3 space-y-0 rounded-lg border p-4 hover:bg-accent/50 transition-colors">
+                            <FormControl>
+                              <RadioGroupItem value="custom" data-testid="radio-tour-custom" />
+                            </FormControl>
+                            <FormLabel className="font-medium cursor-pointer">
+                              Request a Different Time
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -258,78 +382,80 @@ export default function TourBooking() {
                   )}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="tourDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Tour Date *</FormLabel>
-                        <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className="w-full pl-3 text-left font-normal"
-                                data-testid="button-select-date"
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={(date) => {
-                                field.onChange(date);
-                                setIsCalendarOpen(false);
-                              }}
-                              disabled={(date) =>
-                                date < new Date(new Date().setHours(0, 0, 0, 0))
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {tourType === "custom" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="tourDate"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>Tour Date *</FormLabel>
+                          <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  className="w-full pl-3 text-left font-normal"
+                                  data-testid="button-select-date"
+                                >
+                                  {field.value ? (
+                                    format(field.value, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={(date) => {
+                                  field.onChange(date);
+                                  setIsCalendarOpen(false);
+                                }}
+                                disabled={(date) =>
+                                  date < new Date(new Date().setHours(0, 0, 0, 0))
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="tourTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tour Time *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger data-testid="select-time">
-                              <SelectValue placeholder="Select a time" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {timeSlots.map((time) => (
-                              <SelectItem key={time} value={time} data-testid={`time-option-${time}`}>
-                                <div className="flex items-center gap-2">
-                                  <Clock className="h-4 w-4" />
-                                  {time}
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                    <FormField
+                      control={form.control}
+                      name="tourTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tour Time *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger data-testid="select-time">
+                                <SelectValue placeholder="Select a time" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {timeSlots.map((time) => (
+                                <SelectItem key={time} value={time} data-testid={`time-option-${time}`}>
+                                  <div className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    {time}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
 
                 <div className="space-y-4">
                   <FormField
