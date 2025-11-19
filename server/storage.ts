@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, privateOfficeRentals, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type PrivateOfficeRental, type InsertPrivateOfficeRental } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -592,6 +592,26 @@ export class DatabaseStorage {
       .from(chatInviteRequests)
       .where(eq(chatInviteRequests.id, id));
     return request || null;
+  }
+
+  async createPrivateOfficeRental(rentalData: InsertPrivateOfficeRental): Promise<PrivateOfficeRental> {
+    const [rental] = await db
+      .insert(privateOfficeRentals)
+      .values(rentalData)
+      .returning();
+    return rental;
+  }
+
+  async getAllPrivateOfficeRentals(): Promise<PrivateOfficeRental[]> {
+    return await db.select().from(privateOfficeRentals).orderBy(sql`${privateOfficeRentals.createdAt} DESC`);
+  }
+
+  async getPrivateOfficeRentalById(id: number): Promise<PrivateOfficeRental | null> {
+    const [rental] = await db
+      .select()
+      .from(privateOfficeRentals)
+      .where(eq(privateOfficeRentals.id, id));
+    return rental || null;
   }
 }
 

@@ -156,7 +156,7 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/tour-booking"
+              href="/rent-office"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 text-left group block"
               data-testid="button-rent-office"
             >

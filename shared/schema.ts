@@ -190,6 +190,23 @@ export const chatInviteRequests = pgTable("chat_invite_requests", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const privateOfficeRentals = pgTable("private_office_rentals", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  company: text("company"),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  linkedIn: text("linked_in"),
+  referredBy: text("referred_by"),
+  preferredMoveInDate: timestamp("preferred_move_in_date"),
+  numberOfPeople: integer("number_of_people"),
+  budgetRange: text("budget_range"),
+  officeRequirements: text("office_requirements"),
+  status: text("status").default("pending"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -327,6 +344,17 @@ export const insertChatInviteRequestSchema = createInsertSchema(chatInviteReques
   email: z.string().email("Valid email is required").min(1, "Email is required"),
 });
 
+export const insertPrivateOfficeRentalSchema = createInsertSchema(privateOfficeRentals).omit({
+  id: true,
+  status: true,
+  createdAt: true,
+}).extend({
+  name: z.string().min(1, "Name is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  email: z.string().email("Valid email is required").min(1, "Email is required"),
+  preferredMoveInDate: z.coerce.date().optional(),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -354,3 +382,5 @@ export type MembershipApplication = typeof membershipApplications.$inferSelect;
 export type InsertMembershipApplication = z.infer<typeof insertMembershipApplicationSchema>;
 export type ChatInviteRequest = typeof chatInviteRequests.$inferSelect;
 export type InsertChatInviteRequest = z.infer<typeof insertChatInviteRequestSchema>;
+export type PrivateOfficeRental = typeof privateOfficeRentals.$inferSelect;
+export type InsertPrivateOfficeRental = z.infer<typeof insertPrivateOfficeRentalSchema>;

@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema } from "@shared/schema";
+import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
@@ -1236,6 +1236,47 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to fetch tour bookings"
+      });
+    }
+  });
+
+  // Private Office Rentals Routes
+  app.post("/api/private-office-rentals", async (req, res) => {
+    try {
+      const validatedData = insertPrivateOfficeRentalSchema.parse(req.body);
+      
+      const rental = await storage.createPrivateOfficeRental(validatedData);
+      
+      // Send email notification (non-blocking)
+      const { emailService } = await import("./email");
+      emailService.sendPrivateOfficeRentalNotification(rental).catch((error) => {
+        console.error("Failed to send private office rental notification email:", error);
+      });
+      
+      res.json({ success: true, rental });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({
+          success: false,
+          message: error.errors[0]?.message || "Invalid private office rental data"
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        message: "Failed to create private office rental"
+      });
+    }
+  });
+
+  app.get("/api/private-office-rentals", async (req, res) => {
+    try {
+      const rentals = await storage.getAllPrivateOfficeRentals();
+      res.json({ success: true, rentals });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch private office rentals"
       });
     }
   });

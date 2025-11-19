@@ -10,6 +10,7 @@ import Events from "@/pages/events";
 import PastEvents from "@/pages/past-events";
 import Booking from "@/pages/booking";
 import TourBooking from "@/pages/tour-booking";
+import RentOffice from "@/pages/rent-office";
 import EventHostBooking from "@/pages/event-host-booking";
 import ApplyToJoin from "@/pages/apply-to-join";
 import Chat from "@/pages/chat";
@@ -40,6 +41,7 @@ function Router() {
         <Route path="/past-events" component={PastEvents} />
         <Route path="/booking" component={Booking} />
         <Route path="/tour-booking" component={TourBooking} />
+        <Route path="/rent-office" component={RentOffice} />
         <Route path="/event-host-booking" component={EventHostBooking} />
         <Route path="/apply-to-join" component={ApplyToJoin} />
         <Route path="/chat" component={Chat} />

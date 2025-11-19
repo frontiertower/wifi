@@ -179,6 +179,118 @@ This is an automated notification from Frontier Tower WiFi Portal.
     });
   }
 
+  async sendPrivateOfficeRentalNotification(rental: {
+    name: string;
+    company?: string | null;
+    phone: string;
+    email: string;
+    linkedIn?: string | null;
+    referredBy?: string | null;
+    preferredMoveInDate?: Date | null;
+    numberOfPeople?: number | null;
+    budgetRange?: string | null;
+    officeRequirements?: string | null;
+    notes?: string | null;
+  }): Promise<boolean> {
+    const subject = `New Private Office Rental Inquiry: ${rental.name}`;
+    
+    const text = `
+New Private Office Rental Inquiry
+
+Name: ${rental.name}
+${rental.company ? `Company: ${rental.company}` : ""}
+Phone: ${rental.phone}
+Email: ${rental.email}
+${rental.linkedIn ? `LinkedIn: ${rental.linkedIn}` : ""}
+${rental.referredBy ? `Referred By: ${rental.referredBy}` : ""}
+
+${rental.preferredMoveInDate ? `Preferred Move-In Date: ${rental.preferredMoveInDate.toLocaleDateString()}` : ""}
+${rental.numberOfPeople ? `Number of People: ${rental.numberOfPeople}` : ""}
+${rental.budgetRange ? `Budget Range: ${rental.budgetRange}` : ""}
+${rental.officeRequirements ? `Office Requirements: ${rental.officeRequirements}` : ""}
+${rental.notes ? `Notes: ${rental.notes}` : ""}
+
+---
+This is an automated notification from Frontier Tower WiFi Portal.
+    `.trim();
+
+    const html = `
+      <h2>New Private Office Rental Inquiry</h2>
+      <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Name:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.name}</td>
+        </tr>
+        ${rental.company ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Company:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.company}</td>
+        </tr>
+        ` : ""}
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Phone:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.phone}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Email:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.email}</td>
+        </tr>
+        ${rental.linkedIn ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">LinkedIn:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.linkedIn}</td>
+        </tr>
+        ` : ""}
+        ${rental.referredBy ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Referred By:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.referredBy}</td>
+        </tr>
+        ` : ""}
+        ${rental.preferredMoveInDate ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Preferred Move-In Date:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.preferredMoveInDate.toLocaleDateString()}</td>
+        </tr>
+        ` : ""}
+        ${rental.numberOfPeople ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Number of People:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.numberOfPeople}</td>
+        </tr>
+        ` : ""}
+        ${rental.budgetRange ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Budget Range:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${rental.budgetRange}</td>
+        </tr>
+        ` : ""}
+        ${rental.officeRequirements ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Office Requirements:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd; white-space: pre-wrap;">${rental.officeRequirements}</td>
+        </tr>
+        ` : ""}
+        ${rental.notes ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Notes:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd; white-space: pre-wrap;">${rental.notes}</td>
+        </tr>
+        ` : ""}
+      </table>
+      <p style="color: #666; font-size: 12px; margin-top: 20px;">
+        This is an automated notification from Frontier Tower WiFi Portal.
+      </p>
+    `;
+
+    return this.sendEmail({
+      to: "events@thefrontiertower.com",
+      subject,
+      text,
+      html,
+    });
+  }
+
   async sendMembershipApplicationNotification(application: {
     name: string;
     email: string;
