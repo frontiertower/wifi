@@ -118,7 +118,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">WiFi Access</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Connect to gigabit fast Internet</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Connect to super fast Internet</div>
                 </div>
               </div>
             </button>
