@@ -97,7 +97,7 @@ export default function ApplyToJoin() {
               <div className="w-12 h-12 bg-primary-100 dark:bg-primary-500/30 rounded-lg flex items-center justify-center">
                 <UserPlus className="text-primary-600 dark:text-primary-300 h-6 w-6" />
               </div>
-              <CardTitle className="text-2xl">Apply to Join Frontier Tower</CardTitle>
+              <CardTitle className="text-2xl">Apply for Membership</CardTitle>
             </div>
             <CardDescription>
               Become part of our community. Fill out the form below to submit your membership application.
