@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Building2, User } from "lucide-react";
+import { ArrowLeft, Building2, User, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-type ListingType = "company" | "person";
+type ListingType = "company" | "person" | "community";
 
 export default function AddListing() {
   const [, setLocation] = useLocation();
@@ -23,6 +23,7 @@ export default function AddListing() {
   const [formData, setFormData] = useState({
     companyName: "",
     contactPerson: "",
+    communityName: "",
     firstName: "",
     lastName: "",
     floor: "",
@@ -64,6 +65,7 @@ export default function AddListing() {
       type: listingType,
       companyName: listingType === "company" ? formData.companyName : null,
       contactPerson: listingType === "company" ? (formData.contactPerson || null) : null,
+      communityName: listingType === "community" ? formData.communityName : null,
       firstName: listingType === "person" ? formData.firstName : null,
       lastName: listingType === "person" ? formData.lastName : null,
       floor: formData.floor || null,
@@ -86,6 +88,9 @@ export default function AddListing() {
   const isFormValid = () => {
     if (listingType === "company") {
       return formData.companyName.trim().length > 0;
+    }
+    if (listingType === "community") {
+      return formData.communityName.trim().length > 0;
     }
     return formData.firstName.trim().length > 0 && formData.lastName.trim().length > 0;
   };
@@ -112,7 +117,7 @@ export default function AddListing() {
           <CardHeader>
             <CardTitle className="text-2xl">Add Directory Listing</CardTitle>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Add a new company or person to the building directory
+              Add a new company, community, or person to the building directory
             </p>
           </CardHeader>
 
@@ -129,6 +134,13 @@ export default function AddListing() {
                     <Label htmlFor="type-company" className="font-normal cursor-pointer flex items-center gap-2">
                       <Building2 className="h-4 w-4" />
                       Company
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="community" id="type-community" data-testid="radio-type-community" />
+                    <Label htmlFor="type-community" className="font-normal cursor-pointer flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      Community
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -167,6 +179,19 @@ export default function AddListing() {
                     />
                   </div>
                 </>
+              ) : listingType === "community" ? (
+                <div className="space-y-2">
+                  <Label htmlFor="community-name">Community Name *</Label>
+                  <Input
+                    id="community-name"
+                    type="text"
+                    placeholder="Enter community name"
+                    value={formData.communityName}
+                    onChange={(e) => handleInputChange("communityName", e.target.value)}
+                    required
+                    data-testid="input-community-name"
+                  />
+                </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -207,7 +232,7 @@ export default function AddListing() {
                   data-testid="input-logo-url"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Enter a URL to an image that represents {listingType === "company" ? "your company" : "yourself"}
+                  Enter a URL to an image that represents {listingType === "company" ? "your company" : listingType === "community" ? "your community" : "yourself"}
                 </p>
               </div>
 
@@ -217,6 +242,8 @@ export default function AddListing() {
                   id="description"
                   placeholder={listingType === "company" 
                     ? "Tell us about your company..." 
+                    : listingType === "community"
+                    ? "Tell us about your community..."
                     : "Tell us about yourself..."}
                   value={formData.description}
                   onChange={(e) => handleInputChange("description", e.target.value)}

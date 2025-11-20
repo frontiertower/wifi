@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings, Edit, User } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings, Edit, User, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -21,18 +21,25 @@ export default function Directory() {
   const [nameSortAsc, setNameSortAsc] = useState<boolean>(true);
   const [floorSortAsc, setFloorSortAsc] = useState<boolean>(true);
   const [activeSortMode, setActiveSortMode] = useState<"name" | "floor">("name");
+  const [filterType, setFilterType] = useState<"all" | "company" | "person" | "community">("all");
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
     queryKey: ["/api/directory"],
   });
 
-  const rawListings = data?.listings || [];
+  const allListings = data?.listings || [];
+  
+  // Filter listings by type
+  const rawListings = useMemo(() => {
+    if (filterType === "all") return allListings;
+    return allListings.filter(listing => listing.type === filterType);
+  }, [allListings, filterType]);
   
   const listings = useMemo(() => {
     if (activeSortMode === "name") {
       return [...rawListings].sort((a, b) => {
-        const nameA = a.companyName || `${a.lastName}, ${a.firstName}` || "";
-        const nameB = b.companyName || `${b.lastName}, ${b.firstName}` || "";
+        const nameA = a.companyName || a.communityName || `${a.lastName}, ${a.firstName}` || "";
+        const nameB = b.companyName || b.communityName || `${b.lastName}, ${b.firstName}` || "";
         return nameSortAsc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
       });
     } else {
@@ -82,6 +89,9 @@ export default function Directory() {
     if (listing.type === "company" && listing.companyName) {
       return listing.companyName;
     }
+    if (listing.type === "community" && listing.communityName) {
+      return listing.communityName;
+    }
     if (listing.type === "person" && listing.lastName && listing.firstName) {
       return `${listing.lastName}, ${listing.firstName}`;
     }
@@ -127,16 +137,57 @@ export default function Directory() {
             </Button>
           </Link>
 
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                Building Directory
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Find companies and members in Frontier Tower
-              </p>
-            </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              Building Directory
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Find companies, communities, and members in Frontier Tower
+            </p>
+          </div>
 
+          {/* Filter Buttons */}
+          <div className="flex items-center gap-2 flex-wrap mb-4">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter:</span>
+            <Button
+              variant={filterType === "all" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterType("all")}
+              data-testid="button-filter-all"
+            >
+              All
+            </Button>
+            <Button
+              variant={filterType === "company" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterType("company")}
+              data-testid="button-filter-companies"
+            >
+              <Building2 className="mr-2 h-4 w-4" />
+              Companies
+            </Button>
+            <Button
+              variant={filterType === "community" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterType("community")}
+              data-testid="button-filter-communities"
+            >
+              <Users className="mr-2 h-4 w-4" />
+              Communities
+            </Button>
+            <Button
+              variant={filterType === "person" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterType("person")}
+              data-testid="button-filter-people"
+            >
+              <User className="mr-2 h-4 w-4" />
+              People
+            </Button>
+          </div>
+
+          {/* Sort and Add Buttons */}
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-2 flex-wrap">
               <Button
                 variant={activeSortMode === "name" ? "default" : "outline"}
@@ -168,16 +219,16 @@ export default function Directory() {
                 <ArrowUpDown className="mr-2 h-4 w-4" />
                 {floorSortAsc ? "Sort 1-15" : "Sort 15-1"}
               </Button>
-              <Link href="/addlisting">
-                <Button
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                  data-testid="button-add-listing"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Listing
-                </Button>
-              </Link>
             </div>
+            <Link href="/addlisting">
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                data-testid="button-add-listing"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Listing
+              </Button>
+            </Link>
           </div>
         </div>
 

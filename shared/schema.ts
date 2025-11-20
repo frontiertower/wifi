@@ -118,9 +118,10 @@ export const bookings = pgTable("bookings", {
 
 export const directoryListings = pgTable("directory_listings", {
   id: serial("id").primaryKey(),
-  type: text("type").notNull(), // company or person
+  type: text("type").notNull(), // company, person, or community
   companyName: text("company_name"),
   contactPerson: text("contact_person"),
+  communityName: text("community_name"),
   firstName: text("first_name"),
   lastName: text("last_name"),
   floor: text("floor"),

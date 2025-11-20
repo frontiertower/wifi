@@ -79,6 +79,9 @@ export default function DirectoryEdit() {
     if (listing.type === "company" && listing.companyName) {
       return listing.companyName;
     }
+    if (listing.type === "community" && listing.communityName) {
+      return listing.communityName;
+    }
     if (listing.type === "person" && listing.lastName && listing.firstName) {
       return `${listing.lastName}, ${listing.firstName}`;
     }
@@ -183,6 +186,20 @@ export default function DirectoryEdit() {
                     />
                   </div>
                 </>
+              )}
+
+              {listing.type === "community" && (
+                <div>
+                  <Label htmlFor="communityName">Community Name</Label>
+                  <Input
+                    id="communityName"
+                    value={editForm.communityName || ""}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, communityName: e.target.value })
+                    }
+                    data-testid="input-communityName"
+                  />
+                </div>
               )}
 
               {listing.type === "person" && (
