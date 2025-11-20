@@ -9,7 +9,7 @@ import Home from "@/pages/home";
 import Events from "@/pages/events";
 import PastEvents from "@/pages/past-events";
 import Booking from "@/pages/booking";
-import TourBooking from "@/pages/tour-booking";
+import TourBooking from "@/pages/tour";
 import RentOffice from "@/pages/rent-office";
 import EventHostBooking from "@/pages/event-host-booking";
 import ApplyToJoin from "@/pages/apply-to-join";
@@ -40,7 +40,7 @@ function Router() {
         <Route path="/events" component={Events} />
         <Route path="/past-events" component={PastEvents} />
         <Route path="/booking" component={Booking} />
-        <Route path="/tour-booking" component={TourBooking} />
+        <Route path="/tour" component={TourBooking} />
         <Route path="/rent-office" component={RentOffice} />
         <Route path="/event-host-booking" component={EventHostBooking} />
         <Route path="/apply-to-join" component={ApplyToJoin} />

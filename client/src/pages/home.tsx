@@ -172,7 +172,7 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/tour-booking"
+              href="/tour"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
               data-testid="button-book-tour"
             >
