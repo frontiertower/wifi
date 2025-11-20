@@ -22,6 +22,7 @@ export default function AddListing() {
   const [listingType, setListingType] = useState<ListingType>("company");
   const [formData, setFormData] = useState({
     companyName: "",
+    contactPerson: "",
     firstName: "",
     lastName: "",
     floor: "",
@@ -62,6 +63,7 @@ export default function AddListing() {
     const listingData = {
       type: listingType,
       companyName: listingType === "company" ? formData.companyName : null,
+      contactPerson: listingType === "company" ? (formData.contactPerson || null) : null,
       firstName: listingType === "person" ? formData.firstName : null,
       lastName: listingType === "person" ? formData.lastName : null,
       floor: formData.floor || null,
@@ -140,18 +142,31 @@ export default function AddListing() {
               </div>
 
               {listingType === "company" ? (
-                <div className="space-y-2">
-                  <Label htmlFor="company-name">Company Name *</Label>
-                  <Input
-                    id="company-name"
-                    type="text"
-                    placeholder="Enter company name"
-                    value={formData.companyName}
-                    onChange={(e) => handleInputChange("companyName", e.target.value)}
-                    required
-                    data-testid="input-company-name"
-                  />
-                </div>
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="company-name">Company Name *</Label>
+                    <Input
+                      id="company-name"
+                      type="text"
+                      placeholder="Enter company name"
+                      value={formData.companyName}
+                      onChange={(e) => handleInputChange("companyName", e.target.value)}
+                      required
+                      data-testid="input-company-name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-person">Contact Person</Label>
+                    <Input
+                      id="contact-person"
+                      type="text"
+                      placeholder="Enter contact person name"
+                      value={formData.contactPerson}
+                      onChange={(e) => handleInputChange("contactPerson", e.target.value)}
+                      data-testid="input-contact-person"
+                    />
+                  </div>
+                </>
               ) : (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">

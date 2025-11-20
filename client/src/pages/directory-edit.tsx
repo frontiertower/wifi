@@ -159,17 +159,30 @@ export default function DirectoryEdit() {
               </div>
 
               {listing.type === "company" && (
-                <div>
-                  <Label htmlFor="companyName">Company Name</Label>
-                  <Input
-                    id="companyName"
-                    value={editForm.companyName || ""}
-                    onChange={(e) =>
-                      setEditForm({ ...editForm, companyName: e.target.value })
-                    }
-                    data-testid="input-companyName"
-                  />
-                </div>
+                <>
+                  <div>
+                    <Label htmlFor="companyName">Company Name</Label>
+                    <Input
+                      id="companyName"
+                      value={editForm.companyName || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, companyName: e.target.value })
+                      }
+                      data-testid="input-companyName"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contactPerson">Contact Person</Label>
+                    <Input
+                      id="contactPerson"
+                      value={editForm.contactPerson || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, contactPerson: e.target.value })
+                      }
+                      data-testid="input-contactPerson"
+                    />
+                  </div>
+                </>
               )}
 
               {listing.type === "person" && (

@@ -120,6 +120,7 @@ export const directoryListings = pgTable("directory_listings", {
   id: serial("id").primaryKey(),
   type: text("type").notNull(), // company or person
   companyName: text("company_name"),
+  contactPerson: text("contact_person"),
   firstName: text("first_name"),
   lastName: text("last_name"),
   floor: text("floor"),

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings, Edit } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings, Edit, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -307,6 +307,13 @@ export default function Directory() {
                         <p className="md:hidden text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                           {listing.description}
                         </p>
+                      )}
+
+                      {listing.type === "company" && listing.contactPerson && (
+                        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 pt-2 border-t md:border-t-0 md:pt-0">
+                          <User className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                          <span><span className="text-gray-500 dark:text-gray-400">Contact:</span> {listing.contactPerson}</span>
+                        </div>
                       )}
 
                       {(listing.phone || listing.email || listing.telegramUsername || listing.website) && (
