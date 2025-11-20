@@ -148,15 +148,6 @@ export default function Directory() {
 
           {/* Filter Buttons */}
           <div className="flex items-center gap-2 flex-wrap mb-4">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter:</span>
-            <Button
-              variant={filterType === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilterType("all")}
-              data-testid="button-filter-all"
-            >
-              All
-            </Button>
             <Button
               variant={filterType === "company" ? "default" : "outline"}
               size="sm"
