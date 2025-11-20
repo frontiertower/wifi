@@ -227,11 +227,12 @@ export default function Directory() {
             </div>
             <Link href="/addlisting">
               <Button
+                size="sm"
                 className="bg-blue-600 hover:bg-blue-700 text-white"
                 data-testid="button-add-listing"
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Add Listing
+                Add
               </Button>
             </Link>
           </div>
