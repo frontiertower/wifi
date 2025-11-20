@@ -46,6 +46,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect(302, "/");
   });
 
+  // iOS WiFi Configuration Profile endpoint
+  // Serves the .mobileconfig file with proper MIME type for iOS installation
+  app.get("/api/wifi-profile", async (req, res) => {
+    try {
+      const fs = await import("fs/promises");
+      const path = await import("path");
+      
+      const profilePath = path.join(process.cwd(), "client/public/wifi-frontiertower_1763457398454.mobileconfig");
+      const profileData = await fs.readFile(profilePath, "utf-8");
+      
+      // Set the correct MIME type for iOS configuration profiles
+      res.setHeader("Content-Type", "application/x-apple-aspen-config");
+      res.setHeader("Content-Disposition", 'attachment; filename="FrontierTower-WiFi.mobileconfig"');
+      res.send(profileData);
+    } catch (error) {
+      console.error("Error serving WiFi profile:", error);
+      res.status(500).json({ error: "Failed to load WiFi profile" });
+    }
+  });
+
   // UniFi Guest Authorization Endpoint
   // This endpoint is called by the frontend after registration to grant internet access
   // Supports both Modern API (9.1.105+) and Legacy API
