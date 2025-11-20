@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings, Edit, User, Users } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings, Edit, User, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
 import type { DirectoryListing } from "@shared/schema";
 
@@ -20,6 +21,7 @@ export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
   const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("name-asc");
   const [selectedTypes, setSelectedTypes] = useState<Set<"company" | "person" | "community">>(new Set());
+  const [searchQuery, setSearchQuery] = useState<string>("");
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
     queryKey: ["/api/directory"],
@@ -38,14 +40,49 @@ export default function Directory() {
       return newSet;
     });
   };
+
+  const getDisplayName = (listing: DirectoryListing) => {
+    if (listing.type === "company" && listing.companyName) {
+      return listing.companyName;
+    }
+    if (listing.type === "community" && listing.communityName) {
+      return listing.communityName;
+    }
+    if (listing.type === "person" && listing.lastName && listing.firstName) {
+      return `${listing.lastName}, ${listing.firstName}`;
+    }
+    return "Unknown";
+  };
   
-  // Filter listings by type
+  // Filter listings by search query and type
   const rawListings = useMemo(() => {
-    // When no types are selected, show all
-    if (selectedTypes.size === 0) return allListings;
-    // When types are selected, show only those types
-    return allListings.filter(listing => selectedTypes.has(listing.type as "company" | "person" | "community"));
-  }, [allListings, selectedTypes]);
+    let filtered = allListings;
+    
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(listing => {
+        const name = getDisplayName(listing).toLowerCase();
+        const description = (listing.description || "").toLowerCase();
+        const contactPerson = (listing.contactPerson || "").toLowerCase();
+        const floor = (listing.floor || "").toLowerCase();
+        const officeNumber = (listing.officeNumber || "").toLowerCase();
+        
+        return name.includes(query) || 
+               description.includes(query) ||
+               contactPerson.includes(query) ||
+               floor.includes(query) ||
+               officeNumber.includes(query);
+      });
+    }
+    
+    // Apply type filter
+    if (selectedTypes.size > 0) {
+      filtered = filtered.filter(listing => selectedTypes.has(listing.type as "company" | "person" | "community"));
+    }
+    
+    return filtered;
+  }, [allListings, selectedTypes, searchQuery]);
   
   const listings = useMemo(() => {
     if (sortMode === "name-asc" || sortMode === "name-desc") {
@@ -97,19 +134,6 @@ export default function Directory() {
     });
   };
 
-  const getDisplayName = (listing: DirectoryListing) => {
-    if (listing.type === "company" && listing.companyName) {
-      return listing.companyName;
-    }
-    if (listing.type === "community" && listing.communityName) {
-      return listing.communityName;
-    }
-    if (listing.type === "person" && listing.lastName && listing.firstName) {
-      return `${listing.lastName}, ${listing.firstName}`;
-    }
-    return "Unknown";
-  };
-
   const getLocationText = (listing: DirectoryListing) => {
     if (listing.floor) {
       return listing.floor;
@@ -156,6 +180,19 @@ export default function Directory() {
             <p className="text-gray-600 dark:text-gray-400">
               Find companies, communities, and members in Frontier Tower
             </p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search listings..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+              data-testid="input-search"
+            />
           </div>
 
           {/* Filter Buttons */}
