@@ -459,28 +459,14 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           <ThemeToggle />
         </div>
         <div className="max-w-lg mx-auto w-full">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden text-center p-8">
-            <div className="mb-6">
-              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-10 h-10 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden p-8">
+            <div className="mb-6 text-center">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                Congratulations!
+                Registration Complete
               </h1>
-              <p className="text-xl text-gray-700 dark:text-gray-300 mb-4">
-                You're all set!
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
+                Now connect to WiFi using one of the methods below
               </p>
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-left">
-                <p className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                  Connect to WiFi:
-                </p>
-                <p className="text-sm text-blue-800 dark:text-blue-200">
-                  <strong>Network:</strong> FrontierTower<br />
-                  <strong>Password:</strong> frontiertower995
-                </p>
-              </div>
             </div>
             
             {isSubmitting ? (
@@ -488,27 +474,45 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               </div>
             ) : (
-              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                <p className="text-sm text-blue-900 dark:text-blue-100 font-semibold mb-2">
-                  Quick Setup for iOS/Mac Users
-                </p>
-                <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
-                  Install this profile to automatically connect to FrontierTower WiFi
-                </p>
-                <Button
-                  asChild
-                  variant="default"
-                  size="sm"
-                  className="w-full"
-                  data-testid="button-install-wifi-profile"
-                >
-                  <a href="/api/wifi-profile">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Install WiFi Profile
-                  </a>
-                </Button>
+              <div className="space-y-4">
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-700 rounded-lg">
+                  <p className="text-sm font-bold text-blue-900 dark:text-blue-100 mb-3">
+                    Option 1: Quick Setup (iOS/Mac)
+                  </p>
+                  <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                    Install this profile to automatically connect to FrontierTower WiFi
+                  </p>
+                  <Button
+                    asChild
+                    variant="default"
+                    className="w-full"
+                    data-testid="button-install-wifi-profile"
+                  >
+                    <a href="/api/wifi-profile">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Install WiFi Profile
+                    </a>
+                  </Button>
+                </div>
+
+                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-2 border-gray-300 dark:border-gray-700 rounded-lg">
+                  <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">
+                    Option 2: Manual Connection (All Devices)
+                  </p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                    Connect to WiFi using these credentials:
+                  </p>
+                  <div className="bg-white dark:bg-gray-900/50 rounded p-3 text-sm">
+                    <p className="text-gray-900 dark:text-gray-100">
+                      <strong>Network:</strong> FrontierTower
+                    </p>
+                    <p className="text-gray-900 dark:text-gray-100">
+                      <strong>Password:</strong> frontiertower995
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
