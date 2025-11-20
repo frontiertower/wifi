@@ -341,6 +341,17 @@ export class DatabaseStorage {
       .where(eq(events.id, eventId));
   }
 
+  async deleteEventsWithoutUrls(): Promise<number> {
+    const result = await db
+      .delete(events)
+      .where(
+        sql`${events.url} IS NULL OR ${events.url} = ''`
+      )
+      .returning({ id: events.id });
+    
+    return result.length;
+  }
+
   async upsertEventByExternalId(eventData: any): Promise<Event> {
     const updateFields: any = {
       name: eventData.name,

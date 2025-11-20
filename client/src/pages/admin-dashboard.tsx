@@ -237,19 +237,28 @@ export default function AdminDashboard() {
     },
     onSuccess: (data) => {
       const count = data.events?.length || 0;
+      const deletedCount = data.deletedCount || 0;
       const failedCount = data.failedEvents?.length || 0;
+      
+      let description = `Synced ${count} event${count !== 1 ? 's' : ''}`;
+      if (deletedCount > 0) {
+        description += `, cleaned up ${deletedCount} duplicate${deletedCount !== 1 ? 's' : ''}`;
+      }
+      if (failedCount > 0) {
+        description += `, ${failedCount} failed`;
+      }
       
       if (failedCount > 0) {
         toast({
           title: "Events Partially Synced",
-          description: `Synced ${count} event${count !== 1 ? 's' : ''}, ${failedCount} failed. Check console for details.`,
+          description: description + ". Check console for details.",
           variant: "default",
         });
         console.error('Failed events:', data.failedEvents);
       } else {
         toast({
           title: "Events Synced",
-          description: `Successfully synced ${count} event${count !== 1 ? 's' : ''} from external feed`,
+          description,
         });
       }
       

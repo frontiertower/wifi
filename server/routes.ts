@@ -720,6 +720,10 @@ Rules:
     });
 
     try {
+      // First, delete all events without URLs (cleanup duplicates)
+      const deletedCount = await storage.deleteEventsWithoutUrls();
+      console.log(`Deleted ${deletedCount} event(s) without URLs during cleanup`);
+
       const externalApiUrl = "https://studio--frontier-tower-timeline.us-central1.hosted.app/api/events";
       
       const controller = new AbortController();
@@ -842,15 +846,20 @@ Rules:
         });
       }
 
-      const message = failedEvents.length > 0
-        ? `Successfully synced ${syncedEvents.length} event(s), ${failedEvents.length} failed`
-        : `Successfully synced ${syncedEvents.length} event(s)`;
+      let message = `Successfully synced ${syncedEvents.length} event(s)`;
+      if (deletedCount > 0) {
+        message += `, cleaned up ${deletedCount} duplicate(s)`;
+      }
+      if (failedEvents.length > 0) {
+        message += `, ${failedEvents.length} failed`;
+      }
 
-      console.log(`Event sync completed: ${syncedEvents.length} synced, ${failedEvents.length} failed`);
+      console.log(`Event sync completed: ${syncedEvents.length} synced, ${deletedCount} deleted, ${failedEvents.length} failed`);
       
       res.json({
         success: true,
         events: syncedEvents,
+        deletedCount,
         failedEvents: failedEvents.length > 0 ? failedEvents : undefined,
         message
       });
