@@ -1074,10 +1074,10 @@ export default function AdminDashboard() {
               </div>
             </Card>
 
-            {/* Membership Applications */}
+            {/* Membership Inquiries */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Membership Applications ({membershipApplications?.applications?.length || 0})
+                Membership Inquiries ({membershipApplications?.applications?.length || 0})
               </h2>
               <div className="overflow-x-auto">
                 <Table>
@@ -1097,7 +1097,7 @@ export default function AdminDashboard() {
                     {membershipApplications?.applications?.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
-                          No membership applications yet
+                          No membership inquiries yet
                         </TableCell>
                       </TableRow>
                     ) : (

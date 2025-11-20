@@ -324,10 +324,10 @@ This is an automated notification from Frontier Tower WiFi Portal.
     company?: string | null;
     website?: string | null;
   }): Promise<boolean> {
-    const subject = `New Membership Application: ${application.name}`;
+    const subject = `New Membership Inquiry: ${application.name}`;
     
     const text = `
-New Membership Application Received
+New Membership Inquiry Received
 
 Name: ${application.name}
 Email: ${application.email}
@@ -342,7 +342,7 @@ This is an automated notification from Frontier Tower WiFi Portal.
     `.trim();
 
     const html = `
-      <h2>New Membership Application Received</h2>
+      <h2>New Membership Inquiry Received</h2>
       <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
         <tr>
           <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Name:</td>
