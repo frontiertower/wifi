@@ -7,6 +7,16 @@ import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
 import { randomBytes } from "crypto";
+import {
+  generateCodeVerifier,
+  generateCodeChallenge,
+  generateCSRFToken,
+  getOAuthLoginUrl,
+  exchangeCodeForToken,
+  refreshAccessToken,
+  revokeToken,
+  getUserInfo,
+} from "./oauth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -1634,6 +1644,262 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to save settings"
+      });
+    }
+  });
+
+  // OAuth Authentication Routes
+  
+  // Helper function to get or create cookie ID
+  function getOrCreateCookieId(req: any, res: any): string {
+    let cookieId = req.cookies?.ft_session;
+    if (!cookieId) {
+      cookieId = randomBytes(16).toString('hex');
+      res.cookie('ft_session', cookieId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        sameSite: 'lax',
+      });
+    }
+    return cookieId;
+  }
+
+  // Initiate OAuth login
+  app.get("/api/auth/login", async (req, res) => {
+    try {
+      const clientId = process.env.FT_OAUTH_CLIENT_ID;
+      const redirectUri = process.env.FT_OAUTH_REDIRECT_URI;
+
+      if (!clientId || !redirectUri) {
+        return res.status(500).json({
+          success: false,
+          message: "OAuth not configured. Please set FT_OAUTH_CLIENT_ID and FT_OAUTH_REDIRECT_URI",
+        });
+      }
+
+      const cookieId = getOrCreateCookieId(req, res);
+      
+      // Generate PKCE values
+      const codeVerifier = generateCodeVerifier();
+      const codeChallenge = await generateCodeChallenge(codeVerifier);
+      const csrfToken = generateCSRFToken();
+
+      // Store code verifier and CSRF token in database
+      await storage.saveOAuthSession(cookieId, {
+        codeVerifier,
+        csrfToken,
+      });
+
+      // Generate OAuth login URL
+      const loginUrl = getOAuthLoginUrl(clientId, redirectUri, csrfToken, codeChallenge);
+
+      res.json({
+        success: true,
+        loginUrl,
+      });
+    } catch (error) {
+      console.error("Error initiating OAuth login:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to initiate login",
+      });
+    }
+  });
+
+  // OAuth callback handler
+  app.get("/api/auth/callback", async (req, res) => {
+    try {
+      const code = req.query.code as string;
+      const state = req.query.state as string;
+
+      if (!code || !state) {
+        console.error("OAuth callback: Missing code or state parameter");
+        return res.redirect("/?error=missing_params");
+      }
+
+      const cookieId = req.cookies?.ft_session;
+      if (!cookieId) {
+        console.error("OAuth callback: No ft_session cookie found");
+        return res.redirect("/?error=no_session");
+      }
+
+      // Get stored session data
+      const session = await storage.getOAuthSession(cookieId);
+      if (!session || !session.csrfToken || !session.codeVerifier) {
+        console.error("OAuth callback: Invalid session - missing CSRF or verifier", {
+          hasSession: !!session,
+          hasCsrf: !!session?.csrfToken,
+          hasVerifier: !!session?.codeVerifier,
+        });
+        return res.redirect("/?error=invalid_session");
+      }
+
+      // Verify CSRF token
+      if (state !== session.csrfToken) {
+        console.error("OAuth callback: CSRF mismatch", {
+          received: state,
+          expected: session.csrfToken,
+        });
+        return res.redirect("/?error=csrf_mismatch");
+      }
+
+      const clientId = process.env.FT_OAUTH_CLIENT_ID;
+      const clientSecret = process.env.FT_OAUTH_CLIENT_SECRET;
+      const redirectUri = process.env.FT_OAUTH_REDIRECT_URI;
+
+      if (!clientId || !clientSecret || !redirectUri) {
+        console.error("OAuth callback: Missing OAuth configuration");
+        return res.redirect("/?error=oauth_not_configured");
+      }
+
+      // Exchange code for token
+      const tokenData = await exchangeCodeForToken(
+        code,
+        clientId,
+        clientSecret,
+        redirectUri,
+        session.codeVerifier
+      );
+
+      if (tokenData.error) {
+        console.error("Token exchange error:", tokenData.error, tokenData);
+        return res.redirect("/?error=token_exchange_failed");
+      }
+
+      // Get user info
+      const userInfo = await getUserInfo(tokenData.access_token, tokenData.token_type);
+      console.log("OAuth callback: User authenticated", { userId: userInfo.id });
+
+      // Calculate token expiry
+      const expiresAt = new Date(Date.now() + tokenData.expires_in * 1000);
+
+      // Save tokens and user info to database
+      await storage.saveOAuthTokens(cookieId, {
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        tokenType: tokenData.token_type,
+        expiresAt,
+        ftUserId: userInfo.id,
+        userInfo,
+      });
+
+      // Redirect to home page
+      res.redirect("/?login=success");
+    } catch (error) {
+      console.error("Error in OAuth callback:", error);
+      res.redirect("/?error=callback_failed");
+    }
+  });
+
+  // Get current user info
+  app.get("/api/auth/me", async (req, res) => {
+    try {
+      const cookieId = req.cookies?.ft_session;
+      if (!cookieId) {
+        return res.json({ authenticated: false });
+      }
+
+      const member = await storage.getAuthenticatedMember(cookieId);
+      if (!member || !member.accessToken) {
+        return res.json({ authenticated: false });
+      }
+
+      // Check if token is expired
+      const now = new Date();
+      if (member.expiresAt && member.expiresAt < now) {
+        // Try to refresh the token
+        const clientId = process.env.FT_OAUTH_CLIENT_ID;
+        const clientSecret = process.env.FT_OAUTH_CLIENT_SECRET;
+
+        if (member.refreshToken && clientId && clientSecret) {
+          try {
+            const tokenData = await refreshAccessToken(
+              member.refreshToken,
+              clientId,
+              clientSecret
+            );
+
+            if (!tokenData.error) {
+              const expiresAt = new Date(Date.now() + tokenData.expires_in * 1000);
+              
+              await storage.updateOAuthTokens(cookieId, {
+                accessToken: tokenData.access_token,
+                refreshToken: tokenData.refresh_token,
+                tokenType: tokenData.token_type,
+                expiresAt,
+              });
+
+              // Get fresh user info
+              const userInfo = await getUserInfo(tokenData.access_token, tokenData.token_type);
+
+              return res.json({
+                authenticated: true,
+                user: userInfo,
+              });
+            }
+          } catch (refreshError) {
+            console.error("Token refresh failed:", refreshError);
+            await storage.deleteOAuthSession(cookieId);
+            return res.json({ authenticated: false });
+          }
+        }
+
+        // Token expired and couldn't refresh
+        await storage.deleteOAuthSession(cookieId);
+        return res.json({ authenticated: false });
+      }
+
+      // Token is valid
+      res.json({
+        authenticated: true,
+        user: member.userInfo,
+      });
+    } catch (error) {
+      console.error("Error getting user info:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to get user info",
+      });
+    }
+  });
+
+  // Logout
+  app.post("/api/auth/logout", async (req, res) => {
+    try {
+      const cookieId = req.cookies?.ft_session;
+      if (!cookieId) {
+        return res.json({ success: true });
+      }
+
+      const member = await storage.getAuthenticatedMember(cookieId);
+      
+      if (member && member.accessToken) {
+        const clientId = process.env.FT_OAUTH_CLIENT_ID;
+        const clientSecret = process.env.FT_OAUTH_CLIENT_SECRET;
+
+        if (clientId && clientSecret) {
+          try {
+            await revokeToken(member.accessToken, clientId, clientSecret);
+          } catch (revokeError) {
+            console.error("Error revoking token:", revokeError);
+            // Continue with logout even if revoke fails
+          }
+        }
+      }
+
+      // Delete session from database
+      await storage.deleteOAuthSession(cookieId);
+
+      // Clear cookie
+      res.clearCookie('ft_session');
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error during logout:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to logout",
       });
     }
   });

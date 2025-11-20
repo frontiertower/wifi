@@ -213,6 +213,21 @@ export const privateOfficeRentals = pgTable("private_office_rentals", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const authenticatedMembers = pgTable("authenticated_members", {
+  id: serial("id").primaryKey(),
+  cookieId: text("cookie_id").notNull().unique(),
+  ftUserId: text("ft_user_id"),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  tokenType: text("token_type"),
+  expiresAt: timestamp("expires_at"),
+  userInfo: jsonb("user_info"),
+  codeVerifier: text("code_verifier"),
+  csrfToken: text("csrf_token"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -402,3 +417,4 @@ export type ChatInviteRequest = typeof chatInviteRequests.$inferSelect;
 export type InsertChatInviteRequest = z.infer<typeof insertChatInviteRequestSchema>;
 export type PrivateOfficeRental = typeof privateOfficeRentals.$inferSelect;
 export type InsertPrivateOfficeRental = z.infer<typeof insertPrivateOfficeRentalSchema>;
+export type AuthenticatedMember = typeof authenticatedMembers.$inferSelect;

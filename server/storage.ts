@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, privateOfficeRentals, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type PrivateOfficeRental, type InsertPrivateOfficeRental } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, privateOfficeRentals, authenticatedMembers, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -623,6 +623,102 @@ export class DatabaseStorage {
       .from(privateOfficeRentals)
       .where(eq(privateOfficeRentals.id, id));
     return rental || null;
+  }
+
+  // OAuth Authentication Methods
+  
+  async saveOAuthSession(cookieId: string, data: { codeVerifier: string; csrfToken: string }): Promise<void> {
+    // Only update transient PKCE/CSRF fields without overwriting existing tokens
+    const existing = await this.getAuthenticatedMember(cookieId);
+    
+    if (existing) {
+      await db
+        .update(authenticatedMembers)
+        .set({
+          codeVerifier: data.codeVerifier,
+          csrfToken: data.csrfToken,
+          updatedAt: new Date(),
+        })
+        .where(eq(authenticatedMembers.cookieId, cookieId));
+    } else {
+      await db
+        .insert(authenticatedMembers)
+        .values({
+          cookieId,
+          codeVerifier: data.codeVerifier,
+          csrfToken: data.csrfToken,
+        });
+    }
+  }
+
+  async getOAuthSession(cookieId: string): Promise<AuthenticatedMember | null> {
+    const [session] = await db
+      .select()
+      .from(authenticatedMembers)
+      .where(eq(authenticatedMembers.cookieId, cookieId));
+    return session || null;
+  }
+
+  async saveOAuthTokens(
+    cookieId: string,
+    data: {
+      accessToken: string;
+      refreshToken: string;
+      tokenType: string;
+      expiresAt: Date;
+      ftUserId: string;
+      userInfo: any;
+    }
+  ): Promise<void> {
+    await db
+      .update(authenticatedMembers)
+      .set({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        tokenType: data.tokenType,
+        expiresAt: data.expiresAt,
+        ftUserId: data.ftUserId,
+        userInfo: data.userInfo,
+        codeVerifier: null,  // Clear PKCE data after successful auth
+        csrfToken: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(authenticatedMembers.cookieId, cookieId));
+  }
+
+  async getAuthenticatedMember(cookieId: string): Promise<AuthenticatedMember | null> {
+    const [member] = await db
+      .select()
+      .from(authenticatedMembers)
+      .where(eq(authenticatedMembers.cookieId, cookieId));
+    return member || null;
+  }
+
+  async updateOAuthTokens(
+    cookieId: string,
+    data: {
+      accessToken: string;
+      refreshToken: string;
+      tokenType: string;
+      expiresAt: Date;
+    }
+  ): Promise<void> {
+    await db
+      .update(authenticatedMembers)
+      .set({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        tokenType: data.tokenType,
+        expiresAt: data.expiresAt,
+        updatedAt: new Date(),
+      })
+      .where(eq(authenticatedMembers.cookieId, cookieId));
+  }
+
+  async deleteOAuthSession(cookieId: string): Promise<void> {
+    await db
+      .delete(authenticatedMembers)
+      .where(eq(authenticatedMembers.cookieId, cookieId));
   }
 }
 
