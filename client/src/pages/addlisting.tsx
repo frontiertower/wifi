@@ -7,10 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import type { DirectoryListing } from "@shared/schema";
 
 type ListingType = "company" | "person" | "community";
 
@@ -26,6 +28,7 @@ export default function AddListing() {
     communityName: "",
     firstName: "",
     lastName: "",
+    parentCommunityId: "",
     floor: "",
     officeNumber: "",
     phone: "",
@@ -35,6 +38,13 @@ export default function AddListing() {
     logoUrl: "",
     description: "",
   });
+
+  // Fetch all directory listings to get communities
+  const { data: allListingsData } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
+    queryKey: ["/api/directory"],
+  });
+
+  const communities = (allListingsData?.listings || []).filter(listing => listing.type === "community");
 
   const createListingMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -68,6 +78,7 @@ export default function AddListing() {
       communityName: listingType === "community" ? formData.communityName : null,
       firstName: listingType === "person" ? formData.firstName : null,
       lastName: listingType === "person" ? formData.lastName : null,
+      parentCommunityId: formData.parentCommunityId ? parseInt(formData.parentCommunityId) : null,
       floor: formData.floor || null,
       officeNumber: formData.officeNumber || null,
       phone: formData.phone || null,
@@ -250,6 +261,32 @@ export default function AddListing() {
                   rows={4}
                   data-testid="input-description"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="parent-community">Parent Community (optional)</Label>
+                <Select
+                  value={formData.parentCommunityId}
+                  onValueChange={(value) => handleInputChange("parentCommunityId", value)}
+                >
+                  <SelectTrigger id="parent-community" data-testid="select-parent-community">
+                    <SelectValue placeholder="Select a community" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {communities.length === 0 ? (
+                      <SelectItem value="none" disabled>No communities available</SelectItem>
+                    ) : (
+                      communities.map((community) => (
+                        <SelectItem key={community.id} value={community.id.toString()}>
+                          {community.communityName}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Select a community this listing belongs to
+                </p>
               </div>
 
               <div className="space-y-4">

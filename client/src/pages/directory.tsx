@@ -367,6 +367,16 @@ export default function Directory() {
                         </div>
                       )}
 
+                      {listing.parentCommunityId && (
+                        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 pt-2 border-t md:border-t-0 md:pt-0">
+                          <Users className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                          <span>
+                            <span className="text-gray-500 dark:text-gray-400">Part of:</span>{" "}
+                            {allListings.find(l => l.id === listing.parentCommunityId)?.communityName || "Unknown Community"}
+                          </span>
+                        </div>
+                      )}
+
                       {(listing.phone || listing.email || listing.telegramUsername || listing.website) && (
                         <div className="space-y-2 pt-2 border-t md:border-t-0 md:pt-0">
                           {listing.phone && (

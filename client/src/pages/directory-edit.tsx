@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -32,13 +33,17 @@ export default function DirectoryEdit() {
     queryKey: ["/api/directory"],
   });
 
+  const communities = (allListings?.listings || []).filter(l => l.type === "community");
+
   // Find listing by slug
   const listing = allListings?.listings.find((l) => {
     const name = l.type === "company" 
       ? l.companyName 
-      : l.lastName && l.firstName 
-        ? `${l.lastName}, ${l.firstName}` 
-        : null;
+      : l.type === "community"
+        ? l.communityName
+        : l.lastName && l.firstName 
+          ? `${l.lastName}, ${l.firstName}` 
+          : null;
     return name && slugify(name) === slug;
   });
 
@@ -228,6 +233,28 @@ export default function DirectoryEdit() {
                   </div>
                 </>
               )}
+
+              <div>
+                <Label htmlFor="parentCommunityId">Parent Community</Label>
+                <Select
+                  value={editForm.parentCommunityId?.toString() || ""}
+                  onValueChange={(value) =>
+                    setEditForm({ ...editForm, parentCommunityId: value ? parseInt(value) : null })
+                  }
+                >
+                  <SelectTrigger id="parentCommunityId" data-testid="select-parentCommunityId">
+                    <SelectValue placeholder="Select a community" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">None</SelectItem>
+                    {communities.map((community) => (
+                      <SelectItem key={community.id} value={community.id.toString()}>
+                        {community.communityName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
               <div>
                 <Label htmlFor="floor">Floor</Label>

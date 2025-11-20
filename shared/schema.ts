@@ -124,6 +124,7 @@ export const directoryListings = pgTable("directory_listings", {
   communityName: text("community_name"),
   firstName: text("first_name"),
   lastName: text("last_name"),
+  parentCommunityId: integer("parent_community_id"),
   floor: text("floor"),
   officeNumber: text("office_number"),
   phone: text("phone"),
