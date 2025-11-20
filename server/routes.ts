@@ -408,7 +408,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: z.string().min(1),
         telegramUsername: z.string().optional(),
         eventName: z.string().min(1),
-        organization: z.string().min(1),
+        organization: z.string().optional(),
         registrationType: z.string().optional(),
         macAddress: z.string().optional(),
         unifiParams: z.object({
@@ -1195,13 +1195,15 @@ Rules:
     try {
       const validatedData = insertTourBookingSchema.parse(req.body);
       
-      // Validate that the tour date is in the future
-      const tourDateTime = new Date(validatedData.tourDate);
-      if (tourDateTime <= new Date()) {
-        return res.status(400).json({
-          success: false,
-          message: "Tour date must be in the future"
-        });
+      // Validate that the tour date is in the future (only for custom tours)
+      if (validatedData.tourType === "custom" && validatedData.tourDate) {
+        const tourDateTime = new Date(validatedData.tourDate);
+        if (tourDateTime <= new Date()) {
+          return res.status(400).json({
+            success: false,
+            message: "Tour date must be in the future"
+          });
+        }
       }
       
       const booking = await storage.createTourBooking(validatedData);

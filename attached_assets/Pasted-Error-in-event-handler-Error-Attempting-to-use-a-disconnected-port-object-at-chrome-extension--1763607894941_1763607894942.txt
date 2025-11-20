@@ -1,0 +1,80 @@
+Error in event handler: Error: Attempting to use a disconnected port object
+    at chrome-extension://pejdijmoenmkgeppbflobdenhhabjlaj/background.js:1:69469
+Error in event handler: Error: Attempting to use a disconnected port object
+    at chrome-extension://pejdijmoenmkgeppbflobdenhhabjlaj/background.js:1:69469
+Error in event handler: Error: Attempting to use a disconnected port object
+    at chrome-extension://pejdijmoenmkgeppbflobdenhhabjlaj/background.js:1:69469
+evmAsk.js:5 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:5:5093)
+    at window.addEventListener.once (evmAsk.js:5:9013)
+inpage.js:3 Uncaught (in promise) TypeError: Cannot redefine property: superheroWallet
+    at Object.defineProperties (<anonymous>)
+    at t.injectEthereumIntoWindow (inpage.js:3:40761)
+    at t.value (inpage.js:3:41979)
+    at t.<anonymous> (inpage.js:3:34659)
+    at Generator.<anonymous> (inpage.js:3:1071)
+    at Generator.next (inpage.js:1:5239)
+    at inpage.js:3:21622
+    at new Promise (<anonymous>)
+    at d (inpage.js:3:21416)
+    at onMessage (inpage.js:3:34519)
+index-qI7dGBTi.js:343 UniFi Parameters: Object
+background.js:1 Uncaught (in promise) Error: Cancelled
+    at DelayedMessageSender.cancelPendingRequests (background.js:1:49306)
+    at DelayedMessageSender.reset (background.js:1:49343)
+    at Frame.readyToReceiveMessages (background.js:1:51035)
+    at Tab.frameIsReadyToReceiveMessages (background.js:1:52965)
+    at TabMonitor.frameIsReadyToReceiveMessages (background.js:1:55545)
+    at background.js:1:70409
+Unchecked runtime.lastError: The message port closed before a response was received.
+Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist.
+Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist.
+14Error in event handler: Error: Called encrypt() without a session key
+    at SecretSession.encrypt (<URL>)
+    at SecretSession.createSMSG (<URL>)
+    at GetLoginNames4URL (<URL>)
+    at #G (<URL>)
+api2.amplitude.com/2/httpapi:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+vendor.js:2 Amplitude Logger [Error]: TypeError: Failed to fetch
+e.error @ vendor.js:2
+content_script.js:1 Uncaught TypeError: Cannot read properties of undefined (reading 'control')
+    at content_script.js:1:422999
+    at Array.some (<anonymous>)
+    at shouldOfferCompletionListForField (content_script.js:1:422984)
+    at elementWasFocused (content_script.js:1:423712)
+    at HTMLDocument.focusInEventHandler (content_script.js:1:423069)
+content_script.js:1 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'control')
+    at content_script.js:1:422999
+    at Array.some (<anonymous>)
+    at shouldOfferCompletionListForField (content_script.js:1:422984)
+    at processInputEvent (content_script.js:1:426332)
+content_script.js:1 Uncaught TypeError: Cannot read properties of undefined (reading 'control')
+    at content_script.js:1:422999
+    at Array.some (<anonymous>)
+    at shouldOfferCompletionListForField (content_script.js:1:422984)
+    at elementWasFocused (content_script.js:1:423712)
+    at HTMLDocument.focusInEventHandler (content_script.js:1:423069)
+19content_script.js:1 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'control')
+    at content_script.js:1:422999
+    at Array.some (<anonymous>)
+    at shouldOfferCompletionListForField (content_script.js:1:422984)
+    at processInputEvent (content_script.js:1:426332)
+content_script.js:1 Uncaught TypeError: Cannot read properties of undefined (reading 'control')
+    at content_script.js:1:422999
+    at Array.some (<anonymous>)
+    at shouldOfferCompletionListForField (content_script.js:1:422984)
+    at elementWasFocused (content_script.js:1:423712)
+    at HTMLDocument.focusInEventHandler (content_script.js:1:423069)
+10content_script.js:1 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'control')
+    at content_script.js:1:422999
+    at Array.some (<anonymous>)
+    at shouldOfferCompletionListForField (content_script.js:1:422984)
+    at processInputEvent (content_script.js:1:426332)
+utils.js:1  Failed to load resource: net::ERR_FILE_NOT_FOUND
+extensionState.js:1  Failed to load resource: net::ERR_FILE_NOT_FOUND
+heuristicsRedefinitions.js:1  Failed to load resource: net::ERR_FILE_NOT_FOUND
+/api/register/event:1  Failed to load resource: the server responded with a status of 400 ()
+utils.js:1  Failed to load resource: net::ERR_FILE_NOT_FOUND
+extensionState.js:1  Failed to load resource: net::ERR_FILE_NOT_FOUND
+heuristicsRedefinitions.js:1  Failed to load resource: net::ERR_FILE_NOT_FOUND

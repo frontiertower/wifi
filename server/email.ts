@@ -85,12 +85,19 @@ class EmailService {
     email: string;
     linkedIn?: string | null;
     referredBy?: string | null;
-    tourDate: Date;
-    tourTime: string;
+    tourType: string;
+    groupTourSelection?: string | null;
+    groupTourUrl?: string | null;
+    tourDate?: Date | null;
+    tourTime?: string | null;
     interestedInPrivateOffice?: boolean | null;
     numberOfPeople?: number | null;
   }): Promise<boolean> {
     const subject = `New Tour Booking: ${booking.name}`;
+    
+    const tourInfo = booking.tourType === "custom" 
+      ? `Custom Tour\nDate: ${booking.tourDate ? booking.tourDate.toLocaleDateString() : 'N/A'}\nTime: ${booking.tourTime || 'N/A'}`
+      : `Group Tour\nEvent: ${booking.groupTourSelection || 'N/A'}\nLuma URL: ${booking.groupTourUrl || 'N/A'}`;
     
     const text = `
 New Tour Booking Received
@@ -102,8 +109,7 @@ Email: ${booking.email}
 ${booking.linkedIn ? `LinkedIn: ${booking.linkedIn}` : ""}
 ${booking.referredBy ? `Referred By: ${booking.referredBy}` : ""}
 
-Tour Date: ${booking.tourDate.toLocaleDateString()}
-Tour Time: ${booking.tourTime}
+${tourInfo}
 
 ${booking.interestedInPrivateOffice ? `Interested in Private Office: Yes` : ""}
 ${booking.numberOfPeople ? `Number of People: ${booking.numberOfPeople}` : ""}
@@ -146,13 +152,31 @@ This is an automated notification from Frontier Tower WiFi Portal.
         </tr>
         ` : ""}
         <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Tour Type:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${booking.tourType === "custom" ? "Custom Tour" : "Group Tour"}</td>
+        </tr>
+        ${booking.tourType === "custom" ? `
+        <tr>
           <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Tour Date:</td>
-          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${booking.tourDate.toLocaleDateString()}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${booking.tourDate ? booking.tourDate.toLocaleDateString() : 'N/A'}</td>
         </tr>
         <tr>
           <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Tour Time:</td>
-          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${booking.tourTime}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${booking.tourTime || 'N/A'}</td>
         </tr>
+        ` : ""}
+        ${booking.tourType !== "custom" && booking.groupTourSelection ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Group Tour Event:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;">${booking.groupTourSelection}</td>
+        </tr>
+        ` : ""}
+        ${booking.tourType !== "custom" && booking.groupTourUrl ? `
+        <tr>
+          <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Luma URL:</td>
+          <td style="padding: 8px; border-bottom: 1px solid #ddd;"><a href="${booking.groupTourUrl}" style="color: #3b82f6;">${booking.groupTourUrl}</a></td>
+        </tr>
+        ` : ""}
         ${booking.interestedInPrivateOffice ? `
         <tr>
           <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #ddd;">Interested in Private Office:</td>
