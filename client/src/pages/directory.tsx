@@ -21,7 +21,7 @@ export default function Directory() {
   const [nameSortAsc, setNameSortAsc] = useState<boolean>(true);
   const [floorSortAsc, setFloorSortAsc] = useState<boolean>(true);
   const [activeSortMode, setActiveSortMode] = useState<"name" | "floor">("name");
-  const [filterType, setFilterType] = useState<"all" | "company" | "person" | "community">("all");
+  const [selectedTypes, setSelectedTypes] = useState<Set<"company" | "person" | "community">>(new Set());
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
     queryKey: ["/api/directory"],
@@ -29,11 +29,25 @@ export default function Directory() {
 
   const allListings = data?.listings || [];
   
+  const toggleFilterType = (type: "company" | "person" | "community") => {
+    setSelectedTypes(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(type)) {
+        newSet.delete(type);
+      } else {
+        newSet.add(type);
+      }
+      return newSet;
+    });
+  };
+  
   // Filter listings by type
   const rawListings = useMemo(() => {
-    if (filterType === "all") return allListings;
-    return allListings.filter(listing => listing.type === filterType);
-  }, [allListings, filterType]);
+    // When no types are selected, show all
+    if (selectedTypes.size === 0) return allListings;
+    // When types are selected, show only those types
+    return allListings.filter(listing => selectedTypes.has(listing.type));
+  }, [allListings, selectedTypes]);
   
   const listings = useMemo(() => {
     if (activeSortMode === "name") {
@@ -149,27 +163,27 @@ export default function Directory() {
           {/* Filter Buttons */}
           <div className="flex items-center gap-2 flex-wrap mb-4">
             <Button
-              variant={filterType === "company" ? "default" : "outline"}
+              variant={selectedTypes.has("company") ? "default" : "outline"}
               size="sm"
-              onClick={() => setFilterType("company")}
+              onClick={() => toggleFilterType("company")}
               data-testid="button-filter-companies"
             >
               <Building2 className="mr-2 h-4 w-4" />
               Companies
             </Button>
             <Button
-              variant={filterType === "community" ? "default" : "outline"}
+              variant={selectedTypes.has("community") ? "default" : "outline"}
               size="sm"
-              onClick={() => setFilterType("community")}
+              onClick={() => toggleFilterType("community")}
               data-testid="button-filter-communities"
             >
               <Users className="mr-2 h-4 w-4" />
               Communities
             </Button>
             <Button
-              variant={filterType === "person" ? "default" : "outline"}
+              variant={selectedTypes.has("person") ? "default" : "outline"}
               size="sm"
-              onClick={() => setFilterType("person")}
+              onClick={() => toggleFilterType("person")}
               data-testid="button-filter-people"
             >
               <User className="mr-2 h-4 w-4" />
