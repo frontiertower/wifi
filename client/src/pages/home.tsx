@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
+import frontierTowerQR from "@assets/frontier-tower-qr.png";
 
 type Role = "member" | "guest" | null;
 
@@ -242,7 +243,7 @@ export default function Home() {
               <div className="flex justify-center">
                 <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-600">
                   <img 
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://thefrontiertower.com"
+                    src={frontierTowerQR}
                     alt="QR Code for thefrontiertower.com"
                     className="w-40 h-40"
                     data-testid="qr-code-share"
