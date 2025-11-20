@@ -100,7 +100,7 @@ export default function ApplyToJoin() {
               <CardTitle className="text-2xl">Inquire about Membership</CardTitle>
             </div>
             <CardDescription>
-              Become part of our community. Fill out the form below to submit your membership inquiry.
+              Fill out the form below to inquire about membership and we will follow up with more details.
             </CardDescription>
           </CardHeader>
 
