@@ -18,9 +18,7 @@ function slugify(text: string): string {
 
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
-  const [nameSortAsc, setNameSortAsc] = useState<boolean>(true);
-  const [floorSortAsc, setFloorSortAsc] = useState<boolean>(true);
-  const [activeSortMode, setActiveSortMode] = useState<"name" | "floor">("name");
+  const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("name-asc");
   const [selectedTypes, setSelectedTypes] = useState<Set<"company" | "person" | "community">>(new Set());
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
@@ -46,15 +44,15 @@ export default function Directory() {
     // When no types are selected, show all
     if (selectedTypes.size === 0) return allListings;
     // When types are selected, show only those types
-    return allListings.filter(listing => selectedTypes.has(listing.type));
+    return allListings.filter(listing => selectedTypes.has(listing.type as "company" | "person" | "community"));
   }, [allListings, selectedTypes]);
   
   const listings = useMemo(() => {
-    if (activeSortMode === "name") {
+    if (sortMode === "name-asc" || sortMode === "name-desc") {
       return [...rawListings].sort((a, b) => {
         const nameA = a.companyName || a.communityName || `${a.lastName}, ${a.firstName}` || "";
         const nameB = b.companyName || b.communityName || `${b.lastName}, ${b.firstName}` || "";
-        return nameSortAsc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+        return sortMode === "name-asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
       });
     } else {
       // Sort by floor first, then by office number within each floor
@@ -76,16 +74,16 @@ export default function Directory() {
         
         // First sort by floor
         if (floorA !== floorB) {
-          return floorSortAsc ? floorA - floorB : floorB - floorA;
+          return sortMode === "floor-asc" ? floorA - floorB : floorB - floorA;
         }
         
         // If same floor, sort by office number
         const officeA = getOfficeNumber(a.officeNumber);
         const officeB = getOfficeNumber(b.officeNumber);
-        return floorSortAsc ? officeA - officeB : officeB - officeA;
+        return sortMode === "floor-asc" ? officeA - officeB : officeB - officeA;
       });
     }
-  }, [rawListings, activeSortMode, nameSortAsc, floorSortAsc]);
+  }, [rawListings, sortMode]);
   
   const toggleListing = (id: number) => {
     setExpandedListings(prev => {
@@ -195,34 +193,36 @@ export default function Directory() {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-2 flex-wrap">
               <Button
-                variant={activeSortMode === "name" ? "default" : "outline"}
+                variant={sortMode === "name-asc" ? "default" : "outline"}
                 size="sm"
-                onClick={() => {
-                  if (activeSortMode === "name") {
-                    setNameSortAsc(!nameSortAsc);
-                  } else {
-                    setActiveSortMode("name");
-                  }
-                }}
-                data-testid="button-sort-name"
+                onClick={() => setSortMode("name-asc")}
+                data-testid="button-sort-name-asc"
               >
-                <ArrowUpDown className="mr-2 h-4 w-4" />
-                {nameSortAsc ? "Sort A-Z" : "Sort Z-A"}
+                A-Z
               </Button>
               <Button
-                variant={activeSortMode === "floor" ? "default" : "outline"}
+                variant={sortMode === "name-desc" ? "default" : "outline"}
                 size="sm"
-                onClick={() => {
-                  if (activeSortMode === "floor") {
-                    setFloorSortAsc(!floorSortAsc);
-                  } else {
-                    setActiveSortMode("floor");
-                  }
-                }}
-                data-testid="button-sort-floor"
+                onClick={() => setSortMode("name-desc")}
+                data-testid="button-sort-name-desc"
               >
-                <ArrowUpDown className="mr-2 h-4 w-4" />
-                {floorSortAsc ? "Sort 1-15" : "Sort 15-1"}
+                Z-A
+              </Button>
+              <Button
+                variant={sortMode === "floor-asc" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSortMode("floor-asc")}
+                data-testid="button-sort-floor-asc"
+              >
+                1-16
+              </Button>
+              <Button
+                variant={sortMode === "floor-desc" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSortMode("floor-desc")}
+                data-testid="button-sort-floor-desc"
+              >
+                16-1
               </Button>
             </div>
             <Link href="/addlisting">
