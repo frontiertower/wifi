@@ -105,6 +105,9 @@ export default function DirectoryAdmin() {
     if (listing.type === "company" && listing.companyName) {
       return listing.companyName;
     }
+    if (listing.type === "community" && listing.communityName) {
+      return listing.communityName;
+    }
     if (listing.type === "person" && listing.lastName && listing.firstName) {
       return `${listing.lastName}, ${listing.firstName}`;
     }
