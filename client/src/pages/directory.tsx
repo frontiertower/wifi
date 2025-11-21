@@ -369,7 +369,7 @@ export default function Directory() {
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        {listing.description && (
+                        {listing.description && !isExpanded && (
                           <div className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none line-clamp-2">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                               {listing.description}
