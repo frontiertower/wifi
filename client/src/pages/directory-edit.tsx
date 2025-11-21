@@ -158,15 +158,24 @@ export default function DirectoryEdit() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="type">Type</Label>
-                <Input
-                  id="type"
+                <Select
                   value={editForm.type || ""}
-                  disabled
-                  className="bg-gray-100 dark:bg-gray-800"
-                />
+                  onValueChange={(value) =>
+                    setEditForm({ ...editForm, type: value as "company" | "community" | "person" })
+                  }
+                >
+                  <SelectTrigger id="type" data-testid="select-type">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="company">Company</SelectItem>
+                    <SelectItem value="community">Community</SelectItem>
+                    <SelectItem value="person">Person</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              {listing.type === "company" && (
+              {editForm.type === "company" && (
                 <>
                   <div>
                     <Label htmlFor="companyName">Company Name</Label>
@@ -193,7 +202,7 @@ export default function DirectoryEdit() {
                 </>
               )}
 
-              {listing.type === "community" && (
+              {editForm.type === "community" && (
                 <div>
                   <Label htmlFor="communityName">Community Name</Label>
                   <Input
@@ -207,7 +216,7 @@ export default function DirectoryEdit() {
                 </div>
               )}
 
-              {listing.type === "person" && (
+              {editForm.type === "person" && (
                 <>
                   <div>
                     <Label htmlFor="firstName">First Name</Label>
