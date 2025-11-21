@@ -732,6 +732,23 @@ Rules:
     }
   });
 
+  app.post("/api/admin/events/cleanup", async (req, res) => {
+    try {
+      const deletedCount = await storage.deleteEventsWithoutUrls();
+      res.json({
+        success: true,
+        deletedCount,
+        message: `Deleted ${deletedCount} event${deletedCount !== 1 ? 's' : ''} without Luma links`
+      });
+    } catch (error) {
+      console.error('Error cleaning up events:', error);
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to clean up events"
+      });
+    }
+  });
+
   app.post("/api/admin/events/sync", async (req, res) => {
     const externalEventSchema = z.object({
       id: z.string().min(1),

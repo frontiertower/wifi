@@ -274,6 +274,28 @@ export default function AdminDashboard() {
     },
   });
 
+  const cleanupEventsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/events/cleanup", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Events Cleaned Up",
+        description: `Deleted ${data.deletedCount} event${data.deletedCount !== 1 ? 's' : ''} without Luma links`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to Clean Up Events",
+        description: error instanceof Error ? error.message : "Could not delete events",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmitBulkText = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bulkEventText.trim()) {
@@ -529,6 +551,27 @@ export default function AdminDashboard() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         Scrape Images
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    onClick={() => cleanupEventsMutation.mutate()}
+                    disabled={cleanupEventsMutation.isPending}
+                    variant="outline"
+                    className="w-full sm:w-auto" 
+                    data-testid="button-cleanup-events"
+                  >
+                    {cleanupEventsMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Cleaning...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Clean Up
                       </>
                     )}
                   </Button>
