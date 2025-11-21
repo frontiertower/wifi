@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing } from "@shared/schema";
 
-type Tab = "users" | "events" | "analytics" | "location" | "bookings" | "directory" | "settings";
+type Tab = "users" | "events" | "analytics" | "bookings" | "directory" | "settings";
 
 interface StatsResponse {
   stats?: {
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
 
   const { data: floorStats } = useQuery<FloorStatsResponse>({
     queryKey: ['/api/admin/floor-stats'],
-    enabled: activeTab === "location",
+    enabled: activeTab === "analytics",
   });
 
   const { data: tourBookings } = useQuery<TourBookingsResponse>({
@@ -397,7 +397,6 @@ export default function AdminDashboard() {
     { id: "events", label: "Events", icon: Calendar },
     { id: "bookings", label: "Bookings", icon: ClipboardList },
     { id: "directory", label: "Directory", icon: Building2 },
-    { id: "location", label: "Location", icon: MapPin },
     { id: "settings", label: "Settings", icon: Settings },
   ] as const;
 
