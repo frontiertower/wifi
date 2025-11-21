@@ -116,22 +116,6 @@ export default function Home() {
 
           <div className="p-6">
             <button
-              onClick={handleMemberLogin}
-              className="w-full mb-3 p-4 border-2 border-green-200 dark:border-green-600 rounded-lg hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 text-left group bg-green-50 dark:bg-green-900/10"
-              data-testid="button-member-login"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
-                  <LogIn className="text-green-600 dark:text-green-300" />
-                </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Member Login</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Sign in with your Frontier Tower account</div>
-                </div>
-              </div>
-            </button>
-
-            <button
               onClick={() => handleRoleSelect("guest")}
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
               data-testid="button-select-guest"
@@ -245,7 +229,7 @@ export default function Home() {
 
             <Link
               href="/chat"
-              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
               data-testid="button-join-discussion"
             >
               <div className="flex items-center">
@@ -258,6 +242,22 @@ export default function Home() {
                 </div>
               </div>
             </Link>
+
+            <button
+              onClick={handleMemberLogin}
+              className="w-full mb-4 p-4 border-2 border-green-200 dark:border-green-600 rounded-lg hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 text-left group bg-green-50 dark:bg-green-900/10"
+              data-testid="button-member-login"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
+                  <LogIn className="text-green-600 dark:text-green-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Member Login</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Sign in with your Frontier Tower account</div>
+                </div>
+              </div>
+            </button>
 
             <div className="mt-8 text-center">
               <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
