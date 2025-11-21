@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Building2, User, Users } from "lucide-react";
+import { ArrowLeft, Building2, User, Users, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,9 @@ export default function AddListing() {
   const queryClient = useQueryClient();
 
   const [listingType, setListingType] = useState<ListingType>("company");
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [formData, setFormData] = useState({
     companyName: "",
     contactPerson: "",
@@ -68,8 +71,77 @@ export default function AddListing() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Logo must be smaller than 2MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadLogo = async (): Promise<string | null> => {
+    if (!logoFile) return null;
+
+    setIsUploadingLogo(true);
+    try {
+      const formData = new FormData();
+      formData.append("logo", logoFile);
+
+      const response = await fetch("/api/upload/logo", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        return data.logoUrl;
+      } else {
+        throw new Error(data.message || "Upload failed");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Upload failed",
+        description: error.message || "Failed to upload logo",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setIsUploadingLogo(false);
+    }
+  };
+
+  const removeLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let logoUrl = formData.logoUrl || null;
+
+    // Upload logo if a new file was selected
+    if (logoFile) {
+      const uploadedUrl = await uploadLogo();
+      if (uploadedUrl) {
+        logoUrl = uploadedUrl;
+      } else {
+        return; // Stop if upload failed
+      }
+    }
 
     const listingData = {
       type: listingType,
@@ -85,7 +157,7 @@ export default function AddListing() {
       telegramUsername: formData.telegramUsername || null,
       email: formData.email || null,
       website: formData.website || null,
-      logoUrl: formData.logoUrl || null,
+      logoUrl,
       description: formData.description || null,
     };
 
@@ -233,18 +305,42 @@ export default function AddListing() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="logo-url">Logo / Avatar URL</Label>
-                <Input
-                  id="logo-url"
-                  type="url"
-                  placeholder="https://example.com/logo.png"
-                  value={formData.logoUrl}
-                  onChange={(e) => handleInputChange("logoUrl", e.target.value)}
-                  data-testid="input-logo-url"
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Enter a URL to an image that represents {listingType === "company" ? "your company" : listingType === "community" ? "your community" : "yourself"}
-                </p>
+                <Label htmlFor="logo">Logo / Avatar Image (Max 2MB)</Label>
+                <div className="space-y-4">
+                  {logoPreview && (
+                    <div className="relative inline-block">
+                      <img
+                        src={logoPreview}
+                        alt="Logo preview"
+                        className="h-32 w-32 object-contain border rounded-md"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6"
+                        onClick={removeLogo}
+                        data-testid="button-remove-logo"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="logo"
+                      type="file"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                      onChange={handleLogoChange}
+                      className="flex-1"
+                      data-testid="input-logo"
+                    />
+                    <Upload className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Upload an image that represents {listingType === "company" ? "your company" : listingType === "community" ? "your community" : "yourself"} (JPEG, PNG, GIF, WebP - Max 2MB)
+                  </p>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -386,11 +482,11 @@ export default function AddListing() {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!isFormValid() || createListingMutation.isPending}
+                  disabled={!isFormValid() || createListingMutation.isPending || isUploadingLogo}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                   data-testid="button-submit"
                 >
-                  {createListingMutation.isPending ? "Adding..." : "Add Listing"}
+                  {isUploadingLogo ? "Uploading..." : createListingMutation.isPending ? "Adding..." : "Add Listing"}
                 </Button>
               </div>
             </form>

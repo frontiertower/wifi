@@ -7,6 +7,9 @@ import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
 import { randomBytes } from "crypto";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import {
   generateCodeVerifier,
   generateCodeChallenge,
@@ -17,6 +20,38 @@ import {
   revokeToken,
   getUserInfo,
 } from "./oauth";
+
+// Configure multer for file uploads
+const uploadsDir = path.join(process.cwd(), "uploads", "logos");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+  }),
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed (jpeg, jpg, png, gif, webp)"));
+    }
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -1131,6 +1166,43 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to fetch bookings"
+      });
+    }
+  });
+
+  // Serve uploaded logos
+  app.use("/uploads/logos", (req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    next();
+  }, (req, res, next) => {
+    const filePath = path.join(uploadsDir, req.path);
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        res.status(404).json({ error: "File not found" });
+      }
+    });
+  });
+
+  // Logo upload endpoint
+  app.post("/api/upload/logo", upload.single("logo"), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: "No file uploaded"
+        });
+      }
+
+      const logoUrl = `/uploads/logos/${req.file.filename}`;
+      res.json({
+        success: true,
+        logoUrl
+      });
+    } catch (error: any) {
+      console.error("Error uploading logo:", error);
+      res.status(500).json({
+        success: false,
+        message: error.message || "Failed to upload logo"
       });
     }
   });
