@@ -18,7 +18,47 @@ export default function Events() {
     queryKey: ['/api/events'],
   });
 
-  const events = data?.events || [];
+  // Deduplicate events by merging Luma and Frontier Tower sources
+  const deduplicateEvents = (events: Event[]): Event[] => {
+    const eventMap = new Map<string, Event[]>();
+    
+    // Group events by name
+    events.forEach(event => {
+      const key = event.name.trim().toLowerCase();
+      if (!eventMap.has(key)) {
+        eventMap.set(key, []);
+      }
+      eventMap.get(key)!.push(event);
+    });
+    
+    // Merge duplicates
+    const deduplicated: Event[] = [];
+    eventMap.forEach((duplicates) => {
+      if (duplicates.length === 1) {
+        deduplicated.push(duplicates[0]);
+      } else {
+        // Find Luma and Frontier Tower versions
+        const lumaEvent = duplicates.find(e => e.source === 'luma');
+        const ftEvent = duplicates.find(e => e.source === 'frontier-tower');
+        
+        // Merge: prefer Luma for URL/imageUrl, Frontier Tower for description
+        const merged: Event = {
+          ...(lumaEvent || ftEvent || duplicates[0]),
+          // Prefer Luma URL and image
+          url: lumaEvent?.url || ftEvent?.url || duplicates[0].url,
+          imageUrl: lumaEvent?.imageUrl || ftEvent?.imageUrl || duplicates[0].imageUrl,
+          // Prefer Frontier Tower description (usually better)
+          description: ftEvent?.description || lumaEvent?.description || duplicates[0].description,
+        };
+        
+        deduplicated.push(merged);
+      }
+    });
+    
+    return deduplicated;
+  };
+
+  const events = deduplicateEvents(data?.events || []);
   const now = new Date();
   const upcomingEvents = events.filter(event => new Date(event.endDate) >= now);
 
