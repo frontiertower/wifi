@@ -29,7 +29,16 @@ export default function Directory() {
     queryKey: ["/api/directory"],
   });
 
-  const allListings = data?.listings || [];
+  // Check if user is authenticated by looking for OAuth session cookie
+  const isMember = typeof document !== "undefined" && document.cookie.includes("frontier_auth");
+
+  const allListings = (data?.listings || []).filter(listing => {
+    // Show all public listings, or show membersOnly listings only if user is authenticated
+    if (listing.visibility === "membersOnly" && !isMember) {
+      return false;
+    }
+    return true;
+  });
   
   const toggleFilterType = (type: "company" | "person" | "community") => {
     setSelectedTypes(prev => {

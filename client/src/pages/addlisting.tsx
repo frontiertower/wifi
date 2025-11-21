@@ -25,6 +25,7 @@ export default function AddListing() {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [visibility, setVisibility] = useState<"public" | "membersOnly">("public");
   const [formData, setFormData] = useState({
     companyName: "",
     contactPerson: "",
@@ -159,6 +160,7 @@ export default function AddListing() {
       website: formData.website || null,
       logoUrl,
       description: formData.description || null,
+      visibility,
     };
 
     createListingMutation.mutate(listingData);
@@ -370,6 +372,27 @@ export default function AddListing() {
                   rows={4}
                   data-testid="input-description"
                 />
+              </div>
+
+              <div className="space-y-3">
+                <Label>Visibility</Label>
+                <RadioGroup
+                  value={visibility}
+                  onValueChange={(value) => setVisibility(value as "public" | "membersOnly")}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="public" id="visibility-public" data-testid="radio-visibility-public" />
+                    <Label htmlFor="visibility-public" className="font-normal cursor-pointer">
+                      Public - Anyone can see this listing
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="membersOnly" id="visibility-members" data-testid="radio-visibility-members" />
+                    <Label htmlFor="visibility-members" className="font-normal cursor-pointer">
+                      Members Only - Only authenticated members can see this listing
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
 
               <div className="space-y-2">
