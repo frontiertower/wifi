@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Settings, Edit, User, Users, Search } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Edit, User, Users, Search, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -148,16 +148,7 @@ export default function Directory() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        <Link href="/directory/admin">
-          <Button
-            variant="ghost"
-            size="icon"
-            data-testid="button-admin"
-          >
-            <Settings className="h-5 w-5" />
-          </Button>
-        </Link>
+      <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
 
@@ -472,6 +463,38 @@ export default function Directory() {
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 {listing.website}
+                              </a>
+                            </div>
+                          )}
+
+                          {listing.linkedinUrl && (
+                            <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                              <Linkedin className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                              <a
+                                href={listing.linkedinUrl.startsWith('http') ? listing.linkedinUrl : `https://${listing.linkedinUrl}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-blue-600 dark:hover:text-blue-400 break-all"
+                                data-testid={`link-linkedin-${listing.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {listing.linkedinUrl}
+                              </a>
+                            </div>
+                          )}
+
+                          {listing.twitterHandle && (
+                            <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                              <Twitter className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                              <a
+                                href={`https://twitter.com/${listing.twitterHandle.replace('@', '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-blue-600 dark:hover:text-blue-400 break-words"
+                                data-testid={`link-twitter-${listing.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                @{listing.twitterHandle.replace('@', '')}
                               </a>
                             </div>
                           )}

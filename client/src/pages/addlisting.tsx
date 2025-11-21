@@ -159,6 +159,8 @@ export default function AddListing() {
       telegramUsername: formData.telegramUsername || null,
       email: formData.email || null,
       website: formData.website || null,
+      linkedinUrl: formData.linkedinUrl || null,
+      twitterHandle: formData.twitterHandle || null,
       logoUrl,
       description: formData.description || null,
     };
@@ -480,6 +482,30 @@ export default function AddListing() {
                       value={formData.website}
                       onChange={(e) => handleInputChange("website", e.target.value)}
                       data-testid="input-website"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedin">LinkedIn URL</Label>
+                    <Input
+                      id="linkedin"
+                      type="url"
+                      placeholder="https://linkedin.com/in/username"
+                      value={formData.linkedinUrl}
+                      onChange={(e) => handleInputChange("linkedinUrl", e.target.value)}
+                      data-testid="input-linkedin"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="twitter">Twitter Handle</Label>
+                    <Input
+                      id="twitter"
+                      type="text"
+                      placeholder="@username"
+                      value={formData.twitterHandle}
+                      onChange={(e) => handleInputChange("twitterHandle", e.target.value)}
+                      data-testid="input-twitter"
                     />
                   </div>
                 </div>
