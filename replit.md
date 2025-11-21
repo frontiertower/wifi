@@ -34,11 +34,12 @@ Preferred communication style: Simple, everyday language.
 
 ### UI/UX Decisions
 
-*   **Admin Dashboard**: Mobile-optimized with sticky navigation, responsive data tables, stat cards, and form layouts. Includes a 2D building visualization for user distribution.
+*   **Admin Dashboard**: Mobile-optimized with sticky navigation, responsive data tables, stat cards, and form layouts. Includes a 2D building visualization for user distribution. Tab-based navigation includes Analytics, Users, Events, Bookings, Directory, Location, and Settings tabs with hash-based routing (e.g., /admin#directory).
 *   **Theming**: Full dark mode support with automatic time-based switching. Dark mode is automatically enabled after 6pm and light mode after 6am. Users can manually override the theme at any time using the theme toggle, and their preference is saved.
 *   **Analytics**: Comprehensive dashboard with lifetime and daily counters, featuring a 4 AM daily reset.
 *   **Badges**: Colored role-type badges for members, guests, and events in the admin dashboard.
 *   **Directory UI**: Gear icon-only admin button positioned top-right next to theme toggle. Expandable listing cards with logos, descriptions, and edit buttons in expanded view. Responsive layout: single-column horizontal cards on desktop (descriptions visible inline), vertical compact cards on mobile (descriptions shown on expand). Floor/office sorting: hierarchical two-level sort by floor number first, then office number within each floor. Filter buttons allow filtering by listing type: All, Companies, Communities, or People.
+*   **Admin Directory Management**: Full CRUD directory management integrated as a tab in the admin dashboard. Features inline editing (click Edit → modify fields → Save/Cancel), delete with confirmation dialog, and "Add New Listing" button. All directory fields editable including LinkedIn URL and Twitter handle. Accessible via /admin#directory.
 
 ### Technical Implementations
 
