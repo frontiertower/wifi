@@ -27,6 +27,12 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+// Configure directory for event images
+const eventsUploadsDir = path.join(process.cwd(), "uploads", "events");
+if (!fs.existsSync(eventsUploadsDir)) {
+  fs.mkdirSync(eventsUploadsDir, { recursive: true });
+}
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
@@ -52,6 +58,62 @@ const upload = multer({
     }
   }
 });
+
+// Helper function to download an image from a URL and save it locally
+async function downloadImage(imageUrl: string, eventId: number): Promise<string> {
+  try {
+    const httpsAgent = new https.Agent({
+      rejectUnauthorized: false,
+      keepAlive: true,
+      timeout: 15000
+    });
+
+    const response = await fetch(imageUrl, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+      },
+      agent: httpsAgent,
+      timeout: 15000
+    } as any);
+
+    if (!response.ok) {
+      throw new Error(`Failed to download image: HTTP ${response.status}`);
+    }
+
+    // Get the file extension from the URL or content type
+    let ext = path.extname(new URL(imageUrl).pathname);
+    if (!ext || ext === '') {
+      const contentType = response.headers.get('content-type');
+      if (contentType?.includes('jpeg') || contentType?.includes('jpg')) {
+        ext = '.jpg';
+      } else if (contentType?.includes('png')) {
+        ext = '.png';
+      } else if (contentType?.includes('webp')) {
+        ext = '.webp';
+      } else if (contentType?.includes('gif')) {
+        ext = '.gif';
+      } else {
+        ext = '.jpg'; // default
+      }
+    }
+
+    // Create a filename using the event ID
+    const filename = `event-${eventId}${ext}`;
+    const filepath = path.join(eventsUploadsDir, filename);
+
+    // Download and save the image
+    const buffer = await response.buffer();
+    fs.writeFileSync(filepath, buffer);
+
+    // Return the relative URL path
+    return `/uploads/events/${filename}`;
+  } catch (error) {
+    console.error(`Failed to download image from ${imageUrl}:`, error);
+    throw error;
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
