@@ -274,23 +274,23 @@ export default function AdminDashboard() {
     },
   });
 
-  const cleanupEventsMutation = useMutation({
+  const deduplicateEventsMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/admin/events/cleanup", {});
       return response.json();
     },
     onSuccess: (data) => {
       toast({
-        title: "Events Cleaned Up",
-        description: `Deleted ${data.deletedCount} event${data.deletedCount !== 1 ? 's' : ''} without Luma links`,
+        title: "Events Deduplicated",
+        description: data.message || `Merged ${data.mergedCount} event${data.mergedCount !== 1 ? 's' : ''}`,
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/stats'] });
     },
     onError: (error) => {
       toast({
-        title: "Failed to Clean Up Events",
-        description: error instanceof Error ? error.message : "Could not delete events",
+        title: "Failed to Deduplicate Events",
+        description: error instanceof Error ? error.message : "Could not deduplicate events",
         variant: "destructive",
       });
     },
@@ -555,23 +555,23 @@ export default function AdminDashboard() {
                     )}
                   </Button>
                   <Button 
-                    onClick={() => cleanupEventsMutation.mutate()}
-                    disabled={cleanupEventsMutation.isPending}
+                    onClick={() => deduplicateEventsMutation.mutate()}
+                    disabled={deduplicateEventsMutation.isPending}
                     variant="outline"
                     className="w-full sm:w-auto" 
-                    data-testid="button-cleanup-events"
+                    data-testid="button-deduplicate-events"
                   >
-                    {cleanupEventsMutation.isPending ? (
+                    {deduplicateEventsMutation.isPending ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-                        Cleaning...
+                        Deduplicating...
                       </>
                     ) : (
                       <>
                         <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Clean Up
+                        De-duplicate
                       </>
                     )}
                   </Button>

@@ -769,17 +769,18 @@ Rules:
 
   app.post("/api/admin/events/cleanup", async (req, res) => {
     try {
-      const deletedCount = await storage.deleteEventsWithoutUrls();
+      const result = await storage.deduplicateEvents();
       res.json({
         success: true,
-        deletedCount,
-        message: `Deleted ${deletedCount} event${deletedCount !== 1 ? 's' : ''} without Luma links`
+        mergedCount: result.mergedCount,
+        deletedCount: result.deletedCount,
+        message: `Deduplicated ${result.mergedCount} event${result.mergedCount !== 1 ? 's' : ''}, removed ${result.deletedCount} duplicate${result.deletedCount !== 1 ? 's' : ''}`
       });
     } catch (error) {
-      console.error('Error cleaning up events:', error);
+      console.error('Error deduplicating events:', error);
       res.status(500).json({
         success: false,
-        message: error instanceof Error ? error.message : "Failed to clean up events"
+        message: error instanceof Error ? error.message : "Failed to deduplicate events"
       });
     }
   });

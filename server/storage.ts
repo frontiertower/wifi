@@ -352,6 +352,64 @@ export class DatabaseStorage {
     return result.length;
   }
 
+  async deduplicateEvents(): Promise<{ mergedCount: number; deletedCount: number }> {
+    // Get all events
+    const allEvents = await db.select().from(events);
+    
+    // Group by name (case-insensitive)
+    const eventGroups = new Map<string, Event[]>();
+    allEvents.forEach(event => {
+      const key = event.name.trim().toLowerCase();
+      if (!eventGroups.has(key)) {
+        eventGroups.set(key, []);
+      }
+      eventGroups.get(key)!.push(event);
+    });
+    
+    let mergedCount = 0;
+    let deletedCount = 0;
+    
+    // Process duplicates
+    for (const [_, duplicates] of Array.from(eventGroups.entries())) {
+      if (duplicates.length > 1) {
+        // Find Luma and Frontier Tower versions
+        const lumaEvent = duplicates.find((e: Event) => e.source === 'luma');
+        const ftEvent = duplicates.find((e: Event) => e.source === 'frontier-tower');
+        
+        // Keep the event with the best data (prefer one with both URL and description)
+        const primaryEvent = lumaEvent || ftEvent || duplicates[0];
+        
+        // Merge data: prefer Luma for URL/imageUrl, FT for description
+        const mergedData = {
+          url: lumaEvent?.url || ftEvent?.url || primaryEvent.url,
+          imageUrl: lumaEvent?.imageUrl || ftEvent?.imageUrl || primaryEvent.imageUrl,
+          description: ftEvent?.description || lumaEvent?.description || primaryEvent.description,
+        };
+        
+        // Update the primary event with merged data
+        await db
+          .update(events)
+          .set(mergedData)
+          .where(eq(events.id, primaryEvent.id));
+        
+        // Delete all duplicates except the primary
+        const idsToDelete = duplicates
+          .filter((e: Event) => e.id !== primaryEvent.id)
+          .map((e: Event) => e.id);
+        
+        if (idsToDelete.length > 0) {
+          for (const id of idsToDelete) {
+            await db.delete(events).where(eq(events.id, id));
+          }
+          deletedCount += idsToDelete.length;
+          mergedCount++;
+        }
+      }
+    }
+    
+    return { mergedCount, deletedCount };
+  }
+
   async upsertEventByExternalId(eventData: any): Promise<Event> {
     const updateFields: any = {
       name: eventData.name,
