@@ -133,7 +133,6 @@ export const directoryListings = pgTable("directory_listings", {
   website: text("website"),
   logoUrl: text("logo_url"),
   description: text("description"),
-  visibility: text("visibility").default("public"), // public or membersOnly
   createdAt: timestamp("created_at").defaultNow(),
 });
 

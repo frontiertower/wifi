@@ -497,7 +497,7 @@ export class DatabaseStorage {
   }
 
   async getAllDirectoryListings(): Promise<DirectoryListing[]> {
-    return await db.select().from(directoryListings);
+    return await db.select().from(directoryListings).orderBy(sql`${directoryListings.companyName} ASC`);
   }
 
   async getDirectoryListingById(id: number): Promise<DirectoryListing | null> {
