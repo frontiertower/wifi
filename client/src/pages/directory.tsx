@@ -228,52 +228,40 @@ export default function Directory() {
             </Button>
           </div>
 
-          {/* Sort and Add Buttons */}
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-2 flex-wrap">
-              <Button
-                variant={sortMode === "floor-asc" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSortMode("floor-asc")}
-                data-testid="button-sort-floor-asc"
-              >
-                Level 1-16
-              </Button>
-              <Button
-                variant={sortMode === "floor-desc" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSortMode("floor-desc")}
-                data-testid="button-sort-floor-desc"
-              >
-                Level 16-1
-              </Button>
-              <Button
-                variant={sortMode === "name-asc" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSortMode("name-asc")}
-                data-testid="button-sort-name-asc"
-              >
-                Name A-Z
-              </Button>
-              <Button
-                variant={sortMode === "name-desc" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSortMode("name-desc")}
-                data-testid="button-sort-name-desc"
-              >
-                Name Z-A
-              </Button>
-            </div>
-            <Link href="/addlisting">
-              <Button
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                data-testid="button-add-listing"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add
-              </Button>
-            </Link>
+          {/* Sort Buttons */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              variant={sortMode === "floor-asc" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSortMode("floor-asc")}
+              data-testid="button-sort-floor-asc"
+            >
+              Level 1-16
+            </Button>
+            <Button
+              variant={sortMode === "floor-desc" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSortMode("floor-desc")}
+              data-testid="button-sort-floor-desc"
+            >
+              Level 16-1
+            </Button>
+            <Button
+              variant={sortMode === "name-asc" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSortMode("name-asc")}
+              data-testid="button-sort-name-asc"
+            >
+              Name A-Z
+            </Button>
+            <Button
+              variant={sortMode === "name-desc" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSortMode("name-desc")}
+              data-testid="button-sort-name-desc"
+            >
+              Name Z-A
+            </Button>
           </div>
         </div>
 
