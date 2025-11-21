@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, MapPin, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -18,9 +18,19 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking } from "@shared/schema";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing } from "@shared/schema";
 
-type Tab = "users" | "events" | "analytics" | "location" | "bookings" | "settings";
+type Tab = "users" | "events" | "analytics" | "location" | "bookings" | "directory" | "settings";
 
 interface StatsResponse {
   stats?: {
@@ -69,11 +79,19 @@ interface BookingsResponse {
   bookings?: Booking[];
 }
 
+interface DirectoryListingsResponse {
+  success: boolean;
+  listings: DirectoryListing[];
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const [showEventForm, setShowEventForm] = useState(false);
   const [bulkEventText, setBulkEventText] = useState("");
   const [eventFilter, setEventFilter] = useState<"upcoming" | "past">("upcoming");
+  const [editingDirectoryId, setEditingDirectoryId] = useState<number | null>(null);
+  const [editDirectoryForm, setEditDirectoryForm] = useState<Partial<DirectoryListing>>({});
+  const [deleteDirectoryId, setDeleteDirectoryId] = useState<number | null>(null);
   const { toast } = useToast();
 
   const cleanHostName = (host: string | null): string | null => {
@@ -89,7 +107,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the # symbol
-      if (hash && ['users', 'events', 'analytics', 'location', 'bookings', 'settings'].includes(hash)) {
+      if (hash && ['users', 'events', 'analytics', 'location', 'bookings', 'directory', 'settings'].includes(hash)) {
         setActiveTab(hash as Tab);
       }
     };
@@ -153,6 +171,54 @@ export default function AdminDashboard() {
   const { data: bookings } = useQuery<BookingsResponse>({
     queryKey: ['/api/bookings'],
     enabled: activeTab === "bookings",
+  });
+
+  const { data: directoryData } = useQuery<DirectoryListingsResponse>({
+    queryKey: ["/api/directory"],
+    enabled: activeTab === "directory",
+  });
+
+  const updateDirectoryMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<DirectoryListing> }) => {
+      return apiRequest("PATCH", `/api/directory/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/directory"] });
+      setEditingDirectoryId(null);
+      setEditDirectoryForm({});
+      toast({
+        title: "Success",
+        description: "Directory listing updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update listing",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteDirectoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("DELETE", `/api/directory/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/directory"] });
+      setDeleteDirectoryId(null);
+      toast({
+        title: "Success",
+        description: "Directory listing deleted successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete listing",
+        variant: "destructive",
+      });
+    },
   });
 
   const createEventsMutation = useMutation({
@@ -330,6 +396,7 @@ export default function AdminDashboard() {
     { id: "users", label: "Users", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
     { id: "bookings", label: "Bookings", icon: ClipboardList },
+    { id: "directory", label: "Directory", icon: Building2 },
     { id: "location", label: "Location", icon: MapPin },
     { id: "settings", label: "Settings", icon: Settings },
   ] as const;
@@ -1292,8 +1359,369 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {activeTab === "directory" && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div>
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    Directory Management
+                  </h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Manage all directory listings
+                  </p>
+                </div>
+                <Button
+                  onClick={() => window.location.href = "/addlisting"}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  data-testid="button-add-new-listing"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add New Listing
+                </Button>
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-6">
+              {!directoryData?.listings ? (
+                <div className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <p className="mt-4 text-gray-600 dark:text-gray-400">Loading listings...</p>
+                </div>
+              ) : directoryData.listings.length === 0 ? (
+                <div className="text-center py-12">
+                  <Building2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    No listings yet
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Add your first directory listing to get started
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {directoryData.listings.map((listing) => {
+                    const isEditing = editingDirectoryId === listing.id;
+                    const currentData = isEditing ? editDirectoryForm : listing;
+                    const displayName = listing.type === "company" && listing.companyName ? listing.companyName :
+                                       listing.type === "community" && listing.communityName ? listing.communityName :
+                                       listing.type === "person" && listing.lastName && listing.firstName ? `${listing.lastName}, ${listing.firstName}` :
+                                       "Unknown";
+
+                    return (
+                      <Card key={listing.id} data-testid={`card-admin-listing-${listing.id}`}>
+                        <div className="p-4 sm:p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                              {isEditing ? "Editing: " : ""}{displayName}
+                            </h3>
+                            <div className="flex items-center gap-2">
+                              {!isEditing ? (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setEditingDirectoryId(listing.id);
+                                      setEditDirectoryForm({ ...listing });
+                                    }}
+                                    data-testid={`button-edit-${listing.id}`}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setDeleteDirectoryId(listing.id)}
+                                    data-testid={`button-delete-${listing.id}`}
+                                  >
+                                    <Trash2 className="h-4 w-4 text-red-600" />
+                                  </Button>
+                                </>
+                              ) : (
+                                <>
+                                  <Button
+                                    variant="default"
+                                    size="sm"
+                                    onClick={() => {
+                                      if (editingDirectoryId !== null) {
+                                        const { id, createdAt, ...updateData } = editDirectoryForm;
+                                        updateDirectoryMutation.mutate({ id: editingDirectoryId, data: updateData });
+                                      }
+                                    }}
+                                    disabled={updateDirectoryMutation.isPending}
+                                    data-testid={`button-save-${listing.id}`}
+                                  >
+                                    <Save className="mr-2 h-4 w-4" />
+                                    Save
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setEditingDirectoryId(null);
+                                      setEditDirectoryForm({});
+                                    }}
+                                    data-testid={`button-cancel-${listing.id}`}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor={`type-${listing.id}`}>Type</Label>
+                              <Input
+                                id={`type-${listing.id}`}
+                                value={currentData.type || ""}
+                                disabled
+                                className="bg-gray-100 dark:bg-gray-800"
+                              />
+                            </div>
+
+                            {listing.type === "company" && (
+                              <div>
+                                <Label htmlFor={`companyName-${listing.id}`}>Company Name</Label>
+                                <Input
+                                  id={`companyName-${listing.id}`}
+                                  value={currentData.companyName || ""}
+                                  onChange={(e) =>
+                                    isEditing &&
+                                    setEditDirectoryForm({ ...editDirectoryForm, companyName: e.target.value })
+                                  }
+                                  disabled={!isEditing}
+                                  data-testid={`input-companyName-${listing.id}`}
+                                />
+                              </div>
+                            )}
+
+                            {listing.type === "community" && (
+                              <div>
+                                <Label htmlFor={`communityName-${listing.id}`}>Community Name</Label>
+                                <Input
+                                  id={`communityName-${listing.id}`}
+                                  value={currentData.communityName || ""}
+                                  onChange={(e) =>
+                                    isEditing &&
+                                    setEditDirectoryForm({ ...editDirectoryForm, communityName: e.target.value })
+                                  }
+                                  disabled={!isEditing}
+                                  data-testid={`input-communityName-${listing.id}`}
+                                />
+                              </div>
+                            )}
+
+                            {listing.type === "person" && (
+                              <>
+                                <div>
+                                  <Label htmlFor={`firstName-${listing.id}`}>First Name</Label>
+                                  <Input
+                                    id={`firstName-${listing.id}`}
+                                    value={currentData.firstName || ""}
+                                    onChange={(e) =>
+                                      isEditing &&
+                                      setEditDirectoryForm({ ...editDirectoryForm, firstName: e.target.value })
+                                    }
+                                    disabled={!isEditing}
+                                    data-testid={`input-firstName-${listing.id}`}
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor={`lastName-${listing.id}`}>Last Name</Label>
+                                  <Input
+                                    id={`lastName-${listing.id}`}
+                                    value={currentData.lastName || ""}
+                                    onChange={(e) =>
+                                      isEditing &&
+                                      setEditDirectoryForm({ ...editDirectoryForm, lastName: e.target.value })
+                                    }
+                                    disabled={!isEditing}
+                                    data-testid={`input-lastName-${listing.id}`}
+                                  />
+                                </div>
+                              </>
+                            )}
+
+                            <div>
+                              <Label htmlFor={`floor-${listing.id}`}>Floor</Label>
+                              <Input
+                                id={`floor-${listing.id}`}
+                                value={currentData.floor || ""}
+                                onChange={(e) =>
+                                  isEditing && setEditDirectoryForm({ ...editDirectoryForm, floor: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                placeholder="e.g., 5th Floor"
+                                data-testid={`input-floor-${listing.id}`}
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`officeNumber-${listing.id}`}>Office Number</Label>
+                              <Input
+                                id={`officeNumber-${listing.id}`}
+                                value={currentData.officeNumber || ""}
+                                onChange={(e) =>
+                                  isEditing &&
+                                  setEditDirectoryForm({ ...editDirectoryForm, officeNumber: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                data-testid={`input-officeNumber-${listing.id}`}
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`phone-${listing.id}`}>Phone</Label>
+                              <Input
+                                id={`phone-${listing.id}`}
+                                value={currentData.phone || ""}
+                                onChange={(e) =>
+                                  isEditing && setEditDirectoryForm({ ...editDirectoryForm, phone: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                data-testid={`input-phone-${listing.id}`}
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`email-${listing.id}`}>Email</Label>
+                              <Input
+                                id={`email-${listing.id}`}
+                                type="email"
+                                value={currentData.email || ""}
+                                onChange={(e) =>
+                                  isEditing && setEditDirectoryForm({ ...editDirectoryForm, email: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                data-testid={`input-email-${listing.id}`}
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`telegramUsername-${listing.id}`}>
+                                Telegram Username
+                              </Label>
+                              <Input
+                                id={`telegramUsername-${listing.id}`}
+                                value={currentData.telegramUsername || ""}
+                                onChange={(e) =>
+                                  isEditing &&
+                                  setEditDirectoryForm({ ...editDirectoryForm, telegramUsername: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                placeholder="@username"
+                                data-testid={`input-telegram-${listing.id}`}
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`website-${listing.id}`}>Website</Label>
+                              <Input
+                                id={`website-${listing.id}`}
+                                value={currentData.website || ""}
+                                onChange={(e) =>
+                                  isEditing && setEditDirectoryForm({ ...editDirectoryForm, website: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                data-testid={`input-website-${listing.id}`}
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`linkedinUrl-${listing.id}`}>LinkedIn URL</Label>
+                              <Input
+                                id={`linkedinUrl-${listing.id}`}
+                                value={currentData.linkedinUrl || ""}
+                                onChange={(e) =>
+                                  isEditing && setEditDirectoryForm({ ...editDirectoryForm, linkedinUrl: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                data-testid={`input-linkedin-${listing.id}`}
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`twitterHandle-${listing.id}`}>Twitter Handle</Label>
+                              <Input
+                                id={`twitterHandle-${listing.id}`}
+                                value={currentData.twitterHandle || ""}
+                                onChange={(e) =>
+                                  isEditing && setEditDirectoryForm({ ...editDirectoryForm, twitterHandle: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                placeholder="@username"
+                                data-testid={`input-twitter-${listing.id}`}
+                              />
+                            </div>
+
+                            <div>
+                              <Label htmlFor={`logoUrl-${listing.id}`}>Logo URL</Label>
+                              <Input
+                                id={`logoUrl-${listing.id}`}
+                                value={currentData.logoUrl || ""}
+                                onChange={(e) =>
+                                  isEditing && setEditDirectoryForm({ ...editDirectoryForm, logoUrl: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                data-testid={`input-logoUrl-${listing.id}`}
+                              />
+                            </div>
+
+                            <div className="md:col-span-2">
+                              <Label htmlFor={`description-${listing.id}`}>Description</Label>
+                              <Textarea
+                                id={`description-${listing.id}`}
+                                value={currentData.description || ""}
+                                onChange={(e) =>
+                                  isEditing &&
+                                  setEditDirectoryForm({ ...editDirectoryForm, description: e.target.value })
+                                }
+                                disabled={!isEditing}
+                                rows={3}
+                                data-testid={`input-description-${listing.id}`}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {activeTab === "settings" && <SettingsTab />}
       </div>
+
+      <AlertDialog open={deleteDirectoryId !== null} onOpenChange={() => setDeleteDirectoryId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this directory listing. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel data-testid="button-cancel-delete">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleteDirectoryId !== null) {
+                  deleteDirectoryMutation.mutate(deleteDirectoryId);
+                }
+              }}
+              className="bg-red-600 hover:bg-red-700"
+              data-testid="button-confirm-delete"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Mobile Floating Bottom Dock - Visible only on small screens */}
       <div className="fixed bottom-0 left-0 right-0 md:hidden z-50">
