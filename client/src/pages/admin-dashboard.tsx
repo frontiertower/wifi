@@ -945,108 +945,107 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
-          </div>
-        )}
 
-        {activeTab === "location" && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-6">Building Location Map</h2>
-            <p className="text-sm text-gray-600 mb-8">
-              Frontier Tower - 16 Story Office Building (Floor 13 omitted)
-            </p>
-            
-            <div className="flex justify-center py-8">
-              <div className="w-full max-w-2xl">
-                {/* Building floors - displayed from top to bottom */}
-                {['16', '15', '14', '12', '11', '10', '9', '8', '7', '6', '5', '4', '3', '2'].map((floor, index) => {
-                  const floorData = floorStats?.floorStats?.[floor] || { count: 0, names: [] };
-                  const userCount = floorData.count;
-                  const userNames = floorData.names || [];
-                  const totalFloors = 14;
-                  const isTop = index === 0;
-                  const isBottom = index === totalFloors - 1;
-                  
-                  // Color based on user density
-                  const getFloorColor = (count: number) => {
-                    if (count === 0) return 'from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900';
-                    if (count <= 2) return 'from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-950';
-                    if (count <= 5) return 'from-green-100 to-green-200 dark:from-green-900 dark:to-green-950';
-                    if (count <= 10) return 'from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-950';
-                    return 'from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-950';
-                  };
-                  
-                  return (
-                    <div
-                      key={floor}
-                      className={`mb-1 border-2 border-gray-400 dark:border-gray-600 ${
-                        isTop ? 'rounded-t-lg' : ''
-                      } ${isBottom ? 'rounded-b-lg' : ''} bg-gradient-to-r ${getFloorColor(userCount)} shadow-sm`}
-                      data-testid={`floor-${floor}`}
-                    >
-                      {/* Floor number and user count */}
-                      <div className="flex items-center justify-between px-4 sm:px-6 py-2">
-                        <div className="flex items-center gap-2 sm:gap-4">
-                          <span className="font-bold text-base sm:text-lg text-gray-900 dark:text-gray-100" data-testid={`text-floor-label-${floor}`}>
-                            Floor {floor}
-                          </span>
-                          {floor === '16' && (
-                            <Badge variant="secondary" className="text-xs">
-                              Guests
-                            </Badge>
-                          )}
-                          {floor === '2' && (
-                            <Badge variant="secondary" className="text-xs">
-                              Events
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                          <span className="font-semibold text-gray-900 dark:text-gray-100" data-testid={`text-floor-count-${floor}`}>
-                            {userCount}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      {/* User names */}
-                      {userNames.length > 0 && (
-                        <div className="px-4 sm:px-6 pb-2">
-                          <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300" data-testid={`text-floor-names-${floor}`}>
-                            {userNames.join(', ')}
-                            {userCount > 5 && <span className="text-gray-500 dark:text-gray-400"> +{userCount - 5} more</span>}
+            {/* Building Location Map */}
+            <div className="mt-8">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2">Building Location Map</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
+                Frontier Tower - 16 Story Office Building (Floor 13 omitted)
+              </p>
+              
+              <div className="flex justify-center py-8">
+                <div className="w-full max-w-2xl">
+                  {/* Building floors - displayed from top to bottom */}
+                  {['16', '15', '14', '12', '11', '10', '9', '8', '7', '6', '5', '4', '3', '2'].map((floor, index) => {
+                    const floorData = floorStats?.floorStats?.[floor] || { count: 0, names: [] };
+                    const userCount = floorData.count;
+                    const userNames = floorData.names || [];
+                    const totalFloors = 14;
+                    const isTop = index === 0;
+                    const isBottom = index === totalFloors - 1;
+                    
+                    // Color based on user density
+                    const getFloorColor = (count: number) => {
+                      if (count === 0) return 'from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900';
+                      if (count <= 2) return 'from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-950';
+                      if (count <= 5) return 'from-green-100 to-green-200 dark:from-green-900 dark:to-green-950';
+                      if (count <= 10) return 'from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-950';
+                      return 'from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-950';
+                    };
+                    
+                    return (
+                      <div
+                        key={floor}
+                        className={`mb-1 border-2 border-gray-400 dark:border-gray-600 ${
+                          isTop ? 'rounded-t-lg' : ''
+                        } ${isBottom ? 'rounded-b-lg' : ''} bg-gradient-to-r ${getFloorColor(userCount)} shadow-sm`}
+                        data-testid={`floor-${floor}`}
+                      >
+                        {/* Floor number and user count */}
+                        <div className="flex items-center justify-between px-4 sm:px-6 py-2">
+                          <div className="flex items-center gap-2 sm:gap-4">
+                            <span className="font-bold text-base sm:text-lg text-gray-900 dark:text-gray-100" data-testid={`text-floor-label-${floor}`}>
+                              Floor {floor}
+                            </span>
+                            {floor === '16' && (
+                              <Badge variant="secondary" className="text-xs">
+                                Guests
+                              </Badge>
+                            )}
+                            {floor === '2' && (
+                              <Badge variant="secondary" className="text-xs">
+                                Events
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                            <span className="font-semibold text-gray-900 dark:text-gray-100" data-testid={`text-floor-count-${floor}`}>
+                              {userCount}
+                            </span>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
-                
-                {/* Building base/foundation */}
-                <div className="mt-2 h-6 bg-gradient-to-b from-gray-600 to-gray-800 dark:from-gray-700 dark:to-gray-900 rounded-b-xl border-2 border-gray-700 dark:border-gray-800" />
+                        
+                        {/* User names */}
+                        {userNames.length > 0 && (
+                          <div className="px-4 sm:px-6 pb-2">
+                            <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300" data-testid={`text-floor-names-${floor}`}>
+                              {userNames.join(', ')}
+                              {userCount > 5 && <span className="text-gray-500 dark:text-gray-400"> +{userCount - 5} more</span>}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Building base/foundation */}
+                  <div className="mt-2 h-6 bg-gradient-to-b from-gray-600 to-gray-800 dark:from-gray-700 dark:to-gray-900 rounded-b-xl border-2 border-gray-700 dark:border-gray-800" />
+                </div>
               </div>
-            </div>
-            
-            {/* Legend */}
-            <div className="mt-8 flex flex-wrap gap-4 justify-center">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 border border-gray-300" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">0 users</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-950 border border-blue-300" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">1-2 users</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900 dark:to-green-950 border border-green-300" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">3-5 users</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-950 border border-yellow-300" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">6-10 users</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-950 border border-orange-300" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">10+ users</span>
+              
+              {/* Legend */}
+              <div className="mt-8 flex flex-wrap gap-4 justify-center">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 border border-gray-300" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">0 users</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-950 border border-blue-300" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">1-2 users</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900 dark:to-green-950 border border-green-300" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">3-5 users</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-950 border border-yellow-300" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">6-10 users</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900 dark:to-orange-950 border border-orange-300" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">10+ users</span>
+                </div>
               </div>
             </div>
           </div>
