@@ -146,7 +146,7 @@ export default function AddListing() {
     const listingData = {
       type: listingType,
       companyName: listingType === "company" ? formData.companyName : null,
-      contactPerson: listingType === "company" ? (formData.contactPerson || null) : null,
+      contactPerson: (listingType === "company" || listingType === "community") ? (formData.contactPerson || null) : null,
       communityName: listingType === "community" ? formData.communityName : null,
       firstName: listingType === "person" ? formData.firstName : null,
       lastName: listingType === "person" ? formData.lastName : null,
@@ -263,18 +263,31 @@ export default function AddListing() {
                   </div>
                 </>
               ) : listingType === "community" ? (
-                <div className="space-y-2">
-                  <Label htmlFor="community-name">Community Name *</Label>
-                  <Input
-                    id="community-name"
-                    type="text"
-                    placeholder="Enter community name"
-                    value={formData.communityName}
-                    onChange={(e) => handleInputChange("communityName", e.target.value)}
-                    required
-                    data-testid="input-community-name"
-                  />
-                </div>
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="community-name">Community Name *</Label>
+                    <Input
+                      id="community-name"
+                      type="text"
+                      placeholder="Enter community name"
+                      value={formData.communityName}
+                      onChange={(e) => handleInputChange("communityName", e.target.value)}
+                      required
+                      data-testid="input-community-name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-person-community">Contact Person(s)</Label>
+                    <Input
+                      id="contact-person-community"
+                      type="text"
+                      placeholder="e.g., John Doe, Jane Smith"
+                      value={formData.contactPerson}
+                      onChange={(e) => handleInputChange("contactPerson", e.target.value)}
+                      data-testid="input-contact-person-community"
+                    />
+                  </div>
+                </>
               ) : (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">

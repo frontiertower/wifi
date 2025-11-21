@@ -155,7 +155,7 @@ export default function DirectoryEdit() {
     } else if (newType === "community") {
       updates.communityName = currentName;
       updates.companyName = null;
-      updates.contactPerson = null;
+      // Keep contactPerson when switching to community
       updates.firstName = null;
       updates.lastName = null;
     } else if (newType === "person") {
@@ -307,17 +307,31 @@ export default function DirectoryEdit() {
               )}
 
               {editForm.type === "community" && (
-                <div>
-                  <Label htmlFor="communityName">Community Name</Label>
-                  <Input
-                    id="communityName"
-                    value={editForm.communityName || ""}
-                    onChange={(e) =>
-                      setEditForm({ ...editForm, communityName: e.target.value })
-                    }
-                    data-testid="input-communityName"
-                  />
-                </div>
+                <>
+                  <div>
+                    <Label htmlFor="communityName">Community Name</Label>
+                    <Input
+                      id="communityName"
+                      value={editForm.communityName || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, communityName: e.target.value })
+                      }
+                      data-testid="input-communityName"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contactPerson">Contact Person(s)</Label>
+                    <Input
+                      id="contactPerson"
+                      value={editForm.contactPerson || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, contactPerson: e.target.value })
+                      }
+                      placeholder="e.g., John Doe, Jane Smith"
+                      data-testid="input-contactPerson"
+                    />
+                  </div>
+                </>
               )}
 
               {editForm.type === "person" && (
