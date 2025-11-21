@@ -107,8 +107,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the # symbol
-      if (hash && ['users', 'events', 'analytics', 'location', 'bookings', 'directory', 'settings'].includes(hash)) {
+      if (hash && ['users', 'events', 'analytics', 'bookings', 'directory', 'settings'].includes(hash)) {
         setActiveTab(hash as Tab);
+      } else if (hash === 'location') {
+        // Redirect old location tab to analytics
+        setActiveTab('analytics');
+        window.location.hash = 'analytics';
       }
     };
     
