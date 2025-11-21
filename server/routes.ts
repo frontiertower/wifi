@@ -59,14 +59,45 @@ const upload = multer({
   }
 });
 
+// Helper function to verify image file signature (magic bytes)
+function verifyImageSignature(buffer: Buffer): boolean {
+  if (buffer.length < 12) return false;
+  
+  // Check common image file signatures
+  // JPEG: FF D8 FF
+  if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) return true;
+  
+  // PNG: 89 50 4E 47 0D 0A 1A 0A
+  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) return true;
+  
+  // GIF: 47 49 46 38
+  if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x38) return true;
+  
+  // WebP: 52 49 46 46 ... 57 45 42 50
+  if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+      buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) return true;
+  
+  return false;
+}
+
 // Helper function to download an image from a URL and save it locally
 async function downloadImage(imageUrl: string, eventId: number): Promise<string> {
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  const maxDuration = 30000; // 30 seconds max download time
+  const abortController = new AbortController();
+  let downloadTimer: NodeJS.Timeout | null = null;
+  
   try {
     const httpsAgent = new https.Agent({
       rejectUnauthorized: false,
       keepAlive: true,
       timeout: 15000
     });
+
+    // Set up overall download timeout
+    downloadTimer = setTimeout(() => {
+      abortController.abort();
+    }, maxDuration);
 
     const response = await fetch(imageUrl, {
       method: 'GET',
@@ -75,41 +106,102 @@ async function downloadImage(imageUrl: string, eventId: number): Promise<string>
         'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
       },
       agent: httpsAgent,
-      timeout: 15000
+      signal: abortController.signal as any
     } as any);
 
     if (!response.ok) {
       throw new Error(`Failed to download image: HTTP ${response.status}`);
     }
 
-    // Get the file extension from the URL or content type
-    let ext = path.extname(new URL(imageUrl).pathname);
-    if (!ext || ext === '') {
-      const contentType = response.headers.get('content-type');
-      if (contentType?.includes('jpeg') || contentType?.includes('jpg')) {
-        ext = '.jpg';
-      } else if (contentType?.includes('png')) {
-        ext = '.png';
-      } else if (contentType?.includes('webp')) {
-        ext = '.webp';
-      } else if (contentType?.includes('gif')) {
-        ext = '.gif';
-      } else {
-        ext = '.jpg'; // default
-      }
+    // Validate content type is an image
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.startsWith('image/')) {
+      abortController.abort();
+      throw new Error(`Invalid content type: ${contentType}. Expected an image.`);
+    }
+
+    // Check content length header if available
+    const contentLength = response.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > maxSize) {
+      abortController.abort();
+      throw new Error(`Image too large: ${contentLength} bytes. Max size is ${maxSize} bytes.`);
+    }
+
+    // Get the file extension from content type
+    let ext = '.jpg'; // default
+    if (contentType.includes('jpeg') || contentType.includes('jpg')) {
+      ext = '.jpg';
+    } else if (contentType.includes('png')) {
+      ext = '.png';
+    } else if (contentType.includes('webp')) {
+      ext = '.webp';
+    } else if (contentType.includes('gif')) {
+      ext = '.gif';
     }
 
     // Create a filename using the event ID
     const filename = `event-${eventId}${ext}`;
     const filepath = path.join(eventsUploadsDir, filename);
 
-    // Download and save the image
-    const buffer = await response.buffer();
-    fs.writeFileSync(filepath, buffer);
+    // Stream download with size limit enforcement
+    const chunks: Buffer[] = [];
+    let totalSize = 0;
+
+    if (!response.body) {
+      abortController.abort();
+      throw new Error('Response body is null');
+    }
+
+    try {
+      for await (const chunk of response.body as any) {
+        // Check size BEFORE adding chunk and abort immediately if it would exceed limit
+        if (totalSize + chunk.length > maxSize) {
+          // Abort the request and destroy the stream
+          abortController.abort();
+          if (response.body && typeof (response.body as any).cancel === 'function') {
+            try { (response.body as any).cancel(); } catch (e) { /* ignore */ }
+          }
+          throw new Error(`Downloaded data exceeds maximum size of ${maxSize} bytes`);
+        }
+        
+        totalSize += chunk.length;
+        chunks.push(chunk);
+      }
+    } catch (streamError) {
+      // Ensure stream and request are fully aborted
+      if (!abortController.signal.aborted) {
+        abortController.abort();
+      }
+      if (response.body && typeof (response.body as any).cancel === 'function') {
+        try { (response.body as any).cancel(); } catch (e) { /* ignore */ }
+      }
+      throw new Error(`Stream error: ${streamError instanceof Error ? streamError.message : 'Unknown error'}`);
+    } finally {
+      // Clear the timeout
+      if (downloadTimer) {
+        clearTimeout(downloadTimer);
+      }
+    }
+
+    const buffer = Buffer.concat(chunks);
+    
+    // Verify the file is actually an image by checking file signature
+    if (!verifyImageSignature(buffer)) {
+      throw new Error('Downloaded file is not a valid image (invalid file signature)');
+    }
+    
+    await fs.promises.writeFile(filepath, buffer);
 
     // Return the relative URL path
     return `/uploads/events/${filename}`;
   } catch (error) {
+    // Make sure abort controller is called and timer is cleared
+    if (!abortController.signal.aborted) {
+      abortController.abort();
+    }
+    if (downloadTimer) {
+      clearTimeout(downloadTimer);
+    }
     console.error(`Failed to download image from ${imageUrl}:`, error);
     throw error;
   }
@@ -1244,12 +1336,46 @@ Rules:
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
   }, (req, res, next) => {
-    const filePath = path.join(uploadsDir, req.path);
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        res.status(404).json({ error: "File not found" });
+    try {
+      // Iteratively decode until stable to prevent double-encoding attacks
+      let decodedPath = req.path;
+      let prevDecoded = '';
+      let iterations = 0;
+      const maxIterations = 5;
+      
+      while (decodedPath !== prevDecoded && iterations < maxIterations) {
+        prevDecoded = decodedPath;
+        try {
+          decodedPath = decodeURIComponent(decodedPath);
+        } catch (e) {
+          return res.status(400).json({ error: "Invalid path encoding" });
+        }
+        iterations++;
       }
-    });
+      
+      // Reject if still contains percent-encoding
+      if (decodedPath.includes('%')) {
+        return res.status(400).json({ error: "Invalid path encoding" });
+      }
+      
+      // Remove leading slashes and resolve to absolute path
+      const safePath = decodedPath.replace(/^\/+/, '');
+      const resolvedPath = path.resolve(uploadsDir, safePath);
+      
+      // Use path.relative to ensure the resolved path doesn't escape the base directory
+      const relativePath = path.relative(uploadsDir, resolvedPath);
+      if (relativePath.startsWith('..') || path.isAbsolute(relativePath) || relativePath.includes('..')) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+      
+      res.sendFile(resolvedPath, (err) => {
+        if (err) {
+          res.status(404).json({ error: "File not found" });
+        }
+      });
+    } catch (error) {
+      return res.status(400).json({ error: "Invalid path" });
+    }
   });
 
   // Serve uploaded event images
@@ -1257,12 +1383,46 @@ Rules:
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
   }, (req, res, next) => {
-    const filePath = path.join(eventsUploadsDir, req.path);
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        res.status(404).json({ error: "File not found" });
+    try {
+      // Iteratively decode until stable to prevent double-encoding attacks
+      let decodedPath = req.path;
+      let prevDecoded = '';
+      let iterations = 0;
+      const maxIterations = 5;
+      
+      while (decodedPath !== prevDecoded && iterations < maxIterations) {
+        prevDecoded = decodedPath;
+        try {
+          decodedPath = decodeURIComponent(decodedPath);
+        } catch (e) {
+          return res.status(400).json({ error: "Invalid path encoding" });
+        }
+        iterations++;
       }
-    });
+      
+      // Reject if still contains percent-encoding
+      if (decodedPath.includes('%')) {
+        return res.status(400).json({ error: "Invalid path encoding" });
+      }
+      
+      // Remove leading slashes and resolve to absolute path
+      const safePath = decodedPath.replace(/^\/+/, '');
+      const resolvedPath = path.resolve(eventsUploadsDir, safePath);
+      
+      // Use path.relative to ensure the resolved path doesn't escape the base directory
+      const relativePath = path.relative(eventsUploadsDir, resolvedPath);
+      if (relativePath.startsWith('..') || path.isAbsolute(relativePath) || relativePath.includes('..')) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+      
+      res.sendFile(resolvedPath, (err) => {
+        if (err) {
+          res.status(404).json({ error: "File not found" });
+        }
+      });
+    } catch (error) {
+      return res.status(400).json({ error: "Invalid path" });
+    }
   });
 
   // Logo upload endpoint
