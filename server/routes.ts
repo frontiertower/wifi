@@ -1246,6 +1246,19 @@ Rules:
     });
   });
 
+  // Serve uploaded event images
+  app.use("/uploads/events", (req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    next();
+  }, (req, res, next) => {
+    const filePath = path.join(eventsUploadsDir, req.path);
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        res.status(404).json({ error: "File not found" });
+      }
+    });
+  });
+
   // Logo upload endpoint
   app.post("/api/upload/logo", upload.single("logo"), async (req, res) => {
     try {
