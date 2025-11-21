@@ -531,7 +531,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       </div>
       <div className="max-w-lg mx-auto">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-          <div className="p-6">
+          <div className="p-6 pb-3">
             <Button
               onClick={onBack}
               variant="ghost"
@@ -546,7 +546,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
             <p className="text-muted-foreground text-sm mt-1">Welcome! Please provide your information</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <form onSubmit={handleSubmit} className="px-6 pb-6 pt-3 space-y-4">
             {/* Basic Information - Always Visible */}
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
