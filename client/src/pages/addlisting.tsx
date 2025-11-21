@@ -38,6 +38,8 @@ export default function AddListing() {
     telegramUsername: "",
     email: "",
     website: "",
+    linkedinUrl: "",
+    twitterHandle: "",
     logoUrl: "",
     description: "",
   });

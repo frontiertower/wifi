@@ -131,6 +131,8 @@ export const directoryListings = pgTable("directory_listings", {
   telegramUsername: text("telegram_username"),
   email: text("email"),
   website: text("website"),
+  linkedinUrl: text("linkedin_url"),
+  twitterHandle: text("twitter_handle"),
   logoUrl: text("logo_url"),
   description: text("description"),
   createdAt: timestamp("created_at").defaultNow(),
