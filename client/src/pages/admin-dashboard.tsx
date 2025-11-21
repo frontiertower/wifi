@@ -32,6 +32,16 @@ import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRe
 
 type Tab = "users" | "events" | "analytics" | "bookings" | "directory" | "settings";
 
+// Helper function to generate URL slugs from listing names
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/--+/g, '-')
+    .trim();
+}
+
 interface StatsResponse {
   stats?: {
     membersToday?: number;
@@ -1409,6 +1419,10 @@ export default function AdminDashboard() {
                                        listing.type === "community" && listing.communityName ? listing.communityName :
                                        listing.type === "person" && listing.lastName && listing.firstName ? `${listing.lastName}, ${listing.firstName}` :
                                        "Unknown";
+                    
+                    // Generate slug for edit page URL
+                    const slug = slugify(displayName);
+                    const editPageUrl = `/directory/edit/${slug}`;
 
                     return (
                       <Card key={listing.id} data-testid={`card-admin-listing-${listing.id}`}>
@@ -1420,6 +1434,17 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-2">
                               {!isEditing ? (
                                 <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    asChild
+                                    data-testid={`button-view-edit-page-${listing.id}`}
+                                  >
+                                    <a href={editPageUrl}>
+                                      <ExternalLink className="mr-2 h-4 w-4" />
+                                      Edit Page
+                                    </a>
+                                  </Button>
                                   <Button
                                     variant="outline"
                                     size="sm"
