@@ -477,23 +477,6 @@ export default function Directory() {
                           )}
                         </div>
                       )}
-
-                      <div className="pt-3 border-t">
-                        <Link 
-                          href={`/directory/edit/${slugify(getDisplayName(listing))}`}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full"
-                            data-testid={`button-edit-listing-${listing.id}`}
-                          >
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit Listing
-                          </Button>
-                        </Link>
-                      </div>
                     </CardContent>
                   )}
                 </Card>
