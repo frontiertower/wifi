@@ -21,7 +21,7 @@ function slugify(text: string): string {
 
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
-  const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("name-asc");
+  const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("floor-asc");
   const [selectedTypes, setSelectedTypes] = useState<Set<"company" | "person" | "community">>(new Set());
   const [searchQuery, setSearchQuery] = useState<string>("");
   
@@ -232,28 +232,12 @@ export default function Directory() {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-2 flex-wrap">
               <Button
-                variant={sortMode === "name-asc" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSortMode("name-asc")}
-                data-testid="button-sort-name-asc"
-              >
-                A-Z
-              </Button>
-              <Button
-                variant={sortMode === "name-desc" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSortMode("name-desc")}
-                data-testid="button-sort-name-desc"
-              >
-                Z-A
-              </Button>
-              <Button
                 variant={sortMode === "floor-asc" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setSortMode("floor-asc")}
                 data-testid="button-sort-floor-asc"
               >
-                1-16
+                Level 1-16
               </Button>
               <Button
                 variant={sortMode === "floor-desc" ? "default" : "outline"}
@@ -261,7 +245,23 @@ export default function Directory() {
                 onClick={() => setSortMode("floor-desc")}
                 data-testid="button-sort-floor-desc"
               >
-                16-1
+                Level 16-1
+              </Button>
+              <Button
+                variant={sortMode === "name-asc" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSortMode("name-asc")}
+                data-testid="button-sort-name-asc"
+              >
+                Name A-Z
+              </Button>
+              <Button
+                variant={sortMode === "name-desc" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSortMode("name-desc")}
+                data-testid="button-sort-name-desc"
+              >
+                Name Z-A
               </Button>
             </div>
             <Link href="/addlisting">
