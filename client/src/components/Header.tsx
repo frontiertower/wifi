@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logoImage from '@assets/generated_images/Frontier_Tower_WiFi_logo_bc6f89e2.png';
+import SlidingWelcome from "@/components/SlidingWelcome";
 
 interface UserInfo {
   id: string;
@@ -74,7 +75,9 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <img src={logoImage} alt="Frontier Tower" className="h-10 w-10" />
           <div>
-            <h1 className="text-xl font-semibold text-foreground">Frontier Tower</h1>
+            <h1 className="text-xl font-semibold text-foreground">
+              <SlidingWelcome speed={2000} />
+            </h1>
             <p className="text-xs text-muted-foreground">WiFi Portal</p>
           </div>
         </div>

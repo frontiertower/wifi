@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
+import SlidingWelcome from "@/components/SlidingWelcome";
 import frontierTowerQR from "@assets/frontier-tower-qr.png";
 
 type Role = "member" | "guest" | null;
@@ -104,7 +105,9 @@ export default function Home() {
         
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">
-            <h1 className="text-2xl font-bold mb-2">Frontier Tower</h1>
+            <h1 className="text-2xl font-bold mb-2">
+              <SlidingWelcome speed={2000} />
+            </h1>
           </div>
 
           <div className="p-6">

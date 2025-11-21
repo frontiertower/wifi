@@ -5,6 +5,7 @@ import MemberRegistrationForm from "@/components/MemberRegistrationForm";
 import GuestRegistrationForm from "@/components/GuestRegistrationForm";
 import EventRegistrationForm from "@/components/EventRegistrationForm";
 import SuccessPage from "@/components/SuccessPage";
+import SlidingWelcome from "@/components/SlidingWelcome";
 import { Users, UserPlus, Calendar } from "lucide-react";
 
 type UserRole = "member" | "guest" | "event" | null;
@@ -72,7 +73,9 @@ export default function PortalPage() {
         {pageState === "selection" && (
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold mb-3">Welcome to Frontier Tower</h1>
+              <h1 className="text-4xl font-bold mb-3">
+                <SlidingWelcome speed={2000} />
+              </h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
