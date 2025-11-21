@@ -1125,14 +1125,20 @@ Rules:
               imageUrl = 'https://lu.ma' + imageUrl;
             }
             
-            // Update event with image URL
-            await storage.updateEventImage(event.id, imageUrl);
+            console.log(`✓ Found image for "${event.name}": ${imageUrl.substring(0, 80)}...`);
+            
+            // Download the image and save it locally
+            console.log(`⬇ Downloading image for "${event.name}"...`);
+            const localImagePath = await downloadImage(imageUrl, event.id);
+            
+            // Update event with local image path
+            await storage.updateEventImage(event.id, localImagePath);
             scrapedImages.push({
               id: event.id,
               name: event.name,
-              imageUrl
+              imageUrl: localImagePath
             });
-            console.log(`✓ Found image for "${event.name}": ${imageUrl.substring(0, 80)}...`);
+            console.log(`✓ Saved image for "${event.name}" to ${localImagePath}`);
           } else {
             throw new Error("No image found in HTML");
           }
