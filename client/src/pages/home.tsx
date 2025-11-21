@@ -52,7 +52,7 @@ export default function Home() {
   };
 
   const handleMemberLogin = () => {
-    window.location.href = '/api/auth/login';
+    window.location.href = 'http://ft0.sh/login';
   };
 
   const handleSuccess = async (data: SuccessData) => {
