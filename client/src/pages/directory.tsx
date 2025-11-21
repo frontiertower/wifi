@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { DirectoryListing } from "@shared/schema";
 
 function slugify(text: string): string {
@@ -380,9 +382,11 @@ export default function Directory() {
                       
                       <div className="flex-1 min-w-0">
                         {listing.description && (
-                          <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap line-clamp-2">
-                            {listing.description}
-                          </p>
+                          <div className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none line-clamp-2">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              {listing.description}
+                            </ReactMarkdown>
+                          </div>
                         )}
                       </div>
 
@@ -396,14 +400,16 @@ export default function Directory() {
 
                   {isExpanded && (
                     <CardContent className="pt-0 space-y-3">
-                      {/* Show description on mobile only (desktop shows it in header) */}
+                      {/* Show full description when expanded */}
                       {listing.description && (
-                        <p className="md:hidden text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                          {listing.description}
-                        </p>
+                        <div className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {listing.description}
+                          </ReactMarkdown>
+                        </div>
                       )}
 
-                      {listing.type === "company" && listing.contactPerson && (
+                      {(listing.type === "company" || listing.type === "community") && listing.contactPerson && (
                         <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 pt-2 border-t md:border-t-0 md:pt-0">
                           <User className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
                           <span><span className="text-gray-500 dark:text-gray-400">Contact:</span> {listing.contactPerson}</span>
