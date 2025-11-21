@@ -237,16 +237,16 @@ export default function DirectoryEdit() {
               <div>
                 <Label htmlFor="parentCommunityId">Parent Community</Label>
                 <Select
-                  value={editForm.parentCommunityId?.toString() || ""}
+                  value={editForm.parentCommunityId?.toString() || "none"}
                   onValueChange={(value) =>
-                    setEditForm({ ...editForm, parentCommunityId: value ? parseInt(value) : null })
+                    setEditForm({ ...editForm, parentCommunityId: value === "none" ? null : parseInt(value) })
                   }
                 >
                   <SelectTrigger id="parentCommunityId" data-testid="select-parentCommunityId">
                     <SelectValue placeholder="Select a community" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {communities.map((community) => (
                       <SelectItem key={community.id} value={community.id.toString()}>
                         {community.communityName}
