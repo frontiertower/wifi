@@ -751,10 +751,10 @@ export default function AdminDashboard() {
 
         {activeTab === "analytics" && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-6">Analytics Dashboard</h2>
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-6">Analytics Dashboard</h2>
             
             <div className="mb-8">
-              <h3 className="text-sm sm:text-base font-medium text-gray-700 mb-4">Today's Activity</h3>
+              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Today's Activity</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
@@ -762,7 +762,7 @@ export default function AdminDashboard() {
                       <Users className="text-blue-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-2xl font-bold text-gray-900" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Members Today</p>
                     </div>
                   </div>
@@ -774,7 +774,7 @@ export default function AdminDashboard() {
                       <Ticket className="text-green-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-2xl font-bold text-gray-900" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Guests Today</p>
                     </div>
                   </div>
@@ -785,7 +785,7 @@ export default function AdminDashboard() {
                       <Users className="text-purple-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-2xl font-bold text-gray-900" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Event Guests Today</p>
                     </div>
                   </div>
@@ -796,7 +796,7 @@ export default function AdminDashboard() {
                       <Calendar className="text-orange-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-2xl font-bold text-gray-900" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Events Today</p>
                     </div>
                   </div>
@@ -806,7 +806,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <h3 className="text-sm sm:text-base font-medium text-gray-700 mb-4">Lifetime Totals</h3>
+            <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Lifetime Totals</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg p-4 sm:p-6 border border-purple-200 dark:border-purple-800">
                 <div className="flex items-center justify-between">
