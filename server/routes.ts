@@ -524,16 +524,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { password } = schema.parse(req.body);
       const settings = await storage.getSettings();
       
+      // Normalize password: trim whitespace and convert to lowercase for comparison
+      const normalizedPassword = password.trim().toLowerCase();
+      
       // If admin has set a custom password, only accept that
-      // Otherwise, accept both default passwords: "makesomething" and "frontiertower995"
+      // Otherwise, accept default passwords: "welovexeno", "makesomething", and "frontiertower995"
       let allowedPasswords: string[];
-      if (settings.guest_password && settings.guest_password !== "makesomething") {
-        allowedPasswords = [settings.guest_password];
+      if (settings.guest_password && settings.guest_password !== "makesomething" && settings.guest_password !== "welovexeno") {
+        allowedPasswords = [settings.guest_password.trim().toLowerCase()];
       } else {
-        allowedPasswords = ["makesomething", "frontiertower995"];
+        allowedPasswords = ["welovexeno", "makesomething", "frontiertower995"];
       }
 
-      if (allowedPasswords.includes(password)) {
+      if (allowedPasswords.includes(normalizedPassword)) {
         res.json({ success: true });
       } else {
         res.json({ success: false, message: "Incorrect password" });
