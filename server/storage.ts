@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, jobApplications, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type JobApplication, type InsertJobApplication, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, jobApplications, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, jobListings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type JobApplication, type InsertJobApplication, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin, type JobListing, type InsertJobListing } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -939,6 +939,46 @@ export class DatabaseStorage {
     await db
       .delete(adminLogins)
       .where(eq(adminLogins.sessionToken, token));
+  }
+
+  async createJobListing(insertJobListing: InsertJobListing): Promise<JobListing> {
+    const [jobListing] = await db
+      .insert(jobListings)
+      .values(insertJobListing)
+      .returning();
+    return jobListing;
+  }
+
+  async getAllJobListings(): Promise<JobListing[]> {
+    return await db
+      .select()
+      .from(jobListings)
+      .where(eq(jobListings.isActive, true))
+      .orderBy(sql`${jobListings.isFeatured} DESC, ${jobListings.createdAt} DESC`);
+  }
+
+  async getJobListingById(id: number): Promise<JobListing | null> {
+    const [jobListing] = await db
+      .select()
+      .from(jobListings)
+      .where(eq(jobListings.id, id));
+    return jobListing || null;
+  }
+
+  async updateJobListing(id: number, updates: Partial<InsertJobListing>): Promise<JobListing | null> {
+    const [updated] = await db
+      .update(jobListings)
+      .set(updates)
+      .where(eq(jobListings.id, id))
+      .returning();
+    return updated || null;
+  }
+
+  async deleteJobListing(id: number): Promise<void> {
+    await db
+      .update(jobListings)
+      .set({ isActive: false })
+      .where(eq(jobListings.id, id));
   }
 }
 

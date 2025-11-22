@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema, insertJobApplicationSchema } from "@shared/schema";
+import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema, insertJobApplicationSchema, insertJobListingSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
@@ -2040,6 +2040,41 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to fetch job applications"
+      });
+    }
+  });
+
+  // Job Listings endpoints
+  app.get("/api/job-listings", async (req, res) => {
+    try {
+      const listings = await storage.getAllJobListings();
+      res.json({ success: true, listings });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch job listings"
+      });
+    }
+  });
+
+  app.post("/api/job-listings", async (req, res) => {
+    try {
+      const validatedData = insertJobListingSchema.parse(req.body);
+      
+      const listing = await storage.createJobListing(validatedData);
+      
+      res.json({ success: true, listing });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({
+          success: false,
+          message: error.errors[0]?.message || "Invalid job listing data"
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        message: "Failed to create job listing"
       });
     }
   });
