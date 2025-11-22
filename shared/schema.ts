@@ -271,6 +271,23 @@ export const adminLogins = pgTable("admin_logins", {
   sessionToken: text("session_token").notNull().unique(),
 });
 
+export const jobListings = pgTable("job_listings", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  company: text("company").notNull(),
+  location: text("location").notNull(),
+  type: text("type").notNull(), // e.g., "Full-time", "Part-time", "Contract"
+  description: text("description").notNull(),
+  requirements: text("requirements"),
+  salary: text("salary"),
+  applyUrl: text("apply_url"),
+  contactEmail: text("contact_email"),
+  isActive: boolean("is_active").default(true),
+  isFeatured: boolean("is_featured").default(false),
+  createdBy: text("created_by"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -457,6 +474,19 @@ export const insertAdminLoginSchema = createInsertSchema(adminLogins).omit({
   loginTime: true,
 });
 
+export const insertJobListingSchema = createInsertSchema(jobListings).omit({
+  id: true,
+  createdAt: true,
+  isActive: true,
+  isFeatured: true,
+}).extend({
+  title: z.string().min(1, "Job title is required"),
+  company: z.string().min(1, "Company name is required"),
+  location: z.string().min(1, "Location is required"),
+  type: z.string().min(1, "Job type is required"),
+  description: z.string().min(50, "Please provide a detailed job description (minimum 50 characters)"),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -493,3 +523,5 @@ export type WifiPassword = typeof wifiPasswords.$inferSelect;
 export type InsertWifiPassword = z.infer<typeof insertWifiPasswordSchema>;
 export type AdminLogin = typeof adminLogins.$inferSelect;
 export type InsertAdminLogin = z.infer<typeof insertAdminLoginSchema>;
+export type JobListing = typeof jobListings.$inferSelect;
+export type InsertJobListing = z.infer<typeof insertJobListingSchema>;
