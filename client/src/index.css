@@ -878,4 +878,58 @@
       opacity: 0.5;
     }
   }
+
+  /* Force dark terminal aesthetic regardless of light/dark mode */
+  .terminal-force-dark {
+    color-scheme: dark !important;
+  }
+
+  .terminal-force-dark {
+    --foreground: 120 100% 50% !important;
+    --muted: 120 100% 50% !important;
+    --muted-foreground: 120 100% 50% !important;
+  }
+
+  .terminal-force-dark * {
+    color: #00ff00 !important;
+  }
+
+  .terminal-force-dark .text-terminal-green {
+    color: #00ff00 !important;
+  }
+
+  .terminal-force-dark .text-terminal-dim {
+    color: rgba(136, 255, 136, 0.6) !important;
+  }
+
+  .terminal-force-dark .text-terminal-bright {
+    color: #88ff88 !important;
+  }
+
+  .terminal-force-dark h1,
+  .terminal-force-dark h2,
+  .terminal-force-dark h3,
+  .terminal-force-dark h4,
+  .terminal-force-dark h5,
+  .terminal-force-dark h6 {
+    color: #00ff00 !important;
+  }
+
+  .terminal-force-dark p {
+    color: rgba(136, 255, 136, 0.8) !important;
+  }
+
+  .terminal-force-dark label {
+    color: #00ff00 !important;
+  }
+
+  .terminal-force-dark input,
+  .terminal-force-dark textarea,
+  .terminal-force-dark select {
+    color: #00ff00 !important;
+  }
+
+  .terminal-force-dark button {
+    color: #00ff00 !important;
+  }
 }

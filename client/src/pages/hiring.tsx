@@ -73,7 +73,7 @@ export default function HiringPage() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen terminal-bg">
+      <div className="min-h-screen terminal-bg terminal-force-dark">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="terminal-panel p-8 text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full border-4 border-terminal-green bg-terminal-green/10 mb-6">
@@ -110,7 +110,7 @@ export default function HiringPage() {
   }
 
   return (
-    <div className="min-h-screen terminal-bg">
+    <div className="min-h-screen terminal-bg terminal-force-dark">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
         <div className="terminal-header mb-8">
