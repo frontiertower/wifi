@@ -132,7 +132,7 @@ export default function HiringPage() {
             </Link>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-center text-terminal-green terminal-glow mb-2">
-            HEAD OF FINANCE HIRING
+            HEAD OF REGENERATIVE FINANCE
           </h1>
           <p className="text-center text-terminal-dim text-sm md:text-base">
             FRONTIER TOWER RECRUITMENT • JOIN OUR TEAM
