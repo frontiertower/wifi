@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -438,7 +438,7 @@ export default function AdminDashboard() {
     { id: "events", label: "Events", icon: Calendar },
     { id: "leads", label: "Leads", icon: ClipboardList },
     { id: "directory", label: "Directory", icon: Building2 },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: "settings", label: "WiFi", icon: Wifi },
   ] as const;
 
   return (
