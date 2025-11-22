@@ -1727,7 +1727,7 @@ Rules:
     }
   });
 
-  app.patch("/api/directory/:id", verifyAdminSession, async (req, res) => {
+  app.patch("/api/directory/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const data = req.body;
