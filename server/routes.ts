@@ -522,19 +522,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       const { password } = schema.parse(req.body);
-      const settings = await storage.getSettings();
+      
+      // Ensure default passwords exist
+      await storage.ensureDefaultWifiPasswords();
+      
+      // Get all active WiFi passwords from database
+      const wifiPasswords = await storage.getAllWifiPasswords();
       
       // Normalize password: trim whitespace and convert to lowercase for comparison
       const normalizedPassword = password.trim().toLowerCase();
       
-      // If admin has set a custom password, only accept that
-      // Otherwise, accept default passwords: "welovexeno", "makesomething", and "frontiertower995"
-      let allowedPasswords: string[];
-      if (settings.guest_password && settings.guest_password !== "makesomething" && settings.guest_password !== "welovexeno") {
-        allowedPasswords = [settings.guest_password.trim().toLowerCase()];
-      } else {
-        allowedPasswords = ["welovexeno", "makesomething", "frontiertower995"];
-      }
+      // Check if password matches any of the active WiFi passwords
+      const allowedPasswords = wifiPasswords.map(p => p.password.trim().toLowerCase());
 
       if (allowedPasswords.includes(normalizedPassword)) {
         res.json({ success: true });
@@ -2007,6 +2006,82 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to save settings"
+      });
+    }
+  });
+
+  // WiFi Password Management Endpoints
+  app.get("/api/admin/wifi-passwords", async (req, res) => {
+    try {
+      // Ensure default passwords exist
+      await storage.ensureDefaultWifiPasswords();
+      
+      const passwords = await storage.getAllWifiPasswords();
+      res.json(passwords);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch WiFi passwords"
+      });
+    }
+  });
+
+  app.post("/api/admin/wifi-passwords", async (req, res) => {
+    try {
+      const schema = z.object({
+        password: z.string().min(1, "Password is required"),
+        description: z.string().optional(),
+      });
+
+      const data = schema.parse(req.body);
+      
+      const newPassword = await storage.addWifiPassword(data.password, data.description);
+      
+      res.json({
+        success: true,
+        password: newPassword,
+        message: "WiFi password added successfully"
+      });
+    } catch (error) {
+      console.error('Error adding WiFi password:', error);
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid password data",
+          errors: error.errors
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        message: "Failed to add WiFi password. Password may already exist."
+      });
+    }
+  });
+
+  app.delete("/api/admin/wifi-passwords/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      if (isNaN(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid password ID"
+        });
+      }
+
+      await storage.deleteWifiPassword(id);
+      
+      res.json({
+        success: true,
+        message: "WiFi password deleted successfully"
+      });
+    } catch (error) {
+      console.error('Error deleting WiFi password:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete WiFi password"
       });
     }
   });
