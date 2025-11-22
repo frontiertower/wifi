@@ -231,6 +231,14 @@ export const authenticatedMembers = pgTable("authenticated_members", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const wifiPasswords = pgTable("wifi_passwords", {
+  id: serial("id").primaryKey(),
+  password: text("password").notNull().unique(),
+  description: text("description"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -391,6 +399,13 @@ export const insertPrivateOfficeRentalSchema = createInsertSchema(privateOfficeR
   preferredMoveInDate: z.coerce.date().optional(),
 });
 
+export const insertWifiPasswordSchema = createInsertSchema(wifiPasswords).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  password: z.string().min(1, "Password is required"),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -421,3 +436,5 @@ export type InsertChatInviteRequest = z.infer<typeof insertChatInviteRequestSche
 export type PrivateOfficeRental = typeof privateOfficeRentals.$inferSelect;
 export type InsertPrivateOfficeRental = z.infer<typeof insertPrivateOfficeRentalSchema>;
 export type AuthenticatedMember = typeof authenticatedMembers.$inferSelect;
+export type WifiPassword = typeof wifiPasswords.$inferSelect;
+export type InsertWifiPassword = z.infer<typeof insertWifiPasswordSchema>;
