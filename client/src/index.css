@@ -627,6 +627,18 @@
     white-space: normal;
   }
 
+  .terminal-force-dark h3 {
+    font-size: 0.9rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  @media (min-width: 768px) {
+    .terminal-force-dark h3 {
+      font-size: 1.125rem;
+    }
+  }
+
   .terminal-glow {
     text-shadow: 
       0 0 10px rgba(0, 255, 0, 0.5),
