@@ -108,7 +108,7 @@ export default function PillsPage() {
   };
 
   return (
-    <div className={`fixed inset-0 flex items-center justify-center p-4 z-50 overflow-hidden ${crackIntensity >= 9 ? 'black-hole-collapse' : 'bg-black bg-opacity-50 pill-modal-backdrop'} ${crackIntensity >= 6 ? 'shake-effect' : ''}`}>
+    <div className={`fixed inset-0 flex items-start justify-center pt-12 p-4 z-50 overflow-hidden ${crackIntensity >= 9 ? 'black-hole-collapse' : 'bg-black bg-opacity-50 pill-modal-backdrop'} ${crackIntensity >= 6 ? 'shake-effect' : ''}`}>
       {/* Glass crack overlay with trippy effects */}
       {crackIntensity > 0 && crackIntensity < 9 && (
         <>
