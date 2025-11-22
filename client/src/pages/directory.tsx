@@ -227,7 +227,7 @@ export default function Directory() {
               onClick={() => setSortMode("floor-asc")}
               data-testid="button-sort-floor-asc"
             >
-              Level 1-16
+              Floors 1-16
             </Button>
             <Button
               variant={sortMode === "floor-desc" ? "default" : "outline"}
@@ -235,7 +235,7 @@ export default function Directory() {
               onClick={() => setSortMode("floor-desc")}
               data-testid="button-sort-floor-desc"
             >
-              Level 16-1
+              Floors 16-1
             </Button>
             <Button
               variant={sortMode === "name-asc" ? "default" : "outline"}
