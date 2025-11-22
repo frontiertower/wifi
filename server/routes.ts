@@ -525,7 +525,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get settings to check if password is required
       const settings = await storage.getSettings();
-      const passwordRequired = settings.password_required !== 'false';
+      const passwordRequired = settings.password_required === 'true';
       
       // If password is not required, always allow
       if (!passwordRequired) {

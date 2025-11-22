@@ -52,7 +52,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const [passwordError, setPasswordError] = useState("");
   const [guestType, setGuestType] = useState<GuestType>(null);
   const [showInstructions, setShowInstructions] = useState(false);
-  const [requirePassword, setRequirePassword] = useState(true);
+  const [requirePassword, setRequirePassword] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -80,7 +80,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
   useEffect(() => {
     if (settings) {
-      setRequirePassword(settings.password_required !== 'false');
+      setRequirePassword(settings.password_required === 'true');
     }
   }, [settings]);
 
