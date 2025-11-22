@@ -144,7 +144,7 @@ export default function HiringPage() {
         <div className="grid gap-6 md:grid-cols-2 mb-8">
           {/* Card 1: Mission Overview */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">SEEK YOUR FORTUNE: JOIN THE FRONTIER INITIATIVE</h3>
+            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg break-words">SEEK YOUR FORTUNE: JOIN THE FRONTIER INITIATIVE</h3>
             <p className="text-terminal-dim text-sm mb-4">
               We are the world's fastest-growing network society. Our capital is San Francisco, and our citadel is a 16-story vertical village for frontier tech, arts & music on Market Street.
             </p>
