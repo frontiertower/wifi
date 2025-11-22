@@ -121,7 +121,7 @@ export default function Home() {
                   <Wifi className="text-blue-600 dark:text-blue-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">WiFi Access</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Connect to WiFi</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Connect to super fast Internet</div>
                 </div>
               </div>
