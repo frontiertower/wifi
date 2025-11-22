@@ -628,12 +628,14 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">
                     Option 2: Manual Connection (All Devices)
                   </p>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                    Connect to WiFi using these credentials:
-                  </p>
+                  <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-3">
+                    <li>1. <strong>Disconnect</strong> from the Guest network</li>
+                    <li>2. <strong>Connect</strong> to the secure network "FrontierTower"</li>
+                    <li>3. Enter the password below when prompted</li>
+                  </ol>
                   <div className="bg-white dark:bg-gray-900/50 rounded p-3 text-sm">
                     <p className="text-gray-900 dark:text-gray-100">
-                      <strong>Network:</strong> FrontierTower
+                      <strong>Network Name:</strong> FrontierTower
                     </p>
                     <p className="text-gray-900 dark:text-gray-100">
                       <strong>Password:</strong> frontiertower995
