@@ -35,11 +35,11 @@ export default function CareersPage() {
       location: "",
       type: "",
       description: "",
-      requirements: "",
-      salary: "",
-      applyUrl: "",
-      contactEmail: "",
-      createdBy: "",
+      requirements: undefined,
+      salary: undefined,
+      applyUrl: undefined,
+      contactEmail: undefined,
+      createdBy: undefined,
     },
   });
 
@@ -223,6 +223,7 @@ export default function CareersPage() {
                             placeholder="List key qualifications, skills, and experience required..."
                             rows={4}
                             {...field}
+                            value={field.value || ""}
                             data-testid="input-requirements"
                           />
                         </FormControl>
@@ -240,7 +241,8 @@ export default function CareersPage() {
                         <FormControl>
                           <Input 
                             placeholder="e.g., $100k - $150k" 
-                            {...field} 
+                            {...field}
+                            value={field.value || ""}
                             data-testid="input-salary"
                           />
                         </FormControl>
@@ -259,7 +261,8 @@ export default function CareersPage() {
                           <Input 
                             type="url"
                             placeholder="https://..." 
-                            {...field} 
+                            {...field}
+                            value={field.value || ""}
                             data-testid="input-apply-url"
                           />
                         </FormControl>
@@ -278,7 +281,8 @@ export default function CareersPage() {
                           <Input 
                             type="email"
                             placeholder="jobs@company.com" 
-                            {...field} 
+                            {...field}
+                            value={field.value || ""}
                             data-testid="input-contact-email"
                           />
                         </FormControl>
@@ -296,7 +300,8 @@ export default function CareersPage() {
                         <FormControl>
                           <Input 
                             placeholder="Your name or company recruiter name" 
-                            {...field} 
+                            {...field}
+                            value={field.value || ""}
                             data-testid="input-created-by"
                           />
                         </FormControl>

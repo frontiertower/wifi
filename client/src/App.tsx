@@ -27,6 +27,7 @@ import AdminLogin from "@/pages/admin-login";
 import HiringPage from "@/pages/hiring";
 import FinancePage from "@/pages/finance";
 import PillsPage from "@/pages/pills";
+import CareersPage from "@/pages/careers";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -58,6 +59,7 @@ function Router() {
         <Route path="/Regen" component={HiringPage} />
         <Route path="/Finance" component={FinancePage} />
         <Route path="/rabbit" component={PillsPage} />
+        <Route path="/careers" component={CareersPage} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
