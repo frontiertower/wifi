@@ -94,6 +94,12 @@ interface DirectoryListingsResponse {
   listings: DirectoryListing[];
 }
 
+interface AdminSessionResponse {
+  authenticated: boolean;
+  role?: 'owner' | 'staff';
+  email?: string;
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const [showEventForm, setShowEventForm] = useState(false);
@@ -107,7 +113,7 @@ export default function AdminDashboard() {
   const { toast } = useToast();
 
   // Check admin session
-  const { data: sessionData, isLoading: isSessionLoading } = useQuery({
+  const { data: sessionData, isLoading: isSessionLoading } = useQuery<AdminSessionResponse>({
     queryKey: ["/api/admin/session"],
   });
 
@@ -325,40 +331,40 @@ export default function AdminDashboard() {
       const totalAttempted = scrapedCount + failedCount;
       
       if (scrapedCount === 0 && failedCount > 0) {
-        // All scrapes failed
+        // All syncs failed
         toast({
-          title: "Image Scraping Failed",
-          description: `Failed to scrape images from all ${failedCount} event${failedCount !== 1 ? 's' : ''}. External site may be rate limiting requests.`,
+          title: "Image Sync Failed",
+          description: `Failed to sync images from all ${failedCount} event${failedCount !== 1 ? 's' : ''}. External site may be rate limiting requests.`,
           variant: "destructive",
         });
-        console.error('Failed scrapes:', data.failedScrapes);
+        console.error('Failed syncs:', data.failedScrapes);
       } else if (failedCount > 0 && scrapedCount > 0) {
         // Partial success
         toast({
-          title: "Images Partially Scraped",
-          description: `Successfully scraped ${scrapedCount} image${scrapedCount !== 1 ? 's' : ''}, ${failedCount} failed. Check console for details.`,
+          title: "Images Partially Synced",
+          description: `Successfully synced ${scrapedCount} image${scrapedCount !== 1 ? 's' : ''}, ${failedCount} failed. Check console for details.`,
           variant: "default",
         });
-        console.error('Failed scrapes:', data.failedScrapes);
+        console.error('Failed syncs:', data.failedScrapes);
       } else if (scrapedCount > 0) {
         // All successful
         toast({
-          title: "Images Scraped Successfully",
-          description: `Successfully scraped ${scrapedCount} event image${scrapedCount !== 1 ? 's' : ''}`,
+          title: "Images Synced Successfully",
+          description: `Successfully synced ${scrapedCount} event image${scrapedCount !== 1 ? 's' : ''}`,
         });
       } else {
-        // No events to scrape
+        // No events to sync
         toast({
-          title: "No Images to Scrape",
-          description: "No events with URLs found to scrape images from",
+          title: "No Images to Sync",
+          description: "No events with URLs found to sync images from",
         });
       }
       queryClient.invalidateQueries({ queryKey: ['/api/events'] });
     },
     onError: (error: Error) => {
       toast({
-        title: "Failed to Scrape Images",
-        description: error.message || "An error occurred while scraping event images",
+        title: "Failed to Sync Images",
+        description: error.message || "An error occurred while syncing event images",
         variant: "destructive",
       });
     },
@@ -719,14 +725,14 @@ export default function AdminDashboard() {
                     {scrapeImagesMutation.isPending ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-                        Scraping...
+                        Syncing...
                       </>
                     ) : (
                       <>
                         <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        Scrape Images
+                        Sync Images
                       </>
                     )}
                   </Button>
