@@ -131,6 +131,24 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [showPillModal]);
 
+  // Handle reboot screen interactions
+  useEffect(() => {
+    if (!showTerminal) return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [showTerminal]);
+
+  const handleRebootClick = () => {
+    window.location.reload();
+  };
+
   const handlePillChoice = (choice: PillChoice) => {
     setShowPillModal(false);
     if (choice === "green") {
@@ -440,7 +458,7 @@ export default function Home() {
 
             {/* Terminal reboot screen */}
             {showTerminal && (
-              <div className="absolute inset-0 bg-black flex items-center justify-center z-20">
+              <div className="absolute inset-0 bg-black flex items-center justify-center z-20 cursor-pointer" onClick={handleRebootClick}>
                 <div className="text-center font-mono text-2xl md:text-4xl">
                   <span className="terminal-text typing-reboot">reboot</span>
                   <span className="terminal-cursor">_</span>
