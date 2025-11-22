@@ -131,7 +131,7 @@ export default function HiringPage() {
               </Button>
             </Link>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-center text-terminal-green terminal-glow mb-2 terminal-text">
+          <h1 className="text-3xl md:text-4xl font-bold text-center text-terminal-green terminal-glow mb-2">
             HEAD OF FINANCE HIRING
           </h1>
           <p className="text-center text-terminal-dim text-sm md:text-base">
@@ -143,7 +143,7 @@ export default function HiringPage() {
         <div className="grid gap-6 md:grid-cols-2 mb-8">
           {/* Card 1: Mission Overview */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">REGENERATIVE ECOSYSTEMS: BUILD SUSTAINABLE FUTURES</h3>
+            <h3 className="text-terminal-green font-bold mb-3 text-lg">REGENERATIVE ECOSYSTEMS: BUILD SUSTAINABLE FUTURES</h3>
             <p className="text-terminal-dim text-sm mb-4">
               We are pioneering regenerative ecosystem practices integrated into next-generation network infrastructure. Our mission extends beyond innovation to environmental stewardship and community renewal.
             </p>
@@ -154,7 +154,7 @@ export default function HiringPage() {
 
           {/* Card 2: Why Us */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-4 terminal-text text-lg">OUR APPROACH</h3>
+            <h3 className="text-terminal-green font-bold mb-4 text-lg">OUR APPROACH</h3>
             <ul className="space-y-2">
               <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Regenerative Design</span> — Systems that heal, not extract</li>
               <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Community First</span> — Environmental justice at core</li>
@@ -164,7 +164,7 @@ export default function HiringPage() {
 
           {/* Card 3: Getting Involved */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">GET INVOLVED</h3>
+            <h3 className="text-terminal-green font-bold mb-3 text-lg">GET INVOLVED</h3>
             <p className="text-terminal-dim text-sm">
               Join us in developing and implementing regenerative ecosystem solutions. Whether in policy, technology, community engagement, or resource management, we're building the infrastructure for a sustainable future. Remote-friendly with flexible collaboration models.
             </p>
@@ -172,7 +172,7 @@ export default function HiringPage() {
 
           {/* Card 4: Values */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">OUR VALUES</h3>
+            <h3 className="text-terminal-green font-bold mb-3 text-lg">OUR VALUES</h3>
             <ul className="space-y-1">
               <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Regeneration</span> — Systems that improve over time</li>
               <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Equity</span> — Justice-centered approach</li>
@@ -184,7 +184,7 @@ export default function HiringPage() {
 
           {/* Card 5: Impact Areas */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">IMPACT AREAS</h3>
+            <h3 className="text-terminal-green font-bold mb-3 text-lg">IMPACT AREAS</h3>
             <ul className="space-y-1">
               <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Climate Solutions</span> — Tech for climate action</li>
               <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Biodiversity</span> — Ecosystem preservation</li>
@@ -194,7 +194,7 @@ export default function HiringPage() {
 
           {/* Card 6: Get Started */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">GET STARTED</h3>
+            <h3 className="text-terminal-green font-bold mb-3 text-lg">GET STARTED</h3>
             <ol className="space-y-1">
               <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">1. Learn</span> about our initiatives</li>
               <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">2. Connect</span> with our community</li>
@@ -205,7 +205,7 @@ export default function HiringPage() {
         </div>
 
         <div className="terminal-card mb-8 text-center">
-          <p className="text-terminal-green font-bold terminal-text text-sm mb-2">READY TO JOIN THE REGENERATIVE MOVEMENT?</p>
+          <p className="text-terminal-green font-bold text-sm mb-2">READY TO JOIN THE REGENERATIVE MOVEMENT?</p>
           <p className="text-terminal-dim text-xs">Share your interest and how you want to contribute. We're building a global community focused on healing our world.</p>
         </div>
 
