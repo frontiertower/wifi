@@ -84,6 +84,16 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     }
   }, [settings]);
 
+  // Hide rabbit and theme toggle when showing the form
+  useEffect(() => {
+    if (flowStep === 'form') {
+      document.body.classList.add('hide-app-header');
+      return () => {
+        document.body.classList.remove('hide-app-header');
+      };
+    }
+  }, [flowStep]);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const passwordParam = urlParams.get('password');
@@ -655,9 +665,6 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
-      <div className="absolute top-6 right-6">
-        <ThemeToggle />
-      </div>
       <div className="max-w-lg mx-auto">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
           <div className="p-6 pb-3">
