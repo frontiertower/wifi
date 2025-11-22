@@ -675,7 +675,188 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoints
-  app.get("/api/admin/stats", async (req, res) => {
+  
+  // Middleware to verify admin session
+  const verifyAdminSession = async (req: any, res: any, next: any) => {
+    try {
+      const sessionToken = req.cookies.admin_session;
+
+      if (!sessionToken) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized - No session",
+        });
+      }
+
+      const session = await storage.getAdminLoginByToken(sessionToken);
+
+      if (!session) {
+        res.clearCookie("admin_session");
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized - Invalid session",
+        });
+      }
+
+      req.adminSession = session;
+      next();
+    } catch (error) {
+      console.error("Session verification error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Session verification failed",
+      });
+    }
+  };
+
+  // Admin authentication
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "Email and password are required",
+        });
+      }
+
+      // Get admin credentials from environment variables
+      // Fall back to defaults only in development for ease of testing
+      const ownerPassword = process.env.ADMIN_OWNER_PASSWORD || 
+        (process.env.NODE_ENV === 'development' ? "iownthisbuilding" : "");
+      const staffPassword = process.env.ADMIN_STAFF_PASSWORD || 
+        (process.env.NODE_ENV === 'development' ? "ijustworkhere" : "");
+
+      if (!ownerPassword || !staffPassword) {
+        console.error("ADMIN_OWNER_PASSWORD and ADMIN_STAFF_PASSWORD environment variables must be set in production");
+        return res.status(500).json({
+          success: false,
+          message: "Admin authentication not configured",
+        });
+      }
+
+      let role: string | null = null;
+      if (password === ownerPassword) {
+        role = "Owner";
+      } else if (password === staffPassword) {
+        role = "Staff";
+      }
+
+      if (!role) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid credentials",
+        });
+      }
+
+      // Generate session token
+      const sessionToken = randomBytes(32).toString("hex");
+
+      // Store admin login
+      await storage.createAdminLogin({
+        email,
+        role: role,
+        sessionToken,
+      });
+
+      // Set session cookie
+      res.cookie("admin_session", sessionToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      });
+
+      res.json({
+        success: true,
+        message: "Login successful",
+        role: role,
+      });
+    } catch (error) {
+      console.error("Admin login error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Login failed",
+      });
+    }
+  });
+
+  app.post("/api/admin/logout", async (req, res) => {
+    try {
+      const sessionToken = req.cookies.admin_session;
+
+      if (sessionToken) {
+        await storage.deleteAdminSession(sessionToken);
+      }
+
+      res.clearCookie("admin_session");
+      res.json({
+        success: true,
+        message: "Logged out successfully",
+      });
+    } catch (error) {
+      console.error("Admin logout error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Logout failed",
+      });
+    }
+  });
+
+  app.get("/api/admin/session", async (req, res) => {
+    try {
+      const sessionToken = req.cookies.admin_session;
+
+      if (!sessionToken) {
+        return res.json({
+          success: false,
+          authenticated: false,
+        });
+      }
+
+      const session = await storage.getAdminLoginByToken(sessionToken);
+
+      if (!session) {
+        res.clearCookie("admin_session");
+        return res.json({
+          success: false,
+          authenticated: false,
+        });
+      }
+
+      res.json({
+        success: true,
+        authenticated: true,
+        email: session.email,
+        role: session.role,
+      });
+    } catch (error) {
+      console.error("Admin session check error:", error);
+      res.json({
+        success: false,
+        authenticated: false,
+      });
+    }
+  });
+
+  app.get("/api/admin/logins", verifyAdminSession, async (req, res) => {
+    try {
+      const logins = await storage.getAllAdminLogins();
+      res.json({
+        success: true,
+        logins,
+      });
+    } catch (error) {
+      console.error("Failed to fetch admin logins:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch admin logins",
+      });
+    }
+  });
+
+  app.get("/api/admin/stats", verifyAdminSession, async (req, res) => {
     try {
       const stats = await storage.getDashboardStats();
       res.json({ success: true, stats });
@@ -687,7 +868,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/floor-stats", async (req, res) => {
+  app.get("/api/admin/floor-stats", verifyAdminSession, async (req, res) => {
     try {
       const floorStats = await storage.getFloorStats();
       res.json({ success: true, floorStats });
@@ -699,7 +880,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/vouchers", async (req, res) => {
+  app.get("/api/admin/vouchers", verifyAdminSession, async (req, res) => {
     try {
       const vouchers = await storage.getAllVouchers();
       res.json({ success: true, vouchers });
@@ -711,7 +892,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/vouchers", async (req, res) => {
+  app.post("/api/admin/vouchers", verifyAdminSession, async (req, res) => {
     try {
       const voucherData = insertVoucherSchema.extend({
         count: z.number().min(1).max(100).optional().default(1),
@@ -757,7 +938,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/events", async (req, res) => {
+  app.get("/api/admin/events", verifyAdminSession, async (req, res) => {
     try {
       const events = await storage.getAllEvents();
       res.json({ success: true, events });
@@ -769,7 +950,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/events/:id", async (req, res) => {
+  app.delete("/api/admin/events/:id", verifyAdminSession, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -798,7 +979,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/events", async (req, res) => {
+  app.post("/api/admin/events", verifyAdminSession, async (req, res) => {
     try {
       const eventData = insertEventSchema.parse(req.body);
       const event = await storage.createEvent(eventData);
@@ -815,7 +996,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/events/bulk-import", async (req, res) => {
+  app.post("/api/admin/events/bulk-import", verifyAdminSession, async (req, res) => {
     try {
       const { text } = z.object({
         text: z.string().min(10)
@@ -952,7 +1133,7 @@ Rules:
     }
   });
 
-  app.post("/api/admin/events/cleanup", async (req, res) => {
+  app.post("/api/admin/events/cleanup", verifyAdminSession, async (req, res) => {
     try {
       const result = await storage.deduplicateEvents();
       res.json({
@@ -970,7 +1151,7 @@ Rules:
     }
   });
 
-  app.post("/api/admin/events/sync", async (req, res) => {
+  app.post("/api/admin/events/sync", verifyAdminSession, async (req, res) => {
     const externalEventSchema = z.object({
       id: z.string().min(1),
       name: z.string().min(1),
@@ -1142,7 +1323,7 @@ Rules:
   });
 
   // Scrape event images from Luma URLs
-  app.post("/api/admin/events/scrape-images", async (req, res) => {
+  app.post("/api/admin/events/scrape-images", verifyAdminSession, async (req, res) => {
     try {
       const events = await storage.getAllEvents();
       const now = new Date();
@@ -1350,7 +1531,7 @@ Rules:
     }
   });
 
-  app.get("/api/bookings", async (req, res) => {
+  app.get("/api/bookings", verifyAdminSession, async (req, res) => {
     try {
       const bookings = await storage.getAllBookings();
       res.json({ success: true, bookings });
@@ -1523,7 +1704,7 @@ Rules:
     }
   });
 
-  app.patch("/api/directory/:id", async (req, res) => {
+  app.patch("/api/directory/:id", verifyAdminSession, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const data = req.body;
@@ -1570,7 +1751,7 @@ Rules:
     }
   });
 
-  app.delete("/api/directory/:id", async (req, res) => {
+  app.delete("/api/directory/:id", verifyAdminSession, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const success = await storage.deleteDirectoryListing(id);
@@ -1631,7 +1812,7 @@ Rules:
     }
   });
 
-  app.get("/api/tour-bookings", async (req, res) => {
+  app.get("/api/tour-bookings", verifyAdminSession, async (req, res) => {
     try {
       const bookings = await storage.getAllTourBookings();
       res.json({ success: true, bookings });
@@ -1706,7 +1887,7 @@ Rules:
     }
   });
 
-  app.get("/api/event-host-bookings", async (req, res) => {
+  app.get("/api/event-host-bookings", verifyAdminSession, async (req, res) => {
     try {
       const bookings = await storage.getAllEventHostBookings();
       res.json({ success: true, bookings });
@@ -1747,7 +1928,7 @@ Rules:
     }
   });
 
-  app.get("/api/membership-applications", async (req, res) => {
+  app.get("/api/membership-applications", verifyAdminSession, async (req, res) => {
     try {
       const applications = await storage.getAllMembershipApplications();
       res.json({ success: true, applications });
@@ -1788,7 +1969,7 @@ Rules:
     }
   });
 
-  app.get("/api/admin/chat-invite-requests", async (req, res) => {
+  app.get("/api/admin/chat-invite-requests", verifyAdminSession, async (req, res) => {
     try {
       const requests = await storage.getAllChatInviteRequests();
       res.json({ success: true, requests });
@@ -1800,7 +1981,7 @@ Rules:
     }
   });
 
-  app.get("/api/admin/sessions", async (req, res) => {
+  app.get("/api/admin/sessions", verifyAdminSession, async (req, res) => {
     try {
       const sessions = await storage.getActiveSessions();
       res.json({ success: true, sessions });
@@ -1812,7 +1993,7 @@ Rules:
     }
   });
 
-  app.get("/api/admin/users", async (req, res) => {
+  app.get("/api/admin/users", verifyAdminSession, async (req, res) => {
     try {
       const users = await storage.getAllCaptiveUsers();
       res.json({ success: true, users });
@@ -1825,7 +2006,7 @@ Rules:
   });
 
   // Export users as CSV
-  app.get("/api/admin/users/export", async (req, res) => {
+  app.get("/api/admin/users/export", verifyAdminSession, async (req, res) => {
     try {
       const users = await storage.getAllCaptiveUsers();
       
@@ -1889,7 +2070,7 @@ Rules:
     }
   });
 
-  app.delete("/api/admin/sessions/:sessionId", async (req, res) => {
+  app.delete("/api/admin/sessions/:sessionId", verifyAdminSession, async (req, res) => {
     try {
       const { sessionId } = req.params;
       await storage.revokeSession(sessionId);
@@ -1943,7 +2124,7 @@ Rules:
   });
 
   // Settings endpoints
-  app.get("/api/admin/settings", async (req, res) => {
+  app.get("/api/admin/settings", verifyAdminSession, async (req, res) => {
     try {
       const settings = await storage.getSettings();
       res.json(settings);
@@ -1955,7 +2136,7 @@ Rules:
     }
   });
 
-  app.post("/api/admin/settings", async (req, res) => {
+  app.post("/api/admin/settings", verifyAdminSession, async (req, res) => {
     try {
       const baseSchema = z.object({
         guest_password: z.string().min(1).optional(),
@@ -2011,7 +2192,7 @@ Rules:
   });
 
   // WiFi Password Management Endpoints
-  app.get("/api/admin/wifi-passwords", async (req, res) => {
+  app.get("/api/admin/wifi-passwords", verifyAdminSession, async (req, res) => {
     try {
       // Ensure default passwords exist
       await storage.ensureDefaultWifiPasswords();
@@ -2026,7 +2207,7 @@ Rules:
     }
   });
 
-  app.post("/api/admin/wifi-passwords", async (req, res) => {
+  app.post("/api/admin/wifi-passwords", verifyAdminSession, async (req, res) => {
     try {
       const schema = z.object({
         password: z.string().min(1, "Password is required"),
@@ -2060,7 +2241,7 @@ Rules:
     }
   });
 
-  app.delete("/api/admin/wifi-passwords/:id", async (req, res) => {
+  app.delete("/api/admin/wifi-passwords/:id", verifyAdminSession, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       

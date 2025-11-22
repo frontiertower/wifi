@@ -718,8 +718,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
             {/* Guest Type Selection */}
             {!guestType && (
-              <div className="pt-4 space-y-3">
-                <Label className="text-base">I am a:</Label>
+              <div className="pt-2">
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     type="button"

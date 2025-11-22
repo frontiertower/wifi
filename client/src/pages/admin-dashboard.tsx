@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing } from "@shared/schema";
 
-type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings";
+type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins";
 
 // Helper function to generate URL slugs from listing names
 function slugify(text: string): string {
@@ -106,6 +106,32 @@ export default function AdminDashboard() {
   const [directorySearchQuery, setDirectorySearchQuery] = useState("");
   const { toast } = useToast();
 
+  // Check admin session
+  const { data: sessionData, isLoading: isSessionLoading } = useQuery({
+    queryKey: ["/api/admin/session"],
+  });
+
+  // Use useEffect to handle redirect to avoid render loop
+  useEffect(() => {
+    if (!isSessionLoading && (!sessionData?.authenticated)) {
+      window.location.href = "/admin-login";
+    }
+  }, [isSessionLoading, sessionData]);
+
+  // Show loading state while checking session or redirecting
+  if (isSessionLoading || (!sessionData?.authenticated)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">
+            {isSessionLoading ? "Checking authentication..." : "Redirecting to login..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const cleanHostName = (host: string | null): string | null => {
     if (!host) return null;
     
@@ -119,7 +145,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the # symbol
-      if (hash && ['users', 'events', 'analytics', 'leads', 'directory', 'settings'].includes(hash)) {
+      if (hash && ['users', 'events', 'analytics', 'leads', 'directory', 'settings', 'admin-logins'].includes(hash)) {
         setActiveTab(hash as Tab);
       } else if (hash === 'location') {
         // Redirect old location tab to analytics
@@ -433,6 +459,28 @@ export default function AdminDashboard() {
     });
   };
 
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/logout", {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/session"] });
+      window.location.href = "/";
+    },
+    onError: () => {
+      toast({
+        title: "Logout Failed",
+        description: "An error occurred during logout",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
+
   const tabs = [
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "users", label: "Users", icon: Users },
@@ -440,6 +488,7 @@ export default function AdminDashboard() {
     { id: "leads", label: "Leads", icon: ClipboardList },
     { id: "directory", label: "Directory", icon: Building2 },
     { id: "settings", label: "WiFi", icon: Wifi },
+    { id: "admin-logins", label: "Admin Logins", icon: LogOut },
   ] as const;
 
   return (
@@ -461,7 +510,7 @@ export default function AdminDashboard() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => window.location.href = "/"}
+                onClick={handleLogout}
                 data-testid="button-logout"
                 className="hidden sm:flex"
               >
@@ -471,7 +520,7 @@ export default function AdminDashboard() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => window.location.href = "/"}
+                onClick={handleLogout}
                 data-testid="button-logout-mobile"
                 className="sm:hidden"
               >
@@ -1836,6 +1885,19 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === "settings" && <SettingsTab />}
+
+        {activeTab === "admin-logins" && (
+          <div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Admin Logins</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                View all admin login sessions and activity
+              </p>
+            </div>
+
+            <AdminLoginsTab />
+          </div>
+        )}
       </div>
 
       <AlertDialog open={deleteDirectoryId !== null} onOpenChange={() => setDeleteDirectoryId(null)}>
@@ -1916,6 +1978,68 @@ export default function AdminDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+function AdminLoginsTab() {
+  const { data: loginsData, isLoading } = useQuery<{ success: boolean; logins: any[] }>({
+    queryKey: ["/api/admin/logins"],
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading admin logins...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const logins = loginsData?.logins || [];
+
+  return (
+    <Card className="overflow-hidden">
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Login Time</TableHead>
+              <TableHead>Session Token (Last 8)</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {logins.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                  No admin logins found
+                </TableCell>
+              </TableRow>
+            ) : (
+              logins.map((login: any) => (
+                <TableRow key={login.id} data-testid={`row-admin-login-${login.id}`}>
+                  <TableCell data-testid={`cell-email-${login.id}`}>{login.email}</TableCell>
+                  <TableCell>
+                    <Badge variant={login.role === "Owner" ? "default" : "secondary"} data-testid={`badge-role-${login.id}`}>
+                      {login.role}
+                    </Badge>
+                  </TableCell>
+                  <TableCell data-testid={`cell-time-${login.id}`}>
+                    {new Date(login.loginTime).toLocaleString()}
+                  </TableCell>
+                  <TableCell data-testid={`cell-token-${login.id}`} className="font-mono text-xs">
+                    ...{login.sessionToken?.slice(-8)}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </Card>
   );
 }
 

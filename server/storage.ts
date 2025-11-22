@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, privateOfficeRentals, authenticatedMembers, wifiPasswords, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -844,6 +844,35 @@ export class DatabaseStorage {
         }
       }
     }
+  }
+
+  async createAdminLogin(login: InsertAdminLogin): Promise<AdminLogin> {
+    const [newLogin] = await db
+      .insert(adminLogins)
+      .values(login)
+      .returning();
+    return newLogin;
+  }
+
+  async getAllAdminLogins(): Promise<AdminLogin[]> {
+    return await db
+      .select()
+      .from(adminLogins)
+      .orderBy(sql`${adminLogins.loginTime} DESC`);
+  }
+
+  async getAdminLoginByToken(token: string): Promise<AdminLogin | null> {
+    const [login] = await db
+      .select()
+      .from(adminLogins)
+      .where(eq(adminLogins.sessionToken, token));
+    return login || null;
+  }
+
+  async deleteAdminSession(token: string): Promise<void> {
+    await db
+      .delete(adminLogins)
+      .where(eq(adminLogins.sessionToken, token));
   }
 }
 

@@ -239,6 +239,14 @@ export const wifiPasswords = pgTable("wifi_passwords", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const adminLogins = pgTable("admin_logins", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull(),
+  role: text("role").notNull(), // "Owner" or "Staff"
+  loginTime: timestamp("login_time").defaultNow().notNull(),
+  sessionToken: text("session_token").notNull().unique(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -406,6 +414,11 @@ export const insertWifiPasswordSchema = createInsertSchema(wifiPasswords).omit({
   password: z.string().min(1, "Password is required"),
 });
 
+export const insertAdminLoginSchema = createInsertSchema(adminLogins).omit({
+  id: true,
+  loginTime: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -438,3 +451,5 @@ export type InsertPrivateOfficeRental = z.infer<typeof insertPrivateOfficeRental
 export type AuthenticatedMember = typeof authenticatedMembers.$inferSelect;
 export type WifiPassword = typeof wifiPasswords.$inferSelect;
 export type InsertWifiPassword = z.infer<typeof insertWifiPasswordSchema>;
+export type AdminLogin = typeof adminLogins.$inferSelect;
+export type InsertAdminLogin = z.infer<typeof insertAdminLoginSchema>;

@@ -19,6 +19,7 @@ import AddListing from "@/pages/addlisting";
 import DirectoryAdmin from "@/pages/directory-admin";
 import DirectoryEdit from "@/pages/directory-edit";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminLogin from "@/pages/admin-login";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -49,6 +50,7 @@ function Router() {
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
         <Route path="/addlisting" component={AddListing} />
+        <Route path="/admin-login" component={AdminLogin} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin/settings">
           {() => {
