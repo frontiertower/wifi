@@ -20,6 +20,7 @@ import DirectoryAdmin from "@/pages/directory-admin";
 import DirectoryEdit from "@/pages/directory-edit";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminLogin from "@/pages/admin-login";
+import JobsPage from "@/pages/jobs";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -46,6 +47,7 @@ function Router() {
         <Route path="/event-host-booking" component={EventHostBooking} />
         <Route path="/apply-to-join" component={ApplyToJoin} />
         <Route path="/chat" component={Chat} />
+        <Route path="/jobs" component={JobsPage} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
