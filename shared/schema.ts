@@ -199,6 +199,30 @@ export const chatInviteRequests = pgTable("chat_invite_requests", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const jobApplications = pgTable("job_applications", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  location: text("location").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  linkedinUrl: text("linkedin_url"),
+  resumeUrl: text("resume_url"),
+  minimumCompensation: integer("minimum_compensation"),
+  noticePeriodWeeks: integer("notice_period_weeks"),
+  valuesAlignment: boolean("values_alignment").default(false),
+  startupYears: integer("startup_years"),
+  paymentSystemsExperience: text("payment_systems_experience"),
+  taxAdvisorExperience: text("tax_advisor_experience"),
+  contractInterpretationLevel: integer("contract_interpretation_level"),
+  investorRelationsExperience: text("investor_relations_experience"),
+  executiveCollaboration: text("executive_collaboration"),
+  motivationStatement: text("motivation_statement").notNull(),
+  referralSource: text("referral_source"),
+  portfolioUrl: text("portfolio_url"),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const privateOfficeRentals = pgTable("private_office_rentals", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -396,6 +420,20 @@ export const insertChatInviteRequestSchema = createInsertSchema(chatInviteReques
   email: z.string().email("Valid email is required").min(1, "Email is required"),
 });
 
+export const insertJobApplicationSchema = createInsertSchema(jobApplications).omit({
+  id: true,
+  status: true,
+  createdAt: true,
+}).extend({
+  name: z.string().min(1, "Name is required"),
+  location: z.string().min(1, "Location is required"),
+  email: z.string().email("Valid email is required").min(1, "Email is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  motivationStatement: z.string().min(50, "Please provide a detailed motivation statement (minimum 50 characters)"),
+  contractInterpretationLevel: z.number().min(1).max(5).optional(),
+  startupYears: z.number().min(0).optional(),
+});
+
 export const insertPrivateOfficeRentalSchema = createInsertSchema(privateOfficeRentals).omit({
   id: true,
   status: true,
@@ -446,6 +484,8 @@ export type MembershipApplication = typeof membershipApplications.$inferSelect;
 export type InsertMembershipApplication = z.infer<typeof insertMembershipApplicationSchema>;
 export type ChatInviteRequest = typeof chatInviteRequests.$inferSelect;
 export type InsertChatInviteRequest = z.infer<typeof insertChatInviteRequestSchema>;
+export type JobApplication = typeof jobApplications.$inferSelect;
+export type InsertJobApplication = z.infer<typeof insertJobApplicationSchema>;
 export type PrivateOfficeRental = typeof privateOfficeRentals.$inferSelect;
 export type InsertPrivateOfficeRental = z.infer<typeof insertPrivateOfficeRentalSchema>;
 export type AuthenticatedMember = typeof authenticatedMembers.$inferSelect;

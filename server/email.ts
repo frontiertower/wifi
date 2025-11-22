@@ -474,6 +474,211 @@ This is an automated notification from Frontier Tower WiFi Portal.
       html,
     });
   }
+
+  async sendJobApplicationNotification(application: {
+    name: string;
+    location: string;
+    email: string;
+    phone: string;
+    linkedinUrl?: string | null;
+    resumeUrl?: string | null;
+    minimumCompensation?: number | null;
+    noticePeriodWeeks?: number | null;
+    valuesAlignment?: boolean | null;
+    startupYears?: number | null;
+    paymentSystemsExperience?: string | null;
+    taxAdvisorExperience?: string | null;
+    contractInterpretationLevel?: number | null;
+    investorRelationsExperience?: string | null;
+    executiveCollaboration?: string | null;
+    motivationStatement: string;
+    referralSource?: string | null;
+    portfolioUrl?: string | null;
+  }): Promise<boolean> {
+    const subject = `New Job Application: ${application.name}`;
+    
+    const text = `
+New Job Application Received
+
+A new job application has been submitted via the Personnel Data Input Terminal.
+
+=== SECTION A: PERSONNEL IDENTIFICATION ===
+Name: ${application.name}
+Location: ${application.location}
+Email: ${application.email}
+Phone: ${application.phone}
+${application.linkedinUrl ? `LinkedIn: ${application.linkedinUrl}` : ""}
+${application.resumeUrl ? `Resume/CV: ${application.resumeUrl}` : ""}
+
+=== SECTION B: OPERATIONAL EXPERIENCE ===
+${application.minimumCompensation ? `Minimum Compensation: $${application.minimumCompensation}/year` : ""}
+${application.noticePeriodWeeks ? `Notice Period: ${application.noticePeriodWeeks} weeks` : ""}
+${application.valuesAlignment !== null ? `Values Alignment: ${application.valuesAlignment ? "CONFIRMED" : "Not confirmed"}` : ""}
+${application.startupYears !== null ? `Startup Experience: ${application.startupYears} years` : ""}
+${application.contractInterpretationLevel ? `Contract Interpretation Level: ${application.contractInterpretationLevel}/5` : ""}
+
+${application.paymentSystemsExperience ? `Payment/Banking Systems Experience:\n${application.paymentSystemsExperience}\n` : ""}
+${application.taxAdvisorExperience ? `Tax Advisor Coordination:\n${application.taxAdvisorExperience}\n` : ""}
+${application.investorRelationsExperience ? `Investor Relations:\n${application.investorRelationsExperience}\n` : ""}
+${application.executiveCollaboration ? `C-Level/Founder Collaboration:\n${application.executiveCollaboration}\n` : ""}
+
+=== SECTION C: CANDIDATE MANIFESTO ===
+Mission Motivation:
+${application.motivationStatement}
+
+${application.referralSource ? `Referral Source: ${application.referralSource}` : ""}
+${application.portfolioUrl ? `Portfolio: ${application.portfolioUrl}` : ""}
+
+---
+This is an automated notification from Frontier Tower Personnel Data Terminal.
+    `.trim();
+
+    const html = `
+      <div style="font-family: 'Courier New', monospace; background: #1a1a1a; color: #00ff00; padding: 20px;">
+        <h2 style="color: #00ff00; border-bottom: 2px solid #00ff00; padding-bottom: 10px;">
+          ⚡ NEW PERSONNEL DATA TRANSMISSION RECEIVED
+        </h2>
+        <p style="color: #88ff88;">A new job application has been submitted via the Personnel Data Input Terminal.</p>
+        
+        <h3 style="color: #00ff00; margin-top: 30px; border-left: 4px solid #00ff00; padding-left: 10px;">
+          SECTION A: PERSONNEL IDENTIFICATION FILE
+        </h3>
+        <table style="border-collapse: collapse; width: 100%; max-width: 700px; margin-top: 15px;">
+          <tr style="background: #0a2a0a;">
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">NAME:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">${application.name}</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">LOCATION:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">${application.location}</td>
+          </tr>
+          <tr style="background: #0a2a0a;">
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">EMAIL:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">${application.email}</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">PHONE:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">${application.phone}</td>
+          </tr>
+          ${application.linkedinUrl ? `
+          <tr style="background: #0a2a0a;">
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">LINKEDIN:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00;"><a href="${application.linkedinUrl}" style="color: #00ffff;">${application.linkedinUrl}</a></td>
+          </tr>
+          ` : ""}
+          ${application.resumeUrl ? `
+          <tr>
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">RESUME/CV:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00;"><a href="${application.resumeUrl}" style="color: #00ffff;">${application.resumeUrl}</a></td>
+          </tr>
+          ` : ""}
+        </table>
+
+        <h3 style="color: #00ff00; margin-top: 30px; border-left: 4px solid #00ff00; padding-left: 10px;">
+          SECTION B: OPERATIONAL EXPERIENCE MATRIX
+        </h3>
+        <table style="border-collapse: collapse; width: 100%; max-width: 700px; margin-top: 15px;">
+          ${application.minimumCompensation ? `
+          <tr style="background: #0a2a0a;">
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">MINIMUM COMPENSATION:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">$${application.minimumCompensation.toLocaleString()}/year</td>
+          </tr>
+          ` : ""}
+          ${application.noticePeriodWeeks !== null && application.noticePeriodWeeks !== undefined ? `
+          <tr>
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">NOTICE PERIOD:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">${application.noticePeriodWeeks} weeks</td>
+          </tr>
+          ` : ""}
+          ${application.valuesAlignment !== null && application.valuesAlignment !== undefined ? `
+          <tr style="background: #0a2a0a;">
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">VALUES ALIGNMENT:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: ${application.valuesAlignment ? '#00ff00' : '#ff6600'}; font-weight: bold;">
+              ${application.valuesAlignment ? '✓ CONFIRMED' : '✗ NOT CONFIRMED'}
+            </td>
+          </tr>
+          ` : ""}
+          ${application.startupYears !== null && application.startupYears !== undefined ? `
+          <tr>
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">STARTUP YEARS:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">${application.startupYears} years</td>
+          </tr>
+          ` : ""}
+          ${application.contractInterpretationLevel ? `
+          <tr style="background: #0a2a0a;">
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">CONTRACT INTERPRETATION:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">${application.contractInterpretationLevel}/5</td>
+          </tr>
+          ` : ""}
+        </table>
+
+        ${application.paymentSystemsExperience || application.taxAdvisorExperience || application.investorRelationsExperience || application.executiveCollaboration ? `
+        <div style="margin-top: 20px;">
+          ${application.paymentSystemsExperience ? `
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #88ff88;">PAYMENT/BANKING SYSTEMS:</strong>
+            <div style="background: #0a2a0a; border: 1px solid #00ff00; padding: 12px; margin-top: 5px; color: #fff; white-space: pre-wrap;">${application.paymentSystemsExperience}</div>
+          </div>
+          ` : ""}
+          ${application.taxAdvisorExperience ? `
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #88ff88;">TAX ADVISOR COORDINATION:</strong>
+            <div style="background: #0a2a0a; border: 1px solid #00ff00; padding: 12px; margin-top: 5px; color: #fff; white-space: pre-wrap;">${application.taxAdvisorExperience}</div>
+          </div>
+          ` : ""}
+          ${application.investorRelationsExperience ? `
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #88ff88;">INVESTOR RELATIONS:</strong>
+            <div style="background: #0a2a0a; border: 1px solid #00ff00; padding: 12px; margin-top: 5px; color: #fff; white-space: pre-wrap;">${application.investorRelationsExperience}</div>
+          </div>
+          ` : ""}
+          ${application.executiveCollaboration ? `
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #88ff88;">C-LEVEL/FOUNDER COLLABORATION:</strong>
+            <div style="background: #0a2a0a; border: 1px solid #00ff00; padding: 12px; margin-top: 5px; color: #fff; white-space: pre-wrap;">${application.executiveCollaboration}</div>
+          </div>
+          ` : ""}
+        </div>
+        ` : ""}
+
+        <h3 style="color: #00ff00; margin-top: 30px; border-left: 4px solid #00ff00; padding-left: 10px;">
+          SECTION C: CANDIDATE MANIFESTO
+        </h3>
+        <div style="background: #0a2a0a; border: 2px solid #00ff00; padding: 15px; margin-top: 15px;">
+          <strong style="color: #88ff88; display: block; margin-bottom: 10px;">MISSION MOTIVATION:</strong>
+          <div style="color: #fff; white-space: pre-wrap; line-height: 1.6;">${application.motivationStatement}</div>
+        </div>
+
+        ${application.referralSource || application.portfolioUrl ? `
+        <table style="border-collapse: collapse; width: 100%; max-width: 700px; margin-top: 20px;">
+          ${application.referralSource ? `
+          <tr style="background: #0a2a0a;">
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">REFERRAL SOURCE:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00; color: #fff;">${application.referralSource}</td>
+          </tr>
+          ` : ""}
+          ${application.portfolioUrl ? `
+          <tr>
+            <td style="padding: 12px; font-weight: bold; border: 1px solid #00ff00; color: #88ff88;">PORTFOLIO:</td>
+            <td style="padding: 12px; border: 1px solid #00ff00;"><a href="${application.portfolioUrl}" style="color: #00ffff;">${application.portfolioUrl}</a></td>
+          </tr>
+          ` : ""}
+        </table>
+        ` : ""}
+
+        <p style="color: #666; font-size: 11px; margin-top: 30px; border-top: 1px solid #00ff00; padding-top: 15px;">
+          ⚡ AUTOMATED TRANSMISSION FROM FRONTIER TOWER PERSONNEL DATA TERMINAL ⚡
+        </p>
+      </div>
+    `;
+
+    return this.sendEmail({
+      to: "events@thefrontiertower.com",
+      subject,
+      text,
+      html,
+    });
+  }
 }
 
 export const emailService = new EmailService();

@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema } from "@shared/schema";
+import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema, insertJobApplicationSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
@@ -2006,6 +2006,46 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to fetch chat invite requests"
+      });
+    }
+  });
+
+  app.post("/api/job-applications", async (req, res) => {
+    try {
+      const validatedData = insertJobApplicationSchema.parse(req.body);
+      
+      const application = await storage.createJobApplication(validatedData);
+      
+      // Send email notification (non-blocking)
+      const { emailService } = await import("./email");
+      emailService.sendJobApplicationNotification(application).catch((error) => {
+        console.error("Failed to send job application notification email:", error);
+      });
+      
+      res.json({ success: true, application });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({
+          success: false,
+          message: error.errors[0]?.message || "Invalid job application data"
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        message: "Failed to create job application"
+      });
+    }
+  });
+
+  app.get("/api/admin/job-applications", verifyAdminSession, async (req, res) => {
+    try {
+      const applications = await storage.getAllJobApplications();
+      res.json({ success: true, applications });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch job applications"
       });
     }
   });
