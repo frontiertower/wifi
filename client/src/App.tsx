@@ -125,9 +125,11 @@ function AppHeader() {
           <WhiteRabbitButton onHomeClick={handleRabbitClick} />
         </div>
       )}
-      <div className="absolute top-6 right-6 z-50">
-        <ThemeToggle />
-      </div>
+      {!shouldHideRabbit && (
+        <div className="absolute top-6 right-6 z-50">
+          <ThemeToggle />
+        </div>
+      )}
     </>
   );
 }
