@@ -115,11 +115,16 @@ function AppHeader() {
     }
   };
 
+  const hideRabbitOn = ["/Regen", "/Finance"];
+  const shouldHideRabbit = hideRabbitOn.includes(location);
+
   return (
     <>
-      <div className="absolute top-6 left-6 z-50">
-        <WhiteRabbitButton onHomeClick={handleRabbitClick} />
-      </div>
+      {!shouldHideRabbit && (
+        <div className="absolute top-6 left-6 z-50">
+          <WhiteRabbitButton onHomeClick={handleRabbitClick} />
+        </div>
+      )}
       <div className="absolute top-6 right-6 z-50">
         <ThemeToggle />
       </div>
