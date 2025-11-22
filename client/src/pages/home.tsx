@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
@@ -8,6 +8,7 @@ import SlidingWelcome from "@/components/SlidingWelcome";
 import frontierTowerQR from "@assets/frontier-tower-qr.png";
 
 type Role = "member" | "guest" | null;
+type PillChoice = "green" | "blue" | null;
 
 interface SuccessData {
   message: string;
@@ -28,6 +29,9 @@ interface UniFiParams {
 export default function Home() {
   const [selectedRole, setSelectedRole] = useState<Role>(null);
   const [unifiParams, setUnifiParams] = useState<UniFiParams>({});
+  const [showPillModal, setShowPillModal] = useState(false);
+  const [isFlashing, setIsFlashing] = useState(false);
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -87,6 +91,22 @@ export default function Home() {
     // Registration complete - no modal needed
   };
 
+  const handleWhiteRabbit = () => {
+    setIsFlashing(true);
+    setTimeout(() => {
+      setShowPillModal(true);
+    }, 500);
+  };
+
+  const handlePillChoice = (choice: PillChoice) => {
+    setShowPillModal(false);
+    if (choice === "green") {
+      setLocation("/green");
+    } else if (choice === "blue") {
+      setLocation("/blue");
+    }
+  };
+
   return (
     <>
       {selectedRole === "member" && (
@@ -98,7 +118,9 @@ export default function Home() {
       )}
 
       {!selectedRole && (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4">
+        <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4 ${isFlashing ? 'screen-flash' : ''}`}
+          onAnimationEnd={() => setIsFlashing(false)}
+        >
         <div className="absolute top-6 right-6">
           <ThemeToggle />
         </div>
@@ -239,7 +261,7 @@ export default function Home() {
               </div>
             </Link>
 
-            <div className="mt-8 text-center">
+            <div className="mt-6 text-center">
               <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Share with your friends
               </p>
@@ -257,8 +279,67 @@ export default function Home() {
                 Scan to visit thefrontiertower.com
               </p>
             </div>
+
+            <button
+              onClick={handleWhiteRabbit}
+              className="w-full mt-4 px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 border-t border-gray-200 dark:border-gray-600 pt-4"
+              data-testid="button-white-rabbit"
+            >
+              Follow the white rabbit
+            </button>
           </div>
         </div>
+
+        {showPillModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 pill-modal-backdrop z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+              <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
+                The Choice is Yours
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-8">
+                Choose your path forward
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => handlePillChoice("green")}
+                  className="flex flex-col items-center justify-center p-6 border-2 border-green-500 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/30 transition-colors duration-200 group"
+                  data-testid="button-green-pill-choice"
+                >
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-2 group-hover:scale-110 transition-transform" />
+                  <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                    GREEN PILL
+                  </span>
+                  <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    Regenerative
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => handlePillChoice("blue")}
+                  className="flex flex-col items-center justify-center p-6 border-2 border-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors duration-200 group"
+                  data-testid="button-blue-pill-choice"
+                >
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 mb-2 group-hover:scale-110 transition-transform" />
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                    BLUE PILL
+                  </span>
+                  <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    Accelerationist
+                  </span>
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowPillModal(false)}
+                className="w-full mt-6 px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+                data-testid="button-cancel-pill"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
         </div>
       )}
     </>

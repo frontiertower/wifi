@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Screen flash and flicker animation */
+@keyframes screenFlash {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.3;
+  }
+}
+
+.screen-flash {
+  animation: screenFlash 0.15s ease-in-out 8 !important;
+}
+
+.pill-modal-backdrop {
+  animation: flicker 0.3s ease-in-out 1;
+}
+
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
