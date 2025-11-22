@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Building2, User, Users, Upload, X } from "lucide-react";
+import { ArrowLeft, Building2, User, Users, Upload, X, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { DirectoryListing } from "@shared/schema";
+import { QRCodeSVG } from "qrcode.react";
 
 type ListingType = "company" | "person" | "community";
 
@@ -21,6 +22,7 @@ export default function AddListing() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const [showSuccess, setShowSuccess] = useState(false);
   const [listingType, setListingType] = useState<ListingType>("company");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -58,11 +60,7 @@ export default function AddListing() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/directory"] });
-      toast({
-        title: "Success",
-        description: "Directory listing added successfully",
-      });
-      setLocation("/directory");
+      setShowSuccess(true);
     },
     onError: () => {
       toast({
@@ -181,6 +179,100 @@ export default function AddListing() {
     }
     return formData.firstName.trim().length > 0 && formData.lastName.trim().length > 0;
   };
+
+  // Get the full URL for the QR code
+  const addListingUrl = `${window.location.origin}/addlisting`;
+
+  // If showing success screen
+  if (showSuccess) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
+
+        <div className="max-w-2xl mx-auto">
+          <Card>
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                <PartyPopper className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+              <CardTitle className="text-2xl">Listing Added Successfully!</CardTitle>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                Your listing has been added to the Frontier Tower directory.
+              </p>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h3 className="text-lg font-semibold text-center mb-2">
+                  Help Build Our Community!
+                </h3>
+                <p className="text-center text-gray-700 dark:text-gray-300 mb-4">
+                  Scan this QR code to invite 2 more people to create their listing
+                </p>
+                
+                <div className="flex justify-center mb-4">
+                  <div className="bg-white p-4 rounded-lg shadow-md" data-testid="qr-code-container">
+                    <QRCodeSVG 
+                      value={addListingUrl}
+                      size={200}
+                      level="H"
+                      includeMargin={true}
+                    />
+                  </div>
+                </div>
+
+                <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
+                  Share this QR code with colleagues and neighbors to grow our building directory!
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => {
+                    setShowSuccess(false);
+                    setFormData({
+                      companyName: "",
+                      contactPerson: "",
+                      communityName: "",
+                      firstName: "",
+                      lastName: "",
+                      parentCommunityId: "",
+                      floor: "",
+                      officeNumber: "",
+                      phone: "",
+                      telegramUsername: "",
+                      email: "",
+                      website: "",
+                      linkedinUrl: "",
+                      twitterHandle: "",
+                      logoUrl: "",
+                      description: "",
+                    });
+                    setLogoFile(null);
+                    setLogoPreview(null);
+                  }}
+                  variant="outline"
+                  className="flex-1"
+                  data-testid="button-add-another"
+                >
+                  Add Another Listing
+                </Button>
+                <Button
+                  onClick={() => setLocation("/directory")}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  data-testid="button-view-directory"
+                >
+                  View Directory
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
