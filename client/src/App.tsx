@@ -57,7 +57,7 @@ function Router() {
         <Route path="/chat" component={Chat} />
         <Route path="/Regen" component={HiringPage} />
         <Route path="/Finance" component={FinancePage} />
-        <Route path="/pills" component={PillsPage} />
+        <Route path="/rabbit" component={PillsPage} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />

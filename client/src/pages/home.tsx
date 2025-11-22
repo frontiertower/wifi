@@ -297,7 +297,7 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/pills"
+              href="/rabbit"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 text-left group block"
               data-testid="button-careers"
             >
