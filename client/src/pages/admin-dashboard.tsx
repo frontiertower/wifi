@@ -688,7 +688,7 @@ export default function AdminDashboard() {
                     data-testid="button-create-event"
                   >
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Event
+                    Import Events
                   </Button>
                 </div>
               </div>

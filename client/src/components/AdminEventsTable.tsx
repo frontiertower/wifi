@@ -52,7 +52,7 @@ export default function AdminEventsTable() {
             data-testid="button-create-event"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Create Event
+            Import Events
           </Button>
         </div>
 
@@ -117,7 +117,7 @@ export default function AdminEventsTable() {
                 />
               </div>
               <Button onClick={handleCreateEvent} data-testid="button-save-event">
-                Create Event
+                Import Events
               </Button>
             </div>
           </Card>
