@@ -99,19 +99,19 @@ export default function CareersPage() {
             </Link>
           </div>
 
-          {/* Post a Job Button - Admin Only */}
+          {/* Post a Job Button */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2" data-testid="button-post-job">
-                <Shield className="w-4 h-4" />
-                Post a Job (Admin)
+                <Plus className="w-4 h-4" />
+                Post a Job
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="dialog-post-job">
               <DialogHeader>
                 <DialogTitle data-testid="text-dialog-title">Post a Job Listing</DialogTitle>
                 <DialogDescription>
-                  Fill out the form below to add a new job opportunity to the careers board. Admin access required.
+                  Fill out the form below to add a new job opportunity to the careers board.
                 </DialogDescription>
               </DialogHeader>
               

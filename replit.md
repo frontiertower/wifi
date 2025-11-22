@@ -2,7 +2,7 @@
 
 ## Overview
 
-Frontier Tower WiFi Portal is a captive portal application designed to manage WiFi access for a multi-tenant building, specifically supporting members, guests, and event attendees. It integrates with UniFi network controllers for user authorization and network usage tracking. The system features a user-facing registration portal that showcases AI projects (Omi.me, modelcontextprotocol-security.io, safemode.dev) and an administrative dashboard for comprehensive access management, event handling, and analytics. The project's core purpose is to provide a modern, efficient, and scalable WiFi access control solution, enhancing user experience and administrative oversight within an AI-focused environment.
+The Frontier Tower WiFi Portal is a captive portal application designed to manage WiFi access for a multi-tenant building, catering to members, guests, and event attendees. It integrates with UniFi network controllers for user authorization and network usage tracking. The system comprises a user-facing registration portal that showcases AI projects (Omi.me, modelcontextprotocol-security.io, safemode.dev) and an administrative dashboard for comprehensive access management, event handling, and analytics. The project's core purpose is to provide a modern, efficient, and scalable WiFi access control solution, enhancing user experience and administrative oversight within an AI-focused environment. This platform aims to foster community growth and streamline operations for the Frontier Tower.
 
 ## User Preferences
 
@@ -10,56 +10,35 @@ Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
-### Frontend Architecture
+### Frontend
 
-*   **Framework**: React 18 with TypeScript, using Vite.
-*   **UI Component System**: shadcn/ui built on Radix UI and Tailwind CSS, adhering to a "new-york" style.
-*   **Design Philosophy**: Mobile-first, progressive disclosure, focusing on clarity and trust with Inter or DM Sans fonts and a neutral color scheme.
-*   **State Management**: TanStack Query for server state, React Hook Form with Zod for form management.
-*   **Routing**: Wouter for client-side routing, distinguishing between public portal, events, past events, and admin dashboard.
+The frontend is built with React 18 and TypeScript using Vite. It utilizes `shadcn/ui` based on Radix UI and Tailwind CSS, following a "new-york" style, with a mobile-first design philosophy. State management is handled by TanStack Query for server state and React Hook Form with Zod for form validation. Wouter is used for client-side routing across public portals, events, and the admin dashboard.
 
-### Backend Architecture
+### Backend
 
-*   **Runtime**: Node.js with Express.js.
-*   **API Design**: RESTful endpoints including role-specific registration and administrative routes.
-*   **Session Management**: Express session middleware with a PostgreSQL-backed store.
-*   **Network Integration**: Mock UniFi controller service for simulating guest authorization, supporting both modern and legacy UniFi API specifications.
+The backend is powered by Node.js with Express.js, providing RESTful API endpoints. Session management uses Express session middleware with a PostgreSQL store. A mock UniFi controller service simulates guest authorization, supporting modern and legacy UniFi API specifications.
 
 ### Data Storage
 
-*   **Database**: PostgreSQL via Neon's serverless driver.
-*   **ORM**: Drizzle ORM with TypeScript schema definitions.
-*   **Schema Design**: Includes tables for admin users, captive WiFi users, events, bookings, tour bookings, event host bookings, membership applications, chat invite requests, user sessions, directory listings (supporting company, community, and person types with communityName and parentCommunityId fields for hierarchical organization), and UniFi configuration settings.
-*   **Validation**: Drizzle-Zod integration for consistent schema validation.
+PostgreSQL, accessed via Neon's serverless driver, is the chosen database. Drizzle ORM with TypeScript schema definitions manages the data, including tables for admin users, captive WiFi users, events, bookings, directory listings (companies, communities, persons with hierarchical support), and UniFi configurations. Drizzle-Zod ensures consistent schema validation.
 
 ### UI/UX Decisions
 
-*   **Admin Dashboard**: Mobile-optimized with sticky navigation, responsive data tables, stat cards, and form layouts. Tab-based navigation includes Analytics, Users, Events, Bookings, Directory, and Settings tabs with hash-based routing (e.g., /admin#directory). The Analytics tab includes a 2D building visualization map showing user distribution across all 14 floors, plus comprehensive event analytics with stat cards (total events, past events, upcoming events) and a weekly events bar chart showing distribution over the last 12 weeks. Header includes a logout button (with icon and text on desktop, icon-only on mobile) that redirects to the home page.
-*   **Theming**: Full dark mode support with automatic time-based switching. Dark mode is automatically enabled after 6pm and light mode after 6am. Users can manually override the theme at any time using the theme toggle, and their preference is saved.
-*   **Analytics**: Comprehensive dashboard with lifetime and daily counters, featuring a 4 AM daily reset. Event analytics section displays total, past, and upcoming event counts (all filtering out hidden events for consistency), plus a recharts-powered bar graph showing events per week for the last 12 weeks using ISO week grouping.
-*   **Badges**: Colored role-type badges for members, guests, and events in the admin dashboard.
-*   **Directory UI**: Gear icon-only admin button positioned top-right next to theme toggle. Expandable listing cards with logos, descriptions, and edit buttons in expanded view. Responsive layout: single-column horizontal cards on desktop (descriptions visible inline), vertical compact cards on mobile (descriptions shown on expand). Floor/office sorting: hierarchical two-level sort by floor number first, then office number within each floor. Filter buttons allow filtering by listing type: All, Companies, Communities, or People.
-*   **Admin Directory Management**: Full CRUD directory management integrated as a tab in the admin dashboard. Features inline editing (click Edit → modify fields → Save/Cancel), delete with confirmation dialog, and "Add New Listing" button. All directory fields editable including LinkedIn URL and Twitter handle. Accessible via /admin#directory. Profile completion percentages are displayed only in the admin dashboard (not on public directory page) as color-coded badges next to listing names: green (≥80%), yellow (50-79%), red (<50%). Completion is calculated based on filled fields specific to each listing type (company, community, or person).
+The Admin Dashboard is mobile-optimized with sticky navigation, responsive data tables, and tab-based navigation (Analytics, Users, Events, Bookings, Directory, Settings). It features a 2D building visualization for user distribution and comprehensive event analytics. Theming includes full dark mode support with automatic time-based switching and manual override. The Directory UI offers filterable, expandable listing cards with admin CRUD capabilities. Profile completion percentages are displayed in the admin dashboard.
 
 ### Technical Implementations
 
-*   **Admin Authentication System**: Password-based authentication for admin dashboard access with session management and role-based access control (Owner/Staff roles). Admin credentials are configured via environment variables (ADMIN_OWNER_PASSWORD, ADMIN_STAFF_PASSWORD) with development fallbacks for ease of testing. Session verification middleware protects all admin routes, including sensitive data endpoints for bookings, applications, and directory management. Login sessions are tracked in the admin_logins table with email, role, login time, and session token. Admin dashboard includes session checking with automatic redirect to login page, logout functionality, and an "Admin Logins" tab displaying all admin login history.
-*   **Hero Section & Branding**: Portal homepage highlights AI, Agents, and LLMs focus.
-*   **External Events Feed Integration**: API endpoint `/api/external-events` proxies Luma events from an external timeline service. An admin endpoint `/api/admin/events/sync` automatically syncs events from this feed with idempotent upserts and includes automatic cleanup of duplicate events without URLs. URL extraction logic uses regex to capture Luma URLs from event descriptions (both `lu.ma` and `luma.com` formats) since the external API embeds URLs in description text rather than providing a separate URL field. The sync process automatically deletes events without Luma URLs before syncing new events to maintain data quality. Event deduplication uses aggressive normalization (removes all punctuation, normalizes whitespace, case-insensitive) to catch duplicates with minor variations in quotation marks, hyphens, or formatting.
-*   **UniFi Captive Portal Compliance**: Correctly implements UniFi External Captive Portal specification with redirect-based authorization, MAC address extraction, and dual-path API support.
-*   **UniFi Configuration**: Dedicated settings tab in admin dashboard for UniFi controller integration.
-*   **Event Management**: AI-powered bulk event import using OpenAI GPT-4o. Public events page displays upcoming and past events, with Luma integration for event URLs. Event images are downloaded from external sources and saved locally to `/uploads/events` for better performance and reliability. Image download system includes comprehensive security controls: streaming with size limits (10MB max), file signature validation (JPEG, PNG, GIF, WebP), abort controller for timeout protection (30s max), and production-ready error handling. All event images are served via secure Express routes with path traversal protection. Events use soft delete architecture with an `isHidden` field - deleted events are marked hidden instead of permanently removed, allowing admins to see deletion history. Hidden events display grayed out with a "Hidden" badge and disabled Details button in the admin dashboard.
-*   **Daily Counters**: Atomic SQL upserts for daily guest registration counts.
-*   **Unified Guest Form**: Combines guest registration types (Tower Member, Guest of a Member, Guest at Event) into a single progressive disclosure form with conditional fields and multi-step password verification. Flow progression: Form → Password Screen → Congratulations Page. Supports dual default passwords ("makesomething" and "frontiertower995") when no custom admin password is set. Error recovery preserves form data and allows password retry without data loss. Tower Member option includes floor selection dropdown populated from directory listings.
-*   **Booking System**: A `/booking` route allows users to book events/meetings, supporting both existing events and custom events, with comprehensive organizer details and multi-layer validation.
-*   **Tour Booking System**: A `/tour` route enables visitors to schedule building tours with date/time selection, contact information, and optional private office inquiry. Features conditional form fields that appear when users express interest in private office spaces, including number of people input with Zod validation refinement. Group tours are automatically filtered to hide past events, showing only upcoming tours or the custom tour request option.
-*   **Building Directory**: A `/directory` route displays all building tenants (companies, communities, and individuals) with location (floor/office) and contact information (phone, email, telegram, website). Features filter buttons to show all listings or filter by type (Companies, Communities, People). Each listing can be associated with a parent community for hierarchical organization. A `/addlisting` form allows users to add new directory entries (company, community, or person) with a dropdown to select parent community, all with backend validation ensuring data integrity. After successful listing creation, users see a success page with a QR code linking to /addlisting and an encouraging message to invite 2 more people to create their listings, fostering community growth.
-*   **Unique Edit URLs**: Each directory listing has a unique slug-based edit URL (e.g., `/directory/edit/makerspace`) derived from the listing name. Slugs are generated by converting names to lowercase, removing special characters, and replacing spaces with hyphens. Edit links appear in expanded directory cards.
-*   **Membership Inquiry System**: A `/apply-to-join` route enables prospective members to submit membership inquiries with comprehensive contact and professional information. The form collects name, email, phone (required), plus optional fields for Telegram, LinkedIn, company, and website. Inquiries are stored with a "pending" status for admin review. Features full validation on both frontend and backend, success toast notifications, and automatic redirect after submission.
-*   **Chat Invite Request System**: A `/chat` route allows visitors to request an invitation to the Frontier Tower Telegram community. The form collects name, phone, email (all required), and LinkedIn (optional). All requests are stored in the database and trigger automated email notifications to events@thefrontiertower.com with the requester's details and the Telegram invite link (https://t.me/+M0KxFTd3LnJkNzky). Email notifications are non-blocking and use the Resend integration.
-*   **Email Notifications**: Integrated with Resend for transactional emails. All booking and application submissions (tour bookings, membership applications, chat invite requests) automatically send detailed email notifications to events@thefrontiertower.com. Email service uses dynamic imports and non-blocking async operations with error logging.
-*   **Member Authentication**: OAuth 2.0 integration with Frontier Tower authentication server (api.berlinhouse.com) for member login. Implements PKCE flow for enhanced security, automatic token refresh, cookie-based session management, and user info retrieval. Member Login button in header shows authentication state and user info when logged in. Requires FT_OAUTH_CLIENT_ID, FT_OAUTH_CLIENT_SECRET, and FT_OAUTH_REDIRECT_URI environment variables.
-*   **Jobs/Recruitment System**: A `/jobs` route provides a retro-futuristic terminal-themed application form for Head of Finance position recruitment. Features three comprehensive sections: Personnel Identification File (name, location, contact, credentials), Operational Experience Matrix (compensation, experience ratings, qualifications), and Candidate Manifesto (motivation, referral source, portfolio). The design uses a custom terminal/console aesthetic with blueprint grid background, glowing green (#00ff00) terminal inputs, industrial button styling, and monospace typography. Form includes advanced UI elements: 1-5 slider for contract interpretation level, checkbox for values alignment, textareas for detailed experience descriptions, and dropdown for referral source selection. All job applications are stored in the jobApplications table and trigger automated email notifications to events@thefrontiertower.com. Success screen displays transmission status with encouraging messaging and directs applicants to return to main portal. Terminal CSS is scoped to prevent interference with other pages while maintaining full dark/light theme compatibility.
+*   **Admin Authentication**: Password-based authentication with session management and role-based access control (Owner/Staff), including login history tracking.
+*   **External Events Integration**: Proxies and syncs Luma events from an external service, including URL extraction and robust deduplication.
+*   **UniFi Captive Portal Compliance**: Implements UniFi External Captive Portal specification with redirect-based authorization and MAC address extraction.
+*   **Event Management**: Supports AI-powered bulk event import using OpenAI GPT-4o. Event images are downloaded, secured, and served locally. Events use a soft-delete architecture.
+*   **Guest Management**: Features a unified progressive disclosure guest registration form with conditional fields, multi-step password verification, and error recovery.
+*   **Booking Systems**: Dedicated routes for event/meeting bookings (`/booking`) and building tours (`/tour`), including conditional fields and validation.
+*   **Building Directory**: Displays tenant information with filtering and a `/addlisting` form for user-submitted entries, including unique slug-based edit URLs.
+*   **Membership & Chat Requests**: Routes for membership inquiries (`/apply-to-join`) and Telegram chat invite requests (`/chat`), with data storage and automated email notifications via Resend.
+*   **Member Authentication**: OAuth 2.0 integration with Frontier Tower authentication server, implementing PKCE flow, token refresh, and cookie-based sessions.
+*   **Jobs/Recruitment**: A `/jobs` route offers a retro-futuristic, terminal-themed application for internal positions, storing applications and sending email notifications.
+*   **Careers Board**: A `/careers` route displays community job listings with public posting capabilities and featured opportunities, managed via API endpoints.
 
 ## External Dependencies
 
@@ -70,5 +49,5 @@ Preferred communication style: Simple, everyday language.
 *   **Development Tools**: Vite, TypeScript, ESBuild.
 *   **Date & Time**: date-fns.
 *   **Network Integration**: UniFi Controller API (mocked).
-*   **AI Integration**: OpenAI GPT-4o (via Replit AI Integrations) for event parsing.
-*   **Email Service**: Resend (via Replit connectors) for transactional email notifications.
+*   **AI Integration**: OpenAI GPT-4o (for event parsing).
+*   **Email Service**: Resend (for transactional emails).

@@ -191,7 +191,7 @@ export default function FinancePage() {
               textAlign: 'center',
             }}>
               <div className="mb-1 border-b border-white pb-1">RECRUITMENT</div>
-              <div style={{ fontSize: '9px' }}>2024-2025</div>
+              <div style={{ fontSize: '9px' }}>2026</div>
             </div>
           </div>
         </div>

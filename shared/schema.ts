@@ -284,6 +284,7 @@ export const jobListings = pgTable("job_listings", {
   contactEmail: text("contact_email"),
   isActive: boolean("is_active").default(true),
   isFeatured: boolean("is_featured").default(false),
+  isApproved: boolean("is_approved").default(false),
   createdBy: text("created_by"),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -479,12 +480,18 @@ export const insertJobListingSchema = createInsertSchema(jobListings).omit({
   createdAt: true,
   isActive: true,
   isFeatured: true,
+  isApproved: true,
 }).extend({
-  title: z.string().min(1, "Job title is required"),
-  company: z.string().min(1, "Company name is required"),
-  location: z.string().min(1, "Location is required"),
+  title: z.string().min(1, "Job title is required").max(200, "Job title must be less than 200 characters"),
+  company: z.string().min(1, "Company name is required").max(100, "Company name must be less than 100 characters"),
+  location: z.string().min(1, "Location is required").max(100, "Location must be less than 100 characters"),
   type: z.string().min(1, "Job type is required"),
-  description: z.string().min(50, "Please provide a detailed job description (minimum 50 characters)"),
+  description: z.string().min(50, "Please provide a detailed job description (minimum 50 characters)").max(2000, "Description must be less than 2000 characters"),
+  requirements: z.string().max(1000, "Requirements must be less than 1000 characters").optional(),
+  salary: z.string().max(100, "Salary range must be less than 100 characters").optional(),
+  applyUrl: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+  contactEmail: z.string().email("Please enter a valid email").optional().or(z.literal("")),
+  createdBy: z.string().max(100, "Name must be less than 100 characters").optional(),
 });
 
 // Types

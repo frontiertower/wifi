@@ -2057,7 +2057,7 @@ Rules:
     }
   });
 
-  app.post("/api/job-listings", verifyAdminSession, async (req, res) => {
+  app.post("/api/job-listings", async (req, res) => {
     try {
       const validatedData = insertJobListingSchema.parse(req.body);
       
