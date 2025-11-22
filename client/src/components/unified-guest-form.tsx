@@ -490,7 +490,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   <Button
                     asChild
                     variant="default"
-                    className="w-full"
+                    className="w-full mb-4"
                     data-testid="button-install-wifi-profile"
                   >
                     <a href="/api/wifi-profile">
@@ -500,50 +500,28 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                       Install WiFi Profile
                     </a>
                   </Button>
-                </div>
+                  
+                  <Button
+                    onClick={() => setShowInstructions(!showInstructions)}
+                    variant="ghost"
+                    className="w-full flex items-center justify-between text-left p-2 h-auto"
+                    data-testid="button-toggle-instructions"
+                  >
+                    <div className="text-left">
+                      <h4 className="font-medium text-sm text-blue-900 dark:text-blue-100">How to Install WiFi Profile</h4>
+                      <p className="text-xs text-blue-800 dark:text-blue-200">
+                        Step-by-step installation guide
+                      </p>
+                    </div>
+                    {showInstructions ? (
+                      <ChevronUp className="w-4 h-4 text-blue-800 dark:text-blue-200 flex-shrink-0" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-blue-800 dark:text-blue-200 flex-shrink-0" />
+                    )}
+                  </Button>
 
-                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-2 border-gray-300 dark:border-gray-700 rounded-lg">
-                  <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">
-                    Option 2: Manual Connection (All Devices)
-                  </p>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                    Connect to WiFi using these credentials:
-                  </p>
-                  <div className="bg-white dark:bg-gray-900/50 rounded p-3 text-sm">
-                    <p className="text-gray-900 dark:text-gray-100">
-                      <strong>Network:</strong> FrontierTower
-                    </p>
-                    <p className="text-gray-900 dark:text-gray-100">
-                      <strong>Password:</strong> frontiertower995
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden p-6">
-            <Button
-              onClick={() => setShowInstructions(!showInstructions)}
-              variant="ghost"
-              className="w-full flex items-center justify-between text-left p-4 h-auto"
-              data-testid="button-toggle-instructions"
-            >
-              <div className="text-left">
-                <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">How to Install WiFi Profile (iOS)</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Follow these steps to automatically connect in the future
-                </p>
-              </div>
-              {showInstructions ? (
-                <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400 flex-shrink-0" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400 flex-shrink-0" />
-              )}
-            </Button>
-
-            {showInstructions && (
-              <div className="mt-6 space-y-6" data-testid="wifi-instructions">
+                  {showInstructions && (
+                    <div className="mt-4 space-y-4" data-testid="wifi-instructions">
                 <div className="space-y-3">
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold" data-testid="badge-step-1">
@@ -624,10 +602,30 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   </div>
                 </div>
 
-                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mt-6">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    <strong>Note:</strong> Once installed, your device will automatically connect to FrontierTower WiFi whenever you're in the building!
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mt-2">
+                        <p className="text-sm text-blue-700 dark:text-blue-200">
+                          <strong>Note:</strong> Once installed, your device will automatically connect to FrontierTower WiFi whenever you're in the building!
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-2 border-gray-300 dark:border-gray-700 rounded-lg">
+                  <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">
+                    Option 2: Manual Connection (All Devices)
                   </p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                    Connect to WiFi using these credentials:
+                  </p>
+                  <div className="bg-white dark:bg-gray-900/50 rounded p-3 text-sm">
+                    <p className="text-gray-900 dark:text-gray-100">
+                      <strong>Network:</strong> FrontierTower
+                    </p>
+                    <p className="text-gray-900 dark:text-gray-100">
+                      <strong>Password:</strong> frontiertower995
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
