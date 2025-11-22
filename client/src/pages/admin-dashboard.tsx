@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -458,6 +458,25 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
               <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.location.href = "/"}
+                data-testid="button-logout"
+                className="hidden sm:flex"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.location.href = "/"}
+                data-testid="button-logout-mobile"
+                className="sm:hidden"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
               <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hidden md:block">Last login: Today, 2:30 PM</div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
