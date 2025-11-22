@@ -52,11 +52,11 @@ export default function CareersPage() {
     mutationFn: async (data: JobListingFormData) => {
       return await apiRequest("POST", "/api/job-listings", data);
     },
-    onSuccess: () => {
+    onSuccess: (response: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/job-listings"] });
       toast({
         title: "Success!",
-        description: "Your job listing has been posted.",
+        description: response.message || "Your job listing has been submitted for approval.",
       });
       form.reset();
       setIsDialogOpen(false);
