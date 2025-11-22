@@ -131,8 +131,8 @@ export default function HiringPage() {
               </Button>
             </Link>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-center text-terminal-green terminal-glow mb-2 terminal-text">
-            HEAD OF FINANCE: HIRING PROTOCOL
+          <h1 className="text-3xl md:text-4xl font-bold text-center text-terminal-green terminal-glow mb-2 terminal-text">
+            HEAD OF FINANCE HIRING
           </h1>
           <p className="text-center text-terminal-dim text-sm md:text-base">
             FRONTIER TOWER RECRUITMENT • JOIN OUR TEAM
