@@ -31,6 +31,7 @@ export default function Home() {
   const [showPillModal, setShowPillModal] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
   const [crackIntensity, setCrackIntensity] = useState(0);
+  const [showTerminal, setShowTerminal] = useState(false);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
@@ -111,6 +112,7 @@ export default function Home() {
   useEffect(() => {
     if (!showPillModal) {
       setCrackIntensity(0);
+      setShowTerminal(false);
       return;
     }
 
@@ -118,6 +120,8 @@ export default function Home() {
       setCrackIntensity((prev) => {
         if (prev >= 10) {
           clearInterval(interval);
+          // Show terminal after black hole animation completes (2 seconds)
+          setTimeout(() => setShowTerminal(true), 2000);
           return 10;
         }
         return prev + 1;
@@ -393,44 +397,56 @@ export default function Home() {
               </>
             )}
             
-            <div className={`bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative ${crackIntensity >= 9 ? 'black-hole-pull' : 'z-10'}`}>
-              <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
-                The Choice is Yours
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-8">
-                Choose your path forward
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  onClick={() => handlePillChoice("green")}
-                  className="flex flex-col items-center justify-center p-6 border-2 border-green-500 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/30 transition-colors duration-200 group"
-                  data-testid="button-green-pill-choice"
-                >
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-bold text-green-600 dark:text-green-400">
-                    GREEN PILL
-                  </span>
-                  <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                    Regenerative
-                  </span>
-                </button>
+            {!showTerminal && (
+              <div className={`bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative ${crackIntensity >= 9 ? 'black-hole-pull' : 'z-10'}`}>
+                <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
+                  The Choice is Yours
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-8">
+                  Choose your path forward
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => handlePillChoice("green")}
+                    className="flex flex-col items-center justify-center p-6 border-2 border-green-500 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/30 transition-colors duration-200 group"
+                    data-testid="button-green-pill-choice"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-2 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                      GREEN PILL
+                    </span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      Regenerative
+                    </span>
+                  </button>
 
-                <button
-                  onClick={() => handlePillChoice("blue")}
-                  className="flex flex-col items-center justify-center p-6 border-2 border-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors duration-200 group"
-                  data-testid="button-blue-pill-choice"
-                >
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                    BLUE PILL
-                  </span>
-                  <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                    Accelerationist
-                  </span>
-                </button>
+                  <button
+                    onClick={() => handlePillChoice("blue")}
+                    className="flex flex-col items-center justify-center p-6 border-2 border-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors duration-200 group"
+                    data-testid="button-blue-pill-choice"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 mb-2 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                      BLUE PILL
+                    </span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      Accelerationist
+                    </span>
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Terminal reboot screen */}
+            {showTerminal && (
+              <div className="absolute inset-0 bg-black flex items-center justify-center z-20">
+                <div className="text-center font-mono text-2xl md:text-4xl">
+                  <span className="terminal-text typing-reboot">reboot</span>
+                  <span className="terminal-cursor">_</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
         </div>
