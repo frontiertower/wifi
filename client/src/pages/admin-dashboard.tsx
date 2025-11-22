@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut, Briefcase, Check, Star } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -98,6 +98,11 @@ interface DirectoryListingsResponse {
   listings: DirectoryListing[];
 }
 
+interface JobListingsResponse {
+  success: boolean;
+  listings: any[];
+}
+
 interface AdminSessionResponse {
   authenticated: boolean;
   role?: 'owner' | 'staff';
@@ -160,7 +165,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the # symbol
-      if (hash && ['users', 'events', 'analytics', 'leads', 'directory', 'settings', 'admin-logins'].includes(hash)) {
+      if (hash && ['users', 'events', 'analytics', 'leads', 'careers', 'directory', 'settings', 'admin-logins'].includes(hash)) {
         setActiveTab(hash as Tab);
       } else if (hash === 'location') {
         // Redirect old location tab to analytics
@@ -239,6 +244,11 @@ export default function AdminDashboard() {
     enabled: activeTab === "directory",
   });
 
+  const { data: jobListingsData } = useQuery<JobListingsResponse>({
+    queryKey: ["/api/admin/job-listings"],
+    enabled: activeTab === "careers",
+  });
+
   const updateDirectoryMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<DirectoryListing> }) => {
       return apiRequest("PATCH", `/api/directory/${id}`, data);
@@ -271,6 +281,66 @@ export default function AdminDashboard() {
       toast({
         title: "Success",
         description: "Directory listing deleted successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete listing",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const approveJobListingMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("PATCH", `/api/admin/job-listings/${id}/approve`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/job-listings"] });
+      toast({
+        title: "Success",
+        description: "Job listing approved successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to approve listing",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const toggleFeaturedJobMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("PATCH", `/api/admin/job-listings/${id}/toggle-featured`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/job-listings"] });
+      toast({
+        title: "Success",
+        description: "Featured status updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update featured status",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteJobListingMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("DELETE", `/api/admin/job-listings/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/job-listings"] });
+      toast({
+        title: "Success",
+        description: "Job listing deleted successfully",
       });
     },
     onError: (error: any) => {
@@ -529,6 +599,7 @@ export default function AdminDashboard() {
     { id: "users", label: "Users", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
     { id: "leads", label: "Leads", icon: ClipboardList },
+    { id: "careers", label: "Careers", icon: Briefcase },
     { id: "directory", label: "Directory", icon: Building2 },
     { id: "settings", label: "WiFi", icon: Wifi },
     { id: "admin-logins", label: "Admin Logins", icon: LogOut },
@@ -1720,6 +1791,121 @@ export default function AdminDashboard() {
                           <TableCell>{booking.organizerLinkedIn || 'N/A'}</TableCell>
                           <TableCell className="text-sm text-gray-500">
                             {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === "careers" && (
+          <div className="space-y-6">
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    Job Listings Management
+                  </h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Approve, feature, and manage job listings
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => window.location.href = "/careers"}
+                  data-testid="button-view-careers-page"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  View Careers Page
+                </Button>
+              </div>
+
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Company</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Featured</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {!jobListingsData?.listings || jobListingsData.listings.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
+                          No job listings yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      jobListingsData.listings.map((listing: any) => (
+                        <TableRow key={listing.id} data-testid={`job-listing-${listing.id}`}>
+                          <TableCell className="font-medium">{listing.title}</TableCell>
+                          <TableCell>{listing.company}</TableCell>
+                          <TableCell>
+                            {listing.isApproved ? (
+                              <Badge variant="default" className="bg-green-600">
+                                <Check className="w-3 h-3 mr-1" />
+                                Approved
+                              </Badge>
+                            ) : (
+                              <Badge variant="secondary">
+                                Pending
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {listing.isFeatured && (
+                              <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{listing.type}</Badge>
+                          </TableCell>
+                          <TableCell className="text-sm">{listing.location}</TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {listing.createdAt ? new Date(listing.createdAt).toLocaleString() : 'N/A'}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              {!listing.isApproved && (
+                                <Button
+                                  size="sm"
+                                  onClick={() => approveJobListingMutation.mutate(listing.id)}
+                                  disabled={approveJobListingMutation.isPending}
+                                  data-testid={`button-approve-${listing.id}`}
+                                >
+                                  <Check className="w-4 h-4 mr-1" />
+                                  Approve
+                                </Button>
+                              )}
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => toggleFeaturedJobMutation.mutate(listing.id)}
+                                disabled={toggleFeaturedJobMutation.isPending}
+                                data-testid={`button-toggle-featured-${listing.id}`}
+                              >
+                                <Star className={`w-4 h-4 ${listing.isFeatured ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => deleteJobListingMutation.mutate(listing.id)}
+                                disabled={deleteJobListingMutation.isPending}
+                                data-testid={`button-delete-${listing.id}`}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))
