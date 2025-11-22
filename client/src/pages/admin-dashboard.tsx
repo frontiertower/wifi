@@ -847,7 +847,6 @@ export default function AdminDashboard() {
                   <TableHead>Date</TableHead>
                   <TableHead>Host</TableHead>
                   <TableHead>Location</TableHead>
-                  <TableHead>Created At</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -871,7 +870,7 @@ export default function AdminDashboard() {
                   if (filteredEvents.length === 0) {
                     return (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
                           No {eventFilter} events found.
                         </TableCell>
                       </TableRow>
@@ -892,7 +891,7 @@ export default function AdminDashboard() {
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-sm max-w-xs truncate" title={event.description}>
+                        <TableCell className="text-sm max-w-xs whitespace-normal">
                           {event.description || "-"}
                         </TableCell>
                         <TableCell className="text-sm whitespace-nowrap">
@@ -903,9 +902,6 @@ export default function AdminDashboard() {
                         </TableCell>
                         <TableCell className="text-sm">
                           {event.originalLocation || "-"}
-                        </TableCell>
-                        <TableCell className="text-sm whitespace-nowrap">
-                          {event.createdAt ? new Date(event.createdAt).toLocaleDateString() : "-"}
                         </TableCell>
                         <TableCell>
                           <div className="flex space-x-2">
