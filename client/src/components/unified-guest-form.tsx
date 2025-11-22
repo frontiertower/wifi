@@ -318,7 +318,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         type: "member",
         data: formData
       });
-      setFlowStep('password');
+      setFlowStep('congrats');
     } else if (guestType === "tower_member") {
       if (!formData.floor) {
         toast({
@@ -332,13 +332,13 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         type: "tower_member",
         data: formData
       });
-      setFlowStep('password');
+      setFlowStep('congrats');
     } else if (guestType === "visitor") {
       setPendingRegistrationData({
         type: "visitor",
         data: formData
       });
-      setFlowStep('password');
+      setFlowStep('congrats');
     } else if (guestType === "event") {
       if (!isValidEvent) {
         toast({
@@ -360,7 +360,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           eventName: finalEventName
         }
       });
-      setFlowStep('password');
+      setFlowStep('congrats');
     }
   };
 
