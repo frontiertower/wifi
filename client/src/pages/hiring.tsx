@@ -132,10 +132,10 @@ export default function HiringPage() {
             </Link>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-center text-terminal-green terminal-glow mb-2 terminal-text">
-            INITIATE PERSONNEL DATA INPUT PROTOCOL
+            HEAD OF FINANCE @ FRONTIER TOWER
           </h1>
           <p className="text-center text-terminal-dim text-sm md:text-base">
-            PROJECT UTOPIA • FRONTIER TOWER • HEAD OF FINANCE RECRUITMENT
+            INITIATE PERSONNEL DATA INPUT PROTOCOL • REMOTE OR HYBRID
           </p>
         </div>
 
