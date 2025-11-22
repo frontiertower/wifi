@@ -52,6 +52,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const [passwordError, setPasswordError] = useState("");
   const [guestType, setGuestType] = useState<GuestType>(null);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [requirePassword, setRequirePassword] = useState(true);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -72,6 +73,16 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const [isOtherEvent, setIsOtherEvent] = useState<boolean>(false);
 
   const { toast } = useToast();
+
+  const { data: settings } = useQuery<Record<string, string>>({
+    queryKey: ['/api/admin/settings'],
+  });
+
+  useEffect(() => {
+    if (settings) {
+      setRequirePassword(settings.password_required !== 'false');
+    }
+  }, [settings]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -313,12 +324,14 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const nextStep = requirePassword ? 'password' : 'congrats';
+
     if (guestType === "member") {
       setPendingRegistrationData({
         type: "member",
         data: formData
       });
-      setFlowStep('congrats');
+      setFlowStep(nextStep);
     } else if (guestType === "tower_member") {
       if (!formData.floor) {
         toast({
@@ -332,13 +345,13 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         type: "tower_member",
         data: formData
       });
-      setFlowStep('congrats');
+      setFlowStep(nextStep);
     } else if (guestType === "visitor") {
       setPendingRegistrationData({
         type: "visitor",
         data: formData
       });
-      setFlowStep('congrats');
+      setFlowStep(nextStep);
     } else if (guestType === "event") {
       if (!isValidEvent) {
         toast({
@@ -360,7 +373,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           eventName: finalEventName
         }
       });
-      setFlowStep('congrats');
+      setFlowStep(nextStep);
     }
   };
 

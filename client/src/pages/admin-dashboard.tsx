@@ -2248,6 +2248,7 @@ function SettingsTab() {
   const [site, setSite] = useState('default');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordDescription, setNewPasswordDescription] = useState('');
+  const [requireWifiPassword, setRequireWifiPassword] = useState(true);
 
   const { data: settings, isLoading } = useQuery<Record<string, string>>({
     queryKey: ['/api/admin/settings'],
@@ -2331,6 +2332,7 @@ function SettingsTab() {
       setUsername(settings.unifi_username || '');
       setPassword(settings.unifi_password || '');
       setSite(settings.unifi_site || 'default');
+      setRequireWifiPassword(settings.password_required !== 'false');
     }
   }, [settings]);
 
@@ -2339,6 +2341,7 @@ function SettingsTab() {
       unifi_api_type: apiType,
       unifi_controller_url: controllerUrl,
       unifi_site: site,
+      password_required: requireWifiPassword ? 'true' : 'false',
     };
 
     if (apiType === 'modern') {
@@ -2385,10 +2388,27 @@ function SettingsTab() {
       {/* WiFi Passwords Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">WiFi Access Passwords</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Manage multiple passwords that guests can use to access WiFi
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">WiFi Access Passwords</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Manage multiple passwords that guests can use to access WiFi
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Label htmlFor="require-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Require Password
+              </Label>
+              <input
+                id="require-password"
+                type="checkbox"
+                checked={requireWifiPassword}
+                onChange={(e) => setRequireWifiPassword(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600"
+                data-testid="toggle-require-password"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="p-4 sm:p-6">

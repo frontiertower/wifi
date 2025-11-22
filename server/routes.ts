@@ -523,6 +523,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { password } = schema.parse(req.body);
       
+      // Get settings to check if password is required
+      const settings = await storage.getSettings();
+      const passwordRequired = settings.password_required !== 'false';
+      
+      // If password is not required, always allow
+      if (!passwordRequired) {
+        res.json({ success: true });
+        return;
+      }
+      
       // Ensure default passwords exist
       await storage.ensureDefaultWifiPasswords();
       
