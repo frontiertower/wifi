@@ -142,60 +142,65 @@ export default function JobsPage() {
         {/* Role Description */}
         <div className="terminal-section mb-8">
           <h2 className="text-2xl font-bold text-terminal-green mb-6 terminal-text border-l-4 border-terminal-green pl-4">
-            MISSION BRIEFING: HEAD OF FINANCE POSITION
+            JOIN US AT FRONTIER TOWER
           </h2>
           
           <div className="space-y-6 text-terminal-dim">
             <div>
-              <h3 className="text-terminal-green font-bold mb-3 terminal-text">OPERATIONAL MANDATE</h3>
               <p>
-                As Head of Finance at Frontier Tower, you will lead the financial operations of a mission-driven collective building community around AI, agents, and emerging technologies. You'll own everything from day-to-day accounting to strategic financial planning, ensuring sustainable growth while maintaining the integrity of our values-driven mission.
+                We are the world's fastest-growing network society. Our capital is San Francisco, and our citadel is a 16-story vertical village for frontier tech, arts & music on Market Street. Our mission is to design a governance model that is flexible and organic enough for communities worldwide to adopt and join. We are building a true federation where each tower retains its own rules while benefiting from the joined economic layer, portable citizenship rights and tech infrastructure. Our goals are bold: 9 additional towers by the end of 2026 and 100 towers by 2029. We're growing double-digit % MOM while building the technological backbone to govern the next era of society in a post-labor world. We are backed by leading visionaries and will raise a major round for a DAO next year. Ultimately, we aim to unite 10 million frontier citizens in a seamless inter-city network society.
               </p>
             </div>
 
             <div>
-              <h3 className="text-terminal-green font-bold mb-3 terminal-text">KEY RESPONSIBILITIES</h3>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">WHY US?</h3>
               <ul className="space-y-2 ml-4">
-                <li>• <span className="text-terminal-bright">Financial Management</span> — Oversee bookkeeping, AP/AR, payroll, and tax compliance across all jurisdictions</li>
-                <li>• <span className="text-terminal-bright">Strategic Planning</span> — Develop financial forecasts, budgets, and long-term growth strategies aligned with our mission</li>
-                <li>• <span className="text-terminal-bright">Treasury Operations</span> — Manage cash flow, banking relationships, and optimize working capital</li>
-                <li>• <span className="text-terminal-bright">Fundraising Support</span> — Partner with leadership on equity/debt raises, investor relations, and pitch materials</li>
-                <li>• <span className="text-terminal-bright">Compliance & Reporting</span> — Ensure adherence to accounting standards, tax laws, and regulatory requirements</li>
-                <li>• <span className="text-terminal-bright">Cross-functional Collaboration</span> — Work directly with founders and C-level executives on strategic financial decisions</li>
+                <li>• <span className="text-terminal-bright">Frontier Tech Only</span> — Work at the bleeding edge of innovation. Nothing is too new, every thought can be challenged, and the status quo is there to be disrupted</li>
+                <li>• <span className="text-terminal-bright">Crypto Native</span> — Decentralization, permissionlessness & censorship resistance is what we breathe. Think of the first names that come to mind in crypto whose identity is known: Those are our seed investors. Imagine societies of tomorrow: sovereign networks that transcend borders and nation-states: That's where we operate.</li>
+                <li>• <span className="text-terminal-bright">Momentum but Early Stage</span> — Our first 16-floor installation is already crowded with frontier citizens, the second a 112 bedroom residency is opening in December, yet we're barely seven months in and there is plenty of space to engrave your initials into the ground.</li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-terminal-green font-bold mb-3 terminal-text">IDEAL CANDIDATE PROFILE</h3>
-              <p className="mb-3">
-                You thrive in startup environments where speed and adaptability matter as much as precision. You've managed complex financial operations—whether managing millions in capital, coordinating across tax jurisdictions, or supporting fundraising efforts. You're comfortable with ambiguity, own outcomes, and communicate clearly with both technical and non-technical stakeholders.
-              </p>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">THE ROLE</h3>
               <p>
-                Most importantly, you align with our mission: belief in the power of AI and open collaboration to shape the future. You want to work on problems that matter, surrounded by talented people who push boundaries.
+                This is a remote-first job. You'll be our head of finance, overseeing multiple companies which are either holding real estate, operating companies, or working on creating the tech which runs it all. You'll be operating all bank accounts, paying the team and vendors, speaking to tax advisors and preparing financials for our investors. You'll be working closely with the CEO to make sure that new contracts are signed and that we don't miss any important deadlines. You will work on financial models and support in the fundraise by engaging with investors who have committed to investing or have already signed the paperwork and need assistance to wire the funds.
               </p>
             </div>
 
             <div>
-              <h3 className="text-terminal-green font-bold mb-3 terminal-text">COMPENSATION & BENEFITS</h3>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">WHAT WE'RE LOOKING FOR - MUST-HAVE</h3>
               <ul className="space-y-2 ml-4">
-                <li>• <span className="text-terminal-bright">Competitive Salary</span> — Market-rate compensation based on experience (typically $120K–$250K+)</li>
-                <li>• <span className="text-terminal-bright">Equity Package</span> — Meaningful equity stake in Frontier Tower's growth</li>
-                <li>• <span className="text-terminal-bright">Flexible Work</span> — Remote-friendly with optional access to our San Francisco base</li>
-                <li>• <span className="text-terminal-bright">Professional Development</span> — Budget for training, conferences, and skill development</li>
-                <li>• <span className="text-terminal-bright">Community</span> — Direct access to our network of AI researchers, founders, and builders</li>
+                <li>• <span className="text-terminal-bright">3+ years</span> in fast-pace startups</li>
+                <li>• <span className="text-terminal-bright">Focus on the mission & Bias to action & Do Whatever It Takes & Ship fast & Own the outcome & Radical candor</span> — alignment with core company values</li>
+                <li>• <span className="text-terminal-bright">Banking & Payments</span> — Proven track record in handling a lot of payments</li>
+                <li>• <span className="text-terminal-bright">Tax Knowledge</span> — Direct collaboration with tax advisors</li>
+                <li>• <span className="text-terminal-bright">Contracts</span> — Ability to read basic contracts</li>
+                <li>• <span className="text-terminal-bright">Willingness to learn and adapt</span> — Take feedback and iterate</li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-terminal-green font-bold mb-3 terminal-text">LOCATION & LOGISTICS</h3>
-              <p>
-                Remote-first with occasional in-person meetings at our San Francisco headquarters. We support distributed teams across time zones and will work with your schedule to ensure collaboration when it matters.
-              </p>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">NICE-TO-HAVE</h3>
+              <ul className="space-y-2 ml-4">
+                <li>• <span className="text-terminal-bright">Investor Relations</span> — Experience supporting equity/debt raises</li>
+                <li>• <span className="text-terminal-bright">C-Level/Founder Experience</span> — Worked closely with C-Level/Founder before</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">INTERVIEW PROCESS</h3>
+              <ol className="space-y-2 ml-4">
+                <li>1. <span className="text-terminal-bright">Initial Call</span> (30 min) — Background, intro with Jakob</li>
+                <li>2. <span className="text-terminal-bright">Deep Dive</span> (60 min) — Let's talk numbers and experience - with Jakob</li>
+                <li>3. <span className="text-terminal-bright">Team Interviews</span> (30 min) — Meet the cofounders</li>
+                <li>4. <span className="text-terminal-bright">Final Chat</span> (30 min) — Offer discussion, questions - Jakob</li>
+              </ol>
             </div>
 
             <div className="border-t border-terminal-green/30 pt-6 mt-6">
               <p className="text-sm">
-                Ready to take on this mission? Submit your personnel file below. We review applications on a rolling basis and contact promising candidates within 2-3 business days.
+                Ready to build the future? Submit your personnel file below. We review applications on a rolling basis and will contact promising candidates within 2-3 business days.
               </p>
             </div>
           </div>
