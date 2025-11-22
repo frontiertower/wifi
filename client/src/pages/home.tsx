@@ -116,9 +116,9 @@ export default function Home() {
 
     const interval = setInterval(() => {
       setCrackIntensity((prev) => {
-        if (prev >= 8) {
+        if (prev >= 10) {
           clearInterval(interval);
-          return 8;
+          return 10;
         }
         return prev + 1;
       });
@@ -317,9 +317,9 @@ export default function Home() {
         </div>
 
         {showPillModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 pill-modal-backdrop z-50 overflow-hidden">
+          <div className={`fixed inset-0 flex items-center justify-center p-4 z-50 overflow-hidden ${crackIntensity >= 9 ? 'black-hole-collapse' : 'bg-black bg-opacity-50 pill-modal-backdrop'}`}>
             {/* Glass crack overlay */}
-            {crackIntensity > 0 && (
+            {crackIntensity > 0 && crackIntensity < 9 && (
               <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
                 {crackIntensity >= 1 && <line x1="50%" y1="0%" x2="45%" y2="100%" stroke="rgba(0,0,0,0.6)" strokeWidth="3" />}
                 {crackIntensity >= 2 && <line x1="30%" y1="20%" x2="70%" y2="80%" stroke="rgba(0,0,0,0.5)" strokeWidth="2" />}
@@ -332,7 +332,15 @@ export default function Home() {
               </svg>
             )}
             
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative z-10">
+            {/* Black hole vortex effect */}
+            {crackIntensity >= 9 && (
+              <>
+                <div className="absolute inset-0 black-hole-vortex" />
+                <div className="absolute inset-0 black-hole-singularity" />
+              </>
+            )}
+            
+            <div className={`bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative ${crackIntensity >= 9 ? 'black-hole-pull' : 'z-10'}`}>
               <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
                 The Choice is Yours
               </h2>
