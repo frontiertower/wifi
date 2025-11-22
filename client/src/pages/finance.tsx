@@ -111,78 +111,80 @@ export default function FinancePage() {
         {/* Title Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Head of Regenerative Finance
+            Head of Finance @ Frontier Tower
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Frontier Tower Recruitment • Join Our Team
+            Remote or Hybrid
           </p>
         </div>
 
-        {/* Info Cards Grid */}
+        {/* About Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">About Frontier Tower</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-3">
+            We are the world's fastest-growing network society. Our capital is San Francisco, and our citadel is a 16-story vertical village for frontier tech, arts & music on Market Street. Our mission is to design a governance model that is flexible and organic enough for communities worldwide to adopt and join. We are building a true federation where each tower retains its own rules while benefiting from the joined economic layer, portable citizenship rights and tech infrastructure.
+          </p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Our goals are bold: 9 additional towers by the end of 2026 and 100 towers by 2029. We're growing double-digit % MOM while building the technological backbone to govern the next era of society in a post-labor world. We are backed by leading visionaries and will raise a major round for a DAO next year. Ultimately, we aim to unite 10 million frontier citizens in a seamless inter-city network society. To scale this fast, we need the right tools: Imagine rebuilding nation-state governance from the ground up—with AI native to the system next to an App Store for governance, plug-and-play community Apps, and built-in payments with our own currency powering a new frontier economy.
+          </p>
+        </div>
+
+        {/* Why Us Section */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Frontier Tech Only</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Work at the bleeding edge of innovation. Nothing is too new, every thought can be challenged, and the status quo is there to be disrupted.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Crypto Native</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Decentralization, permissionlessness & censorship resistance is what we breath. Think of the first names that come to mind in crypto whose identity is known: Those are our seed investors. Imagine societies of tomorrow: sovereign networks that transcend borders and nation-states: That's where we operate.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Momentum but Early Stage</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Our first 16-floor installation is already crowded with frontier citizens, the second a 112 bedroom residency is opening in December, yet we're barely seven months in and there is plenty of space to engrave your initials into the ground.
+            </p>
+          </div>
+        </div>
+
+        {/* The Role */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">The Role</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-3">
+            This is a remote-first job. You'll be our head of finance, overseeing multiple companies which are either holding real estate, operating companies, or working on creating the tech which runs it all. You'll be operating all bank accounts, paying the team and vendors, speaking to tax advisors and preparing financials for our investors.
+          </p>
+          <p className="text-gray-600 dark:text-gray-400 mb-3">
+            You'll be working closely with the CEO to make sure that new contracts are signed and that we don't miss important deadlines. You will work on financial models and support in the fundraise by engaging with investors who have committed to investing or have already signed the paperwork and need assistance to wire the funds.
+          </p>
+        </div>
+
+        {/* What We're Looking For */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Regenerative Ecosystems: Build Sustainable Futures</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-              We are pioneering regenerative ecosystem practices integrated into next-generation network infrastructure. Our mission extends beyond innovation to environmental stewardship and community renewal.
-            </p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Building interconnected systems that improve both human flourishing and ecological health. Join us in creating technological solutions that heal the planet.
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Our Approach</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Must-Have</h3>
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <li><span className="font-semibold">Regenerative Design</span> — Systems that heal, not extract</li>
-              <li><span className="font-semibold">Community First</span> — Environmental justice at core</li>
-              <li><span className="font-semibold">Scalable Impact</span> — From local to global transformation</li>
+              <li>• 3+ years in fast-pace startups</li>
+              <li>• Focus on the mission & Bias to action & Do Whatever It Takes & Ship fast & Own the outcome & Be humble & Radical candor—alignment with core company values</li>
+              <li>• Banking & Payments — Proven track record in handling a lot of payments</li>
+              <li>• Tax Knowledge — Direct collaboration with tax advisors</li>
+              <li>• Contracts — Ability to read basic contracts</li>
+              <li>• Willingness to learn and adapt — Take feedback and iterate</li>
             </ul>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Get Involved</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Join us in developing and implementing regenerative ecosystem solutions. Whether in policy, technology, community engagement, or resource management, we're building the infrastructure for a sustainable future. Remote-friendly with flexible collaboration models.
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Our Values</h3>
-            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-              <li>• <span className="font-semibold">Regeneration</span> — Systems that improve over time</li>
-              <li>• <span className="font-semibold">Equity</span> — Justice-centered approach</li>
-              <li>• <span className="font-semibold">Transparency</span> — Open source, open data</li>
-              <li>• <span className="font-semibold">Collaboration</span> — Cross-sector partnerships</li>
-              <li>• <span className="font-semibold">Innovation</span> — Reimagining what's possible</li>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Nice-to-Have</h3>
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <li>• Investor Relations — Experience supporting equity/debt raises</li>
+              <li>• Worked closely with C-Level/Founder before</li>
             </ul>
           </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Impact Areas</h3>
-            <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-              <li>• <span className="font-semibold">Climate Solutions</span> — Tech for climate action</li>
-              <li>• <span className="font-semibold">Biodiversity</span> — Ecosystem preservation</li>
-              <li>• <span className="font-semibold">Communities</span> — Local restoration</li>
-            </ul>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Get Started</h3>
-            <ol className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-              <li><span className="font-semibold">1. Learn</span> about our initiatives</li>
-              <li><span className="font-semibold">2. Connect</span> with our community</li>
-              <li><span className="font-semibold">3. Contribute</span> your skills</li>
-              <li><span className="font-semibold">4. Scale</span> regenerative impact</li>
-            </ol>
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mb-8 text-center">
-          <p className="font-bold text-gray-900 dark:text-white mb-2">Ready to Join the Regenerative Movement?</p>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Share your interest and how you want to contribute. We're building a global community focused on healing our world.
-          </p>
         </div>
 
         {/* Application Form */}
@@ -193,12 +195,9 @@ export default function FinancePage() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              {/* Section A: Personal Information */}
+              {/* Personal Information */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                  <span className="flex items-center justify-center w-6 h-6 bg-primary rounded-full text-white text-sm mr-3">1</span>
-                  Personnel Identification File
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Information</h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
@@ -206,9 +205,9 @@ export default function FinancePage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name (Last, First)</FormLabel>
+                        <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="DOE, JOHN" {...field} data-testid="input-name" />
+                          <Input placeholder="Your name" {...field} data-testid="input-name" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -220,9 +219,9 @@ export default function FinancePage() {
                     name="location"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Current Location (City/Tower)</FormLabel>
+                        <FormLabel>Current Location</FormLabel>
                         <FormControl>
-                          <Input placeholder="SAN FRANCISCO, CA" {...field} data-testid="input-location" />
+                          <Input placeholder="City, Country" {...field} data-testid="input-location" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -234,9 +233,9 @@ export default function FinancePage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Contact Frequency (Email)</FormLabel>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="operative@domain.com" {...field} data-testid="input-email" />
+                          <Input type="email" placeholder="you@example.com" {...field} data-testid="input-email" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -248,7 +247,7 @@ export default function FinancePage() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Direct Comm (Phone)</FormLabel>
+                        <FormLabel>Phone</FormLabel>
                         <FormControl>
                           <Input type="tel" placeholder="+1 (555) 000-0000" {...field} data-testid="input-phone" />
                         </FormControl>
@@ -262,9 +261,9 @@ export default function FinancePage() {
                     name="linkedinUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>LinkedIn Profile URL</FormLabel>
+                        <FormLabel>LinkedIn Profile (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="linkedin.com/in/username" {...field} value={field.value || ""} data-testid="input-linkedin" />
+                          <Input placeholder="linkedin.com/in/yourprofile" {...field} value={field.value || ""} data-testid="input-linkedin" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -276,7 +275,7 @@ export default function FinancePage() {
                     name="resumeUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Resume/CV Datapack</FormLabel>
+                        <FormLabel>Resume Link (Optional)</FormLabel>
                         <FormControl>
                           <Input placeholder="https://drive.google.com/..." {...field} value={field.value || ""} data-testid="input-resume" />
                         </FormControl>
@@ -287,12 +286,9 @@ export default function FinancePage() {
                 </div>
               </div>
 
-              {/* Section B: Experience */}
+              {/* Experience */}
               <div className="border-t pt-8">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                  <span className="flex items-center justify-center w-6 h-6 bg-primary rounded-full text-white text-sm mr-3">2</span>
-                  Operational Experience Matrix
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Experience</h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <FormField
@@ -300,7 +296,7 @@ export default function FinancePage() {
                     name="minimumCompensation"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Yield (Minimum Annual Compensation Required)</FormLabel>
+                        <FormLabel>Minimum Annual Compensation Expected</FormLabel>
                         <FormControl>
                           <Input type="number" placeholder="150000" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-compensation" />
                         </FormControl>
@@ -314,7 +310,7 @@ export default function FinancePage() {
                     name="noticePeriodWeeks"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Notice Period (Weeks Required Before Integration)</FormLabel>
+                        <FormLabel>Notice Period (Weeks)</FormLabel>
                         <FormControl>
                           <Input type="number" placeholder="2" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-notice-period" />
                         </FormControl>
@@ -328,7 +324,7 @@ export default function FinancePage() {
                     name="startupYears"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Years in Startup Environment (Fast-Paced Firms)</FormLabel>
+                        <FormLabel>Years in Fast-Paced Startups</FormLabel>
                         <FormControl>
                           <Input type="number" placeholder="3+" {...field} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-startup-years" />
                         </FormControl>
@@ -343,14 +339,14 @@ export default function FinancePage() {
                   name="contractInterpretationLevel"
                   render={({ field }) => (
                     <FormItem className="mb-6">
-                      <FormLabel>Contract Interpretation Familiarity (Level of Comfort)</FormLabel>
+                      <FormLabel>Ability to Read Contracts (1-5)</FormLabel>
                       <FormControl>
                         <div className="space-y-3">
                           <Slider min={1} max={5} step={1} value={[field.value || 1]} onValueChange={(vals) => field.onChange(vals[0])} data-testid="slider-contract-level" />
                           <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                            <span>1 - BASIC</span>
+                            <span>Basic</span>
                             <span className="font-semibold text-gray-900 dark:text-white">{contractLevel || 1}</span>
-                            <span>5 - EXPERT</span>
+                            <span>Advanced</span>
                           </div>
                         </div>
                       </FormControl>
@@ -365,9 +361,9 @@ export default function FinancePage() {
                     name="paymentSystemsExperience"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Proven Track Record in Payment/Banking Systems</FormLabel>
+                        <FormLabel>Banking & Payments Experience</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Describe complexity of funds handled, payment systems managed, and scale of operations..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-payment-systems" />
+                          <Textarea placeholder="Tell us about your experience with banking systems and payment handling..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-payment-systems" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -379,9 +375,9 @@ export default function FinancePage() {
                     name="taxAdvisorExperience"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Tax Advisor Coordination Experience</FormLabel>
+                        <FormLabel>Tax Knowledge & Experience</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Describe scale and jurisdictions handled..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-tax-advisor" />
+                          <Textarea placeholder="Describe your experience with tax advisors and tax compliance..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-tax-advisor" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -393,9 +389,9 @@ export default function FinancePage() {
                     name="investorRelationsExperience"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Investor Relations & Fundraising Experience</FormLabel>
+                        <FormLabel>Investor Relations Experience (Nice-to-Have)</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Describe fundraising rounds managed, investor base size, and communication strategies..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-investor-relations" />
+                          <Textarea placeholder="Have you supported equity/debt raises before?" className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-investor-relations" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -407,9 +403,9 @@ export default function FinancePage() {
                     name="executiveCollaboration"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Executive Collaboration & Board Experience</FormLabel>
+                        <FormLabel>C-Level/Founder Experience (Nice-to-Have)</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Describe experience working with C-suite, board interactions, and strategic planning..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-executive-collaboration" />
+                          <Textarea placeholder="Have you worked closely with C-Level or Founder before?" className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-executive-collaboration" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -418,12 +414,9 @@ export default function FinancePage() {
                 </div>
               </div>
 
-              {/* Section C: Motivation */}
+              {/* Motivation */}
               <div className="border-t pt-8">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                  <span className="flex items-center justify-center w-6 h-6 bg-primary rounded-full text-white text-sm mr-3">3</span>
-                  Candidate Manifesto
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Story</h3>
 
                 <div className="space-y-4">
                   <FormField
@@ -431,9 +424,9 @@ export default function FinancePage() {
                     name="motivationStatement"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Why Frontier Tower? What Drives You?</FormLabel>
+                        <FormLabel>Why Frontier Tower?</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Tell us about your motivation, what excites you about this opportunity, and what you want to build..." className="min-h-[120px]" {...field} data-testid="textarea-motivation" />
+                          <Textarea placeholder="Tell us what excites you about this opportunity..." className="min-h-[120px]" {...field} data-testid="textarea-motivation" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -445,11 +438,11 @@ export default function FinancePage() {
                     name="referralSource"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>How Did You Hear About Us?</FormLabel>
+                        <FormLabel>How did you hear about us?</FormLabel>
                         <Select value={field.value || ""} onValueChange={field.onChange}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select source..." />
+                              <SelectValue placeholder="Select a source..." />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -457,7 +450,7 @@ export default function FinancePage() {
                             <SelectItem value="social">Social Media</SelectItem>
                             <SelectItem value="job_board">Job Board</SelectItem>
                             <SelectItem value="conference">Conference / Event</SelectItem>
-                            <SelectItem value="directly">Directly Approached You</SelectItem>
+                            <SelectItem value="directly">Directly Approached</SelectItem>
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
@@ -473,7 +466,7 @@ export default function FinancePage() {
                       <FormItem>
                         <FormLabel>Portfolio / Work Samples (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://your-portfolio.com or github.com/..." {...field} value={field.value || ""} data-testid="input-portfolio" />
+                          <Input placeholder="https://your-portfolio.com" {...field} value={field.value || ""} data-testid="input-portfolio" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -489,9 +482,9 @@ export default function FinancePage() {
                           <Checkbox checked={field.value || false} onCheckedChange={field.onChange} data-testid="checkbox-values" />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>Confirmation of Alignment with Core Operational Values</FormLabel>
+                          <FormLabel>I align with your core values</FormLabel>
                           <p className="text-xs text-gray-600 dark:text-gray-400">
-                            Focus on the mission • Bias to action • Do whatever it takes • Ship fast • Own the outcome • Radical candor
+                            Focus on the mission • Bias to action • Do Whatever It Takes • Ship fast • Own the outcome • Be humble • Radical candor
                           </p>
                         </div>
                       </FormItem>
@@ -508,7 +501,7 @@ export default function FinancePage() {
                   </Button>
                 </Link>
                 <Button type="submit" disabled={isSubmitting} className="flex-1" data-testid="button-submit-application">
-                  {isSubmitting ? "Transmitting..." : "Submit Application"}
+                  {isSubmitting ? "Submitting..." : "Submit Application"}
                   {!isSubmitting && <ArrowRight className="ml-2 w-4 h-4" />}
                 </Button>
               </div>

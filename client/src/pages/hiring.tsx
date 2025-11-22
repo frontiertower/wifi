@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertJobApplicationSchema } from "@shared/schema";
 import { z } from "zod";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, Power, AlertTriangle } from "lucide-react";
+import { ArrowRight, CheckCircle, ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
 
 type JobApplicationFormData = z.infer<typeof insertJobApplicationSchema>;
@@ -52,16 +52,16 @@ export default function HiringPage() {
       await apiRequest("POST", "/api/job-applications", data);
       
       toast({
-        title: "✓ DATA TRANSMISSION SUCCESSFUL",
-        description: "Your application has been received. Initiating review protocol...",
+        title: "Application Submitted",
+        description: "Your application has been received. We'll review it and be in touch soon!",
       });
       
       setIsSubmitted(true);
       form.reset();
     } catch (error: any) {
       toast({
-        title: "✗ TRANSMISSION FAILED",
-        description: error.message || "Failed to submit application. Please retry.",
+        title: "Submission Error",
+        description: error.message || "Failed to submit application. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -73,393 +73,280 @@ export default function HiringPage() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen terminal-bg">
-        <div className="container mx-auto px-4 py-12 max-w-4xl">
-          <div className="terminal-panel p-8 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full border-4 border-terminal-green bg-terminal-green/10 mb-6">
-              <Power className="h-10 w-10 text-terminal-green" />
-            </div>
-            <h2 className="text-3xl font-bold text-terminal-green mb-4 terminal-text">
-              ✓ TRANSMISSION COMPLETE
-            </h2>
-            <p className="text-terminal-dim text-lg mb-8">
-              Your personnel data package has been successfully transmitted to Frontier Tower HQ.
-              Our review team will process your application and contact you if your profile matches
-              our operational requirements.
-            </p>
-            <div className="inline-block border-2 border-terminal-green bg-terminal-green/5 p-6 rounded-lg mb-8">
-              <p className="text-terminal-green font-mono text-sm">
-                STATUS: <span className="text-terminal-bright">PENDING REVIEW</span><br />
-                PRIORITY: <span className="text-terminal-bright">HIGH</span><br />
-                ETA: <span className="text-terminal-bright">2-3 BUSINESS DAYS</span>
-              </p>
-            </div>
-            <Link href="/">
-              <Button 
-                variant="outline" 
-                className="terminal-button-secondary"
-                data-testid="button-return-home"
-              >
-                RETURN TO MAIN TERMINAL
-              </Button>
-            </Link>
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-500/20 mb-6">
+            <CheckCircle className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
           </div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            Application Submitted
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
+            Thank you for applying! We'll review your application and contact you if there's a good fit.
+          </p>
+          <Link href="/">
+            <Button className="w-full">
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Back to Home
+            </Button>
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen terminal-bg">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4 py-8">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="terminal-header mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="status-indicator status-active"></div>
-              <div className="status-indicator status-active"></div>
-              <div className="status-indicator status-inactive"></div>
-            </div>
-            <Link href="/">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-terminal-dim hover:text-terminal-green"
-                data-testid="button-exit"
-              >
-                EXIT
-              </Button>
-            </Link>
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-center text-terminal-green terminal-glow mb-2">
-            HEAD OF REGENERATIVE FINANCE
+        <div className="flex items-center justify-between mb-8">
+          <Link href="/">
+            <Button variant="ghost" size="sm" data-testid="button-back">
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+          </Link>
+        </div>
+
+        {/* Title Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            Head of Finance @ Frontier Tower
           </h1>
-          <p className="text-center text-terminal-dim text-sm md:text-base">
-            FRONTIER TOWER RECRUITMENT • JOIN OUR TEAM
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Remote or Hybrid
           </p>
         </div>
 
-        {/* Role Description Grid */}
-        <div className="grid gap-6 md:grid-cols-2 mb-8">
-          {/* Card 1: Mission Overview */}
-          <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 text-lg">REGENERATIVE ECOSYSTEMS: BUILD SUSTAINABLE FUTURES</h3>
-            <p className="text-terminal-dim text-sm mb-4">
-              We are pioneering regenerative ecosystem practices integrated into next-generation network infrastructure. Our mission extends beyond innovation to environmental stewardship and community renewal.
-            </p>
-            <p className="text-terminal-dim text-xs">
-              Building interconnected systems that improve both human flourishing and ecological health. Join us in creating technological solutions that heal the planet.
-            </p>
-          </div>
+        {/* About Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">About Frontier Tower</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-3">
+            We are the world's fastest-growing network society. Our capital is San Francisco, and our citadel is a 16-story vertical village for frontier tech, arts & music on Market Street. Our mission is to design a governance model that is flexible and organic enough for communities worldwide to adopt and join. We are building a true federation where each tower retains its own rules while benefiting from the joined economic layer, portable citizenship rights and tech infrastructure.
+          </p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Our goals are bold: 9 additional towers by the end of 2026 and 100 towers by 2029. We're growing double-digit % MOM while building the technological backbone to govern the next era of society in a post-labor world. We are backed by leading visionaries and will raise a major round for a DAO next year. Ultimately, we aim to unite 10 million frontier citizens in a seamless inter-city network society. To scale this fast, we need the right tools: Imagine rebuilding nation-state governance from the ground up—with AI native to the system next to an App Store for governance, plug-and-play community Apps, and built-in payments with our own currency powering a new frontier economy.
+          </p>
+        </div>
 
-          {/* Card 2: Why Us */}
-          <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-4 text-lg">OUR APPROACH</h3>
-            <ul className="space-y-2">
-              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Regenerative Design</span> — Systems that heal, not extract</li>
-              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Community First</span> — Environmental justice at core</li>
-              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Scalable Impact</span> — From local to global transformation</li>
-            </ul>
-          </div>
-
-          {/* Card 3: Getting Involved */}
-          <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 text-lg">GET INVOLVED</h3>
-            <p className="text-terminal-dim text-sm">
-              Join us in developing and implementing regenerative ecosystem solutions. Whether in policy, technology, community engagement, or resource management, we're building the infrastructure for a sustainable future. Remote-friendly with flexible collaboration models.
+        {/* Why Us Section */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Frontier Tech Only</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Work at the bleeding edge of innovation. Nothing is too new, every thought can be challenged, and the status quo is there to be disrupted.
             </p>
           </div>
 
-          {/* Card 4: Values */}
-          <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 text-lg">OUR VALUES</h3>
-            <ul className="space-y-1">
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Regeneration</span> — Systems that improve over time</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Equity</span> — Justice-centered approach</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Transparency</span> — Open source, open data</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Collaboration</span> — Cross-sector partnerships</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Innovation</span> — Reimagining what's possible</li>
-            </ul>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Crypto Native</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Decentralization, permissionlessness & censorship resistance is what we breath. Think of the first names that come to mind in crypto whose identity is known: Those are our seed investors. Imagine societies of tomorrow: sovereign networks that transcend borders and nation-states: That's where we operate.
+            </p>
           </div>
 
-          {/* Card 5: Impact Areas */}
-          <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 text-lg">IMPACT AREAS</h3>
-            <ul className="space-y-1">
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Climate Solutions</span> — Tech for climate action</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Biodiversity</span> — Ecosystem preservation</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Communities</span> — Local restoration</li>
-            </ul>
-          </div>
-
-          {/* Card 6: Get Started */}
-          <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 text-lg">GET STARTED</h3>
-            <ol className="space-y-1">
-              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">1. Learn</span> about our initiatives</li>
-              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">2. Connect</span> with our community</li>
-              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">3. Contribute</span> your skills</li>
-              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">4. Scale</span> regenerative impact</li>
-            </ol>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Momentum but Early Stage</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Our first 16-floor installation is already crowded with frontier citizens, the second a 112 bedroom residency is opening in December, yet we're barely seven months in and there is plenty of space to engrave your initials into the ground.
+            </p>
           </div>
         </div>
 
-        <div className="terminal-card mb-8 text-center">
-          <p className="text-terminal-green font-bold text-sm mb-2">READY TO JOIN THE REGENERATIVE MOVEMENT?</p>
-          <p className="text-terminal-dim text-xs">Share your interest and how you want to contribute. We're building a global community focused on healing our world.</p>
+        {/* The Role */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">The Role</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-3">
+            This is a remote-first job. You'll be our head of finance, overseeing multiple companies which are either holding real estate, operating companies, or working on creating the tech which runs it all. You'll be operating all bank accounts, paying the team and vendors, speaking to tax advisors and preparing financials for our investors.
+          </p>
+          <p className="text-gray-600 dark:text-gray-400 mb-3">
+            You'll be working closely with the CEO to make sure that new contracts are signed and that we don't miss important deadlines. You will work on financial models and support in the fundraise by engaging with investors who have committed to investing or have already signed the paperwork and need assistance to wire the funds.
+          </p>
         </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* Section A: Identity & Credentials */}
-            <div className="terminal-section">
-              <h2 className="text-2xl font-bold text-terminal-green mb-6 terminal-text border-l-4 border-terminal-green pl-4">
-                SECTION A: PERSONNEL IDENTIFICATION FILE
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">NAME (LAST, FIRST)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          placeholder="DOE, JOHN" 
-                          {...field}
-                          data-testid="input-name"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+        {/* What We're Looking For */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Must-Have</h3>
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <li>• 3+ years in fast-pace startups</li>
+              <li>• Focus on the mission & Bias to action & Do Whatever It Takes & Ship fast & Own the outcome & Be humble & Radical candor—alignment with core company values</li>
+              <li>• Banking & Payments — Proven track record in handling a lot of payments</li>
+              <li>• Tax Knowledge — Direct collaboration with tax advisors</li>
+              <li>• Contracts — Ability to read basic contracts</li>
+              <li>• Willingness to learn and adapt — Take feedback and iterate</li>
+            </ul>
+          </div>
 
-                <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">CURRENT LOCATION (CITY/TOWER)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          placeholder="SAN FRANCISCO, CA" 
-                          {...field}
-                          data-testid="input-location"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Nice-to-Have</h3>
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <li>• Investor Relations — Experience supporting equity/debt raises</li>
+              <li>• Worked closely with C-Level/Founder before</li>
+            </ul>
+          </div>
+        </div>
 
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">CONTACT FREQUENCY (EMAIL)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          type="email" 
-                          placeholder="operative@domain.com" 
-                          {...field}
-                          data-testid="input-email"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+        {/* Application Form */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            Apply Now
+          </h2>
 
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">DIRECT COMM (PHONE)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          type="tel" 
-                          placeholder="+1 (555) 000-0000" 
-                          {...field}
-                          data-testid="input-phone"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              {/* Personal Information */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Information</h3>
 
-                <FormField
-                  control={form.control}
-                  name="linkedinUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">LINKEDIN PROFILE URL</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          placeholder="linkedin.com/in/username" 
-                          {...field}
-                          value={field.value || ""}
-                          data-testid="input-linkedin"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Your name" {...field} data-testid="input-name" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="resumeUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">RESUME/CV DATAPACK</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          placeholder="https://drive.google.com/..." 
-                          {...field}
-                          value={field.value || ""}
-                          data-testid="input-resume"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Current Location</FormLabel>
+                        <FormControl>
+                          <Input placeholder="City, Country" {...field} data-testid="input-location" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-            {/* Section B: Experience & Classification */}
-            <div className="terminal-section">
-              <h2 className="text-2xl font-bold text-terminal-green mb-6 terminal-text border-l-4 border-terminal-green pl-4">
-                SECTION B: OPERATIONAL EXPERIENCE MATRIX
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <FormField
-                  control={form.control}
-                  name="minimumCompensation"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">YIELD (MINIMUM ANNUAL COMPENSATION REQUIRED)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          type="number" 
-                          placeholder="150000" 
-                          {...field}
-                          value={field.value || ""}
-                          onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                          data-testid="input-compensation"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="you@example.com" {...field} data-testid="input-email" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="noticePeriodWeeks"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">NOTICE PERIOD (WEEKS REQUIRED BEFORE INTEGRATION)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          type="number" 
-                          placeholder="2" 
-                          {...field}
-                          value={field.value || ""}
-                          onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                          data-testid="input-notice-period"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone</FormLabel>
+                        <FormControl>
+                          <Input type="tel" placeholder="+1 (555) 000-0000" {...field} data-testid="input-phone" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="startupYears"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">YEARS IN STARTUP ENVIRONMENT (FAST-PACED FIRMS)</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          type="number" 
-                          placeholder="3+" 
-                          {...field}
-                          onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                          data-testid="input-startup-years"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="linkedinUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>LinkedIn Profile (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="linkedin.com/in/yourprofile" {...field} value={field.value || ""} data-testid="input-linkedin" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="valuesAlignment"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border border-terminal-green/30 rounded-lg">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value || false}
-                          onCheckedChange={field.onChange}
-                          className="border-terminal-green data-[state=checked]:bg-terminal-green data-[state=checked]:text-black"
-                          data-testid="checkbox-values"
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="terminal-label text-sm">
-                          CONFIRMATION OF ALIGNMENT WITH CORE OPERATIONAL VALUES
-                        </FormLabel>
-                        <p className="text-xs text-terminal-dim">
-                          Focus on the mission • Bias to action • Do whatever it takes • Ship fast • Own the outcome • Radical candor
-                        </p>
-                      </div>
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="resumeUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Resume Link (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://drive.google.com/..." {...field} value={field.value || ""} data-testid="input-resume" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
 
-              <div className="mb-6">
+              {/* Experience */}
+              <div className="border-t pt-8">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Experience</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <FormField
+                    control={form.control}
+                    name="minimumCompensation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Minimum Annual Compensation Expected</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="150000" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-compensation" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="noticePeriodWeeks"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Notice Period (Weeks)</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="2" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-notice-period" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="startupYears"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Years in Fast-Paced Startups</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="3+" {...field} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-startup-years" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
                   name="contractInterpretationLevel"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">
-                        CONTRACT INTERPRETATION FAMILIARITY (LEVEL OF COMFORT)
-                      </FormLabel>
+                    <FormItem className="mb-6">
+                      <FormLabel>Ability to Read Contracts (1-5)</FormLabel>
                       <FormControl>
-                        <div className="space-y-4">
-                          <Slider
-                            min={1}
-                            max={5}
-                            step={1}
-                            value={[field.value || 1]}
-                            onValueChange={(vals) => field.onChange(vals[0])}
-                            className="terminal-slider"
-                            data-testid="slider-contract-level"
-                          />
-                          <div className="flex justify-between text-xs text-terminal-dim">
-                            <span>1 - BASIC</span>
-                            <span className="text-terminal-green font-bold">{contractLevel || 1}</span>
-                            <span>5 - EXPERT</span>
+                        <div className="space-y-3">
+                          <Slider min={1} max={5} step={1} value={[field.value || 1]} onValueChange={(vals) => field.onChange(vals[0])} data-testid="slider-contract-level" />
+                          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                            <span>Basic</span>
+                            <span className="font-semibold text-gray-900 dark:text-white">{contractLevel || 1}</span>
+                            <span>Advanced</span>
                           </div>
                         </div>
                       </FormControl>
@@ -467,214 +354,160 @@ export default function HiringPage() {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <div className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="paymentSystemsExperience"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">
-                        PROVEN TRACK RECORD IN PAYMENT/BANKING SYSTEMS
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          className="terminal-textarea min-h-[100px]" 
-                          placeholder="Describe complexity of funds handled, payment systems managed, and scale of operations..."
-                          {...field}
-                          value={field.value || ""}
-                          data-testid="textarea-payment-systems"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="taxAdvisorExperience"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">
-                        TAX ADVISOR COORDINATION EXPERIENCE
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          className="terminal-textarea min-h-[100px]" 
-                          placeholder="Describe scale and jurisdictions handled..."
-                          {...field}
-                          value={field.value || ""}
-                          data-testid="textarea-tax-advisor"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="investorRelationsExperience"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">
-                        INVESTOR RELATIONS (EQUITY/DEBT RAISE SUPPORT) [OPTIONAL]
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          className="terminal-textarea min-h-[100px]" 
-                          placeholder="Describe your experience supporting fundraising efforts..."
-                          {...field}
-                          value={field.value || ""}
-                          data-testid="textarea-investor-relations"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="executiveCollaboration"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">
-                        C-LEVEL/FOUNDER COLLABORATION HISTORY [OPTIONAL]
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          className="terminal-textarea min-h-[100px]" 
-                          placeholder="Describe your experience working directly with executives and founders..."
-                          {...field}
-                          value={field.value || ""}
-                          data-testid="textarea-executive-collab"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            {/* Section C: Mission Statement */}
-            <div className="terminal-section">
-              <h2 className="text-2xl font-bold text-terminal-green mb-6 terminal-text border-l-4 border-terminal-green pl-4">
-                SECTION C: CANDIDATE MANIFESTO
-              </h2>
-              
-              <div className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="motivationStatement"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">
-                        MISSION MOTIVATION (WHY FRONTIER TOWER? WHY THIS PROJECT?)
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          className="terminal-textarea min-h-[200px]" 
-                          placeholder="Describe your motivation for joining Project Utopia, what drives you, and why you're the right operative for this mission..."
-                          {...field}
-                          data-testid="textarea-motivation"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="referralSource"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">SOURCE OF REFERRAL (HOW DID YOU ACCESS THIS TERMINAL?)</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="paymentSystemsExperience"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Banking & Payments Experience</FormLabel>
                         <FormControl>
-                          <SelectTrigger className="terminal-select" data-testid="select-referral">
-                            <SelectValue placeholder="SELECT SOURCE..." />
-                          </SelectTrigger>
+                          <Textarea placeholder="Tell us about your experience with banking systems and payment handling..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-payment-systems" />
                         </FormControl>
-                        <SelectContent className="terminal-select-content">
-                          <SelectItem value="tower-citizen">Tower Citizen</SelectItem>
-                          <SelectItem value="recruitment-bot">Recruitment Bot</SelectItem>
-                          <SelectItem value="job-board">Job Board</SelectItem>
-                          <SelectItem value="linkedin">LinkedIn</SelectItem>
-                          <SelectItem value="referral">Personal Referral</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="portfolioUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="terminal-label">LINK TO PORTFOLIO/CASE STUDIES [OPTIONAL]</FormLabel>
-                      <FormControl>
-                        <Input 
-                          className="terminal-input" 
-                          placeholder="https://..." 
-                          {...field}
-                          value={field.value || ""}
-                          data-testid="input-portfolio"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="taxAdvisorExperience"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tax Knowledge & Experience</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Describe your experience with tax advisors and tax compliance..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-tax-advisor" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="investorRelationsExperience"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Investor Relations Experience (Nice-to-Have)</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Have you supported equity/debt raises before?" className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-investor-relations" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="executiveCollaboration"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>C-Level/Founder Experience (Nice-to-Have)</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Have you worked closely with C-Level or Founder before?" className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-executive-collaboration" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Action Panel */}
-            <div className="terminal-action-panel">
-              <div className="flex items-start gap-3 mb-6 p-4 border-l-4 border-amber-500 bg-amber-500/10">
-                <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-terminal-dim">
-                  All data transmitted securely via encrypted channel. Submission confirms acceptance of all Frontier Tower recruitment protocols.
-                </p>
+              {/* Motivation */}
+              <div className="border-t pt-8">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Story</h3>
+
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="motivationStatement"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Why Frontier Tower?</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Tell us what excites you about this opportunity..." className="min-h-[120px]" {...field} data-testid="textarea-motivation" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="referralSource"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>How did you hear about us?</FormLabel>
+                        <Select value={field.value || ""} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a source..." />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="referral">Referral from Team Member</SelectItem>
+                            <SelectItem value="social">Social Media</SelectItem>
+                            <SelectItem value="job_board">Job Board</SelectItem>
+                            <SelectItem value="conference">Conference / Event</SelectItem>
+                            <SelectItem value="directly">Directly Approached</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="portfolioUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Portfolio / Work Samples (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://your-portfolio.com" {...field} value={field.value || ""} data-testid="input-portfolio" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="valuesAlignment"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-lg">
+                        <FormControl>
+                          <Checkbox checked={field.value || false} onCheckedChange={field.onChange} data-testid="checkbox-values" />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>I align with your core values</FormLabel>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                            Focus on the mission • Bias to action • Do Whatever It Takes • Ship fast • Own the outcome • Be humble • Radical candor
+                          </p>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="terminal-button-secondary"
-                  onClick={() => form.reset()}
-                  disabled={isSubmitting}
-                  data-testid="button-abort"
-                >
-                  ABORT TRANSMISSION
+              {/* Submit Button */}
+              <div className="flex gap-3 pt-6 border-t">
+                <Link href="/" className="flex-1">
+                  <Button variant="outline" className="w-full" data-testid="button-cancel">
+                    Cancel
+                  </Button>
+                </Link>
+                <Button type="submit" disabled={isSubmitting} className="flex-1" data-testid="button-submit-application">
+                  {isSubmitting ? "Submitting..." : "Submit Application"}
+                  {!isSubmitting && <ArrowRight className="ml-2 w-4 h-4" />}
                 </Button>
-                <Button
-                  type="submit"
-                  className="terminal-button-primary"
-                  disabled={isSubmitting}
-                  data-testid="button-submit"
-                >
-                  {isSubmitting ? (
-                    <>TRANSMITTING DATA...</>
-                  ) : (
-                    <>
-                      TRANSMIT DATA PACKAGE & INITIATE REVIEW
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </>
-                  )}
-                </Button>
               </div>
-            </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </div>
       </div>
     </div>
   );
