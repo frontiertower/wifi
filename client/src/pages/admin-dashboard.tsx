@@ -100,6 +100,41 @@ interface AdminSessionResponse {
   email?: string;
 }
 
+function calculateProfileCompletion(listing: DirectoryListing): number {
+  const fields: (keyof DirectoryListing)[] = [];
+  
+  // Base fields common to all types
+  const commonFields: (keyof DirectoryListing)[] = [
+    'floor', 
+    'officeNumber', 
+    'phone', 
+    'telegramUsername', 
+    'email', 
+    'website', 
+    'linkedinUrl', 
+    'twitterHandle', 
+    'logoUrl', 
+    'description'
+  ];
+  
+  // Type-specific required/name fields
+  if (listing.type === 'company') {
+    fields.push('companyName', 'contactPerson', ...commonFields);
+  } else if (listing.type === 'person') {
+    fields.push('firstName', 'lastName', ...commonFields);
+  } else if (listing.type === 'community') {
+    fields.push('communityName', 'contactPerson', ...commonFields);
+  }
+  
+  // Count filled fields
+  const filledCount = fields.filter(field => {
+    const value = listing[field];
+    return value !== null && value !== undefined && value !== '';
+  }).length;
+  
+  return Math.round((filledCount / fields.length) * 100);
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("analytics");
   const [showEventForm, setShowEventForm] = useState(false);
@@ -1617,6 +1652,7 @@ export default function AdminDashboard() {
                                        listing.type === "community" && listing.communityName ? listing.communityName :
                                        listing.type === "person" && listing.lastName && listing.firstName ? `${listing.lastName}, ${listing.firstName}` :
                                        "Unknown";
+                    const completionPercent = calculateProfileCompletion(listing);
                     
                     // Generate slug for edit page URL
                     const slug = slugify(displayName);
@@ -1626,9 +1662,23 @@ export default function AdminDashboard() {
                       <Card key={listing.id} data-testid={`card-admin-listing-${listing.id}`}>
                         <div className="p-4 sm:p-6">
                           <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                              {isEditing ? "Editing: " : ""}{displayName}
-                            </h3>
+                            <div className="flex items-center gap-3">
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                {isEditing ? "Editing: " : ""}{displayName}
+                              </h3>
+                              <div 
+                                className={`text-xs font-medium px-2 py-1 rounded-full ${
+                                  completionPercent >= 80 
+                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                                    : completionPercent >= 50 
+                                    ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' 
+                                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                                }`}
+                                data-testid={`completion-score-${listing.id}`}
+                              >
+                                {completionPercent}% complete
+                              </div>
+                            </div>
                             <div className="flex items-center gap-2">
                               {!isEditing ? (
                                 <>

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, ArrowUpDown, Edit, User, Users, Search, Linkedin, Twitter } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -281,6 +281,7 @@ export default function Directory() {
           <div className="space-y-4">
             {listings.map((listing) => {
               const isExpanded = expandedListings.has(listing.id);
+              
               return (
                 <Card
                   key={listing.id}
