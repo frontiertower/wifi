@@ -334,14 +334,6 @@ export default function Home() {
                   </span>
                 </button>
               </div>
-
-              <button
-                onClick={() => setShowPillModal(false)}
-                className="w-full mt-6 px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
-                data-testid="button-cancel-pill"
-              >
-                Cancel
-              </button>
             </div>
           </div>
         )}
