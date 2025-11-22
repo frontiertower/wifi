@@ -135,14 +135,33 @@ export default function Home() {
   useEffect(() => {
     if (!showTerminal) return;
 
+    let autoRebootTimer: NodeJS.Timeout | null = null;
+
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
+        if (autoRebootTimer) clearTimeout(autoRebootTimer);
         window.location.reload();
       }
     };
 
+    const handleClick = () => {
+      if (autoRebootTimer) clearTimeout(autoRebootTimer);
+      window.location.reload();
+    };
+
+    // Start 5-second auto-reboot timer
+    autoRebootTimer = setTimeout(() => {
+      window.location.reload();
+    }, 5000);
+
     window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    window.addEventListener("click", handleClick);
+
+    return () => {
+      if (autoRebootTimer) clearTimeout(autoRebootTimer);
+      window.removeEventListener("keydown", handleKeyPress);
+      window.removeEventListener("click", handleClick);
+    };
   }, [showTerminal]);
 
   const handleRebootClick = () => {
