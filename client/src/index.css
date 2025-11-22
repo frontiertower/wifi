@@ -129,6 +129,58 @@
   animation: blackHolePull 2s ease-in forwards;
 }
 
+/* Shake and trippy effects */
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-3px, 2px) rotate(0.5deg); }
+  20% { transform: translate(3px, -2px) rotate(-0.5deg); }
+  30% { transform: translate(-2px, -3px) rotate(0.3deg); }
+  40% { transform: translate(2px, 3px) rotate(-0.3deg); }
+  50% { transform: translate(-4px, 1px) rotate(0.6deg); }
+  60% { transform: translate(4px, -1px) rotate(-0.6deg); }
+  70% { transform: translate(-3px, -4px) rotate(0.4deg); }
+  80% { transform: translate(3px, 4px) rotate(-0.4deg); }
+  90% { transform: translate(-2px, 2px) rotate(0.2deg); }
+}
+
+@keyframes sparks {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0);
+  }
+}
+
+@keyframes lineFlicker {
+  0%, 100% { opacity: 0.3; stroke-width: 1px; }
+  50% { opacity: 1; stroke-width: 2px; }
+}
+
+@keyframes zigzag {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 20; }
+}
+
+.shake-effect {
+  animation: screenShake 0.1s ease-in-out infinite;
+}
+
+.spark {
+  animation: sparks 0.8s ease-out forwards;
+}
+
+.flicker-line {
+  animation: lineFlicker 0.15s ease-in-out infinite;
+}
+
+.zigzag-line {
+  animation: zigzag 0.2s linear infinite;
+  stroke-dasharray: 5, 5;
+}
+
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
