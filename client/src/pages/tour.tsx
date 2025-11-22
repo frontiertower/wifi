@@ -34,13 +34,14 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 
-const groupTours = [
+const allGroupTours = [
   {
     id: "nov20",
     name: "Your Startup's Future HQ: Exclusive Tour of the Frontier Tower",
     date: "Thursday, November 20",
     time: "12:00 PM - 12:30 PM",
     url: "https://luma.com/your-startups-future-hq-exclusive-tour-o?tk=F2BbOy",
+    datetime: new Date("2024-11-20T12:00:00"),
   },
   {
     id: "nov21",
@@ -48,6 +49,7 @@ const groupTours = [
     date: "Friday, November 21",
     time: "12:00 PM - 12:30 PM",
     url: "https://luma.com/frontier-tower-tour-for-aspiring-citizen-5338?tk=wVI3xj",
+    datetime: new Date("2024-11-21T12:00:00"),
   },
   {
     id: "nov25",
@@ -55,8 +57,12 @@ const groupTours = [
     date: "Tuesday, November 25",
     time: "11:00 AM - 11:30 AM",
     url: "https://luma.com/your-startups-future-hq-exclusive-tour-o-b217",
+    datetime: new Date("2024-11-25T11:00:00"),
   },
 ];
+
+// Filter out past tours
+const groupTours = allGroupTours.filter(tour => tour.datetime > new Date());
 
 const tourBookingFormSchema = z.object({
   tourType: z.string().min(1, "Please select a tour option"),
