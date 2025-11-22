@@ -121,7 +121,7 @@ function AppHeader() {
   return (
     <>
       {!shouldHideRabbit && (
-        <div className="absolute top-6 left-6 z-50">
+        <div className="absolute top-6 left-6 z-[60]">
           <WhiteRabbitButton onHomeClick={handleRabbitClick} />
         </div>
       )}
