@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Building2, Plus, Clock, ExternalLink, Star } from "lucide-react";
+import { Briefcase, MapPin, Building2, Plus, Clock, ExternalLink, Star, Shield } from "lucide-react";
 import { Link } from "wouter";
 
 type JobListingFormData = z.infer<typeof insertJobListingSchema>;
@@ -22,6 +22,11 @@ type JobListingFormData = z.infer<typeof insertJobListingSchema>;
 export default function CareersPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  // Set page title for SEO
+  useEffect(() => {
+    document.title = "Careers - Frontier Tower | Join Our Team";
+  }, []);
 
   const { data, isLoading } = useQuery<{ success: boolean; listings: JobListing[] }>({
     queryKey: ["/api/job-listings"],
@@ -94,19 +99,19 @@ export default function CareersPage() {
             </Link>
           </div>
 
-          {/* Post a Job Button */}
+          {/* Post a Job Button - Admin Only */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2" data-testid="button-post-job">
-                <Plus className="w-4 h-4" />
-                Post a Job
+                <Shield className="w-4 h-4" />
+                Post a Job (Admin)
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="dialog-post-job">
               <DialogHeader>
-                <DialogTitle>Post a Job Listing</DialogTitle>
+                <DialogTitle data-testid="text-dialog-title">Post a Job Listing</DialogTitle>
                 <DialogDescription>
-                  Fill out the form below to add a new job opportunity to the careers board.
+                  Fill out the form below to add a new job opportunity to the careers board. Admin access required.
                 </DialogDescription>
               </DialogHeader>
               
@@ -203,6 +208,7 @@ export default function CareersPage() {
                           <Textarea 
                             placeholder="Provide a detailed description of the role, responsibilities, and what makes this opportunity exciting..."
                             rows={6}
+                            maxLength={2000}
                             {...field}
                             data-testid="input-description"
                           />
@@ -222,6 +228,7 @@ export default function CareersPage() {
                           <Textarea 
                             placeholder="List key qualifications, skills, and experience required..."
                             rows={4}
+                            maxLength={1000}
                             {...field}
                             value={field.value || ""}
                             data-testid="input-requirements"
@@ -345,8 +352,8 @@ export default function CareersPage() {
           <div className="space-y-8">
             {/* Featured Jobs */}
             {featuredListings.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <div data-testid="section-featured-jobs">
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2" data-testid="text-featured-title">
                   <Star className="w-6 h-6 text-primary" />
                   Featured Opportunities
                 </h2>
@@ -360,8 +367,8 @@ export default function CareersPage() {
 
             {/* Regular Jobs */}
             {regularListings.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">All Opportunities</h2>
+              <div data-testid="section-all-jobs">
+                <h2 className="text-2xl font-bold mb-4" data-testid="text-all-title">All Opportunities</h2>
                 <div className="grid gap-6 md:grid-cols-2">
                   {regularListings.map((listing) => (
                     <JobListingCard key={listing.id} listing={listing} />
