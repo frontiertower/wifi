@@ -1,4 +1,5 @@
 import { useLocation } from "wouter";
+import rabbitImage from "@assets/FuzzyNop_logo_pink_1763832812948.png";
 
 interface WhiteRabbitButtonProps {
   onHomeClick?: () => void;
@@ -20,11 +21,15 @@ export function WhiteRabbitButton({ onHomeClick }: WhiteRabbitButtonProps) {
   return (
     <button
       onClick={handleClick}
-      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+      className="p-2 hover:opacity-80 transition-opacity"
       data-testid="button-white-rabbit-home"
       aria-label="Follow the white rabbit or go home"
     >
-      <span className="text-lg">🐰</span>
+      <img 
+        src={rabbitImage} 
+        alt="White rabbit" 
+        className="w-8 h-8 object-contain"
+      />
     </button>
   );
 }
