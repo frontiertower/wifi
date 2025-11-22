@@ -780,13 +780,22 @@
     background: rgba(10, 30, 10, 0.7);
     border: 3px solid rgba(0, 255, 0, 0.6);
     border-radius: 1rem;
-    padding: 2rem;
+    padding: 1rem;
     box-shadow: 
       0 0 40px rgba(0, 255, 0, 0.15),
       0 0 20px rgba(0, 255, 0, 0.08),
       inset 0 0 20px rgba(0, 255, 0, 0.03);
     position: relative;
     z-index: 1;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  @media (min-width: 768px) {
+    .terminal-card {
+      padding: 2rem;
+    }
   }
 
   /* Blueprint Aesthetic */
@@ -895,6 +904,19 @@
 
   .terminal-force-dark * {
     color: #00ff00 !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .terminal-force-dark h1,
+  .terminal-force-dark h2,
+  .terminal-force-dark h3,
+  .terminal-force-dark h4,
+  .terminal-force-dark h5,
+  .terminal-force-dark h6 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
   }
 
   .terminal-force-dark .text-terminal-green {
