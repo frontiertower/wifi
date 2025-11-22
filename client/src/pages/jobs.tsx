@@ -139,6 +139,68 @@ export default function JobsPage() {
           </p>
         </div>
 
+        {/* Role Description */}
+        <div className="terminal-section mb-8">
+          <h2 className="text-2xl font-bold text-terminal-green mb-6 terminal-text border-l-4 border-terminal-green pl-4">
+            MISSION BRIEFING: HEAD OF FINANCE POSITION
+          </h2>
+          
+          <div className="space-y-6 text-terminal-dim">
+            <div>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">OPERATIONAL MANDATE</h3>
+              <p>
+                As Head of Finance at Frontier Tower, you will lead the financial operations of a mission-driven collective building community around AI, agents, and emerging technologies. You'll own everything from day-to-day accounting to strategic financial planning, ensuring sustainable growth while maintaining the integrity of our values-driven mission.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">KEY RESPONSIBILITIES</h3>
+              <ul className="space-y-2 ml-4">
+                <li>• <span className="text-terminal-bright">Financial Management</span> — Oversee bookkeeping, AP/AR, payroll, and tax compliance across all jurisdictions</li>
+                <li>• <span className="text-terminal-bright">Strategic Planning</span> — Develop financial forecasts, budgets, and long-term growth strategies aligned with our mission</li>
+                <li>• <span className="text-terminal-bright">Treasury Operations</span> — Manage cash flow, banking relationships, and optimize working capital</li>
+                <li>• <span className="text-terminal-bright">Fundraising Support</span> — Partner with leadership on equity/debt raises, investor relations, and pitch materials</li>
+                <li>• <span className="text-terminal-bright">Compliance & Reporting</span> — Ensure adherence to accounting standards, tax laws, and regulatory requirements</li>
+                <li>• <span className="text-terminal-bright">Cross-functional Collaboration</span> — Work directly with founders and C-level executives on strategic financial decisions</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">IDEAL CANDIDATE PROFILE</h3>
+              <p className="mb-3">
+                You thrive in startup environments where speed and adaptability matter as much as precision. You've managed complex financial operations—whether managing millions in capital, coordinating across tax jurisdictions, or supporting fundraising efforts. You're comfortable with ambiguity, own outcomes, and communicate clearly with both technical and non-technical stakeholders.
+              </p>
+              <p>
+                Most importantly, you align with our mission: belief in the power of AI and open collaboration to shape the future. You want to work on problems that matter, surrounded by talented people who push boundaries.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">COMPENSATION & BENEFITS</h3>
+              <ul className="space-y-2 ml-4">
+                <li>• <span className="text-terminal-bright">Competitive Salary</span> — Market-rate compensation based on experience (typically $120K–$250K+)</li>
+                <li>• <span className="text-terminal-bright">Equity Package</span> — Meaningful equity stake in Frontier Tower's growth</li>
+                <li>• <span className="text-terminal-bright">Flexible Work</span> — Remote-friendly with optional access to our San Francisco base</li>
+                <li>• <span className="text-terminal-bright">Professional Development</span> — Budget for training, conferences, and skill development</li>
+                <li>• <span className="text-terminal-bright">Community</span> — Direct access to our network of AI researchers, founders, and builders</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-terminal-green font-bold mb-3 terminal-text">LOCATION & LOGISTICS</h3>
+              <p>
+                Remote-first with occasional in-person meetings at our San Francisco headquarters. We support distributed teams across time zones and will work with your schedule to ensure collaboration when it matters.
+              </p>
+            </div>
+
+            <div className="border-t border-terminal-green/30 pt-6 mt-6">
+              <p className="text-sm">
+                Ready to take on this mission? Submit your personnel file below. We review applications on a rolling basis and contact promising candidates within 2-3 business days.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* Section A: Identity & Credentials */}
