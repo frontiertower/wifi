@@ -6,6 +6,7 @@ type PillChoice = "green" | "blue" | null;
 export default function PillsPage() {
   const [crackIntensity, setCrackIntensity] = useState(0);
   const [showTerminal, setShowTerminal] = useState(false);
+  const [buttonShakeState, setButtonShakeState] = useState<"green" | "blue" | null>(null);
   const [, setLocation] = useLocation();
 
   // Glass cracking effect on load
@@ -62,11 +63,48 @@ export default function PillsPage() {
   };
 
   const handlePillChoice = (choice: PillChoice) => {
-    if (choice === "green") {
-      setLocation("/Regen");
-    } else if (choice === "blue") {
-      setLocation("/Finance");
+    setButtonShakeState(choice);
+    
+    // Generate extra sparks on pill selection
+    setCrackIntensity(Math.min(crackIntensity + 3, 10));
+    
+    setTimeout(() => {
+      if (choice === "green") {
+        setLocation("/Regen");
+      } else if (choice === "blue") {
+        setLocation("/Finance");
+      }
+    }, 600);
+  };
+
+  // Generate additional shooting spark particles when pills are clicked
+  const generateExtraSparks = () => {
+    if (crackIntensity >= 6) {
+      return Array.from({ length: 25 }).map((_, i) => {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 150 + Math.random() * 200;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+        const delay = Math.random() * 0.3;
+        
+        return (
+          <circle
+            key={`extra-spark-${i}`}
+            cx="50%"
+            cy="50%"
+            r={1 + Math.random() * 2}
+            fill={`rgba(${Math.random() > 0.5 ? '255,150,0' : '255,255,0'}, ${0.4 + Math.random() * 0.6})`}
+            style={{
+              '--tx': `${tx}px`,
+              '--ty': `${ty}px`,
+              animation: `sparks 1.2s ease-out ${delay}s forwards`,
+            } as React.CSSProperties}
+            className="spark"
+          />
+        );
+      });
     }
+    return null;
   };
 
   return (
@@ -108,12 +146,20 @@ export default function PillsPage() {
                 <circle cx="70%" cy="30%" r="10%" fill="none" stroke="rgba(0,0,0,0.2)" strokeWidth="1" />
               </>
             )}
+
+            {/* Extra animated lines */}
+            {crackIntensity >= 7 && (
+              <>
+                <line x1="15%" y1="15%" x2="85%" y2="85%" stroke="rgba(255,100,100,0.2)" strokeWidth="1" className="flicker-line" strokeDasharray="3,3" />
+                <line x1="85%" y1="15%" x2="15%" y2="85%" stroke="rgba(100,100,255,0.2)" strokeWidth="1" className="flicker-line" strokeDasharray="3,3" />
+              </>
+            )}
           </svg>
           
           {/* Spark particles (intensity 6+) */}
           {crackIntensity >= 6 && (
             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: "drop-shadow(0 0 5px rgba(0,0,0,0.5))" }}>
-              {Array.from({ length: Math.min(crackIntensity - 5, 15) }).map((_, i) => {
+              {Array.from({ length: Math.min(crackIntensity - 5, 20) }).map((_, i) => {
                 const angle = (i / (crackIntensity - 5)) * Math.PI * 2;
                 const distance = 100 + i * 20;
                 const tx = Math.cos(angle) * distance;
@@ -124,7 +170,7 @@ export default function PillsPage() {
                     cx="50%"
                     cy="50%"
                     r="2"
-                    fill="rgba(0,0,0,0.6)"
+                    fill={`rgba(${i % 2 ? '255,200,0' : '255,100,0'}, 0.7)`}
                     style={{
                       '--tx': `${tx}px`,
                       '--ty': `${ty}px`,
@@ -133,6 +179,9 @@ export default function PillsPage() {
                   />
                 );
               })}
+
+              {/* Extra button click sparks */}
+              {buttonShakeState && generateExtraSparks()}
             </svg>
           )}
         </>
@@ -158,10 +207,10 @@ export default function PillsPage() {
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => handlePillChoice("green")}
-              className="flex flex-col items-center justify-center p-6 border-2 border-green-500 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/30 transition-colors duration-200 group"
+              className={`flex flex-col items-center justify-center p-6 border-2 border-green-500 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/30 transition-colors duration-200 group ${buttonShakeState === "green" ? "animate-bounce" : ""}`}
               data-testid="button-green-pill-choice"
             >
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-2 group-hover:scale-110 transition-transform" />
+              <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-2 group-hover:scale-110 transition-transform ${buttonShakeState === "green" ? "scale-125" : ""}`} />
               <span className="text-sm font-bold text-green-600 dark:text-green-400">
                 GREEN PILL
               </span>
@@ -172,10 +221,10 @@ export default function PillsPage() {
 
             <button
               onClick={() => handlePillChoice("blue")}
-              className="flex flex-col items-center justify-center p-6 border-2 border-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors duration-200 group"
+              className={`flex flex-col items-center justify-center p-6 border-2 border-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors duration-200 group ${buttonShakeState === "blue" ? "animate-bounce" : ""}`}
               data-testid="button-blue-pill-choice"
             >
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 mb-2 group-hover:scale-110 transition-transform" />
+              <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 mb-2 group-hover:scale-110 transition-transform ${buttonShakeState === "blue" ? "scale-125" : ""}`} />
               <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
                 BLUE PILL
               </span>

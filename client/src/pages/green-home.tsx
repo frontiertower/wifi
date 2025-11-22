@@ -92,7 +92,7 @@ export default function GreenHome() {
           <div className="max-w-2xl mx-auto">
             {/* Header */}
             <div className="terminal-header mb-8 text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-center text-terminal-green terminal-glow mb-2 terminal-text">
+              <h1 className="text-4xl md:text-5xl font-bold text-center text-terminal-green terminal-glow mb-2">
                 FRONTIER TOWER PORTAL
               </h1>
               <p className="text-center text-terminal-dim text-sm md:text-base">
@@ -110,7 +110,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <Wifi className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-bold text-terminal-green terminal-text">CONNECT TO WIFI</h3>
+                    <h3 className="font-bold text-terminal-green">CONNECT TO WIFI</h3>
                     <p className="text-terminal-dim text-xs mt-1">Access high-speed internet</p>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <Building2 className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-bold text-terminal-green terminal-text">BUILDING DIRECTORY</h3>
+                    <h3 className="font-bold text-terminal-green">BUILDING DIRECTORY</h3>
                     <p className="text-terminal-dim text-xs mt-1">Browse companies & members</p>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <Calendar className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-bold text-terminal-green terminal-text">EVENTS CALENDAR</h3>
+                    <h3 className="font-bold text-terminal-green">EVENTS CALENDAR</h3>
                     <p className="text-terminal-dim text-xs mt-1">Discover what's happening</p>
                   </div>
                 </div>
@@ -152,7 +152,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <DoorOpen className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-bold text-terminal-green terminal-text">RENT OFFICE</h3>
+                    <h3 className="font-bold text-terminal-green">RENT OFFICE</h3>
                     <p className="text-terminal-dim text-xs mt-1">Private workspace options</p>
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <UserPlus className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-bold text-terminal-green terminal-text">BOOK A TOUR</h3>
+                    <h3 className="font-bold text-terminal-green">BOOK A TOUR</h3>
                     <p className="text-terminal-dim text-xs mt-1">Explore the building</p>
                   </div>
                 </div>
@@ -180,7 +180,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <UserPlus className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-bold text-terminal-green terminal-text">MEMBERSHIP</h3>
+                    <h3 className="font-bold text-terminal-green">MEMBERSHIP</h3>
                     <p className="text-terminal-dim text-xs mt-1">Become a member</p>
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <PartyPopper className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-bold text-terminal-green terminal-text">HOST EVENT</h3>
+                    <h3 className="font-bold text-terminal-green">HOST EVENT</h3>
                     <p className="text-terminal-dim text-xs mt-1">Setup your event</p>
                   </div>
                 </div>
@@ -208,7 +208,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <MessageCircle className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="font-bold text-terminal-green terminal-text">CHAT WITH US</h3>
+                    <h3 className="font-bold text-terminal-green">CHAT WITH US</h3>
                     <p className="text-terminal-dim text-xs mt-1">Ask anything</p>
                   </div>
                 </div>
@@ -217,7 +217,7 @@ export default function GreenHome() {
 
             {/* QR Code */}
             <div className="terminal-card text-center">
-              <p className="text-terminal-green font-bold terminal-text text-sm mb-4">SHARE WITH YOUR NETWORK</p>
+              <p className="text-terminal-green font-bold text-sm mb-4">SHARE WITH YOUR NETWORK</p>
               <div className="flex justify-center mb-4">
                 <div className="bg-terminal-dim/20 p-4 border border-terminal-green rounded">
                   <img 
