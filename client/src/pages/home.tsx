@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { ThemeToggle } from "@/components/theme-toggle";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
 import SlidingWelcome from "@/components/SlidingWelcome";
@@ -121,19 +120,6 @@ export default function Home() {
         <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4 ${isFlashing ? 'screen-flash' : ''}`}
           onAnimationEnd={() => setIsFlashing(false)}
         >
-        <div className="absolute top-6 left-6">
-          <button
-            onClick={handleWhiteRabbit}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-            data-testid="button-white-rabbit-emoji"
-            aria-label="Follow the white rabbit"
-          >
-            <span className="text-lg">🐰</span>
-          </button>
-        </div>
-        <div className="absolute top-6 right-6">
-          <ThemeToggle />
-        </div>
         
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">

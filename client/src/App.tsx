@@ -5,6 +5,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { WhiteRabbitButton } from "@/components/white-rabbit-button";
 import Home from "@/pages/home";
 import GreenHome from "@/pages/green-home";
 import BlueHome from "@/pages/blue-home";
@@ -106,7 +108,15 @@ function App() {
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <div className="relative">
+            <div className="absolute top-6 left-6 z-50">
+              <WhiteRabbitButton />
+            </div>
+            <div className="absolute top-6 right-6 z-50">
+              <ThemeToggle />
+            </div>
+            <Router />
+          </div>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
