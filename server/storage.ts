@@ -953,8 +953,28 @@ export class DatabaseStorage {
     return await db
       .select()
       .from(jobListings)
-      .where(eq(jobListings.isActive, true))
+      .where(and(
+        eq(jobListings.isActive, true),
+        eq(jobListings.isApproved, true)
+      ))
       .orderBy(sql`${jobListings.isFeatured} DESC, ${jobListings.createdAt} DESC`);
+  }
+
+  async getAllJobListingsForAdmin(): Promise<JobListing[]> {
+    return await db
+      .select()
+      .from(jobListings)
+      .where(eq(jobListings.isActive, true))
+      .orderBy(sql`${jobListings.isApproved} ASC, ${jobListings.isFeatured} DESC, ${jobListings.createdAt} DESC`);
+  }
+
+  async approveJobListing(id: number): Promise<JobListing | null> {
+    const [updated] = await db
+      .update(jobListings)
+      .set({ isApproved: true })
+      .where(eq(jobListings.id, id))
+      .returning();
+    return updated || null;
   }
 
   async getJobListingById(id: number): Promise<JobListing | null> {
