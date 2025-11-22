@@ -222,7 +222,7 @@ export default function HiringPage() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">NAME (LAST, FIRST)</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">NAME (LAST, FIRST)</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -241,7 +241,7 @@ export default function HiringPage() {
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">CURRENT LOCATION (CITY/TOWER)</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">CURRENT LOCATION (CITY/TOWER)</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -260,7 +260,7 @@ export default function HiringPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">CONTACT FREQUENCY (EMAIL)</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">CONTACT FREQUENCY (EMAIL)</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -280,7 +280,7 @@ export default function HiringPage() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">DIRECT COMM (PHONE)</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">DIRECT COMM (PHONE)</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -300,7 +300,7 @@ export default function HiringPage() {
                   name="linkedinUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">LINKEDIN PROFILE URL</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">LINKEDIN PROFILE URL</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -320,7 +320,7 @@ export default function HiringPage() {
                   name="resumeUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">RESUME/CV DATAPACK</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">RESUME/CV DATAPACK</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -349,7 +349,7 @@ export default function HiringPage() {
                   name="minimumCompensation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">YIELD (MINIMUM ANNUAL COMPENSATION REQUIRED)</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">YIELD (MINIMUM ANNUAL COMPENSATION REQUIRED)</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -371,7 +371,7 @@ export default function HiringPage() {
                   name="noticePeriodWeeks"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">NOTICE PERIOD (WEEKS REQUIRED BEFORE INTEGRATION)</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">NOTICE PERIOD (WEEKS REQUIRED BEFORE INTEGRATION)</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -393,7 +393,7 @@ export default function HiringPage() {
                   name="startupYears"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">YEARS IN STARTUP ENVIRONMENT (FAST-PACED FIRMS)</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">YEARS IN STARTUP ENVIRONMENT (FAST-PACED FIRMS)</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
@@ -423,7 +423,7 @@ export default function HiringPage() {
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel className="terminal-label text-sm">
+                        <FormLabel className="terminal-label text-terminal-green text-sm">
                           CONFIRMATION OF ALIGNMENT WITH CORE OPERATIONAL VALUES
                         </FormLabel>
                         <p className="text-xs text-terminal-dim">
@@ -441,7 +441,7 @@ export default function HiringPage() {
                   name="contractInterpretationLevel"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">
+                      <FormLabel className="terminal-label text-terminal-green">
                         CONTRACT INTERPRETATION FAMILIARITY (LEVEL OF COMFORT)
                       </FormLabel>
                       <FormControl>
@@ -474,7 +474,7 @@ export default function HiringPage() {
                   name="paymentSystemsExperience"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">
+                      <FormLabel className="terminal-label text-terminal-green">
                         PROVEN TRACK RECORD IN PAYMENT/BANKING SYSTEMS
                       </FormLabel>
                       <FormControl>
@@ -496,7 +496,7 @@ export default function HiringPage() {
                   name="taxAdvisorExperience"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">
+                      <FormLabel className="terminal-label text-terminal-green">
                         TAX ADVISOR COORDINATION EXPERIENCE
                       </FormLabel>
                       <FormControl>
@@ -518,7 +518,7 @@ export default function HiringPage() {
                   name="investorRelationsExperience"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">
+                      <FormLabel className="terminal-label text-terminal-green">
                         INVESTOR RELATIONS (EQUITY/DEBT RAISE SUPPORT) [OPTIONAL]
                       </FormLabel>
                       <FormControl>
@@ -540,7 +540,7 @@ export default function HiringPage() {
                   name="executiveCollaboration"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">
+                      <FormLabel className="terminal-label text-terminal-green">
                         C-LEVEL/FOUNDER COLLABORATION [OPTIONAL]
                       </FormLabel>
                       <FormControl>
@@ -571,7 +571,7 @@ export default function HiringPage() {
                   name="motivationStatement"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">
+                      <FormLabel className="terminal-label text-terminal-green">
                         MISSION ALIGNMENT STATEMENT
                       </FormLabel>
                       <FormControl>
@@ -592,7 +592,7 @@ export default function HiringPage() {
                   name="referralSource"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">DISCOVERY VECTOR</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">DISCOVERY VECTOR</FormLabel>
                       <Select value={field.value || ""} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger className="terminal-select">
@@ -618,7 +618,7 @@ export default function HiringPage() {
                   name="portfolioUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="terminal-label">PORTFOLIO / WORK SAMPLES [OPTIONAL]</FormLabel>
+                      <FormLabel className="terminal-label text-terminal-green">PORTFOLIO / WORK SAMPLES [OPTIONAL]</FormLabel>
                       <FormControl>
                         <Input 
                           className="terminal-input" 
