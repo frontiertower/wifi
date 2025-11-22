@@ -297,6 +297,22 @@ export default function Home() {
             </Link>
 
             <Link
+              href="/hiring"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-careers"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-red-100 dark:bg-red-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-red-200 dark:group-hover:bg-red-500/40">
+                  <Briefcase className="text-red-600 dark:text-red-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Careers at Frontier</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Join our team, build the future</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link
               href="/event-host-booking"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
               data-testid="button-host-event"
