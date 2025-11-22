@@ -493,9 +493,28 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
               </div>
             ) : (
               <div className="space-y-4">
+                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-2 border-gray-300 dark:border-gray-700 rounded-lg">
+                  <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">
+                    Option 1: Manual Connection (All Devices)
+                  </p>
+                  <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-3">
+                    <li>1. <strong>Disconnect</strong> from the Guest network</li>
+                    <li>2. <strong>Connect</strong> to the secure network "FrontierTower"</li>
+                    <li>3. Enter the password below when prompted</li>
+                  </ol>
+                  <div className="bg-white dark:bg-gray-900/50 rounded p-3 text-sm">
+                    <p className="text-gray-900 dark:text-gray-100">
+                      <strong>Network Name:</strong> FrontierTower
+                    </p>
+                    <p className="text-gray-900 dark:text-gray-100">
+                      <strong>Password:</strong> frontiertower995
+                    </p>
+                  </div>
+                </div>
+
                 <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-700 rounded-lg">
                   <p className="text-sm font-bold text-blue-900 dark:text-blue-100 mb-3">
-                    Option 1: Quick Setup (iOS/Mac)
+                    Option 2: Quick Setup (iOS/Mac)
                   </p>
                   <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
                     Install this profile to automatically connect to FrontierTower WiFi
@@ -622,25 +641,6 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                       </div>
                     </div>
                   )}
-                </div>
-
-                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-2 border-gray-300 dark:border-gray-700 rounded-lg">
-                  <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">
-                    Option 2: Manual Connection (All Devices)
-                  </p>
-                  <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-3">
-                    <li>1. <strong>Disconnect</strong> from the Guest network</li>
-                    <li>2. <strong>Connect</strong> to the secure network "FrontierTower"</li>
-                    <li>3. Enter the password below when prompted</li>
-                  </ol>
-                  <div className="bg-white dark:bg-gray-900/50 rounded p-3 text-sm">
-                    <p className="text-gray-900 dark:text-gray-100">
-                      <strong>Network Name:</strong> FrontierTower
-                    </p>
-                    <p className="text-gray-900 dark:text-gray-100">
-                      <strong>Password:</strong> frontiertower995
-                    </p>
-                  </div>
                 </div>
               </div>
             )}
