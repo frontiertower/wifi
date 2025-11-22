@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, CheckCircle, ChevronLeft } from "lucide-react";
+import { ArrowRight, ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
 
 type JobApplicationFormData = z.infer<typeof insertJobApplicationSchema>;
@@ -52,16 +52,16 @@ export default function FinancePage() {
       await apiRequest("POST", "/api/job-applications", data);
       
       toast({
-        title: "Application Submitted",
-        description: "Your application has been received. We'll review it and be in touch soon!",
+        title: "✓ TRANSMISSION SUCCESSFUL",
+        description: "Your application has been received",
       });
       
       setIsSubmitted(true);
       form.reset();
     } catch (error: any) {
       toast({
-        title: "Submission Error",
-        description: error.message || "Failed to submit application. Please try again.",
+        title: "✗ TRANSMISSION FAILED",
+        description: error.message || "Failed to submit application",
         variant: "destructive",
       });
     } finally {
@@ -73,440 +73,693 @@ export default function FinancePage() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-500/20 mb-6">
-            <CheckCircle className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+      <div className="min-h-screen p-4" style={{
+        backgroundColor: '#003d82',
+        backgroundImage: `
+          repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255, 255, 255, 0.03) 49px, rgba(255, 255, 255, 0.03) 50px),
+          repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255, 255, 255, 0.03) 49px, rgba(255, 255, 255, 0.03) 50px)
+        `,
+      }}>
+        <div className="max-w-4xl mx-auto flex items-center justify-center min-h-screen">
+          <div style={{
+            backgroundColor: '#003d82',
+            border: '3px solid #ffffff',
+            padding: '3rem',
+            textAlign: 'center',
+          }}>
+            <h2 className="text-3xl font-bold mb-4" style={{
+              color: '#ffffff',
+              fontFamily: 'monospace',
+              letterSpacing: '2px',
+            }}>
+              ✓ TRANSMISSION COMPLETE
+            </h2>
+            <p style={{
+              color: '#ffffff',
+              fontFamily: 'monospace',
+              marginBottom: '2rem',
+            }}>
+              Your application has been received for processing
+            </p>
+            <Link href="/">
+              <Button style={{
+                backgroundColor: '#003d82',
+                borderColor: '#ffffff',
+                color: '#ffffff',
+              }} variant="outline" data-testid="button-return-home">
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                RETURN TO PORTAL
+              </Button>
+            </Link>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-            Application Submitted
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Thank you for applying! We'll review your application and contact you if there's a good fit.
-          </p>
-          <Link href="/">
-            <Button className="w-full">
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4 py-8">
+    <div className="min-h-screen p-4" style={{
+      backgroundColor: '#003d82',
+      backgroundImage: `
+        repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255, 255, 255, 0.03) 49px, rgba(255, 255, 255, 0.03) 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255, 255, 255, 0.03) 49px, rgba(255, 255, 255, 0.03) 50px)
+      `,
+    }}>
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        {/* Back Button */}
+        <div className="mb-6">
           <Link href="/">
-            <Button variant="ghost" size="sm" data-testid="button-back">
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Back
+            <Button variant="ghost" size="sm" style={{
+              color: '#ffffff',
+              borderColor: '#ffffff',
+              fontSize: '12px',
+              fontFamily: 'monospace',
+            }} data-testid="button-back">
+              &lt; BACK TO PORTAL
             </Button>
           </Link>
         </div>
 
-        {/* Title Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Head of Finance @ Frontier Tower
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Remote or Hybrid
-          </p>
+        {/* Blueprint Title Block */}
+        <div className="mb-8" style={{
+          backgroundColor: '#003d82',
+          border: '3px solid #ffffff',
+        }}>
+          <div className="p-8" style={{
+            borderBottom: '2px solid #ffffff',
+          }}>
+            <h1 className="text-5xl md:text-6xl font-bold mb-2" style={{
+              color: '#ffffff',
+              fontFamily: 'monospace',
+              letterSpacing: '2px',
+            }}>
+              HEAD OF FINANCE
+            </h1>
+            <div style={{
+              height: '2px',
+              backgroundColor: '#ffffff',
+              marginBottom: '12px',
+            }}></div>
+            <p className="text-lg" style={{
+              color: '#ffffff',
+              fontFamily: 'monospace',
+              letterSpacing: '1px',
+            }}>
+              @ FRONTIER TOWER (REMOTE OR HYBRID)
+            </p>
+          </div>
+
+          {/* Technical Title Block */}
+          <div className="flex" style={{
+            backgroundColor: '#003d82',
+          }}>
+            <div className="flex-1 p-4" style={{
+              borderRight: '2px solid #ffffff',
+              color: '#ffffff',
+              fontFamily: 'monospace',
+              fontSize: '11px',
+            }}>
+              <div className="mb-2">Project: FRONTIER TOWER</div>
+              <div className="mb-2">Position: HEAD OF FINANCE</div>
+              <div>Revision: A</div>
+            </div>
+            <div className="w-32 p-4" style={{
+              borderLeft: '2px solid #ffffff',
+              color: '#ffffff',
+              fontFamily: 'monospace',
+              fontSize: '10px',
+              textAlign: 'center',
+            }}>
+              <div className="mb-1 border-b border-white pb-1">RECRUITMENT</div>
+              <div style={{ fontSize: '9px' }}>2024-2025</div>
+            </div>
+          </div>
         </div>
 
         {/* About Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">About Frontier Tower</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-3">
-            We are the world's fastest-growing network society. Our capital is San Francisco, and our citadel is a 16-story vertical village for frontier tech, arts & music on Market Street. Our mission is to design a governance model that is flexible and organic enough for communities worldwide to adopt and join. We are building a true federation where each tower retains its own rules while benefiting from the joined economic layer, portable citizenship rights and tech infrastructure.
+        <div className="mb-8" style={{
+          backgroundColor: '#003d82',
+          border: '2px solid #ffffff',
+          padding: '1.5rem',
+          color: '#ffffff',
+          fontFamily: 'monospace',
+          fontSize: '13px',
+          lineHeight: '1.6',
+        }}>
+          <h2 className="font-bold mb-3" style={{ fontSize: '14px', letterSpacing: '1px' }}>ABOUT FRONTIER TOWER</h2>
+          <p className="mb-3">
+            We are the world's fastest-growing network society. Our capital is San Francisco, and our citadel is a 16-story vertical village for frontier tech, arts & music on Market Street. Our mission is to design a governance model that is flexible and organic enough for communities worldwide to adopt and join.
           </p>
-          <p className="text-gray-600 dark:text-gray-400">
-            Our goals are bold: 9 additional towers by the end of 2026 and 100 towers by 2029. We're growing double-digit % MOM while building the technological backbone to govern the next era of society in a post-labor world. We are backed by leading visionaries and will raise a major round for a DAO next year. Ultimately, we aim to unite 10 million frontier citizens in a seamless inter-city network society. To scale this fast, we need the right tools: Imagine rebuilding nation-state governance from the ground up—with AI native to the system next to an App Store for governance, plug-and-play community Apps, and built-in payments with our own currency powering a new frontier economy.
+          <p>
+            Our goals are bold: 9 additional towers by the end of 2026 and 100 towers by 2029. We're growing double-digit % MOM while building the technological backbone to govern the next era of society in a post-labor world.
           </p>
         </div>
 
-        {/* Why Us Section */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Frontier Tech Only</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Work at the bleeding edge of innovation. Nothing is too new, every thought can be challenged, and the status quo is there to be disrupted.
-            </p>
+        {/* Why Us Grid */}
+        <div className="grid gap-4 md:grid-cols-3 mb-8">
+          <div style={{
+            backgroundColor: '#003d82',
+            border: '2px solid #ffffff',
+            padding: '1.5rem',
+            color: '#ffffff',
+            fontFamily: 'monospace',
+            fontSize: '12px',
+            lineHeight: '1.5',
+          }}>
+            <h3 className="font-bold mb-2" style={{ fontSize: '13px', letterSpacing: '1px' }}>FRONTIER TECH ONLY</h3>
+            <p style={{ fontSize: '11px', opacity: 0.9 }}>Work at the bleeding edge of innovation. Nothing is too new, every thought can be challenged.</p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Crypto Native</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Decentralization, permissionlessness & censorship resistance is what we breath. Think of the first names that come to mind in crypto whose identity is known: Those are our seed investors. Imagine societies of tomorrow: sovereign networks that transcend borders and nation-states: That's where we operate.
-            </p>
+          <div style={{
+            backgroundColor: '#003d82',
+            border: '2px solid #ffffff',
+            padding: '1.5rem',
+            color: '#ffffff',
+            fontFamily: 'monospace',
+            fontSize: '12px',
+            lineHeight: '1.5',
+          }}>
+            <h3 className="font-bold mb-2" style={{ fontSize: '13px', letterSpacing: '1px' }}>CRYPTO NATIVE</h3>
+            <p style={{ fontSize: '11px', opacity: 0.9 }}>Decentralization, permissionlessness & censorship resistance is what we breathe.</p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Momentum but Early Stage</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Our first 16-floor installation is already crowded with frontier citizens, the second a 112 bedroom residency is opening in December, yet we're barely seven months in and there is plenty of space to engrave your initials into the ground.
-            </p>
+          <div style={{
+            backgroundColor: '#003d82',
+            border: '2px solid #ffffff',
+            padding: '1.5rem',
+            color: '#ffffff',
+            fontFamily: 'monospace',
+            fontSize: '12px',
+            lineHeight: '1.5',
+          }}>
+            <h3 className="font-bold mb-2" style={{ fontSize: '13px', letterSpacing: '1px' }}>MOMENTUM</h3>
+            <p style={{ fontSize: '11px', opacity: 0.9 }}>16-floor installation crowded with frontier citizens, yet barely 7 months in.</p>
           </div>
         </div>
 
         {/* The Role */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">The Role</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-3">
-            This is a remote-first job. You'll be our head of finance, overseeing multiple companies which are either holding real estate, operating companies, or working on creating the tech which runs it all. You'll be operating all bank accounts, paying the team and vendors, speaking to tax advisors and preparing financials for our investors.
-          </p>
-          <p className="text-gray-600 dark:text-gray-400 mb-3">
-            You'll be working closely with the CEO to make sure that new contracts are signed and that we don't miss important deadlines. You will work on financial models and support in the fundraise by engaging with investors who have committed to investing or have already signed the paperwork and need assistance to wire the funds.
-          </p>
+        <div className="mb-8" style={{
+          backgroundColor: '#003d82',
+          border: '2px solid #ffffff',
+          padding: '1.5rem',
+          color: '#ffffff',
+          fontFamily: 'monospace',
+          fontSize: '13px',
+          lineHeight: '1.6',
+        }}>
+          <h2 className="font-bold mb-3" style={{ fontSize: '14px', letterSpacing: '1px' }}>THE ROLE</h2>
+          <p className="mb-3">You'll be our head of finance, overseeing multiple companies which are either holding real estate, operating companies, or working on creating the tech which runs it all. You'll be operating all bank accounts, paying the team and vendors, speaking to tax advisors and preparing financials for our investors.</p>
+          <p>You'll be working closely with the CEO to ensure contracts are signed and important deadlines are not missed. You will work on financial models and support in the fundraise by engaging with investors.</p>
         </div>
 
-        {/* What We're Looking For */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Must-Have</h3>
-            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+        {/* Requirements Grid */}
+        <div className="grid gap-4 md:grid-cols-2 mb-8">
+          <div style={{
+            backgroundColor: '#003d82',
+            border: '2px solid #ffffff',
+            padding: '1.5rem',
+            color: '#ffffff',
+            fontFamily: 'monospace',
+            fontSize: '12px',
+          }}>
+            <h3 className="font-bold mb-3" style={{ fontSize: '13px', letterSpacing: '1px' }}>MUST-HAVE</h3>
+            <ul className="space-y-2" style={{ fontSize: '11px', opacity: 0.9 }}>
               <li>• 3+ years in fast-pace startups</li>
-              <li>• Focus on the mission & Bias to action & Do Whatever It Takes & Ship fast & Own the outcome & Be humble & Radical candor—alignment with core company values</li>
-              <li>• Banking & Payments — Proven track record in handling a lot of payments</li>
-              <li>• Tax Knowledge — Direct collaboration with tax advisors</li>
-              <li>• Contracts — Ability to read basic contracts</li>
-              <li>• Willingness to learn and adapt — Take feedback and iterate</li>
+              <li>• Focus on mission & Bias to action & Ship fast & Own outcome</li>
+              <li>• Banking & Payments experience</li>
+              <li>• Tax Knowledge & collaboration</li>
+              <li>• Contract reading ability</li>
+              <li>• Willingness to learn and adapt</li>
             </ul>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Nice-to-Have</h3>
-            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <li>• Investor Relations — Experience supporting equity/debt raises</li>
-              <li>• Worked closely with C-Level/Founder before</li>
+          <div style={{
+            backgroundColor: '#003d82',
+            border: '2px solid #ffffff',
+            padding: '1.5rem',
+            color: '#ffffff',
+            fontFamily: 'monospace',
+            fontSize: '12px',
+          }}>
+            <h3 className="font-bold mb-3" style={{ fontSize: '13px', letterSpacing: '1px' }}>NICE-TO-HAVE</h3>
+            <ul className="space-y-2" style={{ fontSize: '11px', opacity: 0.9 }}>
+              <li>• Investor Relations experience</li>
+              <li>• Equity/debt raise support</li>
+              <li>• C-Level/Founder collaboration</li>
+              <li>• Strategic planning experience</li>
             </ul>
           </div>
         </div>
 
         {/* Application Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Apply Now
-          </h2>
+        <div style={{
+          backgroundColor: '#003d82',
+          border: '3px solid #ffffff',
+        }}>
+          <div className="p-8" style={{
+            borderBottom: '2px solid #ffffff',
+            color: '#ffffff',
+            fontFamily: 'monospace',
+            fontSize: '14px',
+            letterSpacing: '1px',
+            fontWeight: 'bold',
+          }}>
+            APPLICATION FORM
+          </div>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              {/* Personal Information */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Information</h3>
+          <div className="p-8">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                {/* Personal Information */}
+                <div>
+                  <h3 style={{
+                    color: '#ffffff',
+                    fontFamily: 'monospace',
+                    fontSize: '12px',
+                    letterSpacing: '1px',
+                    fontWeight: 'bold',
+                    marginBottom: '1rem',
+                  }}>YOUR INFORMATION</h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your name" {...field} data-testid="input-name" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="location"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Current Location</FormLabel>
-                        <FormControl>
-                          <Input placeholder="City, Country" {...field} data-testid="input-location" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} data-testid="input-email" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                          <Input type="tel" placeholder="+1 (555) 000-0000" {...field} data-testid="input-phone" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="linkedinUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>LinkedIn Profile (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="linkedin.com/in/yourprofile" {...field} value={field.value || ""} data-testid="input-linkedin" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="resumeUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Resume Link (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://drive.google.com/..." {...field} value={field.value || ""} data-testid="input-resume" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-
-              {/* Experience */}
-              <div className="border-t pt-8">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Experience</h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <FormField
-                    control={form.control}
-                    name="minimumCompensation"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Minimum Annual Compensation Expected</FormLabel>
-                        <FormControl>
-                          <Input type="number" placeholder="150000" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-compensation" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="noticePeriodWeeks"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Notice Period (Weeks)</FormLabel>
-                        <FormControl>
-                          <Input type="number" placeholder="2" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-notice-period" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="startupYears"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Years in Fast-Paced Startups</FormLabel>
-                        <FormControl>
-                          <Input type="number" placeholder="3+" {...field} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-startup-years" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="contractInterpretationLevel"
-                  render={({ field }) => (
-                    <FormItem className="mb-6">
-                      <FormLabel>Ability to Read Contracts (1-5)</FormLabel>
-                      <FormControl>
-                        <div className="space-y-3">
-                          <Slider min={1} max={5} step={1} value={[field.value || 1]} onValueChange={(vals) => field.onChange(vals[0])} data-testid="slider-contract-level" />
-                          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                            <span>Basic</span>
-                            <span className="font-semibold text-gray-900 dark:text-white">{contractLevel || 1}</span>
-                            <span>Advanced</span>
-                          </div>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="paymentSystemsExperience"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Banking & Payments Experience</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Tell us about your experience with banking systems and payment handling..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-payment-systems" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="taxAdvisorExperience"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tax Knowledge & Experience</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Describe your experience with tax advisors and tax compliance..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-tax-advisor" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="investorRelationsExperience"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Investor Relations Experience (Nice-to-Have)</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Have you supported equity/debt raises before?" className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-investor-relations" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="executiveCollaboration"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>C-Level/Founder Experience (Nice-to-Have)</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Have you worked closely with C-Level or Founder before?" className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-executive-collaboration" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-
-              {/* Motivation */}
-              <div className="border-t pt-8">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Your Story</h3>
-
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="motivationStatement"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Why Frontier Tower?</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Tell us what excites you about this opportunity..." className="min-h-[120px]" {...field} data-testid="textarea-motivation" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="referralSource"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>How did you hear about us?</FormLabel>
-                        <Select value={field.value || ""} onValueChange={field.onChange}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>NAME</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a source..." />
-                            </SelectTrigger>
+                            <Input placeholder="Your name" {...field} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-name" />
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="referral">Referral from Team Member</SelectItem>
-                            <SelectItem value="social">Social Media</SelectItem>
-                            <SelectItem value="job_board">Job Board</SelectItem>
-                            <SelectItem value="conference">Conference / Event</SelectItem>
-                            <SelectItem value="directly">Directly Approached</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="portfolioUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Portfolio / Work Samples (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://your-portfolio.com" {...field} value={field.value || ""} data-testid="input-portfolio" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name="location"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>LOCATION</FormLabel>
+                          <FormControl>
+                            <Input placeholder="City, Country" {...field} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-location" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="valuesAlignment"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-lg">
-                        <FormControl>
-                          <Checkbox checked={field.value || false} onCheckedChange={field.onChange} data-testid="checkbox-values" />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>I align with your core values</FormLabel>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">
-                            Focus on the mission • Bias to action • Do Whatever It Takes • Ship fast • Own the outcome • Be humble • Radical candor
-                          </p>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>EMAIL</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="you@example.com" {...field} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-email" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>PHONE</FormLabel>
+                          <FormControl>
+                            <Input type="tel" placeholder="+1 (555) 000-0000" {...field} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-phone" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="linkedinUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>LINKEDIN (OPT)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="linkedin.com/in/..." {...field} value={field.value || ""} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-linkedin" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="resumeUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>RESUME (OPT)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://..." {...field} value={field.value || ""} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-resume" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Submit Button */}
-              <div className="flex gap-3 pt-6 border-t">
-                <Link href="/" className="flex-1">
-                  <Button variant="outline" className="w-full" data-testid="button-cancel">
-                    Cancel
+                {/* Experience Section */}
+                <div style={{ borderTop: '1px solid #ffffff', paddingTop: '1.5rem' }}>
+                  <h3 style={{
+                    color: '#ffffff',
+                    fontFamily: 'monospace',
+                    fontSize: '12px',
+                    letterSpacing: '1px',
+                    fontWeight: 'bold',
+                    marginBottom: '1rem',
+                  }}>YOUR EXPERIENCE</h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <FormField
+                      control={form.control}
+                      name="minimumCompensation"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>MIN COMPENSATION</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="150000" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-compensation" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="noticePeriodWeeks"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>NOTICE (WEEKS)</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="2" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-notice-period" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="startupYears"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>STARTUP YEARS</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="3+" {...field} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-startup-years" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="contractInterpretationLevel"
+                    render={({ field }) => (
+                      <FormItem className="mb-6">
+                        <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>CONTRACT READING (1-5)</FormLabel>
+                        <FormControl>
+                          <div className="space-y-3">
+                            <Slider min={1} max={5} step={1} value={[field.value || 1]} onValueChange={(vals) => field.onChange(vals[0])} data-testid="slider-contract-level" />
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ffffff', fontFamily: 'monospace', fontSize: '10px' }}>
+                              <span>BASIC</span>
+                              <span>{contractLevel || 1}</span>
+                              <span>ADVANCED</span>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="paymentSystemsExperience"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>BANKING & PAYMENTS</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Your experience..." className="min-h-[80px]" {...field} value={field.value || ""} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="textarea-payment-systems" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="taxAdvisorExperience"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>TAX KNOWLEDGE</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Your experience..." className="min-h-[80px]" {...field} value={field.value || ""} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="textarea-tax-advisor" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="investorRelationsExperience"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>INVESTOR RELATIONS (NICE-TO-HAVE)</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Your experience..." className="min-h-[80px]" {...field} value={field.value || ""} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="textarea-investor-relations" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="executiveCollaboration"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>C-LEVEL EXPERIENCE (NICE-TO-HAVE)</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Your experience..." className="min-h-[80px]" {...field} value={field.value || ""} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="textarea-executive-collaboration" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Motivation Section */}
+                <div style={{ borderTop: '1px solid #ffffff', paddingTop: '1.5rem' }}>
+                  <h3 style={{
+                    color: '#ffffff',
+                    fontFamily: 'monospace',
+                    fontSize: '12px',
+                    letterSpacing: '1px',
+                    fontWeight: 'bold',
+                    marginBottom: '1rem',
+                  }}>YOUR STORY</h3>
+
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="motivationStatement"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>WHY FRONTIER TOWER?</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Your motivation..." className="min-h-[100px]" {...field} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="textarea-motivation" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="referralSource"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>HOW DID YOU HEAR?</FormLabel>
+                          <Select value={field.value || ""} onValueChange={field.onChange}>
+                            <FormControl>
+                              <SelectTrigger style={{
+                                backgroundColor: '#001f4d',
+                                borderColor: '#ffffff',
+                                color: '#ffffff',
+                                fontFamily: 'monospace',
+                              }}>
+                                <SelectValue placeholder="Select..." />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent style={{ backgroundColor: '#003d82', borderColor: '#ffffff' }}>
+                              <SelectItem value="referral">Referral</SelectItem>
+                              <SelectItem value="social">Social Media</SelectItem>
+                              <SelectItem value="job_board">Job Board</SelectItem>
+                              <SelectItem value="conference">Conference</SelectItem>
+                              <SelectItem value="directly">Direct</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="portfolioUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>PORTFOLIO (OPT)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://..." {...field} value={field.value || ""} style={{
+                              backgroundColor: '#001f4d',
+                              borderColor: '#ffffff',
+                              color: '#ffffff',
+                              fontFamily: 'monospace',
+                            }} data-testid="input-portfolio" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="valuesAlignment"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-3" style={{
+                          border: '1px solid #ffffff',
+                          backgroundColor: '#001f4d',
+                        }}>
+                          <FormControl>
+                            <Checkbox checked={field.value || false} onCheckedChange={field.onChange} data-testid="checkbox-values" />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '11px' }}>CORE VALUES ALIGNMENT</FormLabel>
+                            <p style={{ color: '#ffffff', fontFamily: 'monospace', fontSize: '10px', opacity: 0.8 }}>
+                              Focus on mission • Bias to action • Ship fast • Own outcome
+                            </p>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex gap-3 pt-6" style={{ borderTop: '1px solid #ffffff' }}>
+                  <Link href="/" className="flex-1">
+                    <Button variant="outline" className="w-full" style={{
+                      backgroundColor: '#003d82',
+                      borderColor: '#ffffff',
+                      color: '#ffffff',
+                      fontFamily: 'monospace',
+                      fontSize: '12px',
+                    }} data-testid="button-cancel">
+                      CANCEL
+                    </Button>
+                  </Link>
+                  <Button type="submit" disabled={isSubmitting} className="flex-1" style={{
+                    backgroundColor: '#003d82',
+                    borderColor: '#ffffff',
+                    color: '#ffffff',
+                    fontFamily: 'monospace',
+                    fontSize: '12px',
+                    border: '2px solid #ffffff',
+                  }} data-testid="button-submit-application">
+                    {isSubmitting ? "TRANSMITTING..." : "SUBMIT APPLICATION"}
+                    {!isSubmitting && <ArrowRight className="ml-2 w-4 h-4" />}
                   </Button>
-                </Link>
-                <Button type="submit" disabled={isSubmitting} className="flex-1" data-testid="button-submit-application">
-                  {isSubmitting ? "Submitting..." : "Submit Application"}
-                  {!isSubmitting && <ArrowRight className="ml-2 w-4 h-4" />}
-                </Button>
-              </div>
-            </form>
-          </Form>
+                </div>
+              </form>
+            </Form>
+          </div>
         </div>
       </div>
     </div>
