@@ -41,8 +41,8 @@ function Router() {
       <ScrollToTop />
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/green" component={GreenHome} />
-        <Route path="/blue" component={BlueHome} />
+        <Route path="/Green" component={GreenHome} />
+        <Route path="/Blue" component={BlueHome} />
         <Route path="/events" component={Events} />
         <Route path="/past-events" component={PastEvents} />
         <Route path="/booking" component={Booking} />

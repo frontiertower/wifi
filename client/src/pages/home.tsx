@@ -101,9 +101,9 @@ export default function Home() {
   const handlePillChoice = (choice: PillChoice) => {
     setShowPillModal(false);
     if (choice === "green") {
-      setLocation("/green");
+      setLocation("/Green");
     } else if (choice === "blue") {
-      setLocation("/blue");
+      setLocation("/Blue");
     }
   };
 
