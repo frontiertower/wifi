@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing } from "@shared/schema";
 
-type Tab = "users" | "events" | "analytics" | "bookings" | "directory" | "settings";
+type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings";
 
 // Helper function to generate URL slugs from listing names
 function slugify(text: string): string {
@@ -117,12 +117,16 @@ export default function AdminDashboard() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the # symbol
-      if (hash && ['users', 'events', 'analytics', 'bookings', 'directory', 'settings'].includes(hash)) {
+      if (hash && ['users', 'events', 'analytics', 'leads', 'directory', 'settings'].includes(hash)) {
         setActiveTab(hash as Tab);
       } else if (hash === 'location') {
         // Redirect old location tab to analytics
         setActiveTab('analytics');
         window.location.hash = 'analytics';
+      } else if (hash === 'bookings') {
+        // Redirect old bookings tab to leads
+        setActiveTab('leads');
+        window.location.hash = 'leads';
       }
     };
     
@@ -164,27 +168,27 @@ export default function AdminDashboard() {
 
   const { data: tourBookings } = useQuery<TourBookingsResponse>({
     queryKey: ['/api/tour-bookings'],
-    enabled: activeTab === "bookings",
+    enabled: activeTab === "leads",
   });
 
   const { data: eventHostBookings } = useQuery<EventHostBookingsResponse>({
     queryKey: ['/api/event-host-bookings'],
-    enabled: activeTab === "bookings",
+    enabled: activeTab === "leads",
   });
 
   const { data: membershipApplications } = useQuery<MembershipApplicationsResponse>({
     queryKey: ['/api/membership-applications'],
-    enabled: activeTab === "bookings",
+    enabled: activeTab === "leads",
   });
 
   const { data: chatInviteRequests } = useQuery<ChatInviteRequestsResponse>({
     queryKey: ['/api/admin/chat-invite-requests'],
-    enabled: activeTab === "bookings",
+    enabled: activeTab === "leads",
   });
 
   const { data: bookings } = useQuery<BookingsResponse>({
     queryKey: ['/api/bookings'],
-    enabled: activeTab === "bookings",
+    enabled: activeTab === "leads",
   });
 
   const { data: directoryData } = useQuery<DirectoryListingsResponse>({
@@ -409,7 +413,7 @@ export default function AdminDashboard() {
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "users", label: "Users", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
-    { id: "bookings", label: "Bookings", icon: ClipboardList },
+    { id: "leads", label: "Leads", icon: ClipboardList },
     { id: "directory", label: "Directory", icon: Building2 },
     { id: "settings", label: "Settings", icon: Settings },
   ] as const;
@@ -1064,12 +1068,12 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {activeTab === "bookings" && (
+        {activeTab === "leads" && (
           <div className="space-y-6">
-            {/* Tour Bookings */}
+            {/* Tour Leads */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Tour Bookings ({tourBookings?.bookings?.length || 0})
+                Tour Leads ({tourBookings?.bookings?.length || 0})
               </h2>
               <div className="overflow-x-auto">
                 <Table>
@@ -1089,7 +1093,7 @@ export default function AdminDashboard() {
                     {tourBookings?.bookings?.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
-                          No tour bookings yet
+                          No tour leads yet
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -1147,10 +1151,10 @@ export default function AdminDashboard() {
               </div>
             </Card>
 
-            {/* Event Host Bookings */}
+            {/* Event Host Leads */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Event Host Bookings ({eventHostBookings?.bookings?.length || 0})
+                Event Host Leads ({eventHostBookings?.bookings?.length || 0})
               </h2>
               <div className="overflow-x-auto">
                 <Table>
@@ -1168,7 +1172,7 @@ export default function AdminDashboard() {
                     {eventHostBookings?.bookings?.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
-                          No event host bookings yet
+                          No event host leads yet
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -1320,10 +1324,10 @@ export default function AdminDashboard() {
               </div>
             </Card>
 
-            {/* Regular Event/Meeting Bookings */}
+            {/* Regular Event/Meeting Leads */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Event/Meeting Bookings ({bookings?.bookings?.length || 0})
+                Event/Meeting Leads ({bookings?.bookings?.length || 0})
               </h2>
               <div className="overflow-x-auto">
                 <Table>
@@ -1341,7 +1345,7 @@ export default function AdminDashboard() {
                     {bookings?.bookings?.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
-                          No event/meeting bookings yet
+                          No event/meeting leads yet
                         </TableCell>
                       </TableRow>
                     ) : (
