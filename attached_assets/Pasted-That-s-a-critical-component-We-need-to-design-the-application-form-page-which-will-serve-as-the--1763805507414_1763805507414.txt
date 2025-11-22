@@ -1,0 +1,75 @@
+That's a critical component! We need to design the application form page, which will serve as the **"Data Input Terminal"** for prospective personnel.
+
+Since the application link provided in the original text is an external Notion link (`https://shrub-step-635.notion.site/2a88b4aa56038034a84ed621c3059ade`), this page will serve as the gateway/portal before routing them to the actual submission endpoint, or as the embedded form itself.
+
+Here is the design for the **Application Page: "Personnel Data Input Terminal"**
+
+---
+
+## 4. Application Page: "Personnel Data Input Terminal"
+
+This page will have a clean, functional design, focusing on clear data input, much like a control panel or a terminal interface.
+
+**Aesthetics:** Dominated by the screen color (green/blue/amber), with clear input fields bordered in the same color. Minimal background noise (perhaps just the blueprint grid).
+
+### **Header & Navigation**
+* **Header Bar:** Same dark metallic/Bakelite texture with status indicators.
+* **Title:** Large, centered, and glowing: "**INITIATE PERSONNEL DATA INPUT PROTOCOL**"
+
+### **Section 1: "Identity & Credentials" (Basic Contact Info)**
+
+* **Subtitle:** "**SECTION A: PERSONNEL IDENTIFICATION FILE**"
+* **Layout:** Standard form fields, designed to look like digital readouts or data slots on a console.
+
+| Question (Data Slot Label) | Input Style (Control Type) | Notes |
+| :--- | :--- | :--- |
+| **NAME (LAST NAME, FIRST NAME)** | Text Input | Looks like a glowing terminal text input field. |
+| **CURRENT LOCATION (CITY/TOWER)** | Text Input | |
+| **CONTACT FREQUENCY (EMAIL)** | Text Input | |
+| **DIRECT COMM (PHONE)** | Text Input | |
+| **LINKEDIN PROFILE URL** | Text Input | |
+| **RESUME/CV DATAPACK** | File Upload Control | Styled as a "DATA TRANSMISSION" button. |
+
+---
+
+### **Section 2: "Experience & Classification" (Job-Specific Questions)**
+
+* **Subtitle:** "**SECTION B: OPERATIONAL EXPERIENCE MATRIX**"
+* **Layout:** Questions framed around the mission-critical aspects of the Head of Finance role.
+
+| Question (Data Slot Label) | Input Style (Control Type) | Notes |
+| :--- | :--- | :--- |
+| **YIELD (MINIMUM ANNUAL COMPENSATION REQUIRED)** | Number Input/Text | Input styled like a digital display panel. |
+| **NOTICE PERIOD (WEEKS REQUIRED BEFORE INTEGRATION)** | Number Input/Text | |
+| **CONFIRMATION OF ALIGNMENT WITH CORE OPERATIONAL VALUES (Focus on the mission, Bias to action, Do Whatever It Takes, Ship fast, Own the outcome, Radical candor)** | Radio Button/Checkbox | Yes/No or "CONFIRMED" toggle switch. |
+| **YEARS IN STARTUP ENVIRONMENT (FAST-PACED FIRMS)** | Number Input | Must meet the 3+ year requirement. |
+| **PROVEN TRACK RECORD IN PAYMENT/BANKING SYSTEMS (Describe complexity of funds handled)** | Text Area | Larger input field, styled like a message buffer. |
+| **TAX ADVISOR COORDINATION EXPERIENCE (Describe scale/jurisdictions)** | Text Area | |
+| **CONTRACT INTERPRETATION FAMILIARITY (LEVEL OF COMFORT)** | Slider/Rating Scale | 1 (Basic) to 5 (Expert) – Styled like a technical gauge. |
+| **INVESTOR RELATIONS (EQUITY/DEBT RAISE SUPPORT)** | Text Area (Optional) | |
+| **C-LEVEL/FOUNDER COLLABORATION HISTORY** | Text Area (Optional) | |
+
+---
+
+### **Section 3: "Mission Statement & Submission"**
+
+* **Subtitle:** "**SECTION C: CANDIDATE MANIFESTO**"
+* **Layout:** A crucial, open-ended section to gauge candidate fit and motivation.
+
+| Question (Data Slot Label) | Input Style (Control Type) | Notes |
+| :--- | :--- | :--- |
+| **MISSION MOTIVATION (WHY FRONTIER TOWER? WHY THIS PROJECT?)** | Large Text Area | The most important essay section. |
+| **SOURCE OF REFERRAL (HOW DID YOU ACCESS THIS TERMINAL?)** | Dropdown Menu | E.g., Tower Citizen, Recruitment Bot, Job Board, etc. |
+| **LINK TO PORTFOLIO/CASE STUDIES (OPTIONAL)** | Text Input | |
+
+### **Action Panel**
+
+* **Disclaimer:** Small text, in the screen color, stating: "*All data transmitted securely via encrypted channel. Submission confirms acceptance of all Frontier Tower recruitment protocols.*"
+* **Submit Button:** The most prominent control on the page.
+    * **Primary CTA Button:** **"TRANSMIT DATA PACKAGE & INITIATE REVIEW"** (Large, glowing, industrial switch/button).
+* **Cancel Button:** A smaller, secondary button.
+    * **Secondary CTA Button:** "**ABORT TRANSMISSION**" (A button with a red/amber 'warning' color).
+
+---
+
+This design ensures all required information is collected within the immersive retro-futuristic console theme, making the application process feel like an integral step in joining "Project Utopia."

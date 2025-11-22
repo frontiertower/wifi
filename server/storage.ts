@@ -135,7 +135,10 @@ export class DatabaseStorage {
       .from(captiveUsers)
       .where(eq(captiveUsers.role, "event"));
     
-    const [totalEventsResult] = await db.select({ count: count() }).from(events);
+    // Count all non-hidden events
+    const [totalEventsResult] = await db.select({ count: count() })
+      .from(events)
+      .where(eq(events.isHidden, false));
 
     // Count past events (not hidden, end date before today)
     const [pastEventsResult] = await db.select({ count: count() })
