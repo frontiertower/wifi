@@ -78,7 +78,7 @@ export default function GreenHome() {
   };
 
   return (
-    <>
+    <div className="terminal-force-dark">
       {selectedRole === "member" && (
         <MemberForm onBack={handleBack} onSuccess={handleSuccess} unifiParams={unifiParams} />
       )}
@@ -248,6 +248,6 @@ export default function GreenHome() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
