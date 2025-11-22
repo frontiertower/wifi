@@ -770,6 +770,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/admin/events/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid event ID"
+        });
+      }
+
+      const deleted = await storage.deleteEvent(id);
+      
+      if (!deleted) {
+        return res.status(404).json({
+          success: false,
+          message: "Event not found"
+        });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete event"
+      });
+    }
+  });
+
   app.post("/api/admin/events", async (req, res) => {
     try {
       const eventData = insertEventSchema.parse(req.body);

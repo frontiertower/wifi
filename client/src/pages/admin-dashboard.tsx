@@ -102,6 +102,7 @@ export default function AdminDashboard() {
   const [editingDirectoryId, setEditingDirectoryId] = useState<number | null>(null);
   const [editDirectoryForm, setEditDirectoryForm] = useState<Partial<DirectoryListing>>({});
   const [deleteDirectoryId, setDeleteDirectoryId] = useState<number | null>(null);
+  const [deleteEventId, setDeleteEventId] = useState<number | null>(null);
   const { toast } = useToast();
 
   const cleanHostName = (host: string | null): string | null => {
@@ -234,6 +235,28 @@ export default function AdminDashboard() {
       toast({
         title: "Error",
         description: error.message || "Failed to delete listing",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteEventMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("DELETE", `/api/admin/events/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/events"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
+      setDeleteEventId(null);
+      toast({
+        title: "Success",
+        description: "Event hidden successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to hide event",
         variant: "destructive",
       });
     },
@@ -786,46 +809,77 @@ export default function AdminDashboard() {
                     );
                   }
 
-                  return filteredEvents.map((event: any) => (
-                  <TableRow key={event.id}>
-                    <TableCell className="font-medium">
-                      {event.name}
-                    </TableCell>
-                    <TableCell className="text-sm max-w-xs truncate" title={event.description}>
-                      {event.description || "-"}
-                    </TableCell>
-                    <TableCell className="text-sm whitespace-nowrap">
-                      {new Date(event.startDate).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="text-sm text-gray-600 dark:text-gray-400">
-                      {cleanHostName(event.host) || "-"}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {event.originalLocation || "-"}
-                    </TableCell>
-                    <TableCell className="text-sm whitespace-nowrap">
-                      {event.createdAt ? new Date(event.createdAt).toLocaleDateString() : "-"}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        {event.url && (
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            asChild
-                            data-testid={`button-details-event-${event.id}`}
-                          >
-                            <a href={event.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                              <ExternalLink className="h-4 w-4 mr-1" />
-                              Details
-                            </a>
-                          </Button>
-                        )}
-                        <Button variant="ghost" size="sm" className="text-red-600" data-testid={`button-delete-event-${event.id}`}>Delete</Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                  ));
+                  return filteredEvents.map((event: any) => {
+                    const isHidden = event.isHidden === true;
+                    const rowClassName = isHidden ? "opacity-50 bg-gray-100 dark:bg-gray-800" : "";
+                    
+                    return (
+                      <TableRow key={event.id} className={rowClassName}>
+                        <TableCell className="font-medium">
+                          {event.name}
+                          {isHidden && (
+                            <Badge variant="secondary" className="ml-2">
+                              Hidden
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-sm max-w-xs truncate" title={event.description}>
+                          {event.description || "-"}
+                        </TableCell>
+                        <TableCell className="text-sm whitespace-nowrap">
+                          {new Date(event.startDate).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-600 dark:text-gray-400">
+                          {cleanHostName(event.host) || "-"}
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {event.originalLocation || "-"}
+                        </TableCell>
+                        <TableCell className="text-sm whitespace-nowrap">
+                          {event.createdAt ? new Date(event.createdAt).toLocaleDateString() : "-"}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            {event.url && !isHidden && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                asChild
+                                data-testid={`button-details-event-${event.id}`}
+                              >
+                                <a href={event.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                                  <ExternalLink className="h-4 w-4 mr-1" />
+                                  Details
+                                </a>
+                              </Button>
+                            )}
+                            {event.url && isHidden && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                disabled
+                                data-testid={`button-details-event-${event.id}`}
+                              >
+                                <ExternalLink className="h-4 w-4 mr-1" />
+                                Details
+                              </Button>
+                            )}
+                            {!isHidden && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-red-600" 
+                                onClick={() => setDeleteEventId(event.id)}
+                                data-testid={`button-delete-event-${event.id}`}
+                              >
+                                Hide Event
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  });
                 })()}
               </TableBody>
             </Table>
@@ -1749,6 +1803,31 @@ export default function AdminDashboard() {
               data-testid="button-confirm-delete"
             >
               Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={deleteEventId !== null} onOpenChange={() => setDeleteEventId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hide Event?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will hide this event from the admin page. The event will still exist in the database and will be shown grayed out.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel data-testid="button-cancel-delete-event">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleteEventId !== null) {
+                  deleteEventMutation.mutate(deleteEventId);
+                }
+              }}
+              className="bg-red-600 hover:bg-red-700"
+              data-testid="button-confirm-delete-event"
+            >
+              Hide Event
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
