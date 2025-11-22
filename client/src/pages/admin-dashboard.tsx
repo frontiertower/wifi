@@ -117,36 +117,6 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/session"],
   });
 
-  // Use useEffect to handle redirect to avoid render loop
-  useEffect(() => {
-    if (!isSessionLoading && (!sessionData?.authenticated)) {
-      window.location.href = "/admin-login";
-    }
-  }, [isSessionLoading, sessionData]);
-
-  // Show loading state while checking session or redirecting
-  if (isSessionLoading || (!sessionData?.authenticated)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">
-            {isSessionLoading ? "Checking authentication..." : "Redirecting to login..."}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  const cleanHostName = (host: string | null): string | null => {
-    if (!host) return null;
-    
-    return host
-      .replace(/Frontier Tower \| San Francisco/gi, '')
-      .replace(/^[\s,&]+|[\s,&]+$/g, '')
-      .trim() || null;
-  };
-
   // Support URL hash navigation (e.g., /admin#settings)
   useEffect(() => {
     const handleHashChange = () => {
@@ -290,6 +260,27 @@ export default function AdminDashboard() {
       toast({
         title: "Error",
         description: error.message || "Failed to hide event",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const unhideEventMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("POST", `/api/admin/events/${id}/unhide`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/events"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
+      toast({
+        title: "Success",
+        description: "Event unhidden successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to unhide event",
         variant: "destructive",
       });
     },
@@ -487,6 +478,13 @@ export default function AdminDashboard() {
     logoutMutation.mutate();
   };
 
+  // Use useEffect to handle redirect to avoid render loop
+  useEffect(() => {
+    if (!isSessionLoading && (!sessionData?.authenticated)) {
+      window.location.href = "/admin-login";
+    }
+  }, [isSessionLoading, sessionData]);
+
   const tabs = [
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "users", label: "Users", icon: Users },
@@ -496,6 +494,30 @@ export default function AdminDashboard() {
     { id: "settings", label: "WiFi", icon: Wifi },
     { id: "admin-logins", label: "Admin Logins", icon: LogOut },
   ] as const;
+
+  // Helper function for cleaning host names
+  const cleanHostName = (host: string | null): string | null => {
+    if (!host) return null;
+    
+    return host
+      .replace(/Frontier Tower \| San Francisco/gi, '')
+      .replace(/^[\s,&]+|[\s,&]+$/g, '')
+      .trim() || null;
+  };
+
+  // Show loading state while checking session or redirecting
+  if (isSessionLoading || (!sessionData?.authenticated)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">
+            {isSessionLoading ? "Checking authentication..." : "Redirecting to login..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -944,6 +966,18 @@ export default function AdminDashboard() {
                                 data-testid={`button-delete-event-${event.id}`}
                               >
                                 Hide Event
+                              </Button>
+                            )}
+                            {isHidden && (
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-green-600" 
+                                onClick={() => unhideEventMutation.mutate(event.id)}
+                                disabled={unhideEventMutation.isPending}
+                                data-testid={`button-unhide-event-${event.id}`}
+                              >
+                                Unhide
                               </Button>
                             )}
                           </div>

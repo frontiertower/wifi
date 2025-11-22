@@ -361,6 +361,15 @@ export class DatabaseStorage {
     return result.length > 0;
   }
 
+  async unhideEvent(id: number): Promise<boolean> {
+    const result = await db
+      .update(events)
+      .set({ isHidden: false })
+      .where(eq(events.id, id))
+      .returning();
+    return result.length > 0;
+  }
+
   async deduplicateEvents(): Promise<{ mergedCount: number; deletedCount: number }> {
     // Get all events
     const allEvents = await db.select().from(events);

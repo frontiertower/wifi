@@ -979,6 +979,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/admin/events/:id/unhide", verifyAdminSession, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid event ID"
+        });
+      }
+
+      const unhidden = await storage.unhideEvent(id);
+      
+      if (!unhidden) {
+        return res.status(404).json({
+          success: false,
+          message: "Event not found"
+        });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error unhiding event:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to unhide event"
+      });
+    }
+  });
+
   app.post("/api/admin/events", verifyAdminSession, async (req, res) => {
     try {
       const eventData = insertEventSchema.parse(req.body);
