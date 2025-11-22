@@ -1329,9 +1329,8 @@ export default function AdminDashboard() {
                         {/* User names */}
                         {userNames.length > 0 && (
                           <div className="px-4 sm:px-6 pb-2">
-                            <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300" data-testid={`text-floor-names-${floor}`}>
+                            <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 break-words" data-testid={`text-floor-names-${floor}`}>
                               {userNames.join(', ')}
-                              {userCount > 5 && <span className="text-gray-500 dark:text-gray-400"> +{userCount - 5} more</span>}
                             </div>
                           </div>
                         )}
