@@ -132,10 +132,10 @@ export default function GreenPage() {
             </Link>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-center text-terminal-green terminal-glow mb-2 terminal-text">
-            INITIATE PERSONNEL DATA INPUT PROTOCOL
+            REGENERATIVE ECOSYSTEMS INITIATIVE
           </h1>
           <p className="text-center text-terminal-dim text-sm md:text-base">
-            PROJECT UTOPIA • FRONTIER TOWER • HEAD OF FINANCE RECRUITMENT
+            FRONTIER TOWER • IMPROVING OUR WORLD • SUSTAINABLE FUTURES
           </p>
         </div>
 
@@ -143,69 +143,70 @@ export default function GreenPage() {
         <div className="grid gap-6 md:grid-cols-2 mb-8">
           {/* Card 1: Mission Overview */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">SEEK YOUR FORTUNE: JOIN THE FRONTIER INITIATIVE</h3>
+            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">REGENERATIVE ECOSYSTEMS: BUILD SUSTAINABLE FUTURES</h3>
             <p className="text-terminal-dim text-sm mb-4">
-              We are the world's fastest-growing network society. Our capital is San Francisco, and our citadel is a 16-story vertical village for frontier tech, arts & music on Market Street.
+              We are pioneering regenerative ecosystem practices integrated into next-generation network infrastructure. Our mission extends beyond innovation to environmental stewardship and community renewal.
             </p>
             <p className="text-terminal-dim text-xs">
-              Building a true federation where each tower retains its own rules while benefiting from the joined economic layer, portable citizenship rights and tech infrastructure.
+              Building interconnected systems that improve both human flourishing and ecological health. Join us in creating technological solutions that heal the planet.
             </p>
           </div>
 
           {/* Card 2: Why Us */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-4 terminal-text text-lg">WHY US?</h3>
+            <h3 className="text-terminal-green font-bold mb-4 terminal-text text-lg">OUR APPROACH</h3>
             <ul className="space-y-2">
-              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Frontier Tech Only</span> — Bleeding edge innovation</li>
-              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Crypto Native</span> — Decentralized & borderless</li>
-              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Early Momentum</span> — Barely 7 months in, plenty of space</li>
+              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Regenerative Design</span> — Systems that heal, not extract</li>
+              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Community First</span> — Environmental justice at core</li>
+              <li className="text-terminal-dim text-sm"><span className="text-terminal-bright">Scalable Impact</span> — From local to global transformation</li>
             </ul>
           </div>
 
-          {/* Card 3: The Role */}
+          {/* Card 3: Getting Involved */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">THE ROLE</h3>
+            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">GET INVOLVED</h3>
             <p className="text-terminal-dim text-sm">
-              Remote-first job overseeing multiple companies. Operating all bank accounts, paying team and vendors, speaking to tax advisors, preparing financials for investors. Working closely with CEO on contracts, financial models, and fundraising support.
+              Join us in developing and implementing regenerative ecosystem solutions. Whether in policy, technology, community engagement, or resource management, we're building the infrastructure for a sustainable future. Remote-friendly with flexible collaboration models.
             </p>
           </div>
 
-          {/* Card 4: Requirements */}
+          {/* Card 4: Values */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">MUST-HAVE</h3>
+            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">OUR VALUES</h3>
             <ul className="space-y-1">
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">3+ years</span> startup experience</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Values alignment</span> mission-focused</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Banking & Payments</span> track record</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Tax Knowledge</span> collaboration</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Contracts</span> reading ability</li>
+              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Regeneration</span> — Systems that improve over time</li>
+              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Equity</span> — Justice-centered approach</li>
+              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Transparency</span> — Open source, open data</li>
+              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Collaboration</span> — Cross-sector partnerships</li>
+              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Innovation</span> — Reimagining what's possible</li>
             </ul>
           </div>
 
-          {/* Card 5: Nice to Have */}
+          {/* Card 5: Impact Areas */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">NICE-TO-HAVE</h3>
+            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">IMPACT AREAS</h3>
             <ul className="space-y-1">
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Investor Relations</span> experience</li>
-              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">C-Level/Founder</span> collaboration</li>
+              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Climate Solutions</span> — Tech for climate action</li>
+              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Biodiversity</span> — Ecosystem preservation</li>
+              <li className="text-terminal-dim text-xs">• <span className="text-terminal-bright">Communities</span> — Local restoration</li>
             </ul>
           </div>
 
-          {/* Card 6: Interview Process */}
+          {/* Card 6: Get Started */}
           <div className="terminal-card">
-            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">INTERVIEW PROCESS</h3>
+            <h3 className="text-terminal-green font-bold mb-3 terminal-text text-lg">GET STARTED</h3>
             <ol className="space-y-1">
-              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">1. Initial Call</span> (30 min)</li>
-              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">2. Deep Dive</span> (60 min)</li>
-              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">3. Team Interviews</span> (30 min)</li>
-              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">4. Final Chat</span> (30 min)</li>
+              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">1. Learn</span> about our initiatives</li>
+              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">2. Connect</span> with our community</li>
+              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">3. Contribute</span> your skills</li>
+              <li className="text-terminal-dim text-xs"><span className="text-terminal-bright">4. Scale</span> regenerative impact</li>
             </ol>
           </div>
         </div>
 
         <div className="terminal-card mb-8 text-center">
-          <p className="text-terminal-green font-bold terminal-text text-sm mb-2">READY TO BUILD THE FUTURE?</p>
-          <p className="text-terminal-dim text-xs">Submit your personnel file below. We review applications on a rolling basis and contact promising candidates within 2-3 business days.</p>
+          <p className="text-terminal-green font-bold terminal-text text-sm mb-2">READY TO JOIN THE REGENERATIVE MOVEMENT?</p>
+          <p className="text-terminal-dim text-xs">Share your interest and how you want to contribute. We're building a global community focused on healing our world.</p>
         </div>
 
         <Form {...form}>

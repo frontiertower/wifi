@@ -46,9 +46,9 @@ export default function PillChoice() {
             </button>
             <h2 className="text-2xl font-bold text-[#00ff41] mb-2 terminal-text">GREEN PILL</h2>
             <p className="text-gray-300 text-center text-sm">
-              Join the Frontier Initiative
+              Regenerative Ecosystems
               <br />
-              Head of Finance Recruitment
+              Improving our World
             </p>
           </div>
 
