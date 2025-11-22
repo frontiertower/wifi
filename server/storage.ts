@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, privateOfficeRentals, authenticatedMembers, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, privateOfficeRentals, authenticatedMembers, wifiPasswords, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -786,6 +786,52 @@ export class DatabaseStorage {
     await db
       .delete(authenticatedMembers)
       .where(eq(authenticatedMembers.cookieId, cookieId));
+  }
+
+  async getAllWifiPasswords(): Promise<WifiPassword[]> {
+    return await db
+      .select()
+      .from(wifiPasswords)
+      .where(eq(wifiPasswords.isActive, true))
+      .orderBy(sql`${wifiPasswords.createdAt} ASC`);
+  }
+
+  async addWifiPassword(password: string, description?: string): Promise<WifiPassword> {
+    const [newPassword] = await db
+      .insert(wifiPasswords)
+      .values({
+        password: password.trim(),
+        description,
+        isActive: true,
+      })
+      .returning();
+    return newPassword;
+  }
+
+  async deleteWifiPassword(id: number): Promise<void> {
+    await db
+      .delete(wifiPasswords)
+      .where(eq(wifiPasswords.id, id));
+  }
+
+  async ensureDefaultWifiPasswords(): Promise<void> {
+    const existingPasswords = await this.getAllWifiPasswords();
+    
+    if (existingPasswords.length === 0) {
+      const defaultPasswords = [
+        { password: "welovexeno", description: "Default password 1" },
+        { password: "makesomething", description: "Default password 2" },
+        { password: "frontiertower995", description: "Default password 3" },
+      ];
+
+      for (const pwd of defaultPasswords) {
+        try {
+          await this.addWifiPassword(pwd.password, pwd.description);
+        } catch (error) {
+          console.error(`Failed to add default password ${pwd.password}:`, error);
+        }
+      }
+    }
   }
 }
 
