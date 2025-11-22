@@ -132,7 +132,8 @@ export default function HiringPage() {
             </Link>
           </div>
           <h1 className="text-2xl md:text-5xl font-bold text-center text-terminal-green terminal-glow mb-2 terminal-text">
-            HEAD OF FINANCE @ FRONTIER TOWER
+            <div>HEAD OF FINANCE</div>
+            <div>@ FRONTIER TOWER</div>
           </h1>
           <p className="text-center text-terminal-dim text-sm md:text-base">
             INITIATE PERSONNEL DATA INPUT PROTOCOL • REMOTE OR HYBRID
