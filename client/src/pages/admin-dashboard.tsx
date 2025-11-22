@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -103,6 +103,7 @@ export default function AdminDashboard() {
   const [editDirectoryForm, setEditDirectoryForm] = useState<Partial<DirectoryListing>>({});
   const [deleteDirectoryId, setDeleteDirectoryId] = useState<number | null>(null);
   const [deleteEventId, setDeleteEventId] = useState<number | null>(null);
+  const [directorySearchQuery, setDirectorySearchQuery] = useState("");
   const { toast } = useToast();
 
   const cleanHostName = (host: string | null): string | null => {
@@ -1450,6 +1451,19 @@ export default function AdminDashboard() {
                   Add New Listing
                 </Button>
               </div>
+              
+              {/* Search Bar */}
+              <div className="mt-4 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Search by name, email, phone, floor, office..."
+                  value={directorySearchQuery}
+                  onChange={(e) => setDirectorySearchQuery(e.target.value)}
+                  className="pl-10"
+                  data-testid="input-directory-search"
+                />
+              </div>
             </div>
 
             <div className="p-4 sm:p-6">
@@ -1470,7 +1484,29 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {directoryData.listings.map((listing) => {
+                  {directoryData.listings
+                    .filter((listing) => {
+                      if (!directorySearchQuery) return true;
+                      
+                      const query = directorySearchQuery.toLowerCase();
+                      const displayName = listing.type === "company" && listing.companyName ? listing.companyName :
+                                         listing.type === "community" && listing.communityName ? listing.communityName :
+                                         listing.type === "person" && listing.lastName && listing.firstName ? `${listing.lastName}, ${listing.firstName}` :
+                                         "";
+                      
+                      return (
+                        displayName.toLowerCase().includes(query) ||
+                        listing.email?.toLowerCase().includes(query) ||
+                        listing.phone?.toLowerCase().includes(query) ||
+                        listing.floor?.toString().includes(query) ||
+                        listing.officeNumber?.toLowerCase().includes(query) ||
+                        listing.description?.toLowerCase().includes(query) ||
+                        listing.contactPerson?.toLowerCase().includes(query) ||
+                        listing.telegramUsername?.toLowerCase().includes(query) ||
+                        listing.website?.toLowerCase().includes(query)
+                      );
+                    })
+                    .map((listing) => {
                     const isEditing = editingDirectoryId === listing.id;
                     const currentData = isEditing ? editDirectoryForm : listing;
                     const displayName = listing.type === "company" && listing.companyName ? listing.companyName :
