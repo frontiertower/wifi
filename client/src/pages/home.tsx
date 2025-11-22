@@ -121,7 +121,7 @@ export default function Home() {
         <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4 ${isFlashing ? 'screen-flash' : ''}`}
           onAnimationEnd={() => setIsFlashing(false)}
         >
-        <div className="absolute top-6 right-6 flex items-center gap-2">
+        <div className="absolute top-6 left-6">
           <button
             onClick={handleWhiteRabbit}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
@@ -130,6 +130,8 @@ export default function Home() {
           >
             <span className="text-lg">🐰</span>
           </button>
+        </div>
+        <div className="absolute top-6 right-6">
           <ThemeToggle />
         </div>
         
