@@ -2482,15 +2482,15 @@ function SettingsTab() {
           </Label>
           <RadioGroup value={apiType} onValueChange={(value: any) => setApiType(value)} className="mt-2">
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="none" id="api-none" data-testid="radio-api-none" />
-              <Label htmlFor="api-none" className="font-normal cursor-pointer">
-                None (Mock Mode) - For testing without a real controller
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
               <RadioGroupItem value="modern" id="api-modern" data-testid="radio-api-modern" />
               <Label htmlFor="api-modern" className="font-normal cursor-pointer">
                 Modern API (Network Application 9.1.105+) - Recommended
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="none" id="api-none" data-testid="radio-api-none" />
+              <Label htmlFor="api-none" className="font-normal cursor-pointer">
+                None (Mock Mode) - For testing without a real controller
               </Label>
             </div>
             <div className="flex items-center space-x-2">
