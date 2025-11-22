@@ -49,7 +49,7 @@ export default function JobsPage() {
   const onSubmit = async (data: JobApplicationFormData) => {
     setIsSubmitting(true);
     try {
-      await apiRequest("/api/job-applications", "POST", data);
+      await apiRequest("POST", "/api/job-applications", data);
       
       toast({
         title: "✓ DATA TRANSMISSION SUCCESSFUL",
