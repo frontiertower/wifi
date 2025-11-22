@@ -93,7 +93,8 @@ export default function GreenHome() {
             {/* Header */}
             <div className="terminal-header mb-8 text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-center text-terminal-green terminal-glow mb-2">
-                FRONTIER TOWER PORTAL
+                <div>FRONTIER</div>
+                <div>TOWER</div>
               </h1>
               <p className="text-center text-terminal-dim text-sm md:text-base">
                 WELCOME TO THE NETWORK • SELECT YOUR ACCESS PROTOCOL
