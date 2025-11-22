@@ -1866,17 +1866,21 @@ export default function AdminDashboard() {
 
 function SettingsTab() {
   const { toast } = useToast();
-  const [guestPassword, setGuestPassword] = useState('makesomething');
-  const [showGuestPassword, setShowGuestPassword] = useState(false);
   const [apiType, setApiType] = useState<'modern' | 'legacy' | 'none'>('none');
   const [controllerUrl, setControllerUrl] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [site, setSite] = useState('default');
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordDescription, setNewPasswordDescription] = useState('');
 
   const { data: settings, isLoading } = useQuery<Record<string, string>>({
     queryKey: ['/api/admin/settings'],
+  });
+
+  const { data: wifiPasswords = [], isLoading: isLoadingPasswords } = useQuery<any[]>({
+    queryKey: ['/api/admin/wifi-passwords'],
   });
 
   const saveSettingsMutation = useMutation({
@@ -1900,10 +1904,53 @@ function SettingsTab() {
     },
   });
 
+  const addPasswordMutation = useMutation({
+    mutationFn: async (data: { password: string; description?: string }) => {
+      const response = await apiRequest("POST", "/api/admin/wifi-passwords", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/wifi-passwords'] });
+      setNewPassword('');
+      setNewPasswordDescription('');
+      toast({
+        title: "Password Added",
+        description: "WiFi password has been added successfully.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to add password. It may already exist.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deletePasswordMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiRequest("DELETE", `/api/admin/wifi-passwords/${id}`, {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/wifi-passwords'] });
+      toast({
+        title: "Password Deleted",
+        description: "WiFi password has been removed successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete password. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Load settings when data is available
   useEffect(() => {
     if (settings) {
-      setGuestPassword(settings.guest_password || 'makesomething');
       setApiType((settings.unifi_api_type as any) || 'none');
       setControllerUrl(settings.unifi_controller_url || '');
       setApiKey(settings.unifi_api_key || '');
@@ -1915,7 +1962,6 @@ function SettingsTab() {
 
   const handleSave = () => {
     const data: Record<string, string> = {
-      guest_password: guestPassword,
       unifi_api_type: apiType,
       unifi_controller_url: controllerUrl,
       unifi_site: site,
@@ -1931,7 +1977,28 @@ function SettingsTab() {
     saveSettingsMutation.mutate(data);
   };
 
-  if (isLoading) {
+  const handleAddPassword = () => {
+    if (!newPassword.trim()) {
+      toast({
+        title: "Error",
+        description: "Password cannot be empty",
+        variant: "destructive",
+      });
+      return;
+    }
+    addPasswordMutation.mutate({
+      password: newPassword.trim(),
+      description: newPasswordDescription.trim() || undefined,
+    });
+  };
+
+  const handleDeletePassword = (id: number) => {
+    if (confirm('Are you sure you want to delete this WiFi password?')) {
+      deletePasswordMutation.mutate(id);
+    }
+  };
+
+  if (isLoading || isLoadingPasswords) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
         <p className="text-gray-600 dark:text-gray-400">Loading settings...</p>
@@ -1941,49 +2008,85 @@ function SettingsTab() {
 
   return (
     <div className="space-y-6">
-      {/* Guest Password Section */}
+      {/* WiFi Passwords Section */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">WiFi Access Password</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">WiFi Access Passwords</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Configure the password guests need to enter before accessing the WiFi
+            Manage multiple passwords that guests can use to access WiFi
           </p>
         </div>
 
         <div className="p-4 sm:p-6">
           <div className="space-y-4">
+            {/* Current Passwords List */}
             <div>
-              <Label htmlFor="guest-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Guest Password
+              <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                Active Passwords
               </Label>
-              <div className="relative mt-1">
-                <Input
-                  id="guest-password"
-                  data-testid="input-guest-password-setting"
-                  type={showGuestPassword ? "text" : "password"}
-                  placeholder="makesomething"
-                  value={guestPassword}
-                  onChange={(e) => setGuestPassword(e.target.value)}
-                  className="pr-10"
-                />
+              <div className="space-y-2">
+                {wifiPasswords.map((pwd: any) => (
+                  <div
+                    key={pwd.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-md"
+                    data-testid={`wifi-password-${pwd.id}`}
+                  >
+                    <div className="flex-1">
+                      <div className="font-mono text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {pwd.password}
+                      </div>
+                      {pwd.description && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                          {pwd.description}
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeletePassword(pwd.id)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+                      data-testid={`button-delete-password-${pwd.id}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Add New Password */}
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                Add New Password
+              </Label>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex-1">
+                  <Input
+                    placeholder="Enter new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    data-testid="input-new-wifi-password"
+                  />
+                </div>
+                <div className="flex-1">
+                  <Input
+                    placeholder="Description (optional)"
+                    value={newPasswordDescription}
+                    onChange={(e) => setNewPasswordDescription(e.target.value)}
+                    data-testid="input-new-wifi-password-description"
+                  />
+                </div>
                 <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowGuestPassword(!showGuestPassword)}
-                  data-testid="button-toggle-guest-password"
+                  onClick={handleAddPassword}
+                  disabled={addPasswordMutation.isPending || !newPassword.trim()}
+                  data-testid="button-add-wifi-password"
+                  className="sm:w-auto w-full"
                 >
-                  {showGuestPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
-                  )}
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add
                 </Button>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Guests will need to enter this password before they can access the registration form
-              </p>
             </div>
           </div>
         </div>
