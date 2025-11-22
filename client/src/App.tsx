@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import Home from "@/pages/home";
+import GreenHome from "@/pages/green-home";
+import BlueHome from "@/pages/blue-home";
 import Events from "@/pages/events";
 import PastEvents from "@/pages/past-events";
 import Booking from "@/pages/booking";
@@ -39,6 +41,8 @@ function Router() {
       <ScrollToTop />
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/green" component={GreenHome} />
+        <Route path="/blue" component={BlueHome} />
         <Route path="/events" component={Events} />
         <Route path="/past-events" component={PastEvents} />
         <Route path="/booking" component={Booking} />
