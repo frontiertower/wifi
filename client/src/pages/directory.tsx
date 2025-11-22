@@ -306,7 +306,9 @@ export default function Directory() {
                           />
                         ) : null}
                         <div className={`w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
-                          <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                          {listing.type === 'company' && <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />}
+                          {listing.type === 'community' && <Users className="h-5 w-5 text-blue-600 dark:text-blue-300" />}
+                          {listing.type === 'person' && <User className="h-5 w-5 text-blue-600 dark:text-blue-300" />}
                         </div>
                         <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 break-words flex-1 min-w-0 leading-none">
                           {getDisplayName(listing)}
@@ -344,7 +346,9 @@ export default function Directory() {
                           />
                         ) : null}
                         <div className={`w-12 h-12 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
-                          <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-300" />
+                          {listing.type === 'company' && <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-300" />}
+                          {listing.type === 'community' && <Users className="h-6 w-6 text-blue-600 dark:text-blue-300" />}
+                          {listing.type === 'person' && <User className="h-6 w-6 text-blue-600 dark:text-blue-300" />}
                         </div>
                         <div className="flex flex-col gap-1">
                           <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 leading-tight">
