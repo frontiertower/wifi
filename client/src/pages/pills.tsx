@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import rabbitImage from "@assets/FuzzyNop_logo_pink_1763832812948.png";
 
 type PillChoice = "green" | "blue" | null;
 
@@ -197,6 +198,11 @@ export default function PillsPage() {
       
       {!showTerminal && (
         <div className={`bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative ${crackIntensity >= 9 ? 'black-hole-pull' : 'z-10'}`}>
+          <img 
+            src={rabbitImage} 
+            alt="Rabbit logo" 
+            className="w-24 h-24 mx-auto mb-6 object-contain"
+          />
           <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
             The Choice is Yours
           </h2>
