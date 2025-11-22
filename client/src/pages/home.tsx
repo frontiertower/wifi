@@ -123,7 +123,7 @@ export default function Home() {
         
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-lg font-bold">
               <SlidingWelcome speed={2000} />
             </h1>
           </div>
