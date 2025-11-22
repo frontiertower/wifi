@@ -137,6 +137,41 @@ export class DatabaseStorage {
     
     const [totalEventsResult] = await db.select({ count: count() }).from(events);
 
+    // Count past events (not hidden, end date before today)
+    const [pastEventsResult] = await db.select({ count: count() })
+      .from(events)
+      .where(
+        and(
+          eq(events.isHidden, false),
+          sql`${events.endDate} < CURRENT_DATE`
+        )
+      );
+
+    // Count upcoming events (not hidden, start date >= today)
+    const [upcomingEventsResult] = await db.select({ count: count() })
+      .from(events)
+      .where(
+        and(
+          eq(events.isHidden, false),
+          sql`${events.startDate} >= CURRENT_DATE`
+        )
+      );
+
+    // Get events per week for the last 12 weeks
+    const eventsPerWeek = await db.select({
+      week: sql<string>`TO_CHAR(${events.startDate}, 'YYYY-IW')`,
+      count: count()
+    })
+    .from(events)
+    .where(
+      and(
+        eq(events.isHidden, false),
+        sql`${events.startDate} >= CURRENT_DATE - INTERVAL '12 weeks'`
+      )
+    )
+    .groupBy(sql`TO_CHAR(${events.startDate}, 'YYYY-IW')`)
+    .orderBy(sql`TO_CHAR(${events.startDate}, 'YYYY-IW')`);
+
     return {
       totalUsers: totalUsersResult.count,
       membersToday: membersToday.count,
@@ -149,7 +184,14 @@ export class DatabaseStorage {
       totalMembers: totalMembers.count,
       totalGuests: totalGuests.count,
       totalEventUsers: totalEventUsers.count,
-      totalEvents: totalEventsResult.count
+      totalEvents: totalEventsResult.count,
+      // Event analytics
+      pastEvents: pastEventsResult.count,
+      upcomingEvents: upcomingEventsResult.count,
+      eventsPerWeek: eventsPerWeek.map(w => ({
+        week: w.week,
+        count: Number(w.count)
+      }))
     };
   }
 

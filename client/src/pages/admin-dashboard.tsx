@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -53,6 +54,9 @@ interface StatsResponse {
     totalMembers?: number;
     totalGuests?: number;
     totalEventUsers?: number;
+    pastEvents?: number;
+    upcomingEvents?: number;
+    eventsPerWeek?: Array<{ week: string; count: number }>;
     totalEvents?: number;
   };
 }
@@ -1154,6 +1158,98 @@ export default function AdminDashboard() {
                     <Users className="text-blue-700 dark:text-blue-300" />
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Event Statistics */}
+            <div className="mt-8">
+              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Event Statistics</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-950 dark:to-indigo-900 rounded-lg p-4 sm:p-6 border border-indigo-200 dark:border-indigo-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">Past Events</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-indigo-900 dark:text-indigo-100 mt-2" data-testid="text-past-events">
+                        {stats?.stats?.pastEvents || 0}
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-indigo-200 dark:bg-indigo-800 rounded-lg flex items-center justify-center">
+                      <Calendar className="text-indigo-700 dark:text-indigo-300" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-950 dark:to-teal-900 rounded-lg p-4 sm:p-6 border border-teal-200 dark:border-teal-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-teal-600 dark:text-teal-400">Upcoming Events</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-teal-900 dark:text-teal-100 mt-2" data-testid="text-upcoming-events">
+                        {stats?.stats?.upcomingEvents || 0}
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-teal-200 dark:bg-teal-800 rounded-lg flex items-center justify-center">
+                      <Calendar className="text-teal-700 dark:text-teal-300" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 rounded-lg p-4 sm:p-6 border border-amber-200 dark:border-amber-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-amber-600 dark:text-amber-400">Total Events</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-amber-900 dark:text-amber-100 mt-2" data-testid="text-all-events">
+                        {stats?.stats?.totalEvents || 0}
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-amber-200 dark:bg-amber-800 rounded-lg flex items-center justify-center">
+                      <Calendar className="text-amber-700 dark:text-amber-300" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Events Per Week Chart */}
+            <div className="mt-8">
+              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Events Per Week (Last 12 Weeks)</h3>
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                {stats?.stats?.eventsPerWeek && stats.stats.eventsPerWeek.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={stats.stats.eventsPerWeek}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-600" />
+                      <XAxis 
+                        dataKey="week" 
+                        className="text-xs"
+                        tick={{ fill: 'currentColor' }}
+                      />
+                      <YAxis 
+                        className="text-xs"
+                        tick={{ fill: 'currentColor' }}
+                        allowDecimals={false}
+                      />
+                      <Tooltip 
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--card))',
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px',
+                          color: 'hsl(var(--foreground))'
+                        }}
+                        labelStyle={{ color: 'hsl(var(--foreground))' }}
+                      />
+                      <Bar 
+                        dataKey="count" 
+                        fill="hsl(var(--primary))" 
+                        radius={[8, 8, 0, 0]}
+                        data-testid="bar-events-per-week"
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="text-center py-12">
+                    <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                    <p className="text-gray-600 dark:text-gray-400">No event data available for the last 12 weeks</p>
+                  </div>
+                )}
               </div>
             </div>
 
