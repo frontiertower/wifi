@@ -571,6 +571,62 @@
     z-index: 1;
   }
 
+  /* Blueprint Aesthetic */
+  .blueprint-bg {
+    background: linear-gradient(135deg, #f5f1e8 0%, #ede9e0 100%);
+    position: relative;
+  }
+
+  .blueprint-bg::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(0deg, transparent 24%, rgba(26, 64, 120, 0.05) 25%, rgba(26, 64, 120, 0.05) 26%, transparent 27%, transparent 74%, rgba(26, 64, 120, 0.05) 75%, rgba(26, 64, 120, 0.05) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(26, 64, 120, 0.05) 25%, rgba(26, 64, 120, 0.05) 26%, transparent 27%, transparent 74%, rgba(26, 64, 120, 0.05) 75%, rgba(26, 64, 120, 0.05) 76%, transparent 77%, transparent);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .blueprint-light {
+    background: #f5f1e8;
+  }
+
+  .blueprint-text {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .blueprint-section {
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid #1a4078;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .blueprint-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #1a4078;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .blueprint-dark {
+    color: #1a4078;
+  }
+
+  .blueprint-primary {
+    color: #4a90e2;
+  }
+
   .terminal-green {
     color: #00ff00;
   }

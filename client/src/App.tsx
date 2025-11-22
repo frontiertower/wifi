@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import PillChoice from "@/pages/pill-choice";
 import Home from "@/pages/home";
 import Events from "@/pages/events";
 import PastEvents from "@/pages/past-events";
@@ -20,7 +21,8 @@ import DirectoryAdmin from "@/pages/directory-admin";
 import DirectoryEdit from "@/pages/directory-edit";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminLogin from "@/pages/admin-login";
-import JobsPage from "@/pages/jobs";
+import GreenPage from "@/pages/green";
+import BluePage from "@/pages/blue";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -38,7 +40,8 @@ function Router() {
     <>
       <ScrollToTop />
       <Switch>
-        <Route path="/" component={Home} />
+        <Route path="/" component={PillChoice} />
+        <Route path="/home" component={Home} />
         <Route path="/events" component={Events} />
         <Route path="/past-events" component={PastEvents} />
         <Route path="/booking" component={Booking} />
@@ -47,7 +50,8 @@ function Router() {
         <Route path="/event-host-booking" component={EventHostBooking} />
         <Route path="/apply-to-join" component={ApplyToJoin} />
         <Route path="/chat" component={Chat} />
-        <Route path="/jobs" component={JobsPage} />
+        <Route path="/green" component={GreenPage} />
+        <Route path="/blue" component={BluePage} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
