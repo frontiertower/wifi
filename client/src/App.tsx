@@ -53,7 +53,7 @@ function Router() {
         <Route path="/event-host-booking" component={EventHostBooking} />
         <Route path="/apply-to-join" component={ApplyToJoin} />
         <Route path="/chat" component={Chat} />
-        <Route path="/hiring" component={HiringPage} />
+        <Route path="/Regen" component={HiringPage} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
