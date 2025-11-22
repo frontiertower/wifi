@@ -2063,7 +2063,11 @@ Rules:
       
       const listing = await storage.createJobListing(validatedData);
       
-      res.json({ success: true, listing });
+      res.json({ 
+        success: true, 
+        listing,
+        message: "Job listing submitted successfully! It will appear on the careers page once approved by an administrator."
+      });
     } catch (error: any) {
       if (error.name === "ZodError") {
         return res.status(400).json({
@@ -2075,6 +2079,77 @@ Rules:
       res.status(500).json({
         success: false,
         message: "Failed to create job listing"
+      });
+    }
+  });
+
+  app.get("/api/admin/job-listings", verifyAdminSession, async (req, res) => {
+    try {
+      const listings = await storage.getAllJobListingsForAdmin();
+      res.json({ success: true, listings });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch job listings"
+      });
+    }
+  });
+
+  app.patch("/api/admin/job-listings/:id/approve", verifyAdminSession, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const listing = await storage.approveJobListing(id);
+      
+      if (!listing) {
+        return res.status(404).json({
+          success: false,
+          message: "Job listing not found"
+        });
+      }
+      
+      res.json({ success: true, listing });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to approve job listing"
+      });
+    }
+  });
+
+  app.patch("/api/admin/job-listings/:id/toggle-featured", verifyAdminSession, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const listing = await storage.getJobListingById(id);
+      
+      if (!listing) {
+        return res.status(404).json({
+          success: false,
+          message: "Job listing not found"
+        });
+      }
+      
+      const updated = await storage.updateJobListing(id, {
+        isFeatured: !listing.isFeatured
+      });
+      
+      res.json({ success: true, listing: updated });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to toggle featured status"
+      });
+    }
+  });
+
+  app.delete("/api/admin/job-listings/:id", verifyAdminSession, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteJobListing(id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete job listing"
       });
     }
   });
