@@ -23,7 +23,7 @@ export default function AddListing() {
   const queryClient = useQueryClient();
 
   const [showSuccess, setShowSuccess] = useState(false);
-  const [listingType, setListingType] = useState<ListingType>("company");
+  const [listingType, setListingType] = useState<ListingType>("person");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
@@ -309,6 +309,13 @@ export default function AddListing() {
                   onValueChange={(value) => setListingType(value as ListingType)}
                 >
                   <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="person" id="type-person" data-testid="radio-type-person" />
+                    <Label htmlFor="type-person" className="font-normal cursor-pointer flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Citizen
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
                     <RadioGroupItem value="company" id="type-company" data-testid="radio-type-company" />
                     <Label htmlFor="type-company" className="font-normal cursor-pointer flex items-center gap-2">
                       <Building2 className="h-4 w-4" />
@@ -320,13 +327,6 @@ export default function AddListing() {
                     <Label htmlFor="type-community" className="font-normal cursor-pointer flex items-center gap-2">
                       <Users className="h-4 w-4" />
                       Community
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="person" id="type-person" data-testid="radio-type-person" />
-                    <Label htmlFor="type-person" className="font-normal cursor-pointer flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      Citizen
                     </Label>
                   </div>
                 </RadioGroup>
