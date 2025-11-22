@@ -622,6 +622,9 @@
     font-family: 'Courier New', monospace;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
 
   .terminal-glow {
