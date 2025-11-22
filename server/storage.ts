@@ -365,10 +365,22 @@ export class DatabaseStorage {
     // Get all events
     const allEvents = await db.select().from(events);
     
-    // Group by name (case-insensitive)
+    // Helper function to normalize event names for comparison
+    const normalizeEventName = (name: string): string => {
+      return name
+        .trim()
+        .toLowerCase()
+        // Remove all punctuation (quotes, periods, commas, hyphens, etc.)
+        .replace(/[^\w\s]/g, '')
+        // Replace multiple spaces with single space
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+    
+    // Group by normalized name
     const eventGroups = new Map<string, Event[]>();
     allEvents.forEach(event => {
-      const key = event.name.trim().toLowerCase();
+      const key = normalizeEventName(event.name);
       if (!eventGroups.has(key)) {
         eventGroups.set(key, []);
       }
