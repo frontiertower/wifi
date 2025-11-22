@@ -97,6 +97,15 @@ export default function Home() {
     }, 500);
   };
 
+  // Register the white rabbit handler with the global button
+  useEffect(() => {
+    // Store callback in window for AppHeader to access
+    (window as any).__whiteRabbitCallback = handleWhiteRabbit;
+    return () => {
+      delete (window as any).__whiteRabbitCallback;
+    };
+  }, []);
+
   const handlePillChoice = (choice: PillChoice) => {
     setShowPillModal(false);
     if (choice === "green") {

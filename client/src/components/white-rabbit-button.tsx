@@ -1,10 +1,20 @@
 import { useLocation } from "wouter";
 
-export function WhiteRabbitButton() {
-  const [, setLocation] = useLocation();
+interface WhiteRabbitButtonProps {
+  onHomeClick?: () => void;
+}
+
+export function WhiteRabbitButton({ onHomeClick }: WhiteRabbitButtonProps) {
+  const [location, setLocation] = useLocation();
 
   const handleClick = () => {
-    setLocation("/");
+    // On home page, trigger the modal callback if provided
+    if (location === "/" && onHomeClick) {
+      onHomeClick();
+    } else {
+      // Otherwise, navigate to home
+      setLocation("/");
+    }
   };
 
   return (
@@ -12,7 +22,7 @@ export function WhiteRabbitButton() {
       onClick={handleClick}
       className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
       data-testid="button-white-rabbit-home"
-      aria-label="Go home"
+      aria-label="Follow the white rabbit or go home"
     >
       <span className="text-lg">🐰</span>
     </button>

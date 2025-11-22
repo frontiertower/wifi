@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -102,6 +102,27 @@ function Router() {
   );
 }
 
+function AppHeader() {
+  const [location] = useLocation();
+
+  const handleRabbitClick = () => {
+    if (location === "/" && (window as any).__whiteRabbitCallback) {
+      (window as any).__whiteRabbitCallback();
+    }
+  };
+
+  return (
+    <>
+      <div className="absolute top-6 left-6 z-50">
+        <WhiteRabbitButton onHomeClick={handleRabbitClick} />
+      </div>
+      <div className="absolute top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
+    </>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -109,12 +130,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <div className="relative">
-            <div className="absolute top-6 left-6 z-50">
-              <WhiteRabbitButton />
-            </div>
-            <div className="absolute top-6 right-6 z-50">
-              <ThemeToggle />
-            </div>
+            <AppHeader />
             <Router />
           </div>
         </TooltipProvider>
