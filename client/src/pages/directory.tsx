@@ -215,7 +215,7 @@ export default function Directory() {
               data-testid="button-filter-people"
             >
               <User className="mr-2 h-4 w-4" />
-              People
+              Citizens
             </Button>
           </div>
 

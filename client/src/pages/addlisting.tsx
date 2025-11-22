@@ -296,7 +296,7 @@ export default function AddListing() {
           <CardHeader>
             <CardTitle className="text-2xl">Add Directory Listing</CardTitle>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Add a new company, community, or person to the building directory
+              Add a new company, community, or citizen to the building directory
             </p>
           </CardHeader>
 
@@ -326,7 +326,7 @@ export default function AddListing() {
                     <RadioGroupItem value="person" id="type-person" data-testid="radio-type-person" />
                     <Label htmlFor="type-person" className="font-normal cursor-pointer flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      Person
+                      Citizen
                     </Label>
                   </div>
                 </RadioGroup>
