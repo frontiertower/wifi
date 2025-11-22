@@ -88,163 +88,254 @@ export default function BlueHome() {
       )}
 
       {!selectedRole && (
-        <div className="min-h-screen bg-blueprint-dark p-4" style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 35px, rgba(74, 144, 226, 0.03) 35px, rgba(74, 144, 226, 0.03) 70px), repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(74, 144, 226, 0.03) 35px, rgba(74, 144, 226, 0.03) 70px)',
+        <div className="min-h-screen p-4" style={{
+          backgroundColor: '#003d82',
+          backgroundImage: `
+            repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255, 255, 255, 0.03) 49px, rgba(255, 255, 255, 0.03) 50px),
+            repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255, 255, 255, 0.03) 49px, rgba(255, 255, 255, 0.03) 50px)
+          `,
         }}>
-          <div className="max-w-2xl mx-auto">
-            {/* Header with Blueprint style */}
-            <div className="mb-8 text-center border-2 border-blueprint-line p-6" style={{
-              backgroundImage: 'linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, transparent 100%)',
+          <div className="max-w-4xl mx-auto">
+            {/* Blueprint Title Block */}
+            <div className="mb-8" style={{
+              backgroundColor: '#003d82',
+              border: '3px solid #ffffff',
             }}>
-              <h1 className="text-4xl md:text-5xl font-bold text-blueprint-text blueprint-text mb-2">
-                FRONTIER TOWER
-              </h1>
-              <p className="text-blueprint-text text-sm md:text-base font-mono">
-                NETWORK INFRASTRUCTURE PORTAL
-              </p>
-              <div className="mt-4 flex justify-center gap-2">
-                <div className="w-3 h-3 bg-blueprint-accent"></div>
-                <div className="w-3 h-3 bg-blueprint-accent"></div>
-                <div className="w-3 h-3 bg-blueprint-accent"></div>
+              {/* Main content area with header */}
+              <div className="p-8" style={{
+                borderBottom: '2px solid #ffffff',
+              }}>
+                <h1 className="text-5xl md:text-6xl font-bold mb-2" style={{
+                  color: '#ffffff',
+                  fontFamily: 'monospace',
+                  letterSpacing: '2px',
+                }}>
+                  FRONTIER TOWER
+                </h1>
+                <div style={{
+                  height: '2px',
+                  backgroundColor: '#ffffff',
+                  marginBottom: '12px',
+                }}></div>
+                <p className="text-lg" style={{
+                  color: '#ffffff',
+                  fontFamily: 'monospace',
+                  letterSpacing: '1px',
+                }}>
+                  FACILITY PORTAL SYSTEM
+                </p>
+              </div>
+
+              {/* Blueprint Title Block (Technical Drawing Style) */}
+              <div className="flex" style={{
+                backgroundColor: '#003d82',
+              }}>
+                <div className="flex-1 p-4" style={{
+                  borderRight: '2px solid #ffffff',
+                  color: '#ffffff',
+                  fontFamily: 'monospace',
+                  fontSize: '11px',
+                }}>
+                  <div className="mb-2">Project: FRONTIER TOWER</div>
+                  <div className="mb-2">Sheet: Portal System</div>
+                  <div>Revision: A</div>
+                </div>
+                <div className="w-32 p-4" style={{
+                  borderLeft: '2px solid #ffffff',
+                  color: '#ffffff',
+                  fontFamily: 'monospace',
+                  fontSize: '10px',
+                  textAlign: 'center',
+                }}>
+                  <div className="mb-1 border-b border-white pb-1">APPROVED</div>
+                  <div style={{ fontSize: '9px' }}>2024</div>
+                </div>
               </div>
             </div>
 
-            {/* Menu Grid */}
-            <div className="grid gap-4 md:grid-cols-2 mb-8">
+            {/* Menu Grid - Blueprint Style */}
+            <div className="grid gap-6 md:grid-cols-2 mb-8">
               <button
                 onClick={() => handleRoleSelect("guest")}
-                className="blueprint-card hover:shadow-lg transition-all duration-200 text-left group"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
                 data-testid="button-select-guest"
               >
                 <div className="flex items-start">
-                  <div className="text-blueprint-accent mr-3 flex-shrink-0 mt-1">
+                  <div className="mr-3 flex-shrink-0 mt-1">
                     <Wifi className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-blueprint-text blueprint-text">NETWORK ACCESS</h3>
-                    <p className="text-blueprint-secondary text-xs mt-1 font-mono">Connect to WiFi network</p>
+                    <h3 className="font-bold font-mono text-sm">NETWORK ACCESS</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Connect to WiFi network</p>
                   </div>
                 </div>
               </button>
 
               <Link
                 href="/directory"
-                className="blueprint-card hover:shadow-lg transition-all duration-200 text-left group block"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
                 data-testid="button-view-directory"
               >
                 <div className="flex items-start">
-                  <div className="text-blueprint-accent mr-3 flex-shrink-0 mt-1">
+                  <div className="mr-3 flex-shrink-0 mt-1">
                     <Building2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-blueprint-text blueprint-text">DIRECTORY INDEX</h3>
-                    <p className="text-blueprint-secondary text-xs mt-1 font-mono">Tenant information system</p>
+                    <h3 className="font-bold font-mono text-sm">DIRECTORY INDEX</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Tenant information system</p>
                   </div>
                 </div>
               </Link>
 
               <Link
                 href="/events"
-                className="blueprint-card hover:shadow-lg transition-all duration-200 text-left group block"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
                 data-testid="button-view-events"
               >
                 <div className="flex items-start">
-                  <div className="text-blueprint-accent mr-3 flex-shrink-0 mt-1">
+                  <div className="mr-3 flex-shrink-0 mt-1">
                     <Calendar className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-blueprint-text blueprint-text">EVENTS SCHEDULE</h3>
-                    <p className="text-blueprint-secondary text-xs mt-1 font-mono">Upcoming activities</p>
+                    <h3 className="font-bold font-mono text-sm">EVENTS SCHEDULE</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Upcoming activities</p>
                   </div>
                 </div>
               </Link>
 
               <Link
                 href="/rent-office"
-                className="blueprint-card hover:shadow-lg transition-all duration-200 text-left group block"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
                 data-testid="button-rent-office"
               >
                 <div className="flex items-start">
-                  <div className="text-blueprint-accent mr-3 flex-shrink-0 mt-1">
+                  <div className="mr-3 flex-shrink-0 mt-1">
                     <DoorOpen className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-blueprint-text blueprint-text">OFFICE RENTAL</h3>
-                    <p className="text-blueprint-secondary text-xs mt-1 font-mono">Space availability</p>
+                    <h3 className="font-bold font-mono text-sm">OFFICE RENTAL</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Space availability</p>
                   </div>
                 </div>
               </Link>
 
               <Link
                 href="/tour"
-                className="blueprint-card hover:shadow-lg transition-all duration-200 text-left group block"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
                 data-testid="button-book-tour"
               >
                 <div className="flex items-start">
-                  <div className="text-blueprint-accent mr-3 flex-shrink-0 mt-1">
+                  <div className="mr-3 flex-shrink-0 mt-1">
                     <UserPlus className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-blueprint-text blueprint-text">FACILITY TOUR</h3>
-                    <p className="text-blueprint-secondary text-xs mt-1 font-mono">Building orientation</p>
+                    <h3 className="font-bold font-mono text-sm">FACILITY TOUR</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Building orientation</p>
                   </div>
                 </div>
               </Link>
 
               <Link
                 href="/apply-to-join"
-                className="blueprint-card hover:shadow-lg transition-all duration-200 text-left group block"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
                 data-testid="button-apply-to-join"
               >
                 <div className="flex items-start">
-                  <div className="text-blueprint-accent mr-3 flex-shrink-0 mt-1">
+                  <div className="mr-3 flex-shrink-0 mt-1">
                     <UserPlus className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-blueprint-text blueprint-text">MEMBERSHIP</h3>
-                    <p className="text-blueprint-secondary text-xs mt-1 font-mono">Join our community</p>
+                    <h3 className="font-bold font-mono text-sm">MEMBERSHIP</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Join our community</p>
                   </div>
                 </div>
               </Link>
 
               <Link
                 href="/event-host-booking"
-                className="blueprint-card hover:shadow-lg transition-all duration-200 text-left group block"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
                 data-testid="button-host-event"
               >
                 <div className="flex items-start">
-                  <div className="text-blueprint-accent mr-3 flex-shrink-0 mt-1">
+                  <div className="mr-3 flex-shrink-0 mt-1">
                     <PartyPopper className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-blueprint-text blueprint-text">EVENT HOSTING</h3>
-                    <p className="text-blueprint-secondary text-xs mt-1 font-mono">Reserve facilities</p>
+                    <h3 className="font-bold font-mono text-sm">EVENT HOSTING</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Reserve facilities</p>
                   </div>
                 </div>
               </Link>
 
               <Link
                 href="/chat"
-                className="blueprint-card hover:shadow-lg transition-all duration-200 text-left group block"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
                 data-testid="button-join-discussion"
               >
                 <div className="flex items-start">
-                  <div className="text-blueprint-accent mr-3 flex-shrink-0 mt-1">
+                  <div className="mr-3 flex-shrink-0 mt-1">
                     <MessageCircle className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-blueprint-text blueprint-text">SUPPORT CHANNEL</h3>
-                    <p className="text-blueprint-secondary text-xs mt-1 font-mono">Get assistance</p>
+                    <h3 className="font-bold font-mono text-sm">SUPPORT CHANNEL</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Get assistance</p>
                   </div>
                 </div>
               </Link>
             </div>
 
             {/* QR Code with Blueprint styling */}
-            <div className="blueprint-card text-center">
-              <p className="text-blueprint-text font-bold blueprint-text text-sm mb-4">DISTRIBUTION CODE</p>
+            <div className="p-6 text-center" style={{
+              backgroundColor: '#003d82',
+              border: '2px solid #ffffff',
+              color: '#ffffff',
+            }}>
+              <p className="font-bold font-mono text-sm mb-4">DISTRIBUTION CODE</p>
               <div className="flex justify-center mb-4">
-                <div className="bg-blueprint-bg p-4 border-2 border-blueprint-accent rounded">
+                <div className="p-4" style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                }}>
                   <img 
                     src={frontierTowerQR}
                     alt="QR Code"
@@ -253,7 +344,7 @@ export default function BlueHome() {
                   />
                 </div>
               </div>
-              <p className="text-blueprint-secondary text-xs font-mono">Scan to access thefrontiertower.com</p>
+              <p className="text-xs font-mono opacity-75">Scan to access thefrontiertower.com</p>
             </div>
 
             {/* Exit Link */}
@@ -262,7 +353,8 @@ export default function BlueHome() {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="text-blueprint-secondary hover:text-blueprint-accent font-mono"
+                  className="font-mono"
+                  style={{ color: '#ffffff' }}
                   data-testid="button-exit"
                 >
                   EXIT SYSTEM
