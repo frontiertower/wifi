@@ -30,6 +30,7 @@ export default function Home() {
   const [unifiParams, setUnifiParams] = useState<UniFiParams>({});
   const [showPillModal, setShowPillModal] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
+  const [crackIntensity, setCrackIntensity] = useState(0);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
@@ -105,6 +106,26 @@ export default function Home() {
       delete (window as any).__whiteRabbitCallback;
     };
   }, []);
+
+  // Glass cracking effect when modal is open
+  useEffect(() => {
+    if (!showPillModal) {
+      setCrackIntensity(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setCrackIntensity((prev) => {
+        if (prev >= 8) {
+          clearInterval(interval);
+          return 8;
+        }
+        return prev + 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [showPillModal]);
 
   const handlePillChoice = (choice: PillChoice) => {
     setShowPillModal(false);
@@ -296,8 +317,22 @@ export default function Home() {
         </div>
 
         {showPillModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 pill-modal-backdrop z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 pill-modal-backdrop z-50 overflow-hidden">
+            {/* Glass crack overlay */}
+            {crackIntensity > 0 && (
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
+                {crackIntensity >= 1 && <line x1="50%" y1="0%" x2="45%" y2="100%" stroke="rgba(0,0,0,0.6)" strokeWidth="3" />}
+                {crackIntensity >= 2 && <line x1="30%" y1="20%" x2="70%" y2="80%" stroke="rgba(0,0,0,0.5)" strokeWidth="2" />}
+                {crackIntensity >= 3 && <line x1="70%" y1="10%" x2="20%" y2="90%" stroke="rgba(0,0,0,0.5)" strokeWidth="2" />}
+                {crackIntensity >= 4 && <line x1="50%" y1="0%" x2="40%" y2="60%" stroke="rgba(0,0,0,0.4)" strokeWidth="2" />}
+                {crackIntensity >= 5 && <line x1="60%" y1="30%" x2="30%" y2="70%" stroke="rgba(0,0,0,0.4)" strokeWidth="2" />}
+                {crackIntensity >= 6 && <polygon points="0,0 100,0 100,50 0,40" fill="rgba(0,0,0,0.15)" />}
+                {crackIntensity >= 7 && <polygon points="0,100 100,100 100,60 0,70" fill="rgba(0,0,0,0.15)" />}
+                {crackIntensity >= 8 && <polygon points="0,0 30,0 25,50 0,45" fill="rgba(0,0,0,0.2)" />}
+              </svg>
+            )}
+            
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative z-10">
               <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
                 The Choice is Yours
               </h2>

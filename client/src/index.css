@@ -29,6 +29,37 @@
   animation: flicker 0.3s ease-in-out 1;
 }
 
+/* Glass breaking effect */
+@keyframes crackSpread {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.glass-crack {
+  animation: crackSpread 0.4s ease-out forwards;
+}
+
+.glass-fragment {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7);
+  mix-blend-mode: multiply;
+}
+
+.crack-line {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  opacity: 0.6;
+}
+
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
