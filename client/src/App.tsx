@@ -115,7 +115,7 @@ function AppHeader() {
     }
   };
 
-  const hideRabbitOn = ["/Regen", "/Finance"];
+  const hideRabbitOn = ["/Regen", "/Finance", "/Green", "/Blue"];
   const shouldHideRabbit = hideRabbitOn.includes(location);
 
   return (
