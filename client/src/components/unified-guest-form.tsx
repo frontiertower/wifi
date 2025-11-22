@@ -480,7 +480,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden p-8">
             <div className="mb-6 text-center">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2" data-testid="heading-registration-complete">
-                Registration Complete
+                Configure Secure Wi-Fi
               </h1>
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
                 Now connect to WiFi using one of the methods below
