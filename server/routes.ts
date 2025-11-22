@@ -721,34 +721,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Get admin credentials from environment variables
-      // Fall back to defaults only in development for ease of testing
-      const ownerPassword = process.env.ADMIN_OWNER_PASSWORD || 
-        (process.env.NODE_ENV === 'development' ? "iownthisbuilding" : "");
-      const staffPassword = process.env.ADMIN_STAFF_PASSWORD || 
-        (process.env.NODE_ENV === 'development' ? "ijustworkhere" : "");
+      // Universal password for all admin users
+      const adminPassword = "thereisnotry";
 
-      if (!ownerPassword || !staffPassword) {
-        console.error("ADMIN_OWNER_PASSWORD and ADMIN_STAFF_PASSWORD environment variables must be set in production");
-        return res.status(500).json({
-          success: false,
-          message: "Admin authentication not configured",
-        });
-      }
-
-      let role: string | null = null;
-      if (password === ownerPassword) {
-        role = "Owner";
-      } else if (password === staffPassword) {
-        role = "Staff";
-      }
-
-      if (!role) {
+      if (password !== adminPassword) {
         return res.status(401).json({
           success: false,
           message: "Invalid credentials",
         });
       }
+
+      // Assign role based on email or default to Owner
+      let role = "Owner";
 
       // Generate session token
       const sessionToken = randomBytes(32).toString("hex");
