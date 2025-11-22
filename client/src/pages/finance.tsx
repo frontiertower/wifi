@@ -114,46 +114,75 @@ export default function FinancePage() {
             Head of Regenerative Finance
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Join Frontier Tower in Building a Sustainable Future
+            Frontier Tower Recruitment • Join Our Team
           </p>
         </div>
 
         {/* Info Cards Grid */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Our Mission</h3>
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Regenerative Ecosystems: Build Sustainable Futures</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
+              We are pioneering regenerative ecosystem practices integrated into next-generation network infrastructure. Our mission extends beyond innovation to environmental stewardship and community renewal.
+            </p>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              We're pioneering regenerative ecosystem practices integrated into next-generation network infrastructure. Our mission extends beyond innovation to environmental stewardship and community renewal.
+              Building interconnected systems that improve both human flourishing and ecological health. Join us in creating technological solutions that heal the planet.
             </p>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
             <h3 className="font-bold text-gray-900 dark:text-white mb-3">Our Approach</h3>
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <li>• <span className="font-semibold">Regenerative Design</span> — Systems that heal</li>
-              <li>• <span className="font-semibold">Community First</span> — Justice-centered</li>
-              <li>• <span className="font-semibold">Scalable Impact</span> — Global transformation</li>
+              <li><span className="font-semibold">Regenerative Design</span> — Systems that heal, not extract</li>
+              <li><span className="font-semibold">Community First</span> — Environmental justice at core</li>
+              <li><span className="font-semibold">Scalable Impact</span> — From local to global transformation</li>
             </ul>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
-            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Core Values</h3>
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Get Involved</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Join us in developing and implementing regenerative ecosystem solutions. Whether in policy, technology, community engagement, or resource management, we're building the infrastructure for a sustainable future. Remote-friendly with flexible collaboration models.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Our Values</h3>
             <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-              <li>• Regeneration — Systems that improve over time</li>
-              <li>• Equity — Justice-centered approach</li>
-              <li>• Transparency — Open source, open data</li>
-              <li>• Collaboration — Cross-sector partnerships</li>
+              <li>• <span className="font-semibold">Regeneration</span> — Systems that improve over time</li>
+              <li>• <span className="font-semibold">Equity</span> — Justice-centered approach</li>
+              <li>• <span className="font-semibold">Transparency</span> — Open source, open data</li>
+              <li>• <span className="font-semibold">Collaboration</span> — Cross-sector partnerships</li>
+              <li>• <span className="font-semibold">Innovation</span> — Reimagining what's possible</li>
             </ul>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
             <h3 className="font-bold text-gray-900 dark:text-white mb-3">Impact Areas</h3>
             <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-              <li>• Climate Solutions — Tech for climate action</li>
-              <li>• Biodiversity — Ecosystem preservation</li>
-              <li>• Communities — Local restoration</li>
+              <li>• <span className="font-semibold">Climate Solutions</span> — Tech for climate action</li>
+              <li>• <span className="font-semibold">Biodiversity</span> — Ecosystem preservation</li>
+              <li>• <span className="font-semibold">Communities</span> — Local restoration</li>
             </ul>
           </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-3">Get Started</h3>
+            <ol className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+              <li><span className="font-semibold">1. Learn</span> about our initiatives</li>
+              <li><span className="font-semibold">2. Connect</span> with our community</li>
+              <li><span className="font-semibold">3. Contribute</span> your skills</li>
+              <li><span className="font-semibold">4. Scale</span> regenerative impact</li>
+            </ol>
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-6 mb-8 text-center">
+          <p className="font-bold text-gray-900 dark:text-white mb-2">Ready to Join the Regenerative Movement?</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Share your interest and how you want to contribute. We're building a global community focused on healing our world.
+          </p>
         </div>
 
         {/* Application Form */}
@@ -168,7 +197,7 @@ export default function FinancePage() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                   <span className="flex items-center justify-center w-6 h-6 bg-primary rounded-full text-white text-sm mr-3">1</span>
-                  Personal Information
+                  Personnel Identification File
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -177,9 +206,9 @@ export default function FinancePage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>Name (Last, First)</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} data-testid="input-name" />
+                          <Input placeholder="DOE, JOHN" {...field} data-testid="input-name" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -191,9 +220,9 @@ export default function FinancePage() {
                     name="location"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Location</FormLabel>
+                        <FormLabel>Current Location (City/Tower)</FormLabel>
                         <FormControl>
-                          <Input placeholder="San Francisco, CA" {...field} data-testid="input-location" />
+                          <Input placeholder="SAN FRANCISCO, CA" {...field} data-testid="input-location" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -205,9 +234,9 @@ export default function FinancePage() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Contact Frequency (Email)</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} data-testid="input-email" />
+                          <Input type="email" placeholder="operative@domain.com" {...field} data-testid="input-email" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -219,7 +248,7 @@ export default function FinancePage() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Phone</FormLabel>
+                        <FormLabel>Direct Comm (Phone)</FormLabel>
                         <FormControl>
                           <Input type="tel" placeholder="+1 (555) 000-0000" {...field} data-testid="input-phone" />
                         </FormControl>
@@ -233,9 +262,9 @@ export default function FinancePage() {
                     name="linkedinUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>LinkedIn Profile (Optional)</FormLabel>
+                        <FormLabel>LinkedIn Profile URL</FormLabel>
                         <FormControl>
-                          <Input placeholder="linkedin.com/in/yourprofile" {...field} value={field.value || ""} data-testid="input-linkedin" />
+                          <Input placeholder="linkedin.com/in/username" {...field} value={field.value || ""} data-testid="input-linkedin" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -247,7 +276,7 @@ export default function FinancePage() {
                     name="resumeUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Resume Link (Optional)</FormLabel>
+                        <FormLabel>Resume/CV Datapack</FormLabel>
                         <FormControl>
                           <Input placeholder="https://drive.google.com/..." {...field} value={field.value || ""} data-testid="input-resume" />
                         </FormControl>
@@ -262,7 +291,7 @@ export default function FinancePage() {
               <div className="border-t pt-8">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                   <span className="flex items-center justify-center w-6 h-6 bg-primary rounded-full text-white text-sm mr-3">2</span>
-                  Professional Experience
+                  Operational Experience Matrix
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -271,7 +300,7 @@ export default function FinancePage() {
                     name="minimumCompensation"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Minimum Annual Compensation</FormLabel>
+                        <FormLabel>Yield (Minimum Annual Compensation Required)</FormLabel>
                         <FormControl>
                           <Input type="number" placeholder="150000" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-compensation" />
                         </FormControl>
@@ -285,7 +314,7 @@ export default function FinancePage() {
                     name="noticePeriodWeeks"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Notice Period (Weeks)</FormLabel>
+                        <FormLabel>Notice Period (Weeks Required Before Integration)</FormLabel>
                         <FormControl>
                           <Input type="number" placeholder="2" {...field} value={field.value || ""} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-notice-period" />
                         </FormControl>
@@ -299,9 +328,9 @@ export default function FinancePage() {
                     name="startupYears"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Years in Startup Environment</FormLabel>
+                        <FormLabel>Years in Startup Environment (Fast-Paced Firms)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="3" {...field} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-startup-years" />
+                          <Input type="number" placeholder="3+" {...field} onChange={e => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)} data-testid="input-startup-years" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -314,14 +343,14 @@ export default function FinancePage() {
                   name="contractInterpretationLevel"
                   render={({ field }) => (
                     <FormItem className="mb-6">
-                      <FormLabel>Contract Interpretation Level (1-5)</FormLabel>
+                      <FormLabel>Contract Interpretation Familiarity (Level of Comfort)</FormLabel>
                       <FormControl>
                         <div className="space-y-3">
                           <Slider min={1} max={5} step={1} value={[field.value || 1]} onValueChange={(vals) => field.onChange(vals[0])} data-testid="slider-contract-level" />
                           <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                            <span>Beginner</span>
+                            <span>1 - BASIC</span>
                             <span className="font-semibold text-gray-900 dark:text-white">{contractLevel || 1}</span>
-                            <span>Expert</span>
+                            <span>5 - EXPERT</span>
                           </div>
                         </div>
                       </FormControl>
@@ -336,9 +365,9 @@ export default function FinancePage() {
                     name="paymentSystemsExperience"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Payment & Banking Systems Experience</FormLabel>
+                        <FormLabel>Proven Track Record in Payment/Banking Systems</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Describe your experience with payment systems..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-payment-systems" />
+                          <Textarea placeholder="Describe complexity of funds handled, payment systems managed, and scale of operations..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-payment-systems" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -350,9 +379,9 @@ export default function FinancePage() {
                     name="taxAdvisorExperience"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Tax Coordination Experience</FormLabel>
+                        <FormLabel>Tax Advisor Coordination Experience</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Describe your tax experience..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-tax-advisor" />
+                          <Textarea placeholder="Describe scale and jurisdictions handled..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-tax-advisor" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -364,9 +393,9 @@ export default function FinancePage() {
                     name="investorRelationsExperience"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Investor Relations & Fundraising</FormLabel>
+                        <FormLabel>Investor Relations & Fundraising Experience</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Describe your fundraising experience..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-investor-relations" />
+                          <Textarea placeholder="Describe fundraising rounds managed, investor base size, and communication strategies..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-investor-relations" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -378,9 +407,9 @@ export default function FinancePage() {
                     name="executiveCollaboration"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Executive & Board Experience</FormLabel>
+                        <FormLabel>Executive Collaboration & Board Experience</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Describe your experience with C-suite..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-executive-collaboration" />
+                          <Textarea placeholder="Describe experience working with C-suite, board interactions, and strategic planning..." className="min-h-[100px]" {...field} value={field.value || ""} data-testid="textarea-executive-collaboration" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -393,7 +422,7 @@ export default function FinancePage() {
               <div className="border-t pt-8">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                   <span className="flex items-center justify-center w-6 h-6 bg-primary rounded-full text-white text-sm mr-3">3</span>
-                  Your Story
+                  Candidate Manifesto
                 </h3>
 
                 <div className="space-y-4">
@@ -402,9 +431,9 @@ export default function FinancePage() {
                     name="motivationStatement"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Why Frontier Tower?</FormLabel>
+                        <FormLabel>Why Frontier Tower? What Drives You?</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Tell us what excites you about this opportunity..." className="min-h-[120px]" {...field} data-testid="textarea-motivation" />
+                          <Textarea placeholder="Tell us about your motivation, what excites you about this opportunity, and what you want to build..." className="min-h-[120px]" {...field} data-testid="textarea-motivation" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -416,11 +445,11 @@ export default function FinancePage() {
                     name="referralSource"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>How did you hear about us?</FormLabel>
+                        <FormLabel>How Did You Hear About Us?</FormLabel>
                         <Select value={field.value || ""} onValueChange={field.onChange}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select a source..." />
+                              <SelectValue placeholder="Select source..." />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -428,7 +457,7 @@ export default function FinancePage() {
                             <SelectItem value="social">Social Media</SelectItem>
                             <SelectItem value="job_board">Job Board</SelectItem>
                             <SelectItem value="conference">Conference / Event</SelectItem>
-                            <SelectItem value="directly">Directly Approached</SelectItem>
+                            <SelectItem value="directly">Directly Approached You</SelectItem>
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
@@ -444,7 +473,7 @@ export default function FinancePage() {
                       <FormItem>
                         <FormLabel>Portfolio / Work Samples (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://your-portfolio.com" {...field} value={field.value || ""} data-testid="input-portfolio" />
+                          <Input placeholder="https://your-portfolio.com or github.com/..." {...field} value={field.value || ""} data-testid="input-portfolio" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -460,9 +489,9 @@ export default function FinancePage() {
                           <Checkbox checked={field.value || false} onCheckedChange={field.onChange} data-testid="checkbox-values" />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>I align with our core values</FormLabel>
+                          <FormLabel>Confirmation of Alignment with Core Operational Values</FormLabel>
                           <p className="text-xs text-gray-600 dark:text-gray-400">
-                            Focus on mission • Bias to action • Ship fast • Own outcomes • Radical candor
+                            Focus on the mission • Bias to action • Do whatever it takes • Ship fast • Own the outcome • Radical candor
                           </p>
                         </div>
                       </FormItem>
@@ -479,7 +508,7 @@ export default function FinancePage() {
                   </Button>
                 </Link>
                 <Button type="submit" disabled={isSubmitting} className="flex-1" data-testid="button-submit-application">
-                  {isSubmitting ? "Submitting..." : "Submit Application"}
+                  {isSubmitting ? "Transmitting..." : "Submit Application"}
                   {!isSubmitting && <ArrowRight className="ml-2 w-4 h-4" />}
                 </Button>
               </div>
