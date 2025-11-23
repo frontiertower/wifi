@@ -2394,7 +2394,7 @@ export default function AdminDashboard() {
       {/* Mobile Floating Bottom Dock - Visible only on small screens */}
       <div className="fixed bottom-0 left-0 right-0 md:hidden z-50">
         <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg">
-          <nav className="flex justify-around items-center px-2 py-3">
+          <nav className="flex justify-around items-center px-1 py-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -2405,10 +2405,10 @@ export default function AdminDashboard() {
                     activeTab === tab.id
                       ? "text-primary-600 dark:text-primary-400"
                       : "text-gray-500 dark:text-gray-400"
-                  } flex flex-col items-center justify-center transition-colors hover-elevate active-elevate-2 rounded-lg p-2 min-w-[60px]`}
+                  } flex flex-col items-center justify-center transition-colors hover-elevate active-elevate-2 rounded-lg p-1 min-w-[48px]`}
                   data-testid={`mobile-tab-${tab.id}`}
                 >
-                  <Icon className={`h-6 w-6 ${activeTab === tab.id ? "mb-1" : "mb-0.5"}`} />
+                  <Icon className={`h-5 w-5 ${activeTab === tab.id ? "mb-1" : "mb-0.5"}`} />
                   {activeTab === tab.id && (
                     <div className="w-1 h-1 rounded-full bg-primary-600 dark:bg-primary-400 mt-1"></div>
                   )}
