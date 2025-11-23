@@ -96,7 +96,7 @@ export default function EcosystemPage() {
                     asChild
                     variant="default"
                     size="sm"
-                    className="absolute top-3 right-3 z-10"
+                    className="absolute top-2 right-2 z-20"
                     data-testid={`button-open-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
                   >
                     <a
