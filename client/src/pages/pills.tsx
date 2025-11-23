@@ -193,6 +193,41 @@ export default function PillsPage() {
         <>
           <div className="absolute inset-0 black-hole-vortex" />
           <div className="absolute inset-0 black-hole-singularity" />
+          
+          {/* Matrix-like visuals */}
+          {!showTerminal && (
+            <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+              <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.3 }}>
+                {Array.from({ length: 30 }).map((_, i) => (
+                  <text
+                    key={`matrix-${i}`}
+                    x={`${Math.random() * 100}%`}
+                    y={`${Math.random() * 100}%`}
+                    fontSize={Math.random() * 20 + 12}
+                    fill="#00ff41"
+                    opacity={Math.random() * 0.7 + 0.3}
+                    style={{
+                      animation: `matrixFall ${Math.random() * 2 + 1.5}s linear infinite`,
+                      animationDelay: `${Math.random() * 0.5}s`,
+                      textShadow: '0 0 10px rgba(0, 255, 65, 0.8)',
+                    }}
+                  >
+                    {String.fromCharCode(0x30A0 + Math.random() * 96)}
+                  </text>
+                ))}
+              </svg>
+              
+              {/* Scanning lines */}
+              <div 
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: 'repeating-linear-gradient(0deg, rgba(0,255,65,0.15) 0px, rgba(0,255,65,0.15) 1px, transparent 1px, transparent 2px)',
+                  animation: 'scanLines 0.15s linear infinite',
+                  pointerEvents: 'none',
+                }}
+              />
+            </div>
+          )}
         </>
       )}
       
