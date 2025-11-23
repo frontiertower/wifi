@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Zap } from "lucide-react";
+import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
@@ -240,7 +240,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
             >
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
-                  <Zap className="text-pink-600 dark:text-pink-300" />
+                  <Rocket className="text-pink-600 dark:text-pink-300" />
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">{t.ecosystem}</div>
