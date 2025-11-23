@@ -136,7 +136,7 @@ function AppHeader() {
         </div>
       )}
       {!shouldHideRabbit && (
-        <div className="absolute top-10 right-6 z-50">
+        <div className="absolute top-7 right-6 z-50">
           <ThemeToggle />
         </div>
       )}
