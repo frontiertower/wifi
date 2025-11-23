@@ -494,6 +494,15 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                 </div>
               </div>
             )}
+
+            {showTerminal && (
+              <div className="absolute inset-0 bg-black flex items-center justify-center z-20 cursor-pointer" onClick={() => window.location.reload()} data-testid="terminal-reboot-screen">
+                <div className="text-center font-mono text-2xl md:text-4xl">
+                  <span className="terminal-text typing-reboot">reboot</span>
+                  <span className="terminal-cursor">_</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
         </div>
