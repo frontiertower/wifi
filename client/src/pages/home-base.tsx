@@ -196,7 +196,6 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               <a href="/ko" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ko" title="한국어">🇰🇷</a>
               <a href="/ja" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ja" title="日本語">🇯🇵</a>
               <a href="/fr" className="text-2xl hover:scale-110 transition-transform" data-testid="language-fr" title="Français">🇫🇷</a>
-              <a href="/pt" className="text-2xl hover:scale-110 transition-transform" data-testid="language-pt" title="Português">🇧🇷</a>
               <a href="/hi" className="text-2xl hover:scale-110 transition-transform" data-testid="language-hi" title="हिन्दी">🇮🇳</a>
               <a href="/ar" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ar" title="العربية">🇦🇪</a>
               <a href="/ng" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ng" title="Nigeria">🇳🇬</a>

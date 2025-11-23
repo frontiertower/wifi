@@ -14,7 +14,6 @@ import HomeZH from "@/pages/home-zh";
 import HomeKO from "@/pages/home-ko";
 import HomeJA from "@/pages/home-ja";
 import HomeFR from "@/pages/home-fr";
-import HomePT from "@/pages/home-pt";
 import HomeHI from "@/pages/home-hi";
 import HomeAR from "@/pages/home-ar";
 import HomeNG from "@/pages/home-ng";
@@ -62,7 +61,6 @@ function Router() {
         <Route path="/ko" component={HomeKO} />
         <Route path="/ja" component={HomeJA} />
         <Route path="/fr" component={HomeFR} />
-        <Route path="/pt" component={HomePT} />
         <Route path="/hi" component={HomeHI} />
         <Route path="/ar" component={HomeAR} />
         <Route path="/ng" component={HomeNG} />
