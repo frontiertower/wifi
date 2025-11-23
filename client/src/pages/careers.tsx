@@ -444,9 +444,6 @@ function JobListingCard({ listing, featured = false }: { listing: JobListing; fe
             <Clock className="w-3 h-3 mr-1" />
             {listing.type}
           </Badge>
-          {listing.salary && (
-            <Badge variant="outline">{listing.salary}</Badge>
-          )}
         </div>
         <p className="text-sm text-muted-foreground line-clamp-3">
           {listing.description}
