@@ -188,12 +188,18 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
           </div>
 
           <div className="p-6">
-            <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600 flex justify-center gap-3">
+            <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600 flex justify-center gap-2 flex-wrap">
               <a href="/" className="text-2xl hover:scale-110 transition-transform" data-testid="language-en" title="English">🇺🇸</a>
               <a href="/de" className="text-2xl hover:scale-110 transition-transform" data-testid="language-de" title="Deutsch">🇩🇪</a>
               <a href="/es" className="text-2xl hover:scale-110 transition-transform" data-testid="language-es" title="Español">🇪🇸</a>
               <a href="/zh" className="text-2xl hover:scale-110 transition-transform" data-testid="language-zh" title="中文">🇨🇳</a>
               <a href="/ko" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ko" title="한국어">🇰🇷</a>
+              <a href="/ja" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ja" title="日本語">🇯🇵</a>
+              <a href="/fr" className="text-2xl hover:scale-110 transition-transform" data-testid="language-fr" title="Français">🇫🇷</a>
+              <a href="/pt" className="text-2xl hover:scale-110 transition-transform" data-testid="language-pt" title="Português">🇧🇷</a>
+              <a href="/hi" className="text-2xl hover:scale-110 transition-transform" data-testid="language-hi" title="हिन्दी">🇮🇳</a>
+              <a href="/ar" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ar" title="العربية">🇦🇪</a>
+              <a href="/ng" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ng" title="Nigeria">🇳🇬</a>
             </div>
 
             <button

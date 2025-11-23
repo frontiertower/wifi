@@ -12,6 +12,12 @@ import HomeDE from "@/pages/home-de";
 import HomeES from "@/pages/home-es";
 import HomeZH from "@/pages/home-zh";
 import HomeKO from "@/pages/home-ko";
+import HomeJA from "@/pages/home-ja";
+import HomeFR from "@/pages/home-fr";
+import HomePT from "@/pages/home-pt";
+import HomeHI from "@/pages/home-hi";
+import HomeAR from "@/pages/home-ar";
+import HomeNG from "@/pages/home-ng";
 import GreenHome from "@/pages/green-home";
 import BlueHome from "@/pages/blue-home";
 import Events from "@/pages/events";
@@ -54,6 +60,12 @@ function Router() {
         <Route path="/es" component={HomeES} />
         <Route path="/zh" component={HomeZH} />
         <Route path="/ko" component={HomeKO} />
+        <Route path="/ja" component={HomeJA} />
+        <Route path="/fr" component={HomeFR} />
+        <Route path="/pt" component={HomePT} />
+        <Route path="/hi" component={HomeHI} />
+        <Route path="/ar" component={HomeAR} />
+        <Route path="/ng" component={HomeNG} />
         <Route path="/Green" component={GreenHome} />
         <Route path="/Blue" component={BlueHome} />
         <Route path="/events" component={Events} />
