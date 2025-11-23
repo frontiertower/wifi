@@ -154,17 +154,27 @@ export default function Directory() {
 
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <Link href="/">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mb-4"
-              data-testid="button-back-home"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2 mb-4">
+            <Link href="/">
+              <Button
+                variant="ghost"
+                size="sm"
+                data-testid="button-back-home"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Button>
+            </Link>
+            <Link href="/addlisting">
+              <Button
+                size="sm"
+                data-testid="button-add-listing"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Listing
+              </Button>
+            </Link>
+          </div>
 
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
