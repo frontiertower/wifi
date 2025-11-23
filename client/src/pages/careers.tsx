@@ -83,20 +83,18 @@ export default function CareersPage() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-2" data-testid="text-careers-title">
-                Careers at Frontier Tower
-              </h1>
-              <p className="text-muted-foreground text-lg">
-                Join the frontier of innovation and build the future with us
-              </p>
-            </div>
+          <div className="mb-6">
             <Link href="/">
-              <Button variant="ghost" data-testid="button-back-home">
+              <Button variant="ghost" data-testid="button-back-home" className="mb-4">
                 Back to Home
               </Button>
             </Link>
+            <h1 className="text-4xl font-bold mb-2" data-testid="text-careers-title">
+              Careers at Frontier Tower
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Join the frontier of innovation and build the future with us
+            </p>
           </div>
 
           {/* Action Buttons */}
