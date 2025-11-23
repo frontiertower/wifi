@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -51,7 +51,7 @@ export default function ResidencyPage() {
   const checkInDate = form.watch("checkInDate");
   const checkOutDate = form.watch("checkOutDate");
 
-  const calculateCost = () => {
+  useEffect(() => {
     if (checkInDate && checkOutDate) {
       const checkIn = new Date(checkInDate);
       const checkOut = new Date(checkOutDate);
@@ -59,7 +59,6 @@ export default function ResidencyPage() {
       
       if (nights > 0) {
         // $450/week = $64.29/day, $1800/month minimum
-        const costPerDay = 450 / 7;
         const weeklyRate = 450;
         const weeks = Math.ceil(nights / 7);
         
@@ -73,13 +72,11 @@ export default function ResidencyPage() {
         }
         
         setTotalCost(cost);
-        return cost;
+      } else {
+        setTotalCost(0);
       }
     }
-    return 0;
-  };
-
-  calculateCost();
+  }, [checkInDate, checkOutDate]);
 
   const createResidencyMutation = useMutation({
     mutationFn: async (data: ResidencyBooking) => {
