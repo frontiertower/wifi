@@ -4,16 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import type { DirectoryListing, Event } from "@shared/schema";
+import type { DirectoryListing } from "@shared/schema";
 
 interface DirectoryListingsResponse {
   success: boolean;
   listings: DirectoryListing[];
-}
-
-interface EventsResponse {
-  success: boolean;
-  events: Event[];
 }
 
 interface App {
@@ -24,239 +19,16 @@ interface App {
   isDirectoryCompany?: boolean;
 }
 
-const featuredApps: App[] = [
-  {
-    name: "Omi.me",
-    url: "https://omi.me",
-    description: "Pioneering AI memory and wearable technology for human augmentation",
-  },
-  {
-    name: "GetBuddi.ai",
-    url: "https://getbuddi.ai",
-    description: "AI-powered personal finance and budgeting assistant",
-  },
-  {
-    name: "OpenDroid",
-    url: "https://opendroid.ai",
-    description: "Open-source robotics and automation platform",
-  },
-  {
-    name: "UFB.GG",
-    url: "https://ufb.gg",
-    description: "Ultra-fast blockchain gaming network",
-  },
-  {
-    name: "LeRobot",
-    url: "https://lerobot.io",
-    description: "Collaborative robotics platform for AI-powered automation",
-  },
-  {
-    name: "Ethereum Foundation",
-    url: "https://ethereum.org",
-    description: "Building the future of decentralized technology",
-  },
-  {
-    name: "Ethereum House",
-    url: "https://ethereumhouse.com",
-    description: "Community hub for Ethereum builders and developers",
-  },
-  {
-    name: "DeveloperCamp",
-    url: "#",
-    description: "Developer education and community building at Frontier Tower",
-  },
-  {
-    name: "Tea Tribe",
-    url: "#",
-    description: "Community gathering and wellness space",
-  },
-  {
-    name: "Cookbook",
-    url: "#",
-    description: "Culinary innovation and shared kitchen space",
-  },
-  {
-    name: "Cline",
-    url: "#",
-    description: "AI-powered development and collaboration tools",
-  },
-  {
-    name: "Dabl Club",
-    url: "#",
-    description: "Community space for music, art, and culture",
-  },
-  {
-    name: "SensAI Hackademy",
-    url: "#",
-    description: "AI and sensor technology education program",
-  },
-];
-
-// Static partners list - now empty to show only partners mentioned in events
-const partners: App[] = [];
-
 export default function EcosystemPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [allApps, setAllApps] = useState<App[]>(featuredApps);
+  const [allApps, setAllApps] = useState<App[]>([]);
 
   const { data: dirListings } = useQuery<DirectoryListingsResponse>({
     queryKey: ["/api/directory/listings"],
   });
 
-  const { data: eventsData } = useQuery<EventsResponse>({
-    queryKey: ["/api/events"],
-  });
-
-  // Domain to company name mapping
-  const domainToCompany: Record<string, string> = {
-    "ethglobal.com": "ETHGlobal",
-    "sui.io": "Sui",
-    "polygon.technology": "Polygon",
-    "luma.com": "Luma",
-    "base.org": "Base",
-    "optimism.io": "Optimism",
-    "safe.global": "Safe",
-    "chain.link": "Chainlink",
-    "aave.com": "Aave",
-    "uniswap.org": "Uniswap",
-    "makerdao.com": "MakerDAO",
-    "curve.fi": "Curve",
-    "balancer.fi": "Balancer",
-    "1inch.io": "1inch",
-    "dydx.trade": "dYdX",
-    "compound.finance": "Compound",
-    "lido.fi": "Lido",
-    "rocket.pool": "Rocket Pool",
-    "yearn.finance": "Yearn",
-    "ethereum.org": "Ethereum",
-    "bitcoin.org": "Bitcoin",
-    "solana.com": "Solana",
-    "arbitrum.io": "Arbitrum",
-    "avalanche.org": "Avalanche",
-    "cosmos.network": "Cosmos",
-    "near.org": "Near",
-    "aptos.dev": "Aptos",
-    "cardano.org": "Cardano",
-    "polkadot.network": "Polkadot",
-    "algorand.com": "Algorand",
-    "thegraph.com": "The Graph",
-    "arweave.org": "Arweave",
-    "filecoin.io": "Filecoin",
-    "livepeer.org": "Livepeer",
-    "helium.com": "Helium",
-    "stripe.com": "Stripe",
-    "twilio.com": "Twilio",
-    "aws.amazon.com": "AWS",
-    "cloud.google.com": "Google Cloud",
-    "openai.com": "OpenAI",
-    "huggingface.co": "Hugging Face",
-    "anthropic.com": "Anthropic",
-    "cohere.com": "Cohere",
-    "replicate.com": "Replicate",
-    "decentraland.org": "Decentraland",
-    "sandbox.game": "The Sandbox",
-    "axieinfinity.com": "Axie Infinity",
-    "hardhat.org": "Hardhat",
-    "trufflesuite.com": "Truffle",
-    "foundry.paradigm.xyz": "Foundry",
-    "metamask.io": "MetaMask",
-    "ledger.com": "Ledger",
-    "trezor.io": "Trezor",
-    "phantom.app": "Phantom",
-    "brave.com": "Brave",
-    "coinbase.com": "Coinbase",
-    "ycombinator.com": "Y Combinator",
-    "techstars.com": "Techstars",
-  };
-
-  // Extract company names from event URLs and titles/descriptions
-  const extractCompanyNamesFromEvents = (events: Event[]): App[] => {
-    const companyNameSet = new Set<string>();
-    
-    // List of known companies to look for in events
-    const knownCompanies = [
-      // DeFi Protocols
-      "ETHGlobal", "Sui", "Polygon", "Luma", "Base", "Optimism", "Safe", 
-      "Chainlink", "Aave", "Uniswap", "MakerDAO", "Curve", "Balancer", 
-      "1inch", "dYdX", "Compound", "Lido", "Rocket Pool", "Yearn",
-      // Layer 1 Blockchains
-      "Ethereum", "Bitcoin", "Solana", "Arbitrum", "Avalanche", "Cosmos",
-      "Cosmos Hub", "Osmosis", "Tendermint", "IBC", "Stargaze", "Juno",
-      "Near", "Aptos", "Sui", "Cardano", "Polkadot", "Algorand",
-      // Infrastructure
-      "The Graph", "Arweave", "IPFS", "Filecoin", "Livepeer", "Thegraph",
-      "Helium", "Stripe", "Twilio", "AWS", "Google Cloud",
-      // AI & ML
-      "OpenAI", "Hugging Face", "Anthropic", "Cohere", "Replicate", "RunwayML",
-      "Midjourney", "Stable Diffusion", "LLaMA", "Claude", "GPT", "DALL-E",
-      // Gaming & Metaverse
-      "Decentraland", "The Sandbox", "Axie Infinity", "Gala Games", "Sky Mavis",
-      // Dev Tools & Platforms
-      "Hardhat", "Truffle", "Foundry", "Brownie", "Web3.py", "Web3.js",
-      "Ethers.js", "Wagmi", "Viem", "thirdweb", "Moralis",
-      // Wallets & Auth
-      "MetaMask", "Ledger", "Trezor", "Phantom", "Brave", "Coinbase",
-      // Venture & Accelerators
-      "Y Combinator", "Techstars", "500 Startups", "Sequoia", "Andreessen Horowitz",
-      "Paradigm", "Polychain", "a16z", "a16z crypto",
-      // Traditional Tech
-      "Google", "Microsoft", "Apple", "Meta", "Amazon", "Facebook",
-      "Twitter", "Discord", "Slack", "Notion", "Figma",
-      // Community & Events
-      "Devcon", "EthCC", "Consensus", "NFT NYC", "Web3 Summit", "Founder Collective"
-    ];
-    
-    events.forEach((event) => {
-      // Check event title and description
-      const fullText = `${event.name} ${event.description || ""}`;
-      knownCompanies.forEach((company) => {
-        const regex = new RegExp(`\\b${company}\\b`, "i");
-        if (regex.test(fullText)) {
-          companyNameSet.add(company);
-        }
-      });
-
-      // Extract domain from event URL and map to company name
-      if (event.url) {
-        try {
-          const urlObj = new URL(event.url);
-          const hostname = urlObj.hostname.toLowerCase();
-          const domain = hostname.replace("www.", "");
-          
-          // Try exact domain match
-          if (domainToCompany[domain]) {
-            companyNameSet.add(domainToCompany[domain]);
-          } else {
-            // Try domain variations (with and without www)
-            Object.entries(domainToCompany).forEach(([key, value]) => {
-              if (domain === key || domain === key.replace("www.", "")) {
-                companyNameSet.add(value);
-              }
-            });
-          }
-        } catch (e) {
-          // Invalid URL, skip
-        }
-      }
-    });
-
-    // Convert to App objects, excluding those already in partners
-    const existingPartnerNames = partners.map(p => p.name.toLowerCase());
-    const newPartners = Array.from(companyNameSet)
-      .filter(name => !existingPartnerNames.includes(name.toLowerCase()))
-      .map(name => ({
-        name,
-        url: "#",
-        description: `Community partner mentioned in Frontier Tower events`,
-      }));
-
-    return newPartners;
-  };
-
   useEffect(() => {
-    let apps = [...featuredApps];
-
-    // Add directory companies as apps
+    // Only show directory companies
     if (dirListings?.listings) {
       const companyApps = dirListings.listings
         .filter((listing) => listing.type === "company")
@@ -268,10 +40,10 @@ export default function EcosystemPage() {
         }))
         .filter((app) => app.name);
 
-      apps = [...apps, ...companyApps];
+      setAllApps(companyApps);
+    } else {
+      setAllApps([]);
     }
-
-    setAllApps(apps);
   }, [dirListings]);
 
   const filteredApps = allApps.filter((app) =>
