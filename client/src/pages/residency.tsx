@@ -288,7 +288,7 @@ export default function ResidencyPage() {
               Booking Request
             </CardTitle>
             <CardDescription>
-              Fill out your details below and we'll get in touch within 24 hours to confirm your booking
+              Fill out your details below and we'll get in touch within 72 hours to confirm your booking
             </CardDescription>
           </CardHeader>
           <CardContent>
