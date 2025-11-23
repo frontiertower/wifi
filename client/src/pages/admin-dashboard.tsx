@@ -2447,7 +2447,6 @@ function AdminLoginsTab() {
           <TableHeader>
             <TableRow>
               <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
               <TableHead>Login Time</TableHead>
               <TableHead>Session Token (Last 8)</TableHead>
             </TableRow>
@@ -2455,7 +2454,7 @@ function AdminLoginsTab() {
           <TableBody>
             {logins.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
                   No admin logins found
                 </TableCell>
               </TableRow>
@@ -2463,11 +2462,6 @@ function AdminLoginsTab() {
               logins.map((login: any) => (
                 <TableRow key={login.id} data-testid={`row-admin-login-${login.id}`}>
                   <TableCell data-testid={`cell-email-${login.id}`}>{login.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={login.role === "Owner" ? "default" : "secondary"} data-testid={`badge-role-${login.id}`}>
-                      {login.role}
-                    </Badge>
-                  </TableCell>
                   <TableCell data-testid={`cell-time-${login.id}`}>
                     {new Date(login.loginTime).toLocaleString()}
                   </TableCell>
