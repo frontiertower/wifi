@@ -180,7 +180,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
           onAnimationEnd={() => setIsFlashing(false)}
         >
         
-        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="max-w-6xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">
             <h1 className="text-lg font-bold max-w-xs mx-auto line-clamp-2 h-12 leading-tight flex items-center justify-center">
               <SlidingWelcome speed={2000} />
@@ -201,199 +201,201 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               <a href="/sw" className="text-2xl hover:scale-110 transition-transform" data-testid="language-sw" title="Swahili">🇹🇿</a>
             </div>
 
-            <button
-              onClick={() => handleRoleSelect("guest")}
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
-              data-testid="button-select-guest"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
-                  <Wifi className="text-blue-600 dark:text-blue-300" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <button
+                onClick={() => handleRoleSelect("guest")}
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group"
+                data-testid="button-select-guest"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
+                    <Wifi className="text-blue-600 dark:text-blue-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.connectToWiFi}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.connectToWiFiDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.connectToWiFi}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.connectToWiFiDesc}</div>
-                </div>
-              </div>
-            </button>
+              </button>
 
-            <Link
-              href="/directory"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-view-directory"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
-                  <Building2 className="text-indigo-600 dark:text-indigo-300" />
+              <Link
+                href="/directory"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-view-directory"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
+                    <Building2 className="text-indigo-600 dark:text-indigo-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.buildingDirectory}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.buildingDirectoryDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.buildingDirectory}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.buildingDirectoryDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <Link
-              href="/ecosystem"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-view-ecosystem"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
-                  <Rocket className="text-pink-600 dark:text-pink-300" />
+              <Link
+                href="/ecosystem"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-view-ecosystem"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
+                    <Rocket className="text-pink-600 dark:text-pink-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.ecosystem}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.ecosystemDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.ecosystem}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.ecosystemDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <Link
-              href="/events"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-view-events"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-purple-200 dark:group-hover:bg-purple-500/40">
-                  <Calendar className="text-purple-600 dark:text-purple-300" />
+              <Link
+                href="/events"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-view-events"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-purple-100 dark:bg-purple-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-purple-200 dark:group-hover:bg-purple-500/40">
+                    <Calendar className="text-purple-600 dark:text-purple-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.eventsCalendar}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.eventsCalendarDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.eventsCalendar}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.eventsCalendarDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <Link
-              href="/rent-office"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-rent-office"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/40">
-                  <DoorOpen className="text-amber-600 dark:text-amber-300" />
+              <Link
+                href="/rent-office"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-rent-office"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-amber-100 dark:bg-amber-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/40">
+                    <DoorOpen className="text-amber-600 dark:text-amber-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.rentPrivateOffice}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.rentPrivateOfficeDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.rentPrivateOffice}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.rentPrivateOfficeDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <Link
-              href="/tour"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-book-tour"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-orange-100 dark:bg-orange-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 dark:group-hover:bg-orange-500/40">
-                  <UserPlus className="text-orange-600 dark:text-orange-300" />
+              <Link
+                href="/tour"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-book-tour"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-orange-100 dark:bg-orange-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 dark:group-hover:bg-orange-500/40">
+                    <UserPlus className="text-orange-600 dark:text-orange-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.bookOfficeTour}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.bookOfficeTourDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.bookOfficeTour}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.bookOfficeTourDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <Link
-              href="/residency"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-superhero-residency"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-violet-100 dark:bg-violet-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-violet-200 dark:group-hover:bg-violet-500/40">
-                  <Home className="text-violet-600 dark:text-violet-300" />
+              <Link
+                href="/residency"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-superhero-residency"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-violet-100 dark:bg-violet-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-violet-200 dark:group-hover:bg-violet-500/40">
+                    <Home className="text-violet-600 dark:text-violet-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">SuperHero Residency</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Co-living by Frontier Tower</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">SuperHero Residency</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Co-living by Frontier Tower</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <Link
-              href="/apply-to-join"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-apply-to-join"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/40">
-                  <UserPlus className="text-emerald-600 dark:text-emerald-300" />
+              <Link
+                href="/apply-to-join"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-apply-to-join"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/40">
+                    <UserPlus className="text-emerald-600 dark:text-emerald-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.membershipInquiry}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.membershipInquiryDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.membershipInquiry}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.membershipInquiryDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <Link
-              href="/careers"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-careers"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-red-100 dark:bg-red-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-red-200 dark:group-hover:bg-red-500/40">
-                  <Briefcase className="text-red-600 dark:text-red-300" />
+              <Link
+                href="/careers"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-careers"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-red-100 dark:bg-red-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-red-200 dark:group-hover:bg-red-500/40">
+                    <Briefcase className="text-red-600 dark:text-red-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.careersAtFrontier}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.careersAtFrontierDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.careersAtFrontier}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.careersAtFrontierDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <a
-              href="https://fxchange.io/maker/open"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-gigs-jobs"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-teal-100 dark:bg-teal-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-teal-200 dark:group-hover:bg-teal-500/40">
-                  <Briefcase className="text-teal-600 dark:text-teal-300" />
+              <a
+                href="https://fxchange.io/maker/open"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-gigs-jobs"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-teal-100 dark:bg-teal-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-teal-200 dark:group-hover:bg-teal-500/40">
+                    <Briefcase className="text-teal-600 dark:text-teal-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.gigsAndBounties}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.gigsAndBountiesDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.gigsAndBounties}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.gigsAndBountiesDesc}</div>
-                </div>
-              </div>
-            </a>
+              </a>
 
-            <Link
-              href="/event-host-booking"
-              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-host-event"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
-                  <PartyPopper className="text-pink-600 dark:text-pink-300" />
+              <Link
+                href="/event-host-booking"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-host-event"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-pink-100 dark:bg-pink-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-pink-200 dark:group-hover:bg-pink-500/40">
+                    <PartyPopper className="text-pink-600 dark:text-pink-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.hostYourEvent}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.hostYourEventDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.hostYourEvent}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.hostYourEventDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <Link
-              href="/chat"
-              className="w-full mb-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
-              data-testid="button-join-discussion"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-cyan-100 dark:bg-cyan-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-cyan-200 dark:group-hover:bg-cyan-500/40">
-                  <MessageCircle className="text-cyan-600 dark:text-cyan-300" />
+              <Link
+                href="/chat"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-join-discussion"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-cyan-100 dark:bg-cyan-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-cyan-200 dark:group-hover:bg-cyan-500/40">
+                    <MessageCircle className="text-cyan-600 dark:text-cyan-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.chatWithUs}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.chatWithUsDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.chatWithUs}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.chatWithUsDesc}</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
 
             <div className="mt-6 text-center">
               <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
