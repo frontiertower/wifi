@@ -179,10 +179,35 @@ export default function EcosystemPage() {
     
     // List of known companies to look for in events
     const knownCompanies = [
+      // DeFi Protocols
       "ETHGlobal", "Sui", "Polygon", "Luma", "Base", "Optimism", "Safe", 
-      "Chainlink", "Aave", "Uniswap", "MakerDAO", "OpenAI", "Stripe",
+      "Chainlink", "Aave", "Uniswap", "MakerDAO", "Curve", "Balancer", 
+      "1inch", "dYdX", "Compound", "Lido", "Rocket Pool", "Yearn",
+      // Layer 1 Blockchains
       "Ethereum", "Bitcoin", "Solana", "Arbitrum", "Avalanche", "Cosmos",
-      "Cosmos Hub", "Osmosis", "Tendermint", "IBC", "Stargaze", "Juno"
+      "Cosmos Hub", "Osmosis", "Tendermint", "IBC", "Stargaze", "Juno",
+      "Near", "Aptos", "Sui", "Cardano", "Polkadot", "Algorand",
+      // Infrastructure
+      "The Graph", "Arweave", "IPFS", "Filecoin", "Livepeer", "Thegraph",
+      "Helium", "Stripe", "Twilio", "AWS", "Google Cloud",
+      // AI & ML
+      "OpenAI", "Hugging Face", "Anthropic", "Cohere", "Replicate", "RunwayML",
+      "Midjourney", "Stable Diffusion", "LLaMA", "Claude", "GPT", "DALL-E",
+      // Gaming & Metaverse
+      "Decentraland", "The Sandbox", "Axie Infinity", "Gala Games", "Sky Mavis",
+      // Dev Tools & Platforms
+      "Hardhat", "Truffle", "Foundry", "Brownie", "Web3.py", "Web3.js",
+      "Ethers.js", "Wagmi", "Viem", "thirdweb", "Moralis",
+      // Wallets & Auth
+      "MetaMask", "Ledger", "Trezor", "Phantom", "Brave", "Coinbase",
+      // Venture & Accelerators
+      "Y Combinator", "Techstars", "500 Startups", "Sequoia", "Andreessen Horowitz",
+      "Paradigm", "Polychain", "a16z", "a16z crypto",
+      // Traditional Tech
+      "Google", "Microsoft", "Apple", "Meta", "Amazon", "Facebook",
+      "Twitter", "Discord", "Slack", "Notion", "Figma",
+      // Community & Events
+      "Devcon", "EthCC", "Consensus", "NFT NYC", "Web3 Summit", "Founder Collective"
     ];
     
     events.forEach((event) => {
