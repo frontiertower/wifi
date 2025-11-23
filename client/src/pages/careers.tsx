@@ -347,7 +347,7 @@ export default function CareersPage() {
             >
               <a href="https://fxchange.io/maker/open" target="_blank" rel="noopener noreferrer">
                 <Briefcase className="w-4 h-4" />
-                Gigs & Jobs
+                Gigs & Bounties
               </a>
             </Button>
           </div>

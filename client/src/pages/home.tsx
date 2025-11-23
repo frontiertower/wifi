@@ -324,7 +324,7 @@ export default function Home() {
                   <Briefcase className="text-teal-600 dark:text-teal-300" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Gigs & Jobs</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Gigs & Bounties</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Find opportunities on FXChange</div>
                 </div>
               </div>
