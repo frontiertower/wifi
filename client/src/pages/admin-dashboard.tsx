@@ -2000,7 +2000,6 @@ export default function AdminDashboard() {
                                        listing.type === "community" && listing.communityName ? listing.communityName :
                                        listing.type === "person" && listing.lastName && listing.firstName ? `${listing.lastName}, ${listing.firstName}` :
                                        "Unknown";
-                    const completionPercent = calculateProfileCompletion(listing);
                     
                     // Generate slug for edit page URL
                     const slug = slugify(displayName);
@@ -2010,23 +2009,9 @@ export default function AdminDashboard() {
                       <Card key={listing.id} data-testid={`card-admin-listing-${listing.id}`}>
                         <div className="p-4 sm:p-6">
                           <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                {isEditing ? "Editing: " : ""}{displayName}
-                              </h3>
-                              <div 
-                                className={`text-xs font-medium px-2 py-1 rounded-full ${
-                                  completionPercent >= 80 
-                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
-                                    : completionPercent >= 50 
-                                    ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' 
-                                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                                }`}
-                                data-testid={`completion-score-${listing.id}`}
-                              >
-                                {completionPercent}% complete
-                              </div>
-                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                              {isEditing ? "Editing: " : ""}{displayName}
+                            </h3>
                             <div className="flex items-center gap-2">
                               {!isEditing ? (
                                 <>
