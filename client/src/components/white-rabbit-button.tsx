@@ -29,7 +29,7 @@ export function WhiteRabbitButton({ onHomeClick }: WhiteRabbitButtonProps) {
         src={rabbitImage} 
         alt="White rabbit" 
         className="w-8 h-8 object-contain"
-        style={{ filter: "brightness(1.8) saturate(0)" }}
+        style={{ filter: "brightness(3) saturate(0) contrast(1.5)" }}
       />
     </button>
   );
