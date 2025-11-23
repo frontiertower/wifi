@@ -2038,7 +2038,7 @@ export default function AdminDashboard() {
                                   >
                                     <a href={editPageUrl}>
                                       <ExternalLink className="mr-2 h-4 w-4" />
-                                      Edit Page
+                                      Open
                                     </a>
                                   </Button>
                                   <Button
