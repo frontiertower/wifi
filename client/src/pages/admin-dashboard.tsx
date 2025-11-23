@@ -599,7 +599,7 @@ export default function AdminDashboard() {
     { id: "users", label: "Users", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
     { id: "leads", label: "Leads", icon: ClipboardList },
-    { id: "careers", label: "Gigs & Jobs", icon: Briefcase },
+    { id: "careers", label: "Careers", icon: Briefcase },
     { id: "directory", label: "Directory", icon: Building2 },
     { id: "settings", label: "WiFi", icon: Wifi },
     { id: "admin-logins", label: "Admin Logins", icon: LogOut },
@@ -1816,11 +1816,11 @@ export default function AdminDashboard() {
                 </div>
                 <Button
                   variant="outline"
-                  onClick={() => window.location.href = "https://fxchange.io/maker/open"}
-                  data-testid="button-view-gigs-jobs-page"
+                  onClick={() => window.location.href = "/careers"}
+                  data-testid="button-view-careers-page"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
-                  View Gigs & Jobs
+                  View Careers Page
                 </Button>
               </div>
 
