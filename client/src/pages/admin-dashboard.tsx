@@ -1109,10 +1109,10 @@ export default function AdminDashboard() {
             <div className="mb-8">
               <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Today's Activity</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Users className="text-blue-600" />
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                      <Users className="text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="ml-4">
                       <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
@@ -1121,10 +1121,10 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Ticket className="text-green-600" />
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                      <Ticket className="text-green-600 dark:text-green-400" />
                     </div>
                     <div className="ml-4">
                       <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
@@ -1132,10 +1132,10 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <Users className="text-purple-600" />
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                      <Users className="text-purple-600 dark:text-purple-400" />
                     </div>
                     <div className="ml-4">
                       <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
@@ -1143,10 +1143,10 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <Calendar className="text-orange-600" />
+                    <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                      <Calendar className="text-orange-600 dark:text-orange-400" />
                     </div>
                     <div className="ml-4">
                       <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
