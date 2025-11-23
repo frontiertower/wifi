@@ -16,7 +16,6 @@ import HomeJA from "@/pages/home-ja";
 import HomeFR from "@/pages/home-fr";
 import HomeHI from "@/pages/home-hi";
 import HomeAR from "@/pages/home-ar";
-import HomeNG from "@/pages/home-ng";
 import GreenHome from "@/pages/green-home";
 import BlueHome from "@/pages/blue-home";
 import Events from "@/pages/events";
@@ -63,7 +62,6 @@ function Router() {
         <Route path="/fr" component={HomeFR} />
         <Route path="/hi" component={HomeHI} />
         <Route path="/ar" component={HomeAR} />
-        <Route path="/ng" component={HomeNG} />
         <Route path="/Green" component={GreenHome} />
         <Route path="/Blue" component={BlueHome} />
         <Route path="/events" component={Events} />
