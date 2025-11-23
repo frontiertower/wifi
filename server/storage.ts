@@ -972,7 +972,10 @@ export class DatabaseStorage {
     const [updated] = await db
       .update(jobListings)
       .set({ isApproved: true })
-      .where(eq(jobListings.id, id))
+      .where(and(
+        eq(jobListings.id, id),
+        eq(jobListings.isActive, true)
+      ))
       .returning();
     return updated || null;
   }

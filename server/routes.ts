@@ -2121,10 +2121,10 @@ Rules:
       const id = parseInt(req.params.id);
       const listing = await storage.getJobListingById(id);
       
-      if (!listing) {
+      if (!listing || !listing.isActive) {
         return res.status(404).json({
           success: false,
-          message: "Job listing not found"
+          message: "Job listing not found or has been deleted"
         });
       }
       
