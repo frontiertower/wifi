@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket } from "lucide-react";
+import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
@@ -293,6 +293,22 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">{t.bookOfficeTour}</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">{t.bookOfficeTourDesc}</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/residency"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-superhero-residency"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-violet-100 dark:bg-violet-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-violet-200 dark:group-hover:bg-violet-500/40">
+                  <Home className="text-violet-600 dark:text-violet-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">SuperHero Residency</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Luxury stay at 825 Sutter St</div>
                 </div>
               </div>
             </Link>

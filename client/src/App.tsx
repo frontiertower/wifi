@@ -38,6 +38,7 @@ import FinancePage from "@/pages/finance";
 import PillsPage from "@/pages/pills";
 import CareersPage from "@/pages/careers";
 import EcosystemPage from "@/pages/ecosystem";
+import ResidencyPage from "@/pages/residency";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -80,6 +81,7 @@ function Router() {
         <Route path="/rabbit" component={PillsPage} />
         <Route path="/careers" component={CareersPage} />
         <Route path="/ecosystem" component={EcosystemPage} />
+        <Route path="/residency" component={ResidencyPage} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
@@ -137,7 +139,7 @@ function AppHeader() {
     }
   };
 
-  const hideRabbitOn = ["/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/event-host-booking", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem"];
+  const hideRabbitOn = ["/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/event-host-booking", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency"];
   const shouldHideRabbit = hideRabbitOn.some(path => location === path || location.startsWith(path + "/"));
 
   return (
