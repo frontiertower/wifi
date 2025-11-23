@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Building2, Plus, Clock, ExternalLink, Star, Shield } from "lucide-react";
+import { Briefcase, MapPin, Building2, Plus, Clock, ExternalLink, Star, Shield, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
 type JobListingFormData = z.infer<typeof insertJobListingSchema>;
@@ -85,7 +85,8 @@ export default function CareersPage() {
         <div className="mb-12">
           <div className="mb-6">
             <Link href="/">
-              <Button variant="ghost" data-testid="button-back-home" className="mb-4">
+              <Button variant="ghost" data-testid="button-back-home" className="mb-4 gap-2">
+                <ArrowLeft className="w-4 h-4" />
                 Back to Home
               </Button>
             </Link>
