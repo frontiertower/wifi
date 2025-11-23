@@ -148,7 +148,7 @@ export default function BlueHome() {
                   textAlign: 'center',
                 }}>
                   <div className="mb-1 border-b border-white pb-1">APPROVED</div>
-                  <div style={{ fontSize: '9px' }}>2026</div>
+                  <div style={{ fontSize: '9px' }}>2069</div>
                 </div>
               </div>
             </div>

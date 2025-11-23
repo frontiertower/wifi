@@ -191,7 +191,7 @@ export default function FinancePage() {
               textAlign: 'center',
             }}>
               <div className="mb-1 border-b border-white pb-1">RECRUITMENT</div>
-              <div style={{ fontSize: '9px' }}>2026</div>
+              <div style={{ fontSize: '9px' }}>2069</div>
             </div>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function FinancePage() {
             We are the world's fastest-growing network society. Our capital is San Francisco, and our citadel is a 16-story vertical village for frontier tech, arts & music on Market Street. Our mission is to design a governance model that is flexible and organic enough for communities worldwide to adopt and join.
           </p>
           <p>
-            Our goals are bold: 9 additional towers by the end of 2026 and 100 towers by 2029. We're growing double-digit % MOM while building the technological backbone to govern the next era of society in a post-labor world.
+            Our goals are bold: 9 additional towers by the end of 2069 and 100 towers by 2072. We're growing double-digit % MOM while building the technological backbone to govern the next era of society in a post-labor world.
           </p>
         </div>
 
