@@ -98,7 +98,6 @@ const partners: App[] = [];
 export default function EcosystemPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [allApps, setAllApps] = useState<App[]>(featuredApps);
-  const [dynamicPartners, setDynamicPartners] = useState<App[]>([]);
 
   const { data: dirListings } = useQuery<DirectoryListingsResponse>({
     queryKey: ["/api/directory/listings"],
@@ -255,13 +254,6 @@ export default function EcosystemPage() {
   };
 
   useEffect(() => {
-    if (eventsData?.events) {
-      const extracted = extractCompanyNamesFromEvents(eventsData.events);
-      setDynamicPartners(extracted);
-    }
-  }, [eventsData]);
-
-  useEffect(() => {
     let apps = [...featuredApps];
 
     // Add directory companies as apps
@@ -370,61 +362,6 @@ export default function EcosystemPage() {
             </p>
           </div>
         )}
-
-        {/* Partners Section */}
-        <div className="mt-16 mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
-            Technology Partners
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...partners, ...dynamicPartners].map((partner, index) => (
-              <Card
-                key={`${partner.name}-${index}`}
-                className="hover:shadow-lg transition-shadow overflow-hidden bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20"
-                data-testid={`card-partner-${partner.name.replace(/\s+/g, "-").toLowerCase()}`}
-              >
-                <div className="p-6 h-full flex flex-col">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start gap-3 flex-1">
-                      {partner.icon && (
-                        <div className="text-3xl flex-shrink-0">{partner.icon}</div>
-                      )}
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-gray-900 dark:text-white line-clamp-2">
-                          {partner.name}
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow">
-                    {partner.description}
-                  </p>
-
-                  {partner.url !== "#" && (
-                    <Button
-                      asChild
-                      variant="default"
-                      size="sm"
-                      className="w-full"
-                      data-testid={`button-visit-partner-${partner.name.replace(/\s+/g, "-").toLowerCase()}`}
-                    >
-                      <a
-                        href={partner.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2"
-                      >
-                        <span>Visit</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
 
         {/* Info Section */}
         <div className="mt-16 bg-white dark:bg-slate-800 rounded-lg p-8 shadow-sm">
