@@ -92,73 +92,8 @@ const featuredApps: App[] = [
   },
 ];
 
-const partners: App[] = [
-  {
-    name: "ETHGlobal",
-    url: "https://ethglobal.com",
-    description: "Leading platform for Ethereum hackathons and events",
-  },
-  {
-    name: "Sui",
-    url: "https://sui.io",
-    description: "High-performance blockchain platform and technology partner",
-  },
-  {
-    name: "Polygon",
-    url: "https://polygon.technology",
-    description: "Ethereum scaling solution and ecosystem partner",
-  },
-  {
-    name: "Luma",
-    url: "https://luma.com",
-    description: "Event hosting and community platform for tech events",
-  },
-  {
-    name: "Base",
-    url: "https://base.org",
-    description: "Smart contract platform built on Ethereum",
-  },
-  {
-    name: "Optimism",
-    url: "https://optimism.io",
-    description: "Ethereum layer 2 scaling solution and partner",
-  },
-  {
-    name: "Safe",
-    url: "https://safe.global",
-    description: "Smart contract wallet for asset management",
-  },
-  {
-    name: "Chainlink",
-    url: "https://chain.link",
-    description: "Decentralized oracle network and infrastructure",
-  },
-  {
-    name: "Aave",
-    url: "https://aave.com",
-    description: "Leading decentralized lending protocol",
-  },
-  {
-    name: "Uniswap",
-    url: "https://uniswap.org",
-    description: "Decentralized exchange protocol",
-  },
-  {
-    name: "MakerDAO",
-    url: "https://makerdao.com",
-    description: "Decentralized stablecoin platform",
-  },
-  {
-    name: "OpenAI",
-    url: "https://openai.com",
-    description: "Artificial intelligence and large language models",
-  },
-  {
-    name: "Stripe",
-    url: "https://stripe.com",
-    description: "Payment processing and financial infrastructure",
-  },
-];
+// Static partners list - now empty to show only partners mentioned in events
+const partners: App[] = [];
 
 export default function EcosystemPage() {
   const [searchQuery, setSearchQuery] = useState("");
