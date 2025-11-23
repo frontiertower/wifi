@@ -198,6 +198,89 @@ export default function ResidencyPage() {
           </Card>
         </div>
 
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Property Gallery</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
+              <img 
+                src={futuristicRoom} 
+                alt="Futuristic room with ambient lighting" 
+                className="w-full h-64 object-cover"
+                data-testid="gallery-futuristic-room"
+              />
+              <div className="p-3 bg-background">
+                <p className="font-semibold text-sm">Modern Room Design</p>
+                <p className="text-xs text-muted-foreground">Ambient lighting and contemporary aesthetic</p>
+              </div>
+            </div>
+            
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
+              <img 
+                src={poolTableRoom} 
+                alt="Communal lounge with pool table" 
+                className="w-full h-64 object-cover"
+                data-testid="gallery-pool-room"
+              />
+              <div className="p-3 bg-background">
+                <p className="font-semibold text-sm">Recreation Lounge</p>
+                <p className="text-xs text-muted-foreground">Pool table and social space</p>
+              </div>
+            </div>
+            
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
+              <img 
+                src={lobbyLounge} 
+                alt="Elegant lobby and lounge area" 
+                className="w-full h-64 object-cover"
+                data-testid="gallery-lobby"
+              />
+              <div className="p-3 bg-background">
+                <p className="font-semibold text-sm">Lobby Lounge</p>
+                <p className="text-xs text-muted-foreground">Elegant communal gathering space</p>
+              </div>
+            </div>
+            
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
+              <img 
+                src={buildingExterior} 
+                alt="825 Sutter St building exterior" 
+                className="w-full h-64 object-cover"
+                data-testid="gallery-building"
+              />
+              <div className="p-3 bg-background">
+                <p className="font-semibold text-sm">825 Sutter Street</p>
+                <p className="text-xs text-muted-foreground">Your new home in San Francisco</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              About the Property
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm space-y-3">
+            <p>
+              Cool to hear that you are interested in our soon-to-be hotel on <strong>825 Sutter St</strong>, a ten minutes walk away from the Frontier Tower.
+            </p>
+            <p>
+              We have a special offer for current Frontier Tower members while the building is still in its setup phase. The spacious rooms feature king-sized beds and en-suite bathrooms, plus fast internet and on-site laundry facilities. A temporary communal kitchen is set up while we build a proper one over the next few weeks.
+            </p>
+            <p>
+              We're currently awaiting some furniture and bedding deliveries. All basic provisions will be sorted by your potential arrival with improvements rolling in over the next days and weeks.
+            </p>
+            <p>
+              The hotel has <strong>110 rooms across seven floors</strong>. Joining us at this early stage offers you a unique opportunity to gain early and exclusive access to a developing community of interesting people connected with the Frontier Tower.
+            </p>
+            <p className="border-t border-blue-200 dark:border-blue-700 pt-3">
+              If you wish to proceed, we can easily set up a simple contract via email. Please fill out the booking form below and we'll be in touch within 24 hours!
+            </p>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -386,89 +469,6 @@ export default function ResidencyPage() {
                 </Button>
               </form>
             </Form>
-          </CardContent>
-        </Card>
-
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Property Gallery</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
-              <img 
-                src={futuristicRoom} 
-                alt="Futuristic room with ambient lighting" 
-                className="w-full h-64 object-cover"
-                data-testid="gallery-futuristic-room"
-              />
-              <div className="p-3 bg-background">
-                <p className="font-semibold text-sm">Modern Room Design</p>
-                <p className="text-xs text-muted-foreground">Ambient lighting and contemporary aesthetic</p>
-              </div>
-            </div>
-            
-            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
-              <img 
-                src={poolTableRoom} 
-                alt="Communal lounge with pool table" 
-                className="w-full h-64 object-cover"
-                data-testid="gallery-pool-room"
-              />
-              <div className="p-3 bg-background">
-                <p className="font-semibold text-sm">Recreation Lounge</p>
-                <p className="text-xs text-muted-foreground">Pool table and social space</p>
-              </div>
-            </div>
-            
-            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
-              <img 
-                src={lobbyLounge} 
-                alt="Elegant lobby and lounge area" 
-                className="w-full h-64 object-cover"
-                data-testid="gallery-lobby"
-              />
-              <div className="p-3 bg-background">
-                <p className="font-semibold text-sm">Lobby Lounge</p>
-                <p className="text-xs text-muted-foreground">Elegant communal gathering space</p>
-              </div>
-            </div>
-            
-            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
-              <img 
-                src={buildingExterior} 
-                alt="825 Sutter St building exterior" 
-                className="w-full h-64 object-cover"
-                data-testid="gallery-building"
-              />
-              <div className="p-3 bg-background">
-                <p className="font-semibold text-sm">825 Sutter Street</p>
-                <p className="text-xs text-muted-foreground">Your new home in San Francisco</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <MapPin className="w-5 h-5" />
-              About the Property
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm space-y-3">
-            <p>
-              Cool to hear that you are interested in our soon-to-be hotel on <strong>825 Sutter St</strong>, a ten minutes walk away from the Frontier Tower.
-            </p>
-            <p>
-              We have a special offer for current Frontier Tower members while the building is still in its setup phase. The spacious rooms feature king-sized beds and en-suite bathrooms, plus fast internet and on-site laundry facilities. A temporary communal kitchen is set up while we build a proper one over the next few weeks.
-            </p>
-            <p>
-              We're currently awaiting some furniture and bedding deliveries. All basic provisions will be sorted by your potential arrival with improvements rolling in over the next days and weeks.
-            </p>
-            <p>
-              The hotel has <strong>110 rooms across seven floors</strong>. Joining us at this early stage offers you a unique opportunity to gain early and exclusive access to a developing community of interesting people connected with the Frontier Tower.
-            </p>
-            <p className="border-t border-blue-200 dark:border-blue-700 pt-3">
-              If you wish to proceed, we can easily set up a simple contract via email. Please fill out the booking form above and we'll be in touch within 24 hours!
-            </p>
           </CardContent>
         </Card>
       </div>
