@@ -99,15 +99,16 @@ export default function CareersPage() {
             </Link>
           </div>
 
-          {/* Post a Job Button */}
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2" data-testid="button-post-job">
-                <Plus className="w-4 h-4" />
-                Post a Job
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="dialog-post-job">
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2" data-testid="button-post-job">
+                  <Plus className="w-4 h-4" />
+                  Post a Job
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="dialog-post-job">
               <DialogHeader>
                 <DialogTitle data-testid="text-dialog-title">Post a Job Listing</DialogTitle>
                 <DialogDescription>
@@ -337,8 +338,19 @@ export default function CareersPage() {
                 </form>
               </Form>
             </DialogContent>
-          </Dialog>
-        </div>
+            </Dialog>
+            <Button 
+              variant="outline" 
+              className="gap-2" 
+              asChild 
+              data-testid="button-gigs-jobs"
+            >
+              <a href="https://fxchange.io/maker/open" target="_blank" rel="noopener noreferrer">
+                <Briefcase className="w-4 h-4" />
+                Gigs & Jobs
+              </a>
+            </Button>
+          </div>
 
         {/* Loading State */}
         {isLoading && (
