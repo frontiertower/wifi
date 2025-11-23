@@ -221,7 +221,7 @@ export default function PillsPage() {
                 GREEN PILL
               </span>
               <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                Regenerative
+                Regenerate
               </span>
             </button>
 
@@ -235,7 +235,7 @@ export default function PillsPage() {
                 BLUE PILL
               </span>
               <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                Accelerationist
+                Accelerate
               </span>
             </button>
           </div>
