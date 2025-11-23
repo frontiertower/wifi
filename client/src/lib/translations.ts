@@ -89,7 +89,7 @@ export const translations = {
   zh: {
     connectToWiFi: "连接到WiFi",
     connectToWiFiDesc: "连接到超快速互联网",
-    buildingDirectory: "建筑物目录",
+    buildingDirectory: "楼层信息",
     buildingDirectoryDesc: "浏览公司和成员",
     eventsCalendar: "活动日历",
     eventsCalendarDesc: "发现正在发生的事情",
