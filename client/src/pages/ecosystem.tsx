@@ -4,11 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import type { DirectoryListing } from "@shared/schema";
+import type { DirectoryListing, Event } from "@shared/schema";
 
 interface DirectoryListingsResponse {
   success: boolean;
   listings: DirectoryListing[];
+}
+
+interface EventsResponse {
+  success: boolean;
+  events: Event[];
 }
 
 interface App {
@@ -184,10 +189,58 @@ const partners: App[] = [
 export default function EcosystemPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [allApps, setAllApps] = useState<App[]>(featuredApps);
+  const [dynamicPartners, setDynamicPartners] = useState<App[]>([]);
 
   const { data: dirListings } = useQuery<DirectoryListingsResponse>({
     queryKey: ["/api/directory/listings"],
   });
+
+  const { data: eventsData } = useQuery<EventsResponse>({
+    queryKey: ["/api/events"],
+  });
+
+  // Extract company names from event titles and descriptions
+  const extractCompanyNamesFromEvents = (events: Event[]): App[] => {
+    const companyNameSet = new Set<string>();
+    
+    // List of known companies to look for in events
+    const knownCompanies = [
+      "ETHGlobal", "Sui", "Polygon", "Luma", "Base", "Optimism", "Safe", 
+      "Chainlink", "Aave", "Uniswap", "MakerDAO", "OpenAI", "Stripe",
+      "Ethereum", "Bitcoin", "Solana", "Arbitrum", "Avalanche", "Cosmos",
+      "Cosmos Hub", "Osmosis", "Tendermint", "IBC", "Stargaze", "Juno"
+    ];
+    
+    events.forEach((event) => {
+      const fullText = `${event.name} ${event.description || ""}`;
+      knownCompanies.forEach((company) => {
+        const regex = new RegExp(`\\b${company}\\b`, "i");
+        if (regex.test(fullText)) {
+          companyNameSet.add(company);
+        }
+      });
+    });
+
+    // Convert to App objects, excluding those already in partners
+    const existingPartnerNames = partners.map(p => p.name.toLowerCase());
+    const newPartners = Array.from(companyNameSet)
+      .filter(name => !existingPartnerNames.includes(name.toLowerCase()))
+      .map(name => ({
+        name,
+        url: "#",
+        description: `Community partner mentioned in Frontier Tower events`,
+        icon: "🤝",
+      }));
+
+    return newPartners;
+  };
+
+  useEffect(() => {
+    if (eventsData?.events) {
+      const extracted = extractCompanyNamesFromEvents(eventsData.events);
+      setDynamicPartners(extracted);
+    }
+  }, [eventsData]);
 
   useEffect(() => {
     let apps = [...featuredApps];
@@ -305,7 +358,7 @@ export default function EcosystemPage() {
             Technology Partners
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {partners.map((partner, index) => (
+            {[...partners, ...dynamicPartners].map((partner, index) => (
               <Card
                 key={`${partner.name}-${index}`}
                 className="hover:shadow-lg transition-shadow overflow-hidden bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20"
