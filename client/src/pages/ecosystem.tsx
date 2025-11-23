@@ -173,7 +173,69 @@ export default function EcosystemPage() {
     queryKey: ["/api/events"],
   });
 
-  // Extract company names from event titles and descriptions
+  // Domain to company name mapping
+  const domainToCompany: Record<string, string> = {
+    "ethglobal.com": "ETHGlobal",
+    "sui.io": "Sui",
+    "polygon.technology": "Polygon",
+    "luma.com": "Luma",
+    "base.org": "Base",
+    "optimism.io": "Optimism",
+    "safe.global": "Safe",
+    "chain.link": "Chainlink",
+    "aave.com": "Aave",
+    "uniswap.org": "Uniswap",
+    "makerdao.com": "MakerDAO",
+    "curve.fi": "Curve",
+    "balancer.fi": "Balancer",
+    "1inch.io": "1inch",
+    "dydx.trade": "dYdX",
+    "compound.finance": "Compound",
+    "lido.fi": "Lido",
+    "rocket.pool": "Rocket Pool",
+    "yearn.finance": "Yearn",
+    "ethereum.org": "Ethereum",
+    "bitcoin.org": "Bitcoin",
+    "solana.com": "Solana",
+    "arbitrum.io": "Arbitrum",
+    "avalanche.org": "Avalanche",
+    "cosmos.network": "Cosmos",
+    "near.org": "Near",
+    "aptos.dev": "Aptos",
+    "cardano.org": "Cardano",
+    "polkadot.network": "Polkadot",
+    "algorand.com": "Algorand",
+    "thegraph.com": "The Graph",
+    "arweave.org": "Arweave",
+    "filecoin.io": "Filecoin",
+    "livepeer.org": "Livepeer",
+    "helium.com": "Helium",
+    "stripe.com": "Stripe",
+    "twilio.com": "Twilio",
+    "aws.amazon.com": "AWS",
+    "cloud.google.com": "Google Cloud",
+    "openai.com": "OpenAI",
+    "huggingface.co": "Hugging Face",
+    "anthropic.com": "Anthropic",
+    "cohere.com": "Cohere",
+    "replicate.com": "Replicate",
+    "decentraland.org": "Decentraland",
+    "sandbox.game": "The Sandbox",
+    "axieinfinity.com": "Axie Infinity",
+    "hardhat.org": "Hardhat",
+    "trufflesuite.com": "Truffle",
+    "foundry.paradigm.xyz": "Foundry",
+    "metamask.io": "MetaMask",
+    "ledger.com": "Ledger",
+    "trezor.io": "Trezor",
+    "phantom.app": "Phantom",
+    "brave.com": "Brave",
+    "coinbase.com": "Coinbase",
+    "ycombinator.com": "Y Combinator",
+    "techstars.com": "Techstars",
+  };
+
+  // Extract company names from event URLs and titles/descriptions
   const extractCompanyNamesFromEvents = (events: Event[]): App[] => {
     const companyNameSet = new Set<string>();
     
@@ -211,6 +273,7 @@ export default function EcosystemPage() {
     ];
     
     events.forEach((event) => {
+      // Check event title and description
       const fullText = `${event.name} ${event.description || ""}`;
       knownCompanies.forEach((company) => {
         const regex = new RegExp(`\\b${company}\\b`, "i");
@@ -218,6 +281,29 @@ export default function EcosystemPage() {
           companyNameSet.add(company);
         }
       });
+
+      // Extract domain from event URL and map to company name
+      if (event.url) {
+        try {
+          const urlObj = new URL(event.url);
+          const hostname = urlObj.hostname.toLowerCase();
+          const domain = hostname.replace("www.", "");
+          
+          // Try exact domain match
+          if (domainToCompany[domain]) {
+            companyNameSet.add(domainToCompany[domain]);
+          } else {
+            // Try domain variations (with and without www)
+            Object.entries(domainToCompany).forEach(([key, value]) => {
+              if (domain === key || domain === key.replace("www.", "")) {
+                companyNameSet.add(value);
+              }
+            });
+          }
+        } catch (e) {
+          // Invalid URL, skip
+        }
+      }
     });
 
     // Convert to App objects, excluding those already in partners
