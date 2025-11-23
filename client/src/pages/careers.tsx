@@ -459,7 +459,7 @@ function JobListingCard({ listing, featured = false }: { listing: JobListing; fe
           {listing.applyUrl ? (
             <a href={listing.applyUrl} target="_blank" rel="noopener noreferrer">
               <Button size="sm" data-testid={`button-apply-${listing.id}`}>
-                Apply Now
+                Learn More
                 <ExternalLink className="w-3 h-3 ml-1" />
               </Button>
             </a>
