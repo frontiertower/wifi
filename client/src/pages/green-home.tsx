@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import MemberForm from "@/components/member-form";
@@ -132,6 +132,20 @@ export default function GreenHome() {
               </Link>
 
               <Link
+                href="/ecosystem"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-view-ecosystem"
+              >
+                <div className="flex items-start">
+                  <Rocket className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">ECOSYSTEM</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Explore AI projects</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
                 href="/events"
                 className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
                 data-testid="button-view-events"
@@ -174,6 +188,20 @@ export default function GreenHome() {
               </Link>
 
               <Link
+                href="/residency"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-superhero-residency"
+              >
+                <div className="flex items-start">
+                  <Home className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">SUPERHERO RESIDENCY</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Co-living at 825 Sutter</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
                 href="/apply-to-join"
                 className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
                 data-testid="button-apply-to-join"
@@ -186,6 +214,36 @@ export default function GreenHome() {
                   </div>
                 </div>
               </Link>
+
+              <Link
+                href="/careers"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-careers"
+              >
+                <div className="flex items-start">
+                  <Briefcase className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">CAREERS</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Join our team</p>
+                  </div>
+                </div>
+              </Link>
+
+              <a
+                href="https://fxchange.io/maker/open"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-gigs-jobs"
+              >
+                <div className="flex items-start">
+                  <Briefcase className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">GIGS & BOUNTIES</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Earn rewards</p>
+                  </div>
+                </div>
+              </a>
 
               <Link
                 href="/event-host-booking"

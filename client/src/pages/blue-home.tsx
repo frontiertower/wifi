@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Zap } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Zap, Rocket, Home, Briefcase } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import MemberForm from "@/components/member-form";
@@ -282,6 +282,27 @@ export default function BlueHome() {
               </Link>
 
               <Link
+                href="/residency"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-superhero-residency"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <Home className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">SUPERHERO RESIDENCY</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Co-living program</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
                 href="/apply-to-join"
                 className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
                 style={{
@@ -301,6 +322,50 @@ export default function BlueHome() {
                   </div>
                 </div>
               </Link>
+
+              <Link
+                href="/careers"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-careers"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <Briefcase className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">CAREERS</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Career opportunities</p>
+                  </div>
+                </div>
+              </Link>
+
+              <a
+                href="https://fxchange.io/maker/open"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-gigs-jobs"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <Briefcase className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">GIGS & BOUNTIES</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Work opportunities</p>
+                  </div>
+                </div>
+              </a>
 
               <Link
                 href="/event-host-booking"
