@@ -24,7 +24,7 @@ export default function EcosystemPage() {
   const [allApps, setAllApps] = useState<App[]>([]);
 
   const { data: dirListings } = useQuery<DirectoryListingsResponse>({
-    queryKey: ["/api/directory/listings"],
+    queryKey: ["/api/directory"],
   });
 
   useEffect(() => {
