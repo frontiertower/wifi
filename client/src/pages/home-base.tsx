@@ -190,24 +190,22 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
           </div>
 
           <div className="p-6">
-            {language !== "en" && (
-              <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600">
-                <Select value={language} onValueChange={(value) => {
-                  window.location.href = `/${value === 'en' ? '' : value}`;
-                }}>
-                  <SelectTrigger className="w-full" data-testid="language-selector">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {languages.map((lang) => (
-                      <SelectItem key={lang.code} value={lang.code}>
-                        {lang.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600">
+              <Select value={language} onValueChange={(value) => {
+                window.location.href = `/${value === 'en' ? '' : value}`;
+              }}>
+                <SelectTrigger className="w-full" data-testid="language-selector">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {languages.map((lang) => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                      {lang.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             <button
               onClick={() => handleRoleSelect("guest")}
