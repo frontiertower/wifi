@@ -308,7 +308,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                 </div>
                 <div>
                   <div className="font-medium text-gray-800 dark:text-gray-100">SuperHero Residency</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Luxury stay at 825 Sutter St</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Co-living by Frontier Tower</div>
                 </div>
               </div>
             </Link>
