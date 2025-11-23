@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Search, Zap } from "lucide-react";
+import { ExternalLink, Search, Rocket } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -58,7 +58,7 @@ export default function EcosystemPage() {
         <div className="mb-12">
           <div className="flex items-center gap-4 mb-4">
             <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
-              <Zap className="w-10 h-10 text-blue-600 dark:text-blue-300" />
+              <Rocket className="w-10 h-10 text-blue-600 dark:text-blue-300" />
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-blue-900 dark:text-white">
               Ecosystem
