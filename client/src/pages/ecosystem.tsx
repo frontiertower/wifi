@@ -29,79 +29,66 @@ const featuredApps: App[] = [
     name: "Omi.me",
     url: "https://omi.me",
     description: "Pioneering AI memory and wearable technology for human augmentation",
-    icon: "🧠",
   },
   {
     name: "GetBuddi.ai",
     url: "https://getbuddi.ai",
     description: "AI-powered personal finance and budgeting assistant",
-    icon: "💰",
   },
   {
     name: "OpenDroid",
     url: "https://opendroid.ai",
     description: "Open-source robotics and automation platform",
-    icon: "🤖",
   },
   {
     name: "UFB.GG",
     url: "https://ufb.gg",
     description: "Ultra-fast blockchain gaming network",
-    icon: "🎮",
   },
   {
     name: "LeRobot",
     url: "https://lerobot.io",
     description: "Collaborative robotics platform for AI-powered automation",
-    icon: "🦾",
   },
   {
     name: "Ethereum Foundation",
     url: "https://ethereum.org",
     description: "Building the future of decentralized technology",
-    icon: "⟠",
   },
   {
     name: "Ethereum House",
     url: "https://ethereumhouse.com",
     description: "Community hub for Ethereum builders and developers",
-    icon: "🏛",
   },
   {
     name: "DeveloperCamp",
     url: "#",
     description: "Developer education and community building at Frontier Tower",
-    icon: "⛺",
   },
   {
     name: "Tea Tribe",
     url: "#",
     description: "Community gathering and wellness space",
-    icon: "🫖",
   },
   {
     name: "Cookbook",
     url: "#",
     description: "Culinary innovation and shared kitchen space",
-    icon: "📖",
   },
   {
     name: "Cline",
     url: "#",
     description: "AI-powered development and collaboration tools",
-    icon: "✨",
   },
   {
     name: "Dabl Club",
     url: "#",
     description: "Community space for music, art, and culture",
-    icon: "🎵",
   },
   {
     name: "SensAI Hackademy",
     url: "#",
     description: "AI and sensor technology education program",
-    icon: "🧪",
   },
 ];
 
@@ -110,79 +97,66 @@ const partners: App[] = [
     name: "ETHGlobal",
     url: "https://ethglobal.com",
     description: "Leading platform for Ethereum hackathons and events",
-    icon: "⚡",
   },
   {
     name: "Sui",
     url: "https://sui.io",
     description: "High-performance blockchain platform and technology partner",
-    icon: "💫",
   },
   {
     name: "Polygon",
     url: "https://polygon.technology",
     description: "Ethereum scaling solution and ecosystem partner",
-    icon: "📐",
   },
   {
     name: "Luma",
     url: "https://luma.com",
     description: "Event hosting and community platform for tech events",
-    icon: "🎪",
   },
   {
     name: "Base",
     url: "https://base.org",
     description: "Smart contract platform built on Ethereum",
-    icon: "🔵",
   },
   {
     name: "Optimism",
     url: "https://optimism.io",
     description: "Ethereum layer 2 scaling solution and partner",
-    icon: "🔴",
   },
   {
     name: "Safe",
     url: "https://safe.global",
     description: "Smart contract wallet for asset management",
-    icon: "🛡",
   },
   {
     name: "Chainlink",
     url: "https://chain.link",
     description: "Decentralized oracle network and infrastructure",
-    icon: "🔗",
   },
   {
     name: "Aave",
     url: "https://aave.com",
     description: "Leading decentralized lending protocol",
-    icon: "👻",
   },
   {
     name: "Uniswap",
     url: "https://uniswap.org",
     description: "Decentralized exchange protocol",
-    icon: "🦄",
   },
   {
     name: "MakerDAO",
     url: "https://makerdao.com",
     description: "Decentralized stablecoin platform",
-    icon: "🏛",
   },
   {
     name: "OpenAI",
     url: "https://openai.com",
     description: "Artificial intelligence and large language models",
-    icon: "🤖",
   },
   {
     name: "Stripe",
     url: "https://stripe.com",
     description: "Payment processing and financial infrastructure",
-    icon: "💳",
   },
 ];
 
@@ -229,7 +203,6 @@ export default function EcosystemPage() {
         name,
         url: "#",
         description: `Community partner mentioned in Frontier Tower events`,
-        icon: "🤝",
       }));
 
     return newPartners;
