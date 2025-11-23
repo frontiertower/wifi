@@ -2295,17 +2295,24 @@ export default function AdminDashboard() {
 
                             <div className="md:col-span-2">
                               <Label htmlFor={`description-${listing.id}`}>Description</Label>
-                              <Textarea
-                                id={`description-${listing.id}`}
-                                value={currentData.description || ""}
-                                onChange={(e) =>
-                                  isEditing &&
-                                  setEditDirectoryForm({ ...editDirectoryForm, description: e.target.value })
-                                }
-                                disabled={!isEditing}
-                                rows={3}
-                                data-testid={`input-description-${listing.id}`}
-                              />
+                              {isEditing ? (
+                                <Textarea
+                                  id={`description-${listing.id}`}
+                                  value={currentData.description || ""}
+                                  onChange={(e) =>
+                                    setEditDirectoryForm({ ...editDirectoryForm, description: e.target.value })
+                                  }
+                                  rows={3}
+                                  data-testid={`input-description-${listing.id}`}
+                                />
+                              ) : (
+                                <p 
+                                  className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3 mt-2"
+                                  data-testid={`input-description-${listing.id}`}
+                                >
+                                  {currentData.description || "No description provided"}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>
