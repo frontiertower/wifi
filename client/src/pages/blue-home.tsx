@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Zap } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import MemberForm from "@/components/member-form";
@@ -175,6 +175,27 @@ export default function BlueHome() {
                   </div>
                 </div>
               </button>
+
+              <Link
+                href="/ecosystem"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-view-ecosystem"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <Zap className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">ECOSYSTEM</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Apps & projects</p>
+                  </div>
+                </div>
+              </Link>
 
               <Link
                 href="/directory"
