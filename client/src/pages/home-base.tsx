@@ -5,9 +5,7 @@ import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
 import SlidingWelcome from "@/components/SlidingWelcome";
 import frontierTowerQR from "@assets/frontier-tower-qr.png";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { translations, Language, languages } from "@/lib/translations";
+import { translations, Language } from "@/lib/translations";
 
 type Role = "member" | "guest" | null;
 type PillChoice = "green" | "blue" | null;
@@ -190,21 +188,12 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
           </div>
 
           <div className="p-6">
-            <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600">
-              <Select value={language} onValueChange={(value) => {
-                window.location.href = `/${value === 'en' ? '' : value}`;
-              }}>
-                <SelectTrigger className="w-full" data-testid="language-selector">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {languages.map((lang) => (
-                    <SelectItem key={lang.code} value={lang.code}>
-                      {lang.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600 flex justify-center gap-3">
+              <a href="/" className="text-2xl hover:scale-110 transition-transform" data-testid="language-en" title="English">🇺🇸</a>
+              <a href="/de" className="text-2xl hover:scale-110 transition-transform" data-testid="language-de" title="Deutsch">🇩🇪</a>
+              <a href="/es" className="text-2xl hover:scale-110 transition-transform" data-testid="language-es" title="Español">🇪🇸</a>
+              <a href="/zh" className="text-2xl hover:scale-110 transition-transform" data-testid="language-zh" title="中文">🇨🇳</a>
+              <a href="/ko" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ko" title="한국어">🇰🇷</a>
             </div>
 
             <button
