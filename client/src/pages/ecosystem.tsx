@@ -254,9 +254,9 @@ export default function EcosystemPage() {
   };
 
   useEffect(() => {
-    let apps: App[] = [];
+    let apps = [...featuredApps];
 
-    // Add only directory companies as apps
+    // Add directory companies as apps
     if (dirListings?.listings) {
       const companyApps = dirListings.listings
         .filter((listing) => listing.type === "company")
@@ -268,7 +268,7 @@ export default function EcosystemPage() {
         }))
         .filter((app) => app.name);
 
-      apps = [...companyApps];
+      apps = [...apps, ...companyApps];
     }
 
     setAllApps(apps);
