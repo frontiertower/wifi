@@ -197,7 +197,7 @@ export default function Directory() {
               data-testid="button-filter-companies"
             >
               <Building2 className="mr-2 h-4 w-4" />
-              Companies
+              Company
             </Button>
             <Button
               variant={selectedTypes.has("community") ? "default" : "outline"}
@@ -206,7 +206,7 @@ export default function Directory() {
               data-testid="button-filter-communities"
             >
               <Users className="mr-2 h-4 w-4" />
-              Communities
+              Community
             </Button>
             <Button
               variant={selectedTypes.has("person") ? "default" : "outline"}
@@ -215,7 +215,7 @@ export default function Directory() {
               data-testid="button-filter-people"
             >
               <User className="mr-2 h-4 w-4" />
-              Citizens
+              Citizen
             </Button>
           </div>
 
