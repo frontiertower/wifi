@@ -182,7 +182,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
         
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">
-            <h1 className="text-lg font-bold">
+            <h1 className="text-lg font-bold max-w-xs mx-auto line-clamp-2">
               <SlidingWelcome speed={2000} />
             </h1>
           </div>
