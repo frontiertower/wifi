@@ -217,6 +217,12 @@
   text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
 }
 
+/* Hide rabbit and theme toggle on WiFi page */
+body.hide-app-header [data-testid="button-white-rabbit"],
+body.hide-app-header [data-testid="button-theme-toggle"] {
+  display: none;
+}
+
 /* LIGHT MODE */
 :root {
   --button-outline: rgba(0,0,0, .10);
