@@ -273,7 +273,7 @@ export default function ResidencyPage() {
               The hotel has <strong>110 rooms across seven floors</strong>. Joining us at this early stage offers you a unique opportunity to gain early and exclusive access to a developing community of interesting people connected with the Frontier Tower.
             </p>
             <p className="border-t border-blue-200 dark:border-blue-700 pt-3">
-              If you wish to proceed, we can easily set up a simple contract via email. Please fill out the booking form below and we'll be in touch within 24 hours!
+              If you wish to proceed, we can easily set up a simple contract via email. Please fill out the booking form below and we'll be in touch within 72 hours.
             </p>
           </CardContent>
         </Card>
