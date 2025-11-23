@@ -264,9 +264,6 @@ export default function ResidencyPage() {
           </CardHeader>
           <CardContent className="text-sm space-y-3">
             <p>
-              Cool to hear that you are interested in our soon-to-be hotel on <strong>825 Sutter St</strong>, a ten minutes walk away from the Frontier Tower.
-            </p>
-            <p>
               We have a special offer for current Frontier Tower members while the building is still in its setup phase. The spacious rooms feature king-sized beds and en-suite bathrooms, plus fast internet and on-site laundry facilities. A temporary communal kitchen is set up while we build a proper one over the next few weeks.
             </p>
             <p>
