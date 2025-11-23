@@ -119,6 +119,66 @@ const partners: App[] = [
     description: "Ethereum scaling solution and ecosystem partner",
     icon: "📐",
   },
+  {
+    name: "Luma",
+    url: "https://luma.com",
+    description: "Event hosting and community platform for tech events",
+    icon: "🎪",
+  },
+  {
+    name: "Base",
+    url: "https://base.org",
+    description: "Smart contract platform built on Ethereum",
+    icon: "🔵",
+  },
+  {
+    name: "Optimism",
+    url: "https://optimism.io",
+    description: "Ethereum layer 2 scaling solution and partner",
+    icon: "🔴",
+  },
+  {
+    name: "Safe",
+    url: "https://safe.global",
+    description: "Smart contract wallet for asset management",
+    icon: "🛡",
+  },
+  {
+    name: "Chainlink",
+    url: "https://chain.link",
+    description: "Decentralized oracle network and infrastructure",
+    icon: "🔗",
+  },
+  {
+    name: "Aave",
+    url: "https://aave.com",
+    description: "Leading decentralized lending protocol",
+    icon: "👻",
+  },
+  {
+    name: "Uniswap",
+    url: "https://uniswap.org",
+    description: "Decentralized exchange protocol",
+    icon: "🦄",
+  },
+  {
+    name: "MakerDAO",
+    url: "https://makerdao.com",
+    description: "Decentralized stablecoin platform",
+    icon: "🏛",
+  },
+  {
+    name: "OpenAI",
+    url: "https://openai.com",
+    description: "Artificial intelligence and large language models",
+    icon: "🤖",
+  },
+  {
+    name: "Stripe",
+    url: "https://stripe.com",
+    description: "Payment processing and financial infrastructure",
+    icon: "💳",
+  },
 ];
 
 export default function EcosystemPage() {
