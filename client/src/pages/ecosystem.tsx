@@ -88,28 +88,11 @@ export default function EcosystemPage() {
             {filteredApps.map((app, index) => (
               <Card
                 key={`${app.name}-${index}`}
-                className="hover:shadow-lg transition-shadow relative"
+                className="hover:shadow-lg transition-shadow"
                 data-testid={`card-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
               >
-                {app.url !== "#" && (
-                  <Button
-                    asChild
-                    variant="default"
-                    size="sm"
-                    className="absolute top-2 right-2 z-20"
-                    data-testid={`button-open-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
-                  >
-                    <a
-                      href={app.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Open
-                    </a>
-                  </Button>
-                )}
                 <div className="p-6 h-full flex flex-col">
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start justify-between gap-2 mb-4">
                     <div className="flex items-start gap-3 flex-1">
                       {app.icon && (
                         <div className="text-3xl flex-shrink-0">{app.icon}</div>
@@ -120,6 +103,23 @@ export default function EcosystemPage() {
                         </h3>
                       </div>
                     </div>
+                    {app.url !== "#" && (
+                      <Button
+                        asChild
+                        variant="default"
+                        size="sm"
+                        className="flex-shrink-0"
+                        data-testid={`button-open-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
+                      >
+                        <a
+                          href={app.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Open
+                        </a>
+                      </Button>
+                    )}
                   </div>
 
                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow">
