@@ -88,9 +88,26 @@ export default function EcosystemPage() {
             {filteredApps.map((app, index) => (
               <Card
                 key={`${app.name}-${index}`}
-                className="hover:shadow-lg transition-shadow overflow-hidden relative"
+                className="hover:shadow-lg transition-shadow relative"
                 data-testid={`card-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
               >
+                {app.url !== "#" && (
+                  <Button
+                    asChild
+                    variant="default"
+                    size="sm"
+                    className="absolute top-3 right-3 z-10"
+                    data-testid={`button-open-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
+                  >
+                    <a
+                      href={app.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open
+                    </a>
+                  </Button>
+                )}
                 <div className="p-6 h-full flex flex-col">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start gap-3 flex-1">
@@ -109,24 +126,6 @@ export default function EcosystemPage() {
                     {app.description}
                   </p>
                 </div>
-
-                {app.url !== "#" && (
-                  <Button
-                    asChild
-                    variant="default"
-                    size="sm"
-                    className="absolute top-4 right-4"
-                    data-testid={`button-open-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
-                  >
-                    <a
-                      href={app.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Open
-                    </a>
-                  </Button>
-                )}
               </Card>
             ))}
           </div>
