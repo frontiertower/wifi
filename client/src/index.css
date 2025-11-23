@@ -217,6 +217,10 @@
   text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
 }
 
+.typing-reboot {
+  animation: typing 0.8s steps(6, end) 1s forwards !important;
+}
+
 /* Hide rabbit and theme toggle on WiFi page */
 body.hide-app-header [data-testid="button-white-rabbit"],
 body.hide-app-header [data-testid="button-theme-toggle"] {
