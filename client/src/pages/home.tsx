@@ -386,7 +386,7 @@ export default function Home() {
               className="w-full mt-4 px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200 border-t border-gray-200 dark:border-gray-600 pt-4"
               data-testid="button-white-rabbit"
             >
-              Follow the pink rabbit
+              Follow the white rabbit
             </button>
           </div>
         </div>
