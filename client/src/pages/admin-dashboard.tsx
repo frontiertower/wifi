@@ -602,7 +602,7 @@ export default function AdminDashboard() {
     { id: "careers", label: "Careers", icon: Briefcase },
     { id: "directory", label: "Directory", icon: Building2 },
     { id: "settings", label: "WiFi", icon: Wifi },
-    { id: "admin-logins", label: "Admin Logins", icon: LogOut },
+    { id: "admin-logins", label: "Admins", icon: LogOut },
   ] as const;
 
   // Helper function for cleaning host names
@@ -2330,7 +2330,7 @@ export default function AdminDashboard() {
         {activeTab === "admin-logins" && (
           <div>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Admin Logins</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Admins</h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 View all admin login sessions and activity
               </p>
