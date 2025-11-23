@@ -88,7 +88,7 @@ export default function EcosystemPage() {
             {filteredApps.map((app, index) => (
               <Card
                 key={`${app.name}-${index}`}
-                className="hover:shadow-lg transition-shadow overflow-hidden"
+                className="hover:shadow-lg transition-shadow overflow-hidden relative"
                 data-testid={`card-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
               >
                 <div className="p-6 h-full flex flex-col">
@@ -108,27 +108,25 @@ export default function EcosystemPage() {
                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow">
                     {app.description}
                   </p>
-
-                  {app.url !== "#" && (
-                    <Button
-                      asChild
-                      variant="default"
-                      size="sm"
-                      className="w-full"
-                      data-testid={`button-visit-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
-                    >
-                      <a
-                        href={app.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2"
-                      >
-                        <span>Visit</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </Button>
-                  )}
                 </div>
+
+                {app.url !== "#" && (
+                  <Button
+                    asChild
+                    variant="default"
+                    size="sm"
+                    className="absolute bottom-4 right-4"
+                    data-testid={`button-open-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
+                  >
+                    <a
+                      href={app.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open
+                    </a>
+                  </Button>
+                )}
               </Card>
             ))}
           </div>
