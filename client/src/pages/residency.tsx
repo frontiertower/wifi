@@ -14,6 +14,10 @@ import { Calendar, Home, MapPin, Users, Wifi, Shirt, ArrowLeft } from "lucide-re
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { format, addDays, differenceInDays } from "date-fns";
+import futuristicRoom from "@assets/2025-11-23 10.24.29_1763922401797.jpg";
+import poolTableRoom from "@assets/2025-11-23 10.24.33_1763922401798.jpg";
+import lobbyLounge from "@assets/2025-11-23 10.24.18_1763922401798.jpg";
+import buildingExterior from "@assets/2025-11-23 10.24.25_1763922401798.jpg";
 
 const residencyBookingSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -384,6 +388,63 @@ export default function ResidencyPage() {
             </Form>
           </CardContent>
         </Card>
+
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Property Gallery</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
+              <img 
+                src={futuristicRoom} 
+                alt="Futuristic room with ambient lighting" 
+                className="w-full h-64 object-cover"
+                data-testid="gallery-futuristic-room"
+              />
+              <div className="p-3 bg-background">
+                <p className="font-semibold text-sm">Modern Room Design</p>
+                <p className="text-xs text-muted-foreground">Ambient lighting and contemporary aesthetic</p>
+              </div>
+            </div>
+            
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
+              <img 
+                src={poolTableRoom} 
+                alt="Communal lounge with pool table" 
+                className="w-full h-64 object-cover"
+                data-testid="gallery-pool-room"
+              />
+              <div className="p-3 bg-background">
+                <p className="font-semibold text-sm">Recreation Lounge</p>
+                <p className="text-xs text-muted-foreground">Pool table and social space</p>
+              </div>
+            </div>
+            
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
+              <img 
+                src={lobbyLounge} 
+                alt="Elegant lobby and lounge area" 
+                className="w-full h-64 object-cover"
+                data-testid="gallery-lobby"
+              />
+              <div className="p-3 bg-background">
+                <p className="font-semibold text-sm">Lobby Lounge</p>
+                <p className="text-xs text-muted-foreground">Elegant communal gathering space</p>
+              </div>
+            </div>
+            
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover-elevate">
+              <img 
+                src={buildingExterior} 
+                alt="825 Sutter St building exterior" 
+                className="w-full h-64 object-cover"
+                data-testid="gallery-building"
+              />
+              <div className="p-3 bg-background">
+                <p className="font-semibold text-sm">825 Sutter Street</p>
+                <p className="text-xs text-muted-foreground">Your new home in San Francisco</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
           <CardHeader>
