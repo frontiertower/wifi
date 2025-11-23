@@ -351,6 +351,7 @@ export default function CareersPage() {
               </a>
             </Button>
           </div>
+        </div>
 
         {/* Loading State */}
         {isLoading && (
