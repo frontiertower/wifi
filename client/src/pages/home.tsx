@@ -312,6 +312,24 @@ export default function Home() {
               </div>
             </Link>
 
+            <a
+              href="https://fxchange.io/maker/open"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block"
+              data-testid="button-gigs-jobs"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-teal-100 dark:bg-teal-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-teal-200 dark:group-hover:bg-teal-500/40">
+                  <Briefcase className="text-teal-600 dark:text-teal-300" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Gigs & Jobs</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Find opportunities on FXChange</div>
+                </div>
+              </div>
+            </a>
+
             <Link
               href="/event-host-booking"
               className="w-full mb-3 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
