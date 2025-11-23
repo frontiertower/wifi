@@ -257,7 +257,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set the correct MIME type for iOS configuration profiles
       res.setHeader("Content-Type", "application/x-apple-aspen-config");
-      res.setHeader("Content-Disposition", 'attachment; filename="FrontierTower-WiFi.mobileconfig"');
+      // Use "inline" instead of "attachment" so iOS opens it for installation instead of downloading
+      res.setHeader("Content-Disposition", 'inline; filename="FrontierTower-WiFi.mobileconfig"');
       res.send(profileData);
     } catch (error) {
       console.error("Error serving WiFi profile:", error);
