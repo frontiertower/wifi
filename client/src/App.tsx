@@ -139,7 +139,7 @@ function AppHeader() {
     }
   };
 
-  const hideRabbitOn = ["/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/event-host-booking", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency"];
+  const hideRabbitOn = ["/", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/event-host-booking", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency"];
   const shouldHideRabbit = hideRabbitOn.some(path => location === path || location.startsWith(path + "/"));
 
   return (
