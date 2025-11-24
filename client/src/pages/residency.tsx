@@ -29,7 +29,18 @@ const residencyBookingSchema = z.object({
   numberOfGuests: z.string().refine(val => parseInt(val) > 0, "Must have at least 1 guest"),
   roomPreference: z.string().min(1, "Please select a room preference"),
   specialRequests: z.string().optional(),
-});
+}).refine(
+  (data) => {
+    const checkIn = new Date(data.checkInDate);
+    const checkOut = new Date(data.checkOutDate);
+    const nights = differenceInDays(checkOut, checkIn);
+    return nights <= 30;
+  },
+  {
+    message: "Length of stay cannot exceed 30 days",
+    path: ["checkOutDate"],
+  }
+);
 
 type ResidencyBooking = z.infer<typeof residencyBookingSchema>;
 
