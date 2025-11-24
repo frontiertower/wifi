@@ -1189,7 +1189,7 @@ export default function AdminDashboard() {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Membership Applications</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Membership Inquiries</span>
                     <Badge variant="secondary" data-testid="count-membership-leads">
                       {unifiedLeads?.leads?.filter(l => l.type === 'membership').length || 0}
                     </Badge>
@@ -1618,7 +1618,7 @@ export default function AdminDashboard() {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Membership Applications</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Membership Inquiries</span>
                     <Badge variant="secondary" data-testid="count-membership-leads">
                       {unifiedLeads?.leads?.filter(l => l.type === 'membership').length || 0}
                     </Badge>

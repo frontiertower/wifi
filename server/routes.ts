@@ -1923,7 +1923,7 @@ Rules:
     }
   });
 
-  // Membership Applications Routes
+  // Membership Inquiries Routes
   app.post("/api/membership-applications", async (req, res) => {
     try {
       const validatedData = insertMembershipApplicationSchema.parse(req.body);
@@ -1933,7 +1933,7 @@ Rules:
       // Send email notification (non-blocking)
       const { emailService } = await import("./email");
       emailService.sendMembershipApplicationNotification(application).catch((error) => {
-        console.error("Failed to send membership application notification email:", error);
+        console.error("Failed to send membership inquiry notification email:", error);
       });
       
       res.json({ success: true, application });
@@ -1941,13 +1941,13 @@ Rules:
       if (error.name === "ZodError") {
         return res.status(400).json({
           success: false,
-          message: error.errors[0]?.message || "Invalid membership application data"
+          message: error.errors[0]?.message || "Invalid membership inquiry data"
         });
       }
       
       res.status(500).json({
         success: false,
-        message: "Failed to create membership application"
+        message: "Failed to create membership inquiry"
       });
     }
   });
@@ -1959,7 +1959,7 @@ Rules:
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: "Failed to fetch membership applications"
+        message: "Failed to fetch membership inquiries"
       });
     }
   });
