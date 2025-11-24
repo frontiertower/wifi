@@ -16,9 +16,22 @@ interface EventsResponse {
 
 export default function Events() {
   const [layoutMode, setLayoutMode] = useState<'grid' | 'list'>('grid');
+  const [expandedEvents, setExpandedEvents] = useState<Set<number>>(new Set());
   const { data, isLoading } = useQuery<EventsResponse>({
     queryKey: ['/api/events'],
   });
+
+  const toggleEventExpand = (eventId: number) => {
+    setExpandedEvents(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(eventId)) {
+        newSet.delete(eventId);
+      } else {
+        newSet.add(eventId);
+      }
+      return newSet;
+    });
+  };
 
   // Deduplicate events by merging Luma and Frontier Tower sources
   const deduplicateEvents = (events: Event[]): Event[] => {
@@ -185,7 +198,6 @@ export default function Events() {
         ) : layoutMode === 'grid' ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {upcomingEvents.map((event) => {
-              const status = getEventStatus(event);
               const start = new Date(event.startDate);
               const end = new Date(event.endDate);
 
@@ -291,15 +303,16 @@ export default function Events() {
         ) : (
           <div className="space-y-3">
             {upcomingEvents.map((event) => {
-              const status = getEventStatus(event);
               const start = new Date(event.startDate);
               const end = new Date(event.endDate);
+              const isExpanded = expandedEvents.has(event.id);
 
               return (
                 <Card
                   key={event.id}
-                  className="overflow-hidden hover-elevate transition-all"
+                  className="overflow-hidden hover-elevate transition-all cursor-pointer"
                   data-testid={`list-event-${event.id}`}
+                  onClick={() => toggleEventExpand(event.id)}
                 >
                   <div className="p-4">
                     <div className="flex gap-4 items-start">
@@ -353,7 +366,10 @@ export default function Events() {
                         </div>
 
                         {cleanDescription(event.description) && (
-                          <p className="text-sm text-muted-foreground mb-3 line-clamp-2" data-testid={`text-list-description-${event.id}`}>
+                          <p 
+                            className={`text-sm text-muted-foreground mb-3 ${isExpanded ? '' : 'line-clamp-2'}`}
+                            data-testid={`text-list-description-${event.id}`}
+                          >
                             {cleanDescription(event.description)}
                           </p>
                         )}
@@ -364,6 +380,7 @@ export default function Events() {
                             size="sm"
                             asChild
                             data-testid={`button-list-view-event-${event.id}`}
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <a
                               href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
