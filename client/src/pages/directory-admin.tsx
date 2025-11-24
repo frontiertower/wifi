@@ -373,16 +373,38 @@ export default function DirectoryAdmin() {
                       </div>
 
                       <div>
-                        <Label htmlFor={`logoUrl-${listing.id}`}>Logo URL</Label>
-                        <Input
-                          id={`logoUrl-${listing.id}`}
-                          value={currentData.logoUrl || ""}
-                          onChange={(e) =>
-                            isEditing && setEditForm({ ...editForm, logoUrl: e.target.value })
-                          }
-                          disabled={!isEditing}
-                          data-testid={`input-logoUrl-${listing.id}`}
-                        />
+                        <Label htmlFor={`logoUrl-${listing.id}`}>Logo</Label>
+                        <div className="space-y-2">
+                          <input
+                            id={`logoUrl-${listing.id}`}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (isEditing && e.target.files?.[0]) {
+                                const file = e.target.files[0];
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                  const result = event.target?.result as string;
+                                  setEditForm({ ...editForm, logoUrl: result });
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                            disabled={!isEditing}
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200"
+                            data-testid={`input-logoFile-${listing.id}`}
+                          />
+                          {currentData.logoUrl && (
+                            <div className="mt-2">
+                              <img
+                                src={currentData.logoUrl}
+                                alt="Logo preview"
+                                className="h-16 w-16 object-contain rounded border border-gray-200 dark:border-gray-700"
+                                data-testid={`img-logo-preview-${listing.id}`}
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       <div className="md:col-span-2">
