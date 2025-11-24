@@ -6,6 +6,7 @@ import UnifiedGuestForm from "@/components/unified-guest-form";
 import SlidingWelcome from "@/components/SlidingWelcome";
 import { ThemeToggle } from "@/components/theme-toggle";
 import frontierTowerQR from "@assets/frontier-tower-qr.png";
+import rabbitImage from "@assets/FuzzyNop_logo_pink_1763832812948.png";
 import { translations, Language } from "@/lib/translations";
 import {
   Select,
@@ -209,7 +210,12 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
           onAnimationEnd={() => setIsFlashing(false)}
         >
           <div className="absolute top-6 left-6 z-50">
-            <Rabbit className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+            <img 
+              src={rabbitImage} 
+              alt="White rabbit" 
+              className="w-8 h-8 object-contain"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
           </div>
           
           <div className="absolute top-6 right-6 z-50">
