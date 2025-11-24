@@ -2932,7 +2932,7 @@ function SettingsTab() {
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="none" id="api-none" data-testid="radio-api-none" />
               <Label htmlFor="api-none" className="font-normal cursor-pointer">
-                None (Mock Mode) - For testing without a real controller
+                None (Mock Mode) - Workaround implemented without API key
               </Label>
             </div>
             <div className="flex items-center space-x-2">
