@@ -107,6 +107,22 @@ interface JobListingsResponse {
   listings: any[];
 }
 
+interface UnifiedLead {
+  id: number;
+  type: 'tour' | 'event-host' | 'membership' | 'chat-invite' | 'residency' | 'wifi-guest';
+  name: string;
+  email: string;
+  phone: string;
+  status: string;
+  createdAt: string;
+  details: any;
+}
+
+interface UnifiedLeadsResponse {
+  success: boolean;
+  leads: UnifiedLead[];
+}
+
 interface AdminSessionResponse {
   authenticated: boolean;
   role?: 'owner' | 'staff';
@@ -218,33 +234,8 @@ export default function AdminDashboard() {
     enabled: activeTab === "analytics",
   });
 
-  const { data: tourBookings } = useQuery<TourBookingsResponse>({
-    queryKey: ['/api/tour-bookings'],
-    enabled: activeTab === "leads",
-  });
-
-  const { data: eventHostBookings } = useQuery<EventHostBookingsResponse>({
-    queryKey: ['/api/event-host-bookings'],
-    enabled: activeTab === "leads",
-  });
-
-  const { data: membershipApplications } = useQuery<MembershipApplicationsResponse>({
-    queryKey: ['/api/membership-applications'],
-    enabled: activeTab === "leads",
-  });
-
-  const { data: chatInviteRequests } = useQuery<ChatInviteRequestsResponse>({
-    queryKey: ['/api/admin/chat-invite-requests'],
-    enabled: activeTab === "leads",
-  });
-
-  const { data: residencyBookings } = useQuery<ResidencyBookingsResponse>({
-    queryKey: ['/api/residency-bookings'],
-    enabled: activeTab === "leads",
-  });
-
-  const { data: bookings } = useQuery<BookingsResponse>({
-    queryKey: ['/api/bookings'],
+  const { data: unifiedLeads } = useQuery<UnifiedLeadsResponse>({
+    queryKey: ['/api/admin/leads'],
     enabled: activeTab === "leads",
   });
 
@@ -399,6 +390,26 @@ export default function AdminDashboard() {
       toast({
         title: "Error",
         description: error.message || "Failed to unhide event",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateLeadStatusMutation = useMutation({
+    mutationFn: async ({ type, id, status }: { type: string; id: number; status: string }) => {
+      return apiRequest("PATCH", `/api/admin/leads/${type}/${id}/status`, { status });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/leads"] });
+      toast({
+        title: "Success",
+        description: "Lead status updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update lead status",
         variant: "destructive",
       });
     },
@@ -1454,408 +1465,213 @@ export default function AdminDashboard() {
 
         {activeTab === "leads" && (
           <div className="space-y-6">
-            {/* Tour Leads */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Tour Leads ({tourBookings?.bookings?.length || 0})
-              </h2>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Tour Type</TableHead>
-                      <TableHead>Tour Info</TableHead>
-                      <TableHead>Private Office Interest</TableHead>
-                      <TableHead>People</TableHead>
-                      <TableHead>Submitted</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {tourBookings?.bookings?.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
-                          No tour leads yet
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      tourBookings?.bookings?.map((booking) => (
-                        <TableRow key={booking.id} data-testid={`tour-booking-${booking.id}`}>
-                          <TableCell className="font-medium">{booking.name}</TableCell>
-                          <TableCell>{booking.email}</TableCell>
-                          <TableCell>{booking.phone}</TableCell>
-                          <TableCell>
-                            {booking.tourType === "custom" ? (
-                              <Badge variant="outline">Custom Time</Badge>
-                            ) : (
-                              <Badge variant="default">Group Tour</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell className="max-w-xs">
-                            {booking.tourType === "custom" ? (
-                              booking.tourDate && booking.tourTime 
-                                ? `${new Date(booking.tourDate).toLocaleDateString()} ${booking.tourTime}`
-                                : 'N/A'
-                            ) : (
-                              <div className="space-y-1">
-                                {booking.groupTourSelection && (
-                                  <div className="text-sm">{booking.groupTourSelection}</div>
-                                )}
-                                {booking.groupTourUrl && (
-                                  <a
-                                    href={booking.groupTourUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-xs text-primary hover:underline"
-                                  >
-                                    View on Luma
-                                  </a>
-                                )}
-                              </div>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {booking.interestedInPrivateOffice ? (
-                              <Badge variant="default">Yes</Badge>
-                            ) : (
-                              <Badge variant="secondary">No</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell>{booking.numberOfPeople || 'N/A'}</TableCell>
-                          <TableCell className="text-sm text-gray-500">
-                            {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
+            {/* Analytics Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Leads by Type */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Leads by Type</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Tour Requests</span>
+                    <Badge variant="secondary" data-testid="count-tour-leads">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'tour').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Event Host Inquiries</span>
+                    <Badge variant="secondary" data-testid="count-event-host-leads">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'event-host').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Membership Applications</span>
+                    <Badge variant="secondary" data-testid="count-membership-leads">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'membership').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Chat Invite Requests</span>
+                    <Badge variant="secondary" data-testid="count-chat-leads">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'chat-invite').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Residency Bookings</span>
+                    <Badge variant="secondary" data-testid="count-residency-leads">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'residency').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">WiFi Guest Leads</span>
+                    <Badge variant="secondary" data-testid="count-wifi-leads">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'wifi-guest').length || 0}
+                    </Badge>
+                  </div>
+                </div>
+              </Card>
 
-            {/* Event Host Leads */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Event Host Leads ({eventHostBookings?.bookings?.length || 0})
-              </h2>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Event</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Submitted</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {eventHostBookings?.bookings?.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
-                          No event host leads yet
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      eventHostBookings?.bookings?.map((booking) => (
-                        <TableRow key={booking.id} data-testid={`event-host-booking-${booking.id}`}>
-                          <TableCell className="font-medium">{booking.name}</TableCell>
-                          <TableCell>{booking.email}</TableCell>
-                          <TableCell>{booking.phone}</TableCell>
-                          <TableCell>
-                            {booking.eventType ? (
-                              <span className="font-medium">{booking.eventType}</span>
-                            ) : (
-                              'N/A'
-                            )}
-                          </TableCell>
-                          <TableCell className="max-w-xs truncate">{booking.eventDescription || 'N/A'}</TableCell>
-                          <TableCell className="text-sm text-gray-500">
-                            {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
+              {/* Leads by Status */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Leads by Status</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Pending</span>
+                    <Badge variant="secondary" data-testid="count-status-pending">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'pending').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">New</span>
+                    <Badge variant="secondary" data-testid="count-status-new">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'new').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Contacted</span>
+                    <Badge variant="secondary" data-testid="count-status-contacted">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'contacted').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Scheduled</span>
+                    <Badge variant="secondary" data-testid="count-status-scheduled">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'scheduled').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Approved</span>
+                    <Badge variant="secondary" data-testid="count-status-approved">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'approved').length || 0}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Other</span>
+                    <Badge variant="secondary" data-testid="count-status-other">
+                      {unifiedLeads?.leads?.filter(l => !['pending', 'new', 'contacted', 'scheduled', 'approved'].includes(l.status)).length || 0}
+                    </Badge>
+                  </div>
+                </div>
+              </Card>
+            </div>
 
-            {/* Membership Inquiries */}
+            {/* Unified Leads Table */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Membership Inquiries ({membershipApplications?.applications?.length || 0})
+                All Leads ({unifiedLeads?.leads?.length || 0})
               </h2>
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Type</TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Phone</TableHead>
-                      <TableHead>Telegram</TableHead>
-                      <TableHead>Company</TableHead>
-                      <TableHead>LinkedIn</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Submitted</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {membershipApplications?.applications?.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
-                          No membership inquiries yet
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      membershipApplications?.applications?.map((app) => (
-                        <TableRow key={app.id} data-testid={`membership-application-${app.id}`}>
-                          <TableCell className="font-medium">{app.name}</TableCell>
-                          <TableCell>{app.email}</TableCell>
-                          <TableCell>{app.phone}</TableCell>
-                          <TableCell>{app.telegram || 'N/A'}</TableCell>
-                          <TableCell>{app.company || 'N/A'}</TableCell>
-                          <TableCell>
-                            {app.linkedIn ? (
-                              <a 
-                                href={app.linkedIn} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                View
-                              </a>
-                            ) : 'N/A'}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={app.status === 'pending' ? 'secondary' : 'default'}>
-                              {app.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-sm text-gray-500">
-                            {app.createdAt ? new Date(app.createdAt).toLocaleString() : 'N/A'}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
-
-            {/* SuperHero Residency Leads */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                SuperHero Residency Leads ({residencyBookings?.bookings?.length || 0})
-              </h2>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Check-In</TableHead>
-                      <TableHead>Check-Out</TableHead>
-                      <TableHead>Guests</TableHead>
-                      <TableHead>Room Preference</TableHead>
-                      <TableHead>Submitted</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {residencyBookings?.bookings?.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
-                          No residency bookings yet
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      residencyBookings?.bookings?.map((booking) => (
-                        <TableRow key={booking.id} data-testid={`residency-booking-${booking.id}`}>
-                          <TableCell className="font-medium">{booking.name}</TableCell>
-                          <TableCell>{booking.email}</TableCell>
-                          <TableCell>{booking.phone}</TableCell>
-                          <TableCell className="text-sm">
-                            {new Date(booking.checkInDate).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell className="text-sm">
-                            {new Date(booking.checkOutDate).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell className="text-center">{booking.numberOfGuests}</TableCell>
-                          <TableCell className="text-sm">{booking.roomPreference || 'N/A'}</TableCell>
-                          <TableCell className="text-sm text-gray-500">
-                            {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
-
-            {/* Chat Invite Requests */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Chat Invite Requests ({chatInviteRequests?.requests?.length || 0})
-              </h2>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Message</TableHead>
-                      <TableHead>LinkedIn</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Submitted</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {chatInviteRequests?.requests?.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center text-gray-500 dark:text-gray-400">
-                          No chat invite requests yet
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      chatInviteRequests?.requests?.map((request) => (
-                        <TableRow key={request.id} data-testid={`chat-request-${request.id}`}>
-                          <TableCell className="font-medium">{request.name}</TableCell>
-                          <TableCell>{request.email}</TableCell>
-                          <TableCell>{request.phone}</TableCell>
-                          <TableCell className="text-sm max-w-xs truncate" title={request.message || undefined}>
-                            {request.message || 'N/A'}
-                          </TableCell>
-                          <TableCell>
-                            {request.linkedIn ? (
-                              <a 
-                                href={request.linkedIn} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-blue-600 dark:text-blue-400 hover:underline"
-                              >
-                                View
-                              </a>
-                            ) : 'N/A'}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={request.status === 'pending' ? 'secondary' : 'default'}>
-                              {request.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-sm text-gray-500">
-                            {request.createdAt ? new Date(request.createdAt).toLocaleString() : 'N/A'}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
-
-            {/* Regular Event/Meeting Leads */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                Event/Meeting Leads ({bookings?.bookings?.length || 0})
-              </h2>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Organizer</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Event</TableHead>
-                      <TableHead>LinkedIn</TableHead>
-                      <TableHead>Submitted</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {bookings?.bookings?.length === 0 ? (
+                    {!unifiedLeads?.leads || unifiedLeads.leads.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
-                          No event/meeting leads yet
+                          No leads yet
                         </TableCell>
                       </TableRow>
                     ) : (
-                      bookings?.bookings?.map((booking) => (
-                        <TableRow key={booking.id} data-testid={`booking-${booking.id}`}>
-                          <TableCell className="font-medium">{booking.organizerName}</TableCell>
-                          <TableCell>{booking.organizerEmail}</TableCell>
-                          <TableCell>{booking.organizerPhone || 'N/A'}</TableCell>
+                      unifiedLeads.leads.map((lead) => (
+                        <TableRow key={`${lead.type}-${lead.id}`} data-testid={`lead-${lead.type}-${lead.id}`}>
                           <TableCell>
-                            {booking.eventId ? (
-                              <Badge variant="default">Event #{booking.eventId}</Badge>
-                            ) : (
-                              <span className="font-medium">{booking.eventName}</span>
-                            )}
+                            <Badge variant="outline" data-testid={`badge-type-${lead.type}`}>
+                              {lead.type === 'tour' && 'Tour'}
+                              {lead.type === 'event-host' && 'Event Host'}
+                              {lead.type === 'membership' && 'Membership'}
+                              {lead.type === 'chat-invite' && 'Chat Invite'}
+                              {lead.type === 'residency' && 'Residency'}
+                              {lead.type === 'wifi-guest' && 'WiFi Guest'}
+                            </Badge>
                           </TableCell>
-                          <TableCell>{booking.organizerLinkedIn || 'N/A'}</TableCell>
+                          <TableCell className="font-medium">{lead.name}</TableCell>
+                          <TableCell>{lead.email}</TableCell>
+                          <TableCell>{lead.phone}</TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="capitalize"
+                                  data-testid={`dropdown-status-${lead.type}-${lead.id}`}
+                                >
+                                  {lead.status}
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'pending' })}
+                                  data-testid={`status-option-pending-${lead.type}-${lead.id}`}
+                                >
+                                  Pending
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'new' })}
+                                  data-testid={`status-option-new-${lead.type}-${lead.id}`}
+                                >
+                                  New
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'contacted' })}
+                                  data-testid={`status-option-contacted-${lead.type}-${lead.id}`}
+                                >
+                                  Contacted
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'scheduled' })}
+                                  data-testid={`status-option-scheduled-${lead.type}-${lead.id}`}
+                                >
+                                  Scheduled
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'interviewed' })}
+                                  data-testid={`status-option-interviewed-${lead.type}-${lead.id}`}
+                                >
+                                  Interviewed
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'rejected' })}
+                                  data-testid={`status-option-rejected-${lead.type}-${lead.id}`}
+                                >
+                                  Rejected
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'approved' })}
+                                  data-testid={`status-option-approved-${lead.type}-${lead.id}`}
+                                >
+                                  Approved
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'paid' })}
+                                  data-testid={`status-option-paid-${lead.type}-${lead.id}`}
+                                >
+                                  Paid
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'quoted' })}
+                                  data-testid={`status-option-quoted-${lead.type}-${lead.id}`}
+                                >
+                                  Quoted
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'citizen' })}
+                                  data-testid={`status-option-citizen-${lead.type}-${lead.id}`}
+                                >
+                                  Citizen
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
                           <TableCell className="text-sm text-gray-500">
-                            {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
-
-            {/* WiFi Guest Leads */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                WiFi Guest Leads ({(allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").length || 0})
-              </h2>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Tour Interest</TableHead>
-                      <TableHead>Source</TableHead>
-                      <TableHead>Registered</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {(allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
-                          No WiFi guests interested in tours yet
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      (allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").map((user) => (
-                        <TableRow key={user.id} data-testid={`wifi-guest-lead-${user.id}`}>
-                          <TableCell className="font-medium">{user.name}</TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell>{user.phone || "-"}</TableCell>
-                          <TableCell>
-                            {user.tourInterest === "yes" ? (
-                              <Badge variant="default">Yes</Badge>
-                            ) : (
-                              <Badge variant="secondary">Maybe</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {user.guestType === "event" && user.eventName ? (
-                              <span className="font-medium">{user.eventName}</span>
-                            ) : user.guestType === "member" && user.host ? (
-                              <span className="font-medium">{user.host}</span>
-                            ) : (
-                              <span className="text-gray-500 dark:text-gray-400">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-sm text-gray-500">
-                            {user.createdAt ? new Date(user.createdAt).toLocaleString() : "N/A"}
+                            {lead.createdAt ? new Date(lead.createdAt).toLocaleString() : 'N/A'}
                           </TableCell>
                         </TableRow>
                       ))
@@ -1866,7 +1682,6 @@ export default function AdminDashboard() {
             </Card>
           </div>
         )}
-
         {activeTab === "careers" && (
           <div className="space-y-6">
             <Card className="p-6">
