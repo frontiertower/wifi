@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import express from "express";
 import { z } from "zod";
 import { storage } from "./storage";
 import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema, insertJobApplicationSchema, insertJobListingSchema, insertResidencyBookingSchema } from "@shared/schema";
@@ -208,6 +209,8 @@ async function downloadImage(imageUrl: string, eventId: number): Promise<string>
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve uploaded files (logos and event images) statically
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
   // UniFi captive portal status endpoint
   app.get("/guest/s/default/", (req, res) => {

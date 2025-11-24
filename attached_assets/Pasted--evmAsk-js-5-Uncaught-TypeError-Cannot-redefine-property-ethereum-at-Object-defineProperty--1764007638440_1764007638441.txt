@@ -1,0 +1,112 @@
+
+﻿
+evmAsk.js:5 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:5:5093)
+    at window.addEventListener.once (evmAsk.js:5:9013)
+inpage.js:3 Uncaught (in promise) TypeError: Cannot redefine property: superheroWallet
+    at Object.defineProperties (<anonymous>)
+    at t.injectEthereumIntoWindow (inpage.js:3:40761)
+    at t.value (inpage.js:3:41979)
+    at t.<anonymous> (inpage.js:3:34659)
+    at Generator.<anonymous> (inpage.js:3:1071)
+    at Generator.next (inpage.js:1:5239)
+    at inpage.js:3:21622
+    at new Promise (<anonymous>)
+    at d (inpage.js:3:21416)
+    at onMessage (inpage.js:3:34519)
+index-BpUhJWwd.js:398 UniFi Parameters: 
+Object
+api2.amplitude.com/2/httpapi:1 
+ Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+vendor.js:2 Amplitude Logger [Error]: TypeError: Failed to fetch
+event-1956.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1954.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1959.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1964.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1962.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1985.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2665.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1967.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1953.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1952.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2650.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1961.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1963.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1965.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1955.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1982.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1958.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1972.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1977.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2647.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1957.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1979.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2678.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1996.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1998.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1994.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1983.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2335.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1974.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1976.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1997.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1988.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1973.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1992.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1984.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2648.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1978.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2320.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1960.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2672.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-2652.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1975.png:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1987.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1966.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
+event-1995.webp:1 
+ Failed to load resource: the server responded with a status of 404 ()
