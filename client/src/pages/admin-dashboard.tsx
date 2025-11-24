@@ -1286,9 +1286,9 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Events Per Week Chart */}
+            {/* Events Per Month Chart */}
             <div className="mt-8">
-              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Events Per Week (Last 12 Weeks)</h3>
+              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Events Per Month (Last 12 Months)</h3>
               <Card className="bg-card">
                 <div className="p-4 sm:p-6">
                   {!stats?.stats ? (
@@ -1301,7 +1301,7 @@ export default function AdminDashboard() {
                       <BarChart data={stats.stats.eventsPerWeek}>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-600" />
                         <XAxis 
-                          dataKey="week" 
+                          dataKey="month" 
                           className="text-xs"
                           tick={{ fill: 'currentColor' }}
                         />
@@ -1323,14 +1323,14 @@ export default function AdminDashboard() {
                           dataKey="count" 
                           fill="hsl(var(--primary))" 
                           radius={[8, 8, 0, 0]}
-                          data-testid="bar-events-per-week"
+                          data-testid="bar-events-per-month"
                         />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
                     <div className="text-center py-12">
                       <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p className="text-gray-600 dark:text-gray-400">No event data available for the last 12 weeks</p>
+                      <p className="text-gray-600 dark:text-gray-400">No event data available for the last 12 months</p>
                     </div>
                   )}
                 </div>
