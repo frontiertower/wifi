@@ -1454,63 +1454,6 @@ export default function AdminDashboard() {
 
         {activeTab === "leads" && (
           <div className="space-y-6">
-            {/* WiFi Guest Leads */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                WiFi Guest Leads ({(allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").length || 0})
-              </h2>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Tour Interest</TableHead>
-                      <TableHead>Source</TableHead>
-                      <TableHead>Registered</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {(allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
-                          No WiFi guests interested in tours yet
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      (allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").map((user) => (
-                        <TableRow key={user.id} data-testid={`wifi-guest-lead-${user.id}`}>
-                          <TableCell className="font-medium">{user.name}</TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell>{user.phone || "-"}</TableCell>
-                          <TableCell>
-                            {user.tourInterest === "yes" ? (
-                              <Badge variant="default">Yes</Badge>
-                            ) : (
-                              <Badge variant="secondary">Maybe</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {user.guestType === "event" && user.eventName ? (
-                              <span className="font-medium">{user.eventName}</span>
-                            ) : user.guestType === "member" && user.host ? (
-                              <span className="font-medium">{user.host}</span>
-                            ) : (
-                              <span className="text-gray-500 dark:text-gray-400">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-sm text-gray-500">
-                            {user.createdAt ? new Date(user.createdAt).toLocaleString() : "N/A"}
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
-
             {/* Tour Leads */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
@@ -1856,6 +1799,63 @@ export default function AdminDashboard() {
                           <TableCell>{booking.organizerLinkedIn || 'N/A'}</TableCell>
                           <TableCell className="text-sm text-gray-500">
                             {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+
+            {/* WiFi Guest Leads */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                WiFi Guest Leads ({(allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").length || 0})
+              </h2>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Tour Interest</TableHead>
+                      <TableHead>Source</TableHead>
+                      <TableHead>Registered</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {(allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
+                          No WiFi guests interested in tours yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      (allUsers?.users || []).filter(u => u.tourInterest === "yes" || u.tourInterest === "maybe").map((user) => (
+                        <TableRow key={user.id} data-testid={`wifi-guest-lead-${user.id}`}>
+                          <TableCell className="font-medium">{user.name}</TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>{user.phone || "-"}</TableCell>
+                          <TableCell>
+                            {user.tourInterest === "yes" ? (
+                              <Badge variant="default">Yes</Badge>
+                            ) : (
+                              <Badge variant="secondary">Maybe</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {user.guestType === "event" && user.eventName ? (
+                              <span className="font-medium">{user.eventName}</span>
+                            ) : user.guestType === "member" && user.host ? (
+                              <span className="font-medium">{user.host}</span>
+                            ) : (
+                              <span className="text-gray-500 dark:text-gray-400">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {user.createdAt ? new Date(user.createdAt).toLocaleString() : "N/A"}
                           </TableCell>
                         </TableRow>
                       ))
