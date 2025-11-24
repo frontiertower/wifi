@@ -41,6 +41,8 @@ export default function Directory() {
       }
       return newSet;
     });
+    // Change to A-Z sorting when filtering by type
+    setSortMode("name-asc");
   };
 
   const getDisplayName = (listing: DirectoryListing) => {
