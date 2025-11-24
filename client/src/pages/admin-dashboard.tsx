@@ -1207,7 +1207,7 @@ export default function AdminDashboard() {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">WiFi Guest Leads</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">WiFi Guest Tours</span>
                     <Badge variant="secondary" data-testid="count-wifi-leads">
                       {unifiedLeads?.leads?.filter(l => l.type === 'wifi-guest').length || 0}
                     </Badge>
@@ -1636,7 +1636,7 @@ export default function AdminDashboard() {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">WiFi Guest Leads</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">WiFi Guest Tours</span>
                     <Badge variant="secondary" data-testid="count-wifi-leads">
                       {unifiedLeads?.leads?.filter(l => l.type === 'wifi-guest').length || 0}
                     </Badge>
