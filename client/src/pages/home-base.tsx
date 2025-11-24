@@ -210,12 +210,19 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
           onAnimationEnd={() => setIsFlashing(false)}
         >
           <div className="absolute top-6 left-6 z-50">
-            <img 
-              src={rabbitImage} 
-              alt="White rabbit" 
-              className="w-8 h-8 object-contain"
-              style={{ filter: "brightness(0) invert(1)" }}
-            />
+            <button
+              onClick={handleWhiteRabbit}
+              className="p-2 hover:opacity-80 transition-opacity"
+              data-testid="button-white-rabbit-home"
+              aria-label="Follow the white rabbit"
+            >
+              <img 
+                src={rabbitImage} 
+                alt="White rabbit" 
+                className="w-8 h-8 object-contain"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+            </button>
           </div>
           
           <div className="absolute top-6 right-6 z-50">
