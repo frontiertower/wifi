@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Clock, MapPin, Users, ExternalLink, History, ArrowLeft } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, ExternalLink, History, ArrowLeft, LayoutGrid, List as ListIcon } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ interface EventsResponse {
 }
 
 export default function Events() {
+  const [layoutMode, setLayoutMode] = useState<'grid' | 'list'>('grid');
   const { data, isLoading } = useQuery<EventsResponse>({
     queryKey: ['/api/events'],
   });
@@ -128,12 +130,30 @@ export default function Events() {
           <div>
             <div className="flex items-center justify-between gap-4 mb-2">
               <h1 className="text-3xl font-bold">Events</h1>
-              <Link href="/past-events">
-                <Button variant="outline" size="sm" data-testid="button-past-events">
-                  <History className="w-4 h-4 mr-2" />
-                  Past
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={layoutMode === 'grid' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setLayoutMode('grid')}
+                  data-testid="button-layout-grid"
+                >
+                  <LayoutGrid className="w-4 h-4" />
                 </Button>
-              </Link>
+                <Button
+                  variant={layoutMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setLayoutMode('list')}
+                  data-testid="button-layout-list"
+                >
+                  <ListIcon className="w-4 h-4" />
+                </Button>
+                <Link href="/past-events">
+                  <Button variant="outline" size="sm" data-testid="button-past-events">
+                    <History className="w-4 h-4 mr-2" />
+                    Past
+                  </Button>
+                </Link>
+              </div>
             </div>
             <p className="text-muted-foreground">Discover what's happening at Frontier Tower</p>
           </div>
@@ -162,111 +182,205 @@ export default function Events() {
               </Button>
             </Link>
           </div>
-        ) : (
+        ) : layoutMode === 'grid' ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {upcomingEvents.map((event) => {
-                    const status = getEventStatus(event);
-                    const start = new Date(event.startDate);
-                    const end = new Date(event.endDate);
+            {upcomingEvents.map((event) => {
+              const status = getEventStatus(event);
+              const start = new Date(event.startDate);
+              const end = new Date(event.endDate);
 
-                    return (
-                      <Card
-                        key={event.id}
-                        className="overflow-hidden hover-elevate transition-all"
-                        data-testid={`card-event-${event.id}`}
-                      >
-                        {event.imageUrl && (
-                          <div className="w-full h-48 overflow-hidden">
-                            <img
-                              src={event.imageUrl}
-                              alt={event.name}
-                              className="w-full h-full object-cover"
-                              data-testid={`img-event-${event.id}`}
-                            />
+              return (
+                <Card
+                  key={event.id}
+                  className="overflow-hidden hover-elevate transition-all"
+                  data-testid={`card-event-${event.id}`}
+                >
+                  {event.imageUrl && (
+                    <div className="w-full h-48 overflow-hidden">
+                      <img
+                        src={event.imageUrl}
+                        alt={event.name}
+                        className="w-full h-full object-cover"
+                        data-testid={`img-event-${event.id}`}
+                      />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <div className="mb-4">
+                      <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
+                        {event.name}
+                      </h3>
+                    </div>
+
+                    {cleanDescription(event.description) && (
+                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
+                        {cleanDescription(event.description)}
+                      </p>
+                    )}
+
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                        <span data-testid={`text-date-${event.id}`}>
+                          {format(new Date(event.startDate), "MMM d, yyyy")}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-sm">
+                        <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                        <span data-testid={`text-time-${event.id}`}>
+                          {format(start, "h:mm a")} - {format(end, "h:mm a")}
+                        </span>
+                      </div>
+
+                      {cleanHostName(event.host) && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
+                            Hosted by {cleanHostName(event.host)}
+                          </span>
+                        </div>
+                      )}
+
+                      {event.originalLocation && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <span className="text-muted-foreground" data-testid={`text-location-${event.id}`}>
+                            {event.originalLocation}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {event.currentAttendees && event.currentAttendees > 0 && (
+                      <div className="mt-4 pt-4 border-t">
+                        <div className="flex items-center justify-between gap-2 text-sm">
+                          <span className="text-muted-foreground">Attendees</span>
+                          <span className="font-medium" data-testid={`text-attendees-${event.id}`}>
+                            {event.currentAttendees}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {event.url && (
+                      <div className="mt-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full"
+                          asChild
+                          data-testid={`button-view-event-${event.id}`}
+                        >
+                          <a
+                            href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View Event
+                            <ExternalLink className="ml-2 h-4 w-4" />
+                          </a>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {upcomingEvents.map((event) => {
+              const status = getEventStatus(event);
+              const start = new Date(event.startDate);
+              const end = new Date(event.endDate);
+
+              return (
+                <Card
+                  key={event.id}
+                  className="overflow-hidden hover-elevate transition-all"
+                  data-testid={`list-event-${event.id}`}
+                >
+                  <div className="p-4">
+                    <div className="flex gap-4 items-start">
+                      {event.imageUrl && (
+                        <div className="w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
+                          <img
+                            src={event.imageUrl}
+                            alt={event.name}
+                            className="w-full h-full object-cover"
+                            data-testid={`img-list-event-${event.id}`}
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-semibold line-clamp-2 mb-2" data-testid={`text-list-event-name-${event.id}`}>
+                          {event.name}
+                        </h3>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3 text-sm">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                            <span data-testid={`text-list-date-${event.id}`}>
+                              {format(start, "MMM d")}
+                            </span>
                           </div>
-                        )}
-                        <div className="p-6">
-                          <div className="mb-4">
-                            <h3 className="text-lg font-semibold line-clamp-2" data-testid={`text-event-name-${event.id}`}>
-                              {event.name}
-                            </h3>
+
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                            <span data-testid={`text-list-time-${event.id}`}>
+                              {format(start, "h:mm a")}
+                            </span>
                           </div>
 
-                          {cleanDescription(event.description) && (
-                            <p className="text-sm text-muted-foreground mb-4 line-clamp-3" data-testid={`text-description-${event.id}`}>
-                              {cleanDescription(event.description)}
-                            </p>
-                          )}
-
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-sm">
-                              <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                              <span data-testid={`text-date-${event.id}`}>
-                                {format(start, "MMM d, yyyy")}
+                          {cleanHostName(event.host) && (
+                            <div className="flex items-center gap-2">
+                              <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                              <span className="text-muted-foreground truncate" data-testid={`text-list-host-${event.id}`}>
+                                {cleanHostName(event.host)}
                               </span>
                             </div>
-
-                            <div className="flex items-center gap-2 text-sm">
-                              <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                              <span data-testid={`text-time-${event.id}`}>
-                                {format(start, "h:mm a")} - {format(end, "h:mm a")}
-                              </span>
-                            </div>
-
-                            {cleanHostName(event.host) && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                                <span className="text-muted-foreground" data-testid={`text-host-${event.id}`}>
-                                  Hosted by {cleanHostName(event.host)}
-                                </span>
-                              </div>
-                            )}
-
-                            {event.originalLocation && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                                <span className="text-muted-foreground" data-testid={`text-location-${event.id}`}>
-                                  {event.originalLocation}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-
-                          {event.currentAttendees && event.currentAttendees > 0 && (
-                            <div className="mt-4 pt-4 border-t">
-                              <div className="flex items-center justify-between gap-2 text-sm">
-                                <span className="text-muted-foreground">Attendees</span>
-                                <span className="font-medium" data-testid={`text-attendees-${event.id}`}>
-                                  {event.currentAttendees}
-                                </span>
-                              </div>
-                            </div>
                           )}
 
-                          {event.url && (
-                            <div className="mt-4">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full"
-                                asChild
-                                data-testid={`button-view-event-${event.id}`}
-                              >
-                                <a
-                                  href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  View Event
-                                  <ExternalLink className="ml-2 h-4 w-4" />
-                                </a>
-                              </Button>
+                          {event.originalLocation && (
+                            <div className="flex items-center gap-2">
+                              <MapPin className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                              <span className="text-muted-foreground truncate" data-testid={`text-list-location-${event.id}`}>
+                                {event.originalLocation}
+                              </span>
                             </div>
                           )}
                         </div>
-                      </Card>
-                    );
-                  })}
+
+                        {cleanDescription(event.description) && (
+                          <p className="text-sm text-muted-foreground mb-3 line-clamp-2" data-testid={`text-list-description-${event.id}`}>
+                            {cleanDescription(event.description)}
+                          </p>
+                        )}
+
+                        {event.url && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            data-testid={`button-list-view-event-${event.id}`}
+                          >
+                            <a
+                              href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View Event
+                              <ExternalLink className="ml-2 h-4 w-4" />
+                            </a>
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         )}
       </div>
