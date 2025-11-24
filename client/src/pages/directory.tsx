@@ -223,22 +223,6 @@ export default function Directory() {
           {/* Sort Buttons */}
           <div className="flex items-center gap-2 flex-wrap">
             <Button
-              variant={sortMode === "floor-asc" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSortMode("floor-asc")}
-              data-testid="button-sort-floor-asc"
-            >
-              Floors 1-16
-            </Button>
-            <Button
-              variant={sortMode === "floor-desc" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSortMode("floor-desc")}
-              data-testid="button-sort-floor-desc"
-            >
-              Floors 16-1
-            </Button>
-            <Button
               variant={sortMode === "name-asc" ? "default" : "outline"}
               size="sm"
               onClick={() => setSortMode("name-asc")}
@@ -253,6 +237,22 @@ export default function Directory() {
               data-testid="button-sort-name-desc"
             >
               Name Z-A
+            </Button>
+            <Button
+              variant={sortMode === "floor-asc" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSortMode("floor-asc")}
+              data-testid="button-sort-floor-asc"
+            >
+              Floors 1-16
+            </Button>
+            <Button
+              variant={sortMode === "floor-desc" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSortMode("floor-desc")}
+              data-testid="button-sort-floor-desc"
+            >
+              Floors 16-1
             </Button>
           </div>
         </div>
