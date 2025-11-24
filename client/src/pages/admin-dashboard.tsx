@@ -1039,7 +1039,9 @@ export default function AdminDashboard() {
                           )}
                         </TableCell>
                         <TableCell className="text-sm max-w-xs whitespace-normal">
-                          {event.description || "-"}
+                          <div className="line-clamp-3">
+                            {event.description || "-"}
+                          </div>
                         </TableCell>
                         <TableCell className="text-sm whitespace-nowrap">
                           {new Date(event.startDate).toLocaleDateString()}
