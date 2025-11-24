@@ -21,7 +21,7 @@ function slugify(text: string): string {
 
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
-  const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("floor-asc");
+  const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("name-asc");
   const [selectedTypes, setSelectedTypes] = useState<Set<"company" | "person" | "community">>(new Set());
   const [searchQuery, setSearchQuery] = useState<string>("");
   
