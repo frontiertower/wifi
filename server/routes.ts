@@ -1282,6 +1282,12 @@ Rules:
             }
           }
 
+          // Clean location by removing "Frontier Tower @" prefix
+          let cleanedLocation = externalEvent.originalLocation || externalEvent.location || null;
+          if (cleanedLocation && typeof cleanedLocation === 'string') {
+            cleanedLocation = cleanedLocation.replace(/^Frontier Tower @\s*/i, '').trim() || null;
+          }
+
           const eventData: any = {
             name: externalEvent.name,
             code: code,
@@ -1289,7 +1295,7 @@ Rules:
             startDate,
             endDate,
             host: externalEvent.host || null,
-            originalLocation: externalEvent.originalLocation || externalEvent.location || null,
+            originalLocation: cleanedLocation,
             color: externalEvent.color || null,
             externalId: externalEvent.id,
             source: externalEvent.source,
