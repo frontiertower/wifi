@@ -367,32 +367,33 @@ export default function Events() {
 
                         {cleanDescription(event.description) && (
                           <p 
-                            className={`text-sm text-muted-foreground mb-3 ${isExpanded ? '' : 'line-clamp-2'}`}
+                            className={`text-sm text-muted-foreground ${isExpanded ? '' : 'line-clamp-2'}`}
                             data-testid={`text-list-description-${event.id}`}
                           >
                             {cleanDescription(event.description)}
                           </p>
                         )}
-
-                        {event.url && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            data-testid={`button-list-view-event-${event.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <a
-                              href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              View Event
-                              <ExternalLink className="ml-2 h-4 w-4" />
-                            </a>
-                          </Button>
-                        )}
                       </div>
+
+                      {event.url && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="flex-shrink-0"
+                          data-testid={`button-list-view-event-${event.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <a
+                            href={event.url.trim().startsWith('http') ? event.url.trim() : `https://lu.ma/${event.url.trim()}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Open
+                            <ExternalLink className="ml-2 h-4 w-4" />
+                          </a>
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </Card>
