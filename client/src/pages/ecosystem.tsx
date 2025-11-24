@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Search, Rocket } from "lucide-react";
+import { ExternalLink, Search, Rocket, Linkedin, Mail } from "lucide-react";
+import { Twitter } from "react-icons/si";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,9 @@ interface App {
   icon?: string;
   logoUrl?: string;
   isDirectoryCompany?: boolean;
+  linkedinUrl?: string;
+  twitterHandle?: string;
+  email?: string;
 }
 
 export default function EcosystemPage() {
@@ -38,6 +42,9 @@ export default function EcosystemPage() {
           url: listing.website || `#`,
           description: listing.description || "Building innovation at Frontier Tower",
           logoUrl: listing.logoUrl,
+          linkedinUrl: listing.linkedinUrl,
+          twitterHandle: listing.twitterHandle,
+          email: listing.email,
           isDirectoryCompany: true,
         }))
         .filter((app) => app.name);
@@ -140,6 +147,59 @@ export default function EcosystemPage() {
                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow">
                     {app.description}
                   </p>
+
+                  {/* Social Media Buttons */}
+                  <div className="flex gap-2 flex-wrap">
+                    {app.linkedinUrl && (
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        data-testid={`button-linkedin-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
+                      >
+                        <a
+                          href={app.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="LinkedIn"
+                        >
+                          <Linkedin className="w-4 h-4" />
+                        </a>
+                      </Button>
+                    )}
+                    {app.twitterHandle && (
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        data-testid={`button-twitter-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
+                      >
+                        <a
+                          href={`https://twitter.com/${app.twitterHandle.replace("@", "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Twitter"
+                        >
+                          <Twitter className="w-4 h-4" />
+                        </a>
+                      </Button>
+                    )}
+                    {app.email && (
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        data-testid={`button-email-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
+                      >
+                        <a
+                          href={`mailto:${app.email}`}
+                          title="Email"
+                        >
+                          <Mail className="w-4 h-4" />
+                        </a>
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </Card>
             ))}
