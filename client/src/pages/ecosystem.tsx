@@ -124,81 +124,60 @@ export default function EcosystemPage() {
                         </h3>
                       </div>
                     </div>
-                    {app.url !== "#" && (
-                      <Button
-                        asChild
-                        variant="default"
-                        size="sm"
-                        className="flex-shrink-0"
-                        data-testid={`button-open-app-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
-                      >
-                        <a
-                          href={app.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Open
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-grow">
-                    {app.description}
-                  </p>
-
-                  {/* Social Media Buttons */}
-                  <div className="flex gap-2 flex-wrap">
-                    {app.linkedinUrl && (
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        data-testid={`button-linkedin-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
-                      >
+                    {/* Icon Links */}
+                    <div className="flex gap-1 flex-shrink-0">
+                      {app.linkedinUrl && (
                         <a
                           href={app.linkedinUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           title="LinkedIn"
+                          className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                          data-testid={`link-linkedin-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
                         >
                           <Linkedin className="w-4 h-4" />
                         </a>
-                      </Button>
-                    )}
-                    {app.twitterHandle && (
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        data-testid={`button-twitter-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
-                      >
+                      )}
+                      {app.twitterHandle && (
                         <a
                           href={`https://twitter.com/${app.twitterHandle.replace("@", "")}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          title="Twitter"
+                          title="Twitter/X"
+                          className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                          data-testid={`link-twitter-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
                         >
                           <Share2 className="w-4 h-4" />
                         </a>
-                      </Button>
-                    )}
-                    {app.email && (
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        data-testid={`button-email-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
-                      >
+                      )}
+                      {app.email && (
                         <a
                           href={`mailto:${app.email}`}
                           title="Email"
+                          className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                          data-testid={`link-email-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
                         >
                           <Mail className="w-4 h-4" />
                         </a>
-                      </Button>
-                    )}
+                      )}
+                      {app.url !== "#" && (
+                        <a
+                          href={app.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Visit website"
+                          className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                          data-testid={`link-open-${app.name.replace(/\s+/g, "-").toLowerCase()}`}
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
                   </div>
+
+                  <p className="text-sm text-gray-600 dark:text-gray-300 flex-grow">
+                    {app.description}
+                  </p>
                 </div>
               </Card>
             ))}
