@@ -16,6 +16,7 @@ interface App {
   url: string;
   description: string;
   icon?: string;
+  logoUrl?: string;
   isDirectoryCompany?: boolean;
 }
 
@@ -36,6 +37,7 @@ export default function EcosystemPage() {
           name: listing.companyName || "",
           url: listing.website || `#`,
           description: listing.description || "Building innovation at Frontier Tower",
+          logoUrl: listing.logoUrl,
           isDirectoryCompany: true,
         }))
         .filter((app) => app.name);
@@ -94,8 +96,21 @@ export default function EcosystemPage() {
                 <div className="p-6 h-full flex flex-col">
                   <div className="flex items-start justify-between gap-2 mb-4">
                     <div className="flex items-start gap-3 flex-1">
-                      {app.icon && (
+                      {app.logoUrl ? (
+                        <img 
+                          src={app.logoUrl} 
+                          alt={app.name}
+                          className="w-10 h-10 rounded-lg object-contain flex-shrink-0"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : app.icon ? (
                         <div className="text-3xl flex-shrink-0">{app.icon}</div>
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
+                          <Rocket className="w-6 h-6 text-blue-600 dark:text-blue-300" />
+                        </div>
                       )}
                       <div className="flex-1">
                         <h3 className="font-bold text-lg text-gray-900 dark:text-white line-clamp-2">
