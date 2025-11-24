@@ -208,6 +208,10 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
         <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4 ${isFlashing ? 'screen-flash' : ''}`}
           onAnimationEnd={() => setIsFlashing(false)}
         >
+          <div className="absolute top-6 left-6 z-50">
+            <Rabbit className="w-6 h-6 text-gray-600 dark:text-gray-300" />
+          </div>
+          
           <div className="absolute top-6 right-6 z-50">
             <ThemeToggle />
           </div>
