@@ -1729,10 +1729,12 @@ Rules:
       
       const listing = await storage.createDirectoryListing(data);
       res.json({ success: true, listing });
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Error creating directory listing:", error);
       res.status(500).json({
         success: false,
-        message: "Failed to create directory listing"
+        message: error.message || "Failed to create directory listing",
+        details: process.env.NODE_ENV === "development" ? error.toString() : undefined
       });
     }
   });

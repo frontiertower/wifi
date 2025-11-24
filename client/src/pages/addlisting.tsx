@@ -56,16 +56,21 @@ export default function AddListing() {
   const createListingMutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await apiRequest("POST", "/api/directory", data);
-      return response.json();
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to add directory listing");
+      }
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/directory"] });
       setShowSuccess(true);
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error("Directory listing error:", error);
       toast({
         title: "Error",
-        description: "Failed to add directory listing",
+        description: error.message || "Failed to add directory listing",
         variant: "destructive",
       });
     },
