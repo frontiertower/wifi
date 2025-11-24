@@ -239,21 +239,19 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
           <div className="p-6">
             <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600 flex justify-center">
               <Select value={language} onValueChange={handleLanguageChange}>
-                <SelectTrigger className="w-[200px]" data-testid="language-selector">
-                  <SelectValue>
-                    {languageOptions.find(lang => lang.code === language) && (
-                      <span className="flex items-center gap-2">
-                        <span className="text-xl">{languageOptions.find(lang => lang.code === language)?.flag}</span>
-                        <span>{languageOptions.find(lang => lang.code === language)?.name}</span>
-                      </span>
-                    )}
-                  </SelectValue>
+                <SelectTrigger className="w-56" data-testid="language-selector">
+                  {languageOptions.find(lang => lang.code === language) && (
+                    <span className="flex items-center gap-2">
+                      <span>{languageOptions.find(lang => lang.code === language)?.flag}</span>
+                      <span>{languageOptions.find(lang => lang.code === language)?.name}</span>
+                    </span>
+                  )}
                 </SelectTrigger>
                 <SelectContent>
                   {languageOptions.map(lang => (
                     <SelectItem key={lang.code} value={lang.code} data-testid={`language-${lang.code}`}>
                       <span className="flex items-center gap-2">
-                        <span className="text-xl">{lang.flag}</span>
+                        <span>{lang.flag}</span>
                         <span>{lang.name}</span>
                       </span>
                     </SelectItem>
