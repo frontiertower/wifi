@@ -1456,7 +1456,7 @@ export default function AdminDashboard() {
                       <TableHead>Email</TableHead>
                       <TableHead>Phone</TableHead>
                       <TableHead>Tour Interest</TableHead>
-                      <TableHead>Guest Type</TableHead>
+                      <TableHead>Source</TableHead>
                       <TableHead>Registered</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -1481,10 +1481,13 @@ export default function AdminDashboard() {
                             )}
                           </TableCell>
                           <TableCell>
-                            {user.guestType === "member" && <Badge variant="outline">Guest of Member</Badge>}
-                            {user.guestType === "event" && <Badge variant="outline">Event Guest</Badge>}
-                            {user.guestType === "tower_member" && <Badge variant="outline">Tower Member</Badge>}
-                            {user.guestType === "visitor" && <Badge variant="outline">Visitor</Badge>}
+                            {user.guestType === "event" && user.eventName ? (
+                              <span className="font-medium">{user.eventName}</span>
+                            ) : user.guestType === "member" && user.host ? (
+                              <span className="font-medium">{user.host}</span>
+                            ) : (
+                              <span className="text-gray-500 dark:text-gray-400">-</span>
+                            )}
                           </TableCell>
                           <TableCell className="text-sm text-gray-500">
                             {user.createdAt ? new Date(user.createdAt).toLocaleString() : "N/A"}
