@@ -495,23 +495,41 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                 <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: "drop-shadow(0 0 10px rgba(0,0,0,0.5))" }}>
                   {crackIntensity >= 1 && <line x1="50%" y1="0%" x2="45%" y2="100%" stroke="rgba(0,0,0,0.6)" strokeWidth="3" />}
                   {crackIntensity >= 2 && <line x1="30%" y1="20%" x2="70%" y2="80%" stroke="rgba(0,0,0,0.5)" strokeWidth="2" />}
-                  {crackIntensity >= 3 && <line x1="70%" y1="10%" x2="20%" y2="90%" stroke="rgba(0,0,0,0.5)" strokeWidth="2" />}
+                  {crackIntensity >= 2 && <line x1="70%" y1="10%" x2="20%" y2="90%" stroke="rgba(0,0,0,0.5)" strokeWidth="2" />}
+                  {crackIntensity >= 3 && <line x1="15%" y1="0%" x2="85%" y2="100%" stroke="rgba(0,0,0,0.4)" strokeWidth="2" />}
+                  {crackIntensity >= 3 && <line x1="85%" y1="5%" x2="10%" y2="95%" stroke="rgba(0,0,0,0.4)" strokeWidth="2" />}
                   {crackIntensity >= 4 && <line x1="50%" y1="0%" x2="40%" y2="60%" stroke="rgba(0,0,0,0.4)" strokeWidth="2" />}
+                  {crackIntensity >= 4 && <line x1="45%" y1="100%" x2="55%" y2="30%" stroke="rgba(0,0,0,0.35)" strokeWidth="2" />}
                   {crackIntensity >= 5 && <line x1="60%" y1="30%" x2="30%" y2="70%" stroke="rgba(0,0,0,0.4)" strokeWidth="2" />}
+                  {crackIntensity >= 5 && <line x1="25%" y1="50%" x2="75%" y2="50%" stroke="rgba(255,255,255,0.15)" strokeWidth="2" />}
                   
                   {crackIntensity >= 6 && <polygon points="0,0 100,0 100,50 0,40" fill="rgba(0,0,0,0.15)" />}
+                  {crackIntensity >= 6 && <line x1="40%" y1="0%" x2="35%" y2="100%" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />}
+                  {crackIntensity >= 6 && <line x1="60%" y1="0%" x2="65%" y2="100%" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />}
+                  
                   {crackIntensity >= 7 && <polygon points="0,100 100,100 100,60 0,70" fill="rgba(0,0,0,0.15)" />}
+                  {crackIntensity >= 7 && <line x1="10%" y1="20%" x2="90%" y2="80%" stroke="rgba(0,0,0,0.3)" strokeWidth="1.5" />}
+                  {crackIntensity >= 7 && <line x1="90%" y1="20%" x2="10%" y2="80%" stroke="rgba(0,0,0,0.3)" strokeWidth="1.5" />}
+                  
                   {crackIntensity >= 8 && <polygon points="0,0 30,0 25,50 0,45" fill="rgba(0,0,0,0.2)" />}
+                  {crackIntensity >= 8 && <line x1="33%" y1="0%" x2="28%" y2="100%" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />}
+                  {crackIntensity >= 8 && <line x1="67%" y1="0%" x2="72%" y2="100%" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />}
                   
                   {crackIntensity >= 5 && <line x1="0%" y1="50%" x2="100%" y2="50%" stroke="rgba(0,0,0,0.3)" strokeWidth="1" className="zigzag-line" strokeDasharray="5,5" />}
                   {crackIntensity >= 6 && <line x1="20%" y1="0%" x2="20%" y2="100%" stroke="rgba(0,0,0,0.25)" strokeWidth="1" className="zigzag-line" strokeDasharray="5,5" />}
+                  {crackIntensity >= 6 && <line x1="50%" y1="0%" x2="50%" y2="100%" stroke="rgba(255,255,255,0.1)" strokeWidth="1" className="zigzag-line" strokeDasharray="5,5" />}
                   {crackIntensity >= 7 && <line x1="80%" y1="0%" x2="80%" y2="100%" stroke="rgba(0,0,0,0.25)" strokeWidth="1" className="zigzag-line" strokeDasharray="5,5" />}
                   {crackIntensity >= 7 && <line x1="0%" y1="25%" x2="100%" y2="25%" stroke="rgba(0,0,0,0.2)" strokeWidth="1" className="zigzag-line" strokeDasharray="5,5" />}
                   {crackIntensity >= 8 && <line x1="0%" y1="75%" x2="100%" y2="75%" stroke="rgba(0,0,0,0.2)" strokeWidth="1" className="zigzag-line" strokeDasharray="5,5" />}
+                  {crackIntensity >= 8 && <line x1="35%" y1="0%" x2="35%" y2="100%" stroke="rgba(255,255,255,0.15)" strokeWidth="1" className="zigzag-line" strokeDasharray="5,5" />}
+                  {crackIntensity >= 8 && <line x1="65%" y1="0%" x2="65%" y2="100%" stroke="rgba(255,255,255,0.15)" strokeWidth="1" className="zigzag-line" strokeDasharray="5,5" />}
                   
                   {crackIntensity >= 7 && <line x1="35%" y1="0%" x2="45%" y2="100%" stroke="rgba(255,255,255,0.2)" strokeWidth="1" className="flicker-line" />}
+                  {crackIntensity >= 7 && <line x1="15%" y1="50%" x2="85%" y2="50%" stroke="rgba(0,0,0,0.25)" strokeWidth="1" className="flicker-line" />}
                   {crackIntensity >= 8 && <line x1="55%" y1="0%" x2="65%" y2="100%" stroke="rgba(255,255,255,0.2)" strokeWidth="1" className="flicker-line" />}
                   {crackIntensity >= 8 && <line x1="25%" y1="50%" x2="75%" y2="50%" stroke="rgba(255,255,255,0.15)" strokeWidth="1" className="flicker-line" />}
+                  {crackIntensity >= 8 && <line x1="5%" y1="0%" x2="20%" y2="100%" stroke="rgba(255,255,255,0.1)" strokeWidth="1" className="flicker-line" />}
+                  {crackIntensity >= 8 && <line x1="80%" y1="0%" x2="95%" y2="100%" stroke="rgba(255,255,255,0.1)" strokeWidth="1" className="flicker-line" />}
                   
                   {crackIntensity >= 8 && (
                     <>
