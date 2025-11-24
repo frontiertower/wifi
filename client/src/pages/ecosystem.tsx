@@ -27,7 +27,7 @@ export default function EcosystemPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [allApps, setAllApps] = useState<App[]>([]);
 
-  const { data: dirListings } = useQuery<DirectoryListingsResponse>({
+  const { data: dirListings, isLoading } = useQuery<DirectoryListingsResponse>({
     queryKey: ["/api/directory"],
   });
 
@@ -185,7 +185,7 @@ export default function EcosystemPage() {
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-500 dark:text-gray-400 text-lg">
-              No apps found matching your search.
+              {isLoading ? "Loading..." : "No apps found matching your search."}
             </p>
           </div>
         )}
