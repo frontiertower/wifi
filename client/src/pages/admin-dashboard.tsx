@@ -29,7 +29,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing, JobApplication } from "@shared/schema";
+import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing, JobApplication, ResidencyBooking } from "@shared/schema";
 
 type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers";
 
@@ -87,6 +87,10 @@ interface MembershipApplicationsResponse {
 
 interface ChatInviteRequestsResponse {
   requests?: ChatInviteRequest[];
+}
+
+interface ResidencyBookingsResponse {
+  bookings?: ResidencyBooking[];
 }
 
 interface BookingsResponse {
@@ -231,6 +235,11 @@ export default function AdminDashboard() {
 
   const { data: chatInviteRequests } = useQuery<ChatInviteRequestsResponse>({
     queryKey: ['/api/admin/chat-invite-requests'],
+    enabled: activeTab === "leads",
+  });
+
+  const { data: residencyBookings } = useQuery<ResidencyBookingsResponse>({
+    queryKey: ['/api/residency-bookings'],
     enabled: activeTab === "leads",
   });
 
