@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { z } from "zod";
 import { storage } from "./storage";
-import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema, insertJobApplicationSchema, insertJobListingSchema } from "@shared/schema";
+import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema, insertJobApplicationSchema, insertJobListingSchema, insertResidencyBookingSchema } from "@shared/schema";
 import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";

@@ -289,6 +289,20 @@ export const jobListings = pgTable("job_listings", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const residencyBookings = pgTable("residency_bookings", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  checkInDate: timestamp("check_in_date").notNull(),
+  checkOutDate: timestamp("check_out_date").notNull(),
+  numberOfGuests: integer("number_of_guests").notNull(),
+  roomPreference: text("room_preference").notNull(),
+  specialRequests: text("special_requests"),
+  status: text("status").default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const captiveUsersRelations = relations(captiveUsers, ({ many }) => ({
   sessions: many(sessions),
@@ -494,6 +508,24 @@ export const insertJobListingSchema = createInsertSchema(jobListings).omit({
   createdBy: z.string().max(100, "Name must be less than 100 characters").optional(),
 });
 
+export const insertResidencyBookingSchema = createInsertSchema(residencyBookings).omit({
+  id: true,
+  status: true,
+  createdAt: true,
+}).extend({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Valid email is required").min(1, "Email is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  checkInDate: z.coerce.date(),
+  checkOutDate: z.coerce.date(),
+  numberOfGuests: z.number().min(1, "Must have at least 1 guest"),
+  roomPreference: z.string().min(1, "Room preference is required"),
+  specialRequests: z.string().optional(),
+}).refine(
+  (data) => new Date(data.checkOutDate) > new Date(data.checkInDate),
+  { message: "Check-out date must be after check-in date", path: ["checkOutDate"] }
+);
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -532,3 +564,5 @@ export type AdminLogin = typeof adminLogins.$inferSelect;
 export type InsertAdminLogin = z.infer<typeof insertAdminLoginSchema>;
 export type JobListing = typeof jobListings.$inferSelect;
 export type InsertJobListing = z.infer<typeof insertJobListingSchema>;
+export type ResidencyBooking = typeof residencyBookings.$inferSelect;
+export type InsertResidencyBooking = z.infer<typeof insertResidencyBookingSchema>;
