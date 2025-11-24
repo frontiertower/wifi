@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, jobApplications, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, jobListings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type JobApplication, type InsertJobApplication, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin, type JobListing, type InsertJobListing } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, jobApplications, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, jobListings, residencyBookings, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type JobApplication, type InsertJobApplication, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin, type JobListing, type InsertJobListing, type ResidencyBooking, type InsertResidencyBooking } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -1002,6 +1002,21 @@ export class DatabaseStorage {
       .update(jobListings)
       .set({ isActive: false })
       .where(eq(jobListings.id, id));
+  }
+
+  async createResidencyBooking(insertResidencyBooking: InsertResidencyBooking): Promise<ResidencyBooking> {
+    const [booking] = await db
+      .insert(residencyBookings)
+      .values(insertResidencyBooking)
+      .returning();
+    return booking;
+  }
+
+  async getResidencyBookings(): Promise<ResidencyBooking[]> {
+    return await db
+      .select()
+      .from(residencyBookings)
+      .orderBy(sql`${residencyBookings.createdAt} DESC`);
   }
 }
 

@@ -1692,6 +1692,57 @@ export default function AdminDashboard() {
               </div>
             </Card>
 
+            {/* SuperHero Residency Leads */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                SuperHero Residency Leads ({residencyBookings?.bookings?.length || 0})
+              </h2>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Check-In</TableHead>
+                      <TableHead>Check-Out</TableHead>
+                      <TableHead>Guests</TableHead>
+                      <TableHead>Room Preference</TableHead>
+                      <TableHead>Submitted</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {residencyBookings?.bookings?.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
+                          No residency bookings yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      residencyBookings?.bookings?.map((booking) => (
+                        <TableRow key={booking.id} data-testid={`residency-booking-${booking.id}`}>
+                          <TableCell className="font-medium">{booking.name}</TableCell>
+                          <TableCell>{booking.email}</TableCell>
+                          <TableCell>{booking.phone}</TableCell>
+                          <TableCell className="text-sm">
+                            {new Date(booking.checkInDate).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            {new Date(booking.checkOutDate).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell className="text-center">{booking.numberOfGuests}</TableCell>
+                          <TableCell className="text-sm">{booking.roomPreference || 'N/A'}</TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {booking.createdAt ? new Date(booking.createdAt).toLocaleString() : 'N/A'}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+
             {/* Chat Invite Requests */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">

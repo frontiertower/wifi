@@ -2697,6 +2697,47 @@ Rules:
     }
   });
 
+  // Residency Bookings Routes
+  app.post("/api/residency-bookings", async (req, res) => {
+    try {
+      const validatedData = insertResidencyBookingSchema.parse(req.body);
+      
+      const booking = await storage.createResidencyBooking(validatedData);
+      
+      // Send email notification (non-blocking)
+      const { emailService } = await import("./email");
+      emailService.sendResidencyBookingNotification(booking).catch((error) => {
+        console.error("Failed to send residency booking notification email:", error);
+      });
+      
+      res.json({ success: true, booking });
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({
+          success: false,
+          message: error.errors[0]?.message || "Invalid residency booking data"
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        message: "Failed to create residency booking"
+      });
+    }
+  });
+
+  app.get("/api/residency-bookings", verifyAdminSession, async (req, res) => {
+    try {
+      const bookings = await storage.getResidencyBookings();
+      res.json({ success: true, bookings });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch residency bookings"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
