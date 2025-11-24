@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut, Briefcase, Check, Star } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
@@ -169,6 +169,8 @@ export default function AdminDashboard() {
   const [showEventForm, setShowEventForm] = useState(false);
   const [bulkEventText, setBulkEventText] = useState("");
   const [eventFilter, setEventFilter] = useState<"upcoming" | "past">("upcoming");
+  const [selectedLeadTypes, setSelectedLeadTypes] = useState<Set<string>>(new Set());
+  const [selectedLeadStatuses, setSelectedLeadStatuses] = useState<Set<string>>(new Set());
   const [editingDirectoryId, setEditingDirectoryId] = useState<number | null>(null);
   const [editDirectoryForm, setEditDirectoryForm] = useState<Partial<DirectoryListing>>({});
   const [deleteDirectoryId, setDeleteDirectoryId] = useState<number | null>(null);
@@ -215,6 +217,27 @@ export default function AdminDashboard() {
     window.location.hash = tab;
   };
 
+  // Filter toggle functions for leads
+  const toggleLeadType = (type: string) => {
+    const newTypes = new Set(selectedLeadTypes);
+    if (newTypes.has(type)) {
+      newTypes.delete(type);
+    } else {
+      newTypes.add(type);
+    }
+    setSelectedLeadTypes(newTypes);
+  };
+
+  const toggleLeadStatus = (status: string) => {
+    const newStatuses = new Set(selectedLeadStatuses);
+    if (newStatuses.has(status)) {
+      newStatuses.delete(status);
+    } else {
+      newStatuses.add(status);
+    }
+    setSelectedLeadStatuses(newStatuses);
+  };
+
   const { data: stats } = useQuery<StatsResponse>({
     queryKey: ['/api/admin/stats'],
   });
@@ -238,6 +261,25 @@ export default function AdminDashboard() {
     queryKey: ['/api/admin/leads'],
     enabled: activeTab === "leads" || activeTab === "analytics",
   });
+
+  // Filter leads based on selected types and statuses
+  const filteredLeads = useMemo(() => {
+    if (!unifiedLeads?.leads) return [];
+    
+    let filtered = unifiedLeads.leads;
+    
+    // Filter by type if any types are selected
+    if (selectedLeadTypes.size > 0) {
+      filtered = filtered.filter(lead => selectedLeadTypes.has(lead.type));
+    }
+    
+    // Filter by status if any statuses are selected
+    if (selectedLeadStatuses.size > 0) {
+      filtered = filtered.filter(lead => selectedLeadStatuses.has(lead.status));
+    }
+    
+    return filtered;
+  }, [unifiedLeads?.leads, selectedLeadTypes, selectedLeadStatuses]);
 
   const { data: directoryData } = useQuery<DirectoryListingsResponse>({
     queryKey: ["/api/directory"],
@@ -1648,9 +1690,170 @@ export default function AdminDashboard() {
 
             {/* Unified Leads Table */}
             <Card className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                All Leads ({unifiedLeads?.leads?.length || 0})
-              </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  All Leads ({filteredLeads.length} {selectedLeadTypes.size > 0 || selectedLeadStatuses.size > 0 ? `of ${unifiedLeads?.leads?.length || 0}` : ''})
+                </h2>
+                {(selectedLeadTypes.size > 0 || selectedLeadStatuses.size > 0) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedLeadTypes(new Set());
+                      setSelectedLeadStatuses(new Set());
+                    }}
+                    data-testid="button-clear-filters"
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+              </div>
+
+              {/* Filter Buttons */}
+              <div className="space-y-4 mb-6">
+                {/* Type Filters */}
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Filter by Type</Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant={selectedLeadTypes.has('tour') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadType('tour')}
+                      data-testid="filter-type-tour"
+                    >
+                      Tour
+                    </Button>
+                    <Button
+                      variant={selectedLeadTypes.has('event-host') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadType('event-host')}
+                      data-testid="filter-type-event-host"
+                    >
+                      Event Host
+                    </Button>
+                    <Button
+                      variant={selectedLeadTypes.has('membership') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadType('membership')}
+                      data-testid="filter-type-membership"
+                    >
+                      Membership
+                    </Button>
+                    <Button
+                      variant={selectedLeadTypes.has('chat-invite') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadType('chat-invite')}
+                      data-testid="filter-type-chat-invite"
+                    >
+                      Chat Invite
+                    </Button>
+                    <Button
+                      variant={selectedLeadTypes.has('residency') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadType('residency')}
+                      data-testid="filter-type-residency"
+                    >
+                      Residency
+                    </Button>
+                    <Button
+                      variant={selectedLeadTypes.has('wifi-guest') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadType('wifi-guest')}
+                      data-testid="filter-type-wifi-guest"
+                    >
+                      WiFi Guest
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Status Filters */}
+                <div>
+                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Filter by Status</Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant={selectedLeadStatuses.has('pending') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('pending')}
+                      data-testid="filter-status-pending"
+                    >
+                      Pending
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('new') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('new')}
+                      data-testid="filter-status-new"
+                    >
+                      New
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('contacted') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('contacted')}
+                      data-testid="filter-status-contacted"
+                    >
+                      Contacted
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('scheduled') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('scheduled')}
+                      data-testid="filter-status-scheduled"
+                    >
+                      Scheduled
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('interviewed') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('interviewed')}
+                      data-testid="filter-status-interviewed"
+                    >
+                      Interviewed
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('rejected') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('rejected')}
+                      data-testid="filter-status-rejected"
+                    >
+                      Rejected
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('approved') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('approved')}
+                      data-testid="filter-status-approved"
+                    >
+                      Approved
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('paid') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('paid')}
+                      data-testid="filter-status-paid"
+                    >
+                      Paid
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('quoted') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('quoted')}
+                      data-testid="filter-status-quoted"
+                    >
+                      Quoted
+                    </Button>
+                    <Button
+                      variant={selectedLeadStatuses.has('citizen') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadStatus('citizen')}
+                      data-testid="filter-status-citizen"
+                    >
+                      Citizen
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -1664,14 +1867,14 @@ export default function AdminDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {!unifiedLeads?.leads || unifiedLeads.leads.length === 0 ? (
+                    {filteredLeads.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center text-gray-500 dark:text-gray-400">
-                          No leads yet
+                          {unifiedLeads?.leads && unifiedLeads.leads.length > 0 ? 'No leads match the selected filters' : 'No leads yet'}
                         </TableCell>
                       </TableRow>
                     ) : (
-                      unifiedLeads.leads.map((lead) => (
+                      filteredLeads.map((lead) => (
                         <TableRow key={`${lead.type}-${lead.id}`} data-testid={`lead-${lead.type}-${lead.id}`}>
                           <TableCell>
                             <Badge variant="outline" data-testid={`badge-type-${lead.type}`}>
