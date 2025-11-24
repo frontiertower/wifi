@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Search, Rocket, Linkedin, Mail } from "lucide-react";
-import { Twitter } from "react-icons/si";
+import { ExternalLink, Search, Rocket, Linkedin, Mail, Share2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,11 +16,11 @@ interface App {
   url: string;
   description: string;
   icon?: string;
-  logoUrl?: string;
+  logoUrl?: string | null;
   isDirectoryCompany?: boolean;
-  linkedinUrl?: string;
-  twitterHandle?: string;
-  email?: string;
+  linkedinUrl?: string | null;
+  twitterHandle?: string | null;
+  email?: string | null;
 }
 
 export default function EcosystemPage() {
@@ -180,7 +179,7 @@ export default function EcosystemPage() {
                           rel="noopener noreferrer"
                           title="Twitter"
                         >
-                          <Twitter className="w-4 h-4" />
+                          <Share2 className="w-4 h-4" />
                         </a>
                       </Button>
                     )}
