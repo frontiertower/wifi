@@ -2884,7 +2884,7 @@ Rules:
       const { type, id } = req.params;
       const { status } = req.body;
 
-      const validStatuses = ['pending', 'new', 'contacted', 'scheduled', 'interviewed', 'rejected', 'approved', 'paid', 'quoted', 'citizen'];
+      const validStatuses = ['pending', 'new', 'contacted', 'scheduled', 'interviewed', 'rejected', 'approved', 'quoted', 'citizen'];
       
       if (!validStatuses.includes(status.toLowerCase())) {
         return res.status(400).json({

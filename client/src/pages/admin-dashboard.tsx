@@ -1650,14 +1650,6 @@ export default function AdminDashboard() {
                       Approved
                     </Button>
                     <Button
-                      variant={selectedLeadStatuses.has('paid') ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => toggleLeadStatus('paid')}
-                      data-testid="filter-status-paid"
-                    >
-                      Paid
-                    </Button>
-                    <Button
                       variant={selectedLeadStatuses.has('quoted') ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => toggleLeadStatus('quoted')}
@@ -1766,12 +1758,6 @@ export default function AdminDashboard() {
                                   data-testid={`status-option-approved-${lead.type}-${lead.id}`}
                                 >
                                   Approved
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'paid' })}
-                                  data-testid={`status-option-paid-${lead.type}-${lead.id}`}
-                                >
-                                  Paid
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'quoted' })}
