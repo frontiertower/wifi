@@ -7,6 +7,13 @@ import SlidingWelcome from "@/components/SlidingWelcome";
 import { ThemeToggle } from "@/components/theme-toggle";
 import frontierTowerQR from "@assets/frontier-tower-qr.png";
 import { translations, Language } from "@/lib/translations";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Role = "member" | "guest" | null;
 type PillChoice = "green" | "blue" | null;
@@ -26,6 +33,19 @@ interface UniFiParams {
   ssid?: string;
   mac?: string;
 }
+
+const languageOptions = [
+  { code: 'en', flag: '🇺🇸', name: 'English', route: '/' },
+  { code: 'de', flag: '🇩🇪', name: 'Deutsch', route: '/de' },
+  { code: 'es', flag: '🇪🇸', name: 'Español', route: '/es' },
+  { code: 'zh', flag: '🇨🇳', name: '中文', route: '/zh' },
+  { code: 'ko', flag: '🇰🇷', name: '한국어', route: '/ko' },
+  { code: 'ja', flag: '🇯🇵', name: '日本語', route: '/ja' },
+  { code: 'fr', flag: '🇫🇷', name: 'Français', route: '/fr' },
+  { code: 'hi', flag: '🇮🇳', name: 'हिन्दी', route: '/hi' },
+  { code: 'ar', flag: '🇦🇪', name: 'العربية', route: '/ar' },
+  { code: 'sw', flag: '🇹🇿', name: 'Swahili', route: '/sw' },
+];
 
 export default function HomeBase({ language = "en" }: { language?: Language }) {
   const t = translations[language];
@@ -57,6 +77,14 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
 
   const handleBack = () => {
     setSelectedRole(null);
+  };
+
+  const handleLanguageChange = (langCode: string) => {
+    const selectedLang = languageOptions.find(lang => lang.code === langCode);
+    if (selectedLang) {
+      const searchParams = typeof window !== 'undefined' ? window.location.search : '';
+      setLocation(selectedLang.route + searchParams);
+    }
   };
 
   const handleSuccess = async (data: SuccessData) => {
@@ -192,17 +220,29 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
           </div>
 
           <div className="p-6">
-            <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600 flex justify-center gap-2 flex-wrap">
-              <a href="/" className="text-2xl hover:scale-110 transition-transform" data-testid="language-en" title="English">🇺🇸</a>
-              <a href="/de" className="text-2xl hover:scale-110 transition-transform" data-testid="language-de" title="Deutsch">🇩🇪</a>
-              <a href="/es" className="text-2xl hover:scale-110 transition-transform" data-testid="language-es" title="Español">🇪🇸</a>
-              <a href="/zh" className="text-2xl hover:scale-110 transition-transform" data-testid="language-zh" title="中文">🇨🇳</a>
-              <a href="/ko" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ko" title="한국어">🇰🇷</a>
-              <a href="/ja" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ja" title="日本語">🇯🇵</a>
-              <a href="/fr" className="text-2xl hover:scale-110 transition-transform" data-testid="language-fr" title="Français">🇫🇷</a>
-              <a href="/hi" className="text-2xl hover:scale-110 transition-transform" data-testid="language-hi" title="हिन्दी">🇮🇳</a>
-              <a href="/ar" className="text-2xl hover:scale-110 transition-transform" data-testid="language-ar" title="العربية">🇦🇪</a>
-              <a href="/sw" className="text-2xl hover:scale-110 transition-transform" data-testid="language-sw" title="Swahili">🇹🇿</a>
+            <div className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-600 flex justify-center">
+              <Select value={language} onValueChange={handleLanguageChange}>
+                <SelectTrigger className="w-[200px]" data-testid="language-selector">
+                  <SelectValue>
+                    {languageOptions.find(lang => lang.code === language) && (
+                      <span className="flex items-center gap-2">
+                        <span className="text-xl">{languageOptions.find(lang => lang.code === language)?.flag}</span>
+                        <span>{languageOptions.find(lang => lang.code === language)?.name}</span>
+                      </span>
+                    )}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {languageOptions.map(lang => (
+                    <SelectItem key={lang.code} value={lang.code} data-testid={`language-${lang.code}`}>
+                      <span className="flex items-center gap-2">
+                        <span className="text-xl">{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
