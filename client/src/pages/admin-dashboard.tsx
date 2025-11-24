@@ -1201,7 +1201,7 @@ export default function AdminDashboard() {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Residency Bookings</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Residency Requests</span>
                     <Badge variant="secondary" data-testid="count-residency-leads">
                       {unifiedLeads?.leads?.filter(l => l.type === 'residency').length || 0}
                     </Badge>
@@ -1630,7 +1630,7 @@ export default function AdminDashboard() {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Residency Bookings</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Residency Requests</span>
                     <Badge variant="secondary" data-testid="count-residency-leads">
                       {unifiedLeads?.leads?.filter(l => l.type === 'residency').length || 0}
                     </Badge>

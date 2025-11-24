@@ -90,7 +90,7 @@ export default function ResidencyPage() {
     onSuccess: () => {
       toast({
         title: "Success",
-        description: "Your residency booking request has been submitted! We'll contact you within 24 hours.",
+        description: "Your residency request has been submitted! We'll contact you within 24 hours.",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/residency-bookings'] });
       form.reset();
@@ -98,7 +98,7 @@ export default function ResidencyPage() {
     onError: (error: Error) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to submit booking request",
+        description: error.message || "Failed to submit request",
         variant: "destructive",
       });
     },
@@ -119,9 +119,9 @@ export default function ResidencyPage() {
     createResidencyMutation.mutate(data);
   };
 
-  const checkIn = new Date(checkInDate);
-  const checkOut = new Date(checkOutDate);
-  const nights = differenceInDays(checkOut, checkIn);
+  const checkIn = checkInDate ? new Date(checkInDate) : addDays(new Date(), 1);
+  const checkOut = checkOutDate ? new Date(checkOutDate) : addDays(new Date(), 8);
+  const nights = checkInDate && checkOutDate ? differenceInDays(checkOut, checkIn) : 0;
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
@@ -283,10 +283,10 @@ export default function ResidencyPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
-              Booking Request
+              Residency Request
             </CardTitle>
             <CardDescription>
-              Fill out your details below and we'll get in touch within 72 hours to confirm your booking
+              Fill out your details below and we'll get in touch within 72 hours to confirm availability
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -452,7 +452,7 @@ export default function ResidencyPage() {
                     </span>
                   </div>
                   <div className="text-xs text-muted-foreground italic">
-                    Final price will be confirmed upon booking confirmation
+                    Final price will be confirmed upon approval
                   </div>
                 </div>
 
@@ -463,7 +463,7 @@ export default function ResidencyPage() {
                   size="lg"
                   data-testid="button-submit-booking"
                 >
-                  {createResidencyMutation.isPending ? "Submitting..." : "Submit Booking Request"}
+                  {createResidencyMutation.isPending ? "Submitting..." : "Submit Request"}
                 </Button>
               </form>
             </Form>

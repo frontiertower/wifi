@@ -2698,7 +2698,7 @@ Rules:
     }
   });
 
-  // Residency Bookings Routes
+  // Residency Requests Routes
   app.post("/api/residency-bookings", async (req, res) => {
     try {
       const validatedData = insertResidencyBookingSchema.parse(req.body);
@@ -2708,7 +2708,7 @@ Rules:
       // Send email notification (non-blocking)
       const { emailService } = await import("./email");
       emailService.sendResidencyBookingNotification(booking).catch((error) => {
-        console.error("Failed to send residency booking notification email:", error);
+        console.error("Failed to send residency request notification email:", error);
       });
       
       res.json({ success: true, booking });
@@ -2716,13 +2716,13 @@ Rules:
       if (error.name === "ZodError") {
         return res.status(400).json({
           success: false,
-          message: error.errors[0]?.message || "Invalid residency booking data"
+          message: error.errors[0]?.message || "Invalid residency request data"
         });
       }
       
       res.status(500).json({
         success: false,
-        message: "Failed to create residency booking"
+        message: "Failed to create residency request"
       });
     }
   });
@@ -2734,7 +2734,7 @@ Rules:
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: "Failed to fetch residency bookings"
+        message: "Failed to fetch residency requests"
       });
     }
   });
