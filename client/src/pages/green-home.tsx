@@ -196,7 +196,7 @@ export default function GreenHome() {
                   <Home className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="font-bold text-terminal-green">SUPERHERO RESIDENCY</h3>
-                    <p className="text-terminal-dim text-xs mt-1">Co-living at 825 Sutter</p>
+                    <p className="text-terminal-dim text-xs mt-1">Luxury living at 825 Sutter</p>
                   </div>
                 </div>
               </Link>
