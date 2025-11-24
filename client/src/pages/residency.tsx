@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Calendar, Home, MapPin, Users, Wifi, Shirt, ArrowLeft } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Link } from "wouter";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { format, addDays, differenceInDays } from "date-fns";
 import futuristicRoom from "@assets/2025-11-23 10.24.29_1763922401797.jpg";
 import poolTableRoom from "@assets/2025-11-23 10.24.33_1763922401798.jpg";
@@ -125,6 +126,10 @@ export default function ResidencyPage() {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
+      <div className="absolute top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
+      
       <div className="max-w-4xl mx-auto space-y-6">
         <Link href="/">
           <Button
@@ -368,7 +373,7 @@ export default function ResidencyPage() {
                       <FormItem>
                         <FormLabel>Check-In Date *</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} data-testid="input-checkin" />
+                          <Input type="date" {...field} data-testid="input-checkin" className="bg-white dark:bg-gray-700 text-black dark:text-white" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -381,7 +386,7 @@ export default function ResidencyPage() {
                       <FormItem>
                         <FormLabel>Check-Out Date *</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} data-testid="input-checkout" />
+                          <Input type="date" {...field} data-testid="input-checkout" className="bg-white dark:bg-gray-700 text-black dark:text-white" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
