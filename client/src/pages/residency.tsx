@@ -62,17 +62,18 @@ export default function ResidencyPage() {
       const nights = differenceInDays(checkOut, checkIn);
       
       if (nights > 0) {
-        // $450/week = $64.29/day, $1800/month minimum
-        const weeklyRate = 450;
-        const weeks = Math.ceil(nights / 7);
-        
         let cost = 0;
-        if (weeks >= 4) {
-          // Monthly rate
+        
+        if (nights >= 28) {
+          // Monthly rate: $1800/month
           cost = 1800;
+        } else if (nights >= 7) {
+          // Weekly rate: $450/week
+          const weeks = Math.ceil(nights / 7);
+          cost = weeks * 450;
         } else {
-          // Weekly or daily rate
-          cost = weeks * weeklyRate;
+          // Nightly rate: $65/night
+          cost = nights * 65;
         }
         
         setTotalCost(cost);
