@@ -2320,6 +2320,7 @@ Rules:
         unifi_username: z.string().optional(),
         unifi_password: z.string().optional(),
         unifi_site: z.string().optional(),
+        password_required: z.enum(['true', 'false']).optional(),
       });
 
       const data = baseSchema.parse(req.body);
