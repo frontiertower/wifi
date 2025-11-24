@@ -335,7 +335,10 @@ export class DatabaseStorage {
     return await db
       .select()
       .from(events)
-      .where(eq(events.isActive, true))
+      .where(and(
+        eq(events.isActive, true),
+        eq(events.isHidden, false)
+      ))
       .orderBy(sql`${events.startDate} ASC`);
   }
 
