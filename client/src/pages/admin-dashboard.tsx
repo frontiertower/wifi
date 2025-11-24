@@ -1128,130 +1128,54 @@ export default function AdminDashboard() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-6">Analytics Dashboard</h2>
             
-            <div className="mb-8">
-              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Today's Activity</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                      <Users className="text-blue-600 dark:text-blue-400" />
+            <div>
+              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Events Per Month (Last 12 Months)</h3>
+              <Card className="bg-card">
+                <div className="p-4 sm:p-6">
+                  {!stats?.stats ? (
+                    <div className="text-center py-12">
+                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+                      <p className="text-gray-600 dark:text-gray-400">Loading chart data...</p>
                     </div>
-                    <div className="ml-4">
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Members Today</p>
+                  ) : stats.stats.eventsPerWeek && stats.stats.eventsPerWeek.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={stats.stats.eventsPerWeek}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-600" />
+                        <XAxis 
+                          dataKey="month" 
+                          className="text-xs"
+                          tick={{ fill: 'currentColor' }}
+                        />
+                        <YAxis 
+                          className="text-xs"
+                          tick={{ fill: 'currentColor' }}
+                          allowDecimals={false}
+                        />
+                        <Tooltip 
+                          contentStyle={{
+                            backgroundColor: 'hsl(var(--card))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px',
+                            color: 'hsl(var(--foreground))'
+                          }}
+                          labelStyle={{ color: 'hsl(var(--foreground))' }}
+                        />
+                        <Bar 
+                          dataKey="count" 
+                          fill="hsl(var(--primary))" 
+                          radius={[8, 8, 0, 0]}
+                          data-testid="bar-events-per-month"
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="text-center py-12">
+                      <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                      <p className="text-gray-600 dark:text-gray-400">No event data available for the last 12 months</p>
                     </div>
-                  </div>
+                  )}
                 </div>
-
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                      <Ticket className="text-green-600 dark:text-green-400" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Guests Today</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                      <Users className="text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Event Guests Today</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                      <Calendar className="text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <div className="ml-4">
-                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Events Today</p>
-                    </div>
-                  </div>
-                </div>
-
-                
-              </div>
-            </div>
-
-            <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Lifetime Totals</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg p-4 sm:p-6 border border-purple-200 dark:border-purple-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Total Members</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-purple-900 dark:text-purple-100 mt-2" data-testid="text-total-members">
-                      {stats?.stats?.totalMembers || 0}
-                    </p>
-                  </div>
-                  <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-lg flex items-center justify-center">
-                    <Building className="text-purple-700 dark:text-purple-300" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-lg p-4 sm:p-6 border border-green-200 dark:border-green-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-green-600 dark:text-green-400">Total Guests</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-green-900 dark:text-green-100 mt-2" data-testid="text-total-guests">
-                      {stats?.stats?.totalGuests || 0}
-                    </p>
-                  </div>
-                  <div className="w-12 h-12 bg-green-200 dark:bg-green-800 rounded-lg flex items-center justify-center">
-                    <Ticket className="text-green-700 dark:text-green-300" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-950 dark:to-pink-900 rounded-lg p-4 sm:p-6 border border-pink-200 dark:border-pink-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-pink-600 dark:text-pink-400">Total Event Guests</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-pink-900 dark:text-pink-100 mt-2" data-testid="text-total-event-users">
-                      {stats?.stats?.totalEventUsers || 0}
-                    </p>
-                  </div>
-                  <div className="w-12 h-12 bg-pink-200 dark:bg-pink-800 rounded-lg flex items-center justify-center">
-                    <Calendar className="text-pink-700 dark:text-pink-300" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 rounded-lg p-4 sm:p-6 border border-orange-200 dark:border-orange-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Total Events</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-orange-900 dark:text-orange-100 mt-2" data-testid="text-total-events">
-                      {stats?.stats?.totalEvents || 0}
-                    </p>
-                  </div>
-                  <div className="w-12 h-12 bg-orange-200 dark:bg-orange-800 rounded-lg flex items-center justify-center">
-                    <Calendar className="text-orange-700 dark:text-orange-300" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg p-4 sm:p-6 border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Users</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-blue-900 dark:text-blue-100 mt-2" data-testid="text-total-users">
-                      {stats?.stats?.totalUsers || 0}
-                    </p>
-                  </div>
-                  <div className="w-12 h-12 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center">
-                    <Users className="text-blue-700 dark:text-blue-300" />
-                  </div>
-                </div>
-              </div>
+              </Card>
             </div>
 
             {/* Event Statistics */}
@@ -1308,55 +1232,134 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Events Per Month Chart */}
+            {/* Lifetime Totals */}
             <div className="mt-8">
-              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Events Per Month (Last 12 Months)</h3>
-              <Card className="bg-card">
-                <div className="p-4 sm:p-6">
-                  {!stats?.stats ? (
-                    <div className="text-center py-12">
-                      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-                      <p className="text-gray-600 dark:text-gray-400">Loading chart data...</p>
+              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Lifetime Totals</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg p-4 sm:p-6 border border-purple-200 dark:border-purple-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Total Members</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-purple-900 dark:text-purple-100 mt-2" data-testid="text-total-members">
+                        {stats?.stats?.totalMembers || 0}
+                      </p>
                     </div>
-                  ) : stats.stats.eventsPerWeek && stats.stats.eventsPerWeek.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={stats.stats.eventsPerWeek}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-600" />
-                        <XAxis 
-                          dataKey="month" 
-                          className="text-xs"
-                          tick={{ fill: 'currentColor' }}
-                        />
-                        <YAxis 
-                          className="text-xs"
-                          tick={{ fill: 'currentColor' }}
-                          allowDecimals={false}
-                        />
-                        <Tooltip 
-                          contentStyle={{
-                            backgroundColor: 'hsl(var(--card))',
-                            border: '1px solid hsl(var(--border))',
-                            borderRadius: '8px',
-                            color: 'hsl(var(--foreground))'
-                          }}
-                          labelStyle={{ color: 'hsl(var(--foreground))' }}
-                        />
-                        <Bar 
-                          dataKey="count" 
-                          fill="hsl(var(--primary))" 
-                          radius={[8, 8, 0, 0]}
-                          data-testid="bar-events-per-month"
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="text-center py-12">
-                      <Calendar className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p className="text-gray-600 dark:text-gray-400">No event data available for the last 12 months</p>
+                    <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-lg flex items-center justify-center">
+                      <Building className="text-purple-700 dark:text-purple-300" />
                     </div>
-                  )}
+                  </div>
                 </div>
-              </Card>
+
+                <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-lg p-4 sm:p-6 border border-green-200 dark:border-green-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-green-600 dark:text-green-400">Total Guests</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-green-900 dark:text-green-100 mt-2" data-testid="text-total-guests">
+                        {stats?.stats?.totalGuests || 0}
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-green-200 dark:bg-green-800 rounded-lg flex items-center justify-center">
+                      <Ticket className="text-green-700 dark:text-green-300" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-950 dark:to-pink-900 rounded-lg p-4 sm:p-6 border border-pink-200 dark:border-pink-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-pink-600 dark:text-pink-400">Total Event Guests</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-pink-900 dark:text-pink-100 mt-2" data-testid="text-total-event-users">
+                        {stats?.stats?.totalEventUsers || 0}
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-pink-200 dark:bg-pink-800 rounded-lg flex items-center justify-center">
+                      <Calendar className="text-pink-700 dark:text-pink-300" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 rounded-lg p-4 sm:p-6 border border-orange-200 dark:border-orange-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-orange-600 dark:text-orange-400">Total Events</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-orange-900 dark:text-orange-100 mt-2" data-testid="text-total-events">
+                        {stats?.stats?.totalEvents || 0}
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-orange-200 dark:bg-orange-800 rounded-lg flex items-center justify-center">
+                      <Calendar className="text-orange-700 dark:text-orange-300" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg p-4 sm:p-6 border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Users</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-blue-900 dark:text-blue-100 mt-2" data-testid="text-total-users">
+                        {stats?.stats?.totalUsers || 0}
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center">
+                      <Users className="text-blue-700 dark:text-blue-300" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Today's Activity */}
+            <div className="mt-8">
+              <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Today's Activity</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                      <Users className="text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-members-today">{stats?.stats?.membersToday || 0}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Members Today</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                      <Ticket className="text-green-600 dark:text-green-400" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-guests-today">{stats?.stats?.guestsToday || 0}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Guests Today</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                      <Users className="text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-event-guests-today">{stats?.stats?.eventGuestsToday || 0}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Event Guests Today</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                      <Calendar className="text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-events-today">{stats?.stats?.eventsToday || 0}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Events Today</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Building Location Map */}

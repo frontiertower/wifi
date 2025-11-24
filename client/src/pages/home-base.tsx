@@ -4,6 +4,7 @@ import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
 import SlidingWelcome from "@/components/SlidingWelcome";
+import { ThemeToggle } from "@/components/theme-toggle";
 import frontierTowerQR from "@assets/frontier-tower-qr.png";
 import { translations, Language } from "@/lib/translations";
 
@@ -179,6 +180,9 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
         <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4 ${isFlashing ? 'screen-flash' : ''}`}
           onAnimationEnd={() => setIsFlashing(false)}
         >
+          <div className="absolute top-6 right-6 z-50">
+            <ThemeToggle />
+          </div>
         
         <div className="max-w-6xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-primary dark:bg-primary text-primary-foreground p-6 text-center">
