@@ -1018,6 +1018,70 @@ export class DatabaseStorage {
       .from(residencyBookings)
       .orderBy(sql`${residencyBookings.createdAt} DESC`);
   }
+
+  async getWifiGuestLeads(): Promise<CaptiveUser[]> {
+    return await db
+      .select()
+      .from(captiveUsers)
+      .where(eq(captiveUsers.role, "guest"))
+      .orderBy(sql`${captiveUsers.createdAt} DESC`);
+  }
+
+  async updateTourBookingStatus(id: number, status: string): Promise<TourBooking | null> {
+    const [updated] = await db
+      .update(tourBookings)
+      .set({ status })
+      .where(eq(tourBookings.id, id))
+      .returning();
+    return updated || null;
+  }
+
+  async updateEventHostBookingStatus(id: number, status: string): Promise<EventHostBooking | null> {
+    const [updated] = await db
+      .update(eventHostBookings)
+      .set({ status })
+      .where(eq(eventHostBookings.id, id))
+      .returning();
+    return updated || null;
+  }
+
+  async updateMembershipApplicationStatus(id: number, status: string): Promise<MembershipApplication | null> {
+    const [updated] = await db
+      .update(membershipApplications)
+      .set({ status })
+      .where(eq(membershipApplications.id, id))
+      .returning();
+    return updated || null;
+  }
+
+  async updateChatInviteRequestStatus(id: number, status: string): Promise<ChatInviteRequest | null> {
+    const [updated] = await db
+      .update(chatInviteRequests)
+      .set({ status })
+      .where(eq(chatInviteRequests.id, id))
+      .returning();
+    return updated || null;
+  }
+
+  async updateResidencyBookingStatus(id: number, status: string): Promise<ResidencyBooking | null> {
+    const [updated] = await db
+      .update(residencyBookings)
+      .set({ status })
+      .where(eq(residencyBookings.id, id))
+      .returning();
+    return updated || null;
+  }
+
+  async updateWifiGuestLeadStatus(id: number, status: string): Promise<CaptiveUser | null> {
+    const [updated] = await db
+      .update(captiveUsers)
+      .set({ 
+        sessionEnd: status === 'rejected' ? new Date() : sql`${captiveUsers.sessionEnd}`
+      })
+      .where(eq(captiveUsers.id, id))
+      .returning();
+    return updated || null;
+  }
 }
 
 export const storage = new DatabaseStorage();

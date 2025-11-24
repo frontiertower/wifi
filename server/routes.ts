@@ -2739,6 +2739,193 @@ Rules:
     }
   });
 
+  // Unified Leads Endpoint - Fetches all leads from all tables
+  app.get("/api/admin/leads", verifyAdminSession, async (req, res) => {
+    try {
+      const [
+        tourBookings,
+        eventHostBookings,
+        membershipApplications,
+        chatInviteRequests,
+        residencyBookings,
+        wifiGuestLeads
+      ] = await Promise.all([
+        storage.getAllTourBookings(),
+        storage.getAllEventHostBookings(),
+        storage.getAllMembershipApplications(),
+        storage.getAllChatInviteRequests(),
+        storage.getResidencyBookings(),
+        storage.getWifiGuestLeads()
+      ]);
+
+      // Transform each lead type into a unified format
+      const allLeads = [
+        ...tourBookings.map((lead: any) => ({
+          id: lead.id,
+          type: 'tour',
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          status: lead.status || 'pending',
+          createdAt: lead.createdAt,
+          details: {
+            company: lead.company,
+            tourType: lead.tourType,
+            tourDate: lead.tourDate,
+            tourTime: lead.tourTime,
+            groupTourSelection: lead.groupTourSelection,
+            interestedInPrivateOffice: lead.interestedInPrivateOffice,
+            numberOfPeople: lead.numberOfPeople
+          }
+        })),
+        ...eventHostBookings.map((lead: any) => ({
+          id: lead.id,
+          type: 'event-host',
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          status: lead.status || 'pending',
+          createdAt: lead.createdAt,
+          details: {
+            company: lead.company,
+            eventType: lead.eventType,
+            expectedAttendees: lead.expectedAttendees,
+            preferredDate: lead.preferredDate,
+            eventDescription: lead.eventDescription
+          }
+        })),
+        ...membershipApplications.map((lead: any) => ({
+          id: lead.id,
+          type: 'membership',
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          status: lead.status || 'pending',
+          createdAt: lead.createdAt,
+          details: {
+            company: lead.company,
+            telegram: lead.telegram,
+            linkedIn: lead.linkedIn,
+            website: lead.website
+          }
+        })),
+        ...chatInviteRequests.map((lead: any) => ({
+          id: lead.id,
+          type: 'chat-invite',
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          status: lead.status || 'pending',
+          createdAt: lead.createdAt,
+          details: {
+            telegram: lead.telegram,
+            linkedIn: lead.linkedIn,
+            message: lead.message
+          }
+        })),
+        ...residencyBookings.map((lead: any) => ({
+          id: lead.id,
+          type: 'residency',
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          status: lead.status || 'pending',
+          createdAt: lead.createdAt,
+          details: {
+            checkInDate: lead.checkInDate,
+            checkOutDate: lead.checkOutDate,
+            numberOfGuests: lead.numberOfGuests,
+            roomPreference: lead.roomPreference,
+            specialRequests: lead.specialRequests
+          }
+        })),
+        ...wifiGuestLeads.map((lead: any) => ({
+          id: lead.id,
+          type: 'wifi-guest',
+          name: lead.name || 'N/A',
+          email: lead.email,
+          phone: lead.phone || 'N/A',
+          status: lead.status || 'pending',
+          createdAt: lead.createdAt,
+          details: {
+            purpose: lead.purpose,
+            host: lead.host,
+            tourInterest: lead.tourInterest
+          }
+        }))
+      ];
+
+      // Sort by createdAt descending (newest first)
+      allLeads.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      res.json({ success: true, leads: allLeads });
+    } catch (error) {
+      console.error("Failed to fetch unified leads:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch leads"
+      });
+    }
+  });
+
+  // Update Lead Status Endpoint
+  app.patch("/api/admin/leads/:type/:id/status", verifyAdminSession, async (req, res) => {
+    try {
+      const { type, id } = req.params;
+      const { status } = req.body;
+
+      const validStatuses = ['pending', 'new', 'contacted', 'scheduled', 'interviewed', 'rejected', 'approved', 'paid', 'quoted', 'citizen'];
+      
+      if (!validStatuses.includes(status.toLowerCase())) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid status value"
+        });
+      }
+
+      let result;
+      const leadId = parseInt(id);
+
+      switch (type) {
+        case 'tour':
+          result = await storage.updateTourBookingStatus(leadId, status);
+          break;
+        case 'event-host':
+          result = await storage.updateEventHostBookingStatus(leadId, status);
+          break;
+        case 'membership':
+          result = await storage.updateMembershipApplicationStatus(leadId, status);
+          break;
+        case 'chat-invite':
+          result = await storage.updateChatInviteRequestStatus(leadId, status);
+          break;
+        case 'residency':
+          result = await storage.updateResidencyBookingStatus(leadId, status);
+          break;
+        case 'wifi-guest':
+          result = await storage.updateWifiGuestLeadStatus(leadId, status);
+          break;
+        default:
+          return res.status(400).json({
+            success: false,
+            message: "Invalid lead type"
+          });
+      }
+
+      res.json({ success: true, lead: result });
+    } catch (error) {
+      console.error("Failed to update lead status:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update lead status"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
