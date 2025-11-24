@@ -165,15 +165,6 @@ export default function Directory() {
                 Back to Home
               </Button>
             </Link>
-            <Link href="/addlisting">
-              <Button
-                size="sm"
-                data-testid="button-add-listing"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Listing
-              </Button>
-            </Link>
           </div>
 
           <div>
@@ -522,6 +513,19 @@ export default function Directory() {
             })}
           </div>
         )}
+
+        {/* Add Listing Button at Bottom */}
+        <div className="mt-8 flex justify-center">
+          <Link href="/addlisting">
+            <Button
+              size="lg"
+              data-testid="button-add-listing"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Listing
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
