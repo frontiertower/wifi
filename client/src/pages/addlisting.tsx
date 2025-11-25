@@ -33,6 +33,8 @@ export default function AddListing() {
     communityName: "",
     firstName: "",
     lastName: "",
+    personCompany: "",
+    personTitle: "",
     parentCommunityId: "",
     floor: "",
     officeNumber: "",
@@ -155,6 +157,8 @@ export default function AddListing() {
       communityName: listingType === "community" ? formData.communityName : null,
       firstName: listingType === "person" ? formData.firstName : null,
       lastName: listingType === "person" ? formData.lastName : null,
+      personCompany: listingType === "person" ? (formData.personCompany || null) : null,
+      personTitle: listingType === "person" ? (formData.personTitle || null) : null,
       parentCommunityId: formData.parentCommunityId ? parseInt(formData.parentCommunityId) : null,
       floor: formData.floor || null,
       officeNumber: formData.officeNumber || null,
@@ -243,6 +247,8 @@ export default function AddListing() {
                       communityName: "",
                       firstName: "",
                       lastName: "",
+                      personCompany: "",
+                      personTitle: "",
                       parentCommunityId: "",
                       floor: "",
                       officeNumber: "",
@@ -390,32 +396,58 @@ export default function AddListing() {
                   </div>
                 </>
               ) : (
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="first-name">First Name *</Label>
-                    <Input
-                      id="first-name"
-                      type="text"
-                      placeholder="First name"
-                      value={formData.firstName}
-                      onChange={(e) => handleInputChange("firstName", e.target.value)}
-                      required
-                      data-testid="input-first-name"
-                    />
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="first-name">First Name *</Label>
+                      <Input
+                        id="first-name"
+                        type="text"
+                        placeholder="First name"
+                        value={formData.firstName}
+                        onChange={(e) => handleInputChange("firstName", e.target.value)}
+                        required
+                        data-testid="input-first-name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="last-name">Last Name *</Label>
+                      <Input
+                        id="last-name"
+                        type="text"
+                        placeholder="Last name"
+                        value={formData.lastName}
+                        onChange={(e) => handleInputChange("lastName", e.target.value)}
+                        required
+                        data-testid="input-last-name"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="last-name">Last Name *</Label>
-                    <Input
-                      id="last-name"
-                      type="text"
-                      placeholder="Last name"
-                      value={formData.lastName}
-                      onChange={(e) => handleInputChange("lastName", e.target.value)}
-                      required
-                      data-testid="input-last-name"
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="person-company">Company</Label>
+                      <Input
+                        id="person-company"
+                        type="text"
+                        placeholder="Company name"
+                        value={formData.personCompany}
+                        onChange={(e) => handleInputChange("personCompany", e.target.value)}
+                        data-testid="input-person-company"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="person-title">Title</Label>
+                      <Input
+                        id="person-title"
+                        type="text"
+                        placeholder="Job title"
+                        value={formData.personTitle}
+                        onChange={(e) => handleInputChange("personTitle", e.target.value)}
+                        data-testid="input-person-title"
+                      />
+                    </div>
                   </div>
-                </div>
+                </>
               )}
 
               <div className="space-y-2">
