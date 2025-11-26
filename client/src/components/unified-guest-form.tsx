@@ -508,9 +508,10 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                     Option 1: Manual Connection (All Devices)
                   </p>
                   <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-3">
-                    <li>1. <strong>Disconnect</strong> from the Guest network</li>
-                    <li>2. <strong>Connect</strong> to the secure network "FrontierTower"</li>
-                    <li>3. Enter the password below when prompted</li>
+                    <li>1. Go to your device's <strong>WiFi menu</strong></li>
+                    <li>2. Click <strong>Other Networks</strong> and scroll down</li>
+                    <li>3. Find and select the <strong>"FrontierTower"</strong> network</li>
+                    <li>4. Enter the password below when prompted</li>
                   </ol>
                   <div className="bg-white dark:bg-gray-900/50 rounded p-3 text-sm">
                     <p className="text-gray-900 dark:text-gray-100">
