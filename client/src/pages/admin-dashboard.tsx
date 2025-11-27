@@ -1170,6 +1170,94 @@ export default function AdminDashboard() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-6">Analytics Dashboard</h2>
             
+            {/* Leads Analytics */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Leads by Type */}
+              <Card className="p-4 sm:p-6">
+                <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Leads by Type</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400" data-testid="leads-count-tour">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'tour').length || 0}
+                    </p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">Tour</p>
+                  </div>
+                  <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-purple-600 dark:text-purple-400" data-testid="leads-count-event-host">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'event-host').length || 0}
+                    </p>
+                    <p className="text-xs text-purple-700 dark:text-purple-300">Event Host</p>
+                  </div>
+                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-green-600 dark:text-green-400" data-testid="leads-count-membership">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'membership').length || 0}
+                    </p>
+                    <p className="text-xs text-green-700 dark:text-green-300">Membership</p>
+                  </div>
+                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-orange-600 dark:text-orange-400" data-testid="leads-count-chat-invite">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'chat-invite').length || 0}
+                    </p>
+                    <p className="text-xs text-orange-700 dark:text-orange-300">Chat Invite</p>
+                  </div>
+                  <div className="bg-pink-50 dark:bg-pink-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-pink-600 dark:text-pink-400" data-testid="leads-count-residency">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'residency').length || 0}
+                    </p>
+                    <p className="text-xs text-pink-700 dark:text-pink-300">Residency</p>
+                  </div>
+                  <div className="bg-cyan-50 dark:bg-cyan-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-cyan-600 dark:text-cyan-400" data-testid="leads-count-wifi-guest">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'wifi-guest').length || 0}
+                    </p>
+                    <p className="text-xs text-cyan-700 dark:text-cyan-300">WiFi Guest</p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Leads by Status */}
+              <Card className="p-4 sm:p-6">
+                <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Leads by Status</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400" data-testid="leads-status-pending">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'pending').length || 0}
+                    </p>
+                    <p className="text-xs text-yellow-700 dark:text-yellow-300">Pending</p>
+                  </div>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400" data-testid="leads-status-new">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'new').length || 0}
+                    </p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">New</p>
+                  </div>
+                  <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400" data-testid="leads-status-contacted">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'contacted').length || 0}
+                    </p>
+                    <p className="text-xs text-indigo-700 dark:text-indigo-300">Contacted</p>
+                  </div>
+                  <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-purple-600 dark:text-purple-400" data-testid="leads-status-scheduled">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'scheduled').length || 0}
+                    </p>
+                    <p className="text-xs text-purple-700 dark:text-purple-300">Scheduled</p>
+                  </div>
+                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-green-600 dark:text-green-400" data-testid="leads-status-approved">
+                      {unifiedLeads?.leads?.filter(l => l.status === 'approved').length || 0}
+                    </p>
+                    <p className="text-xs text-green-700 dark:text-green-300">Approved</p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-gray-600 dark:text-gray-400" data-testid="leads-status-other">
+                      {unifiedLeads?.leads?.filter(l => !['pending', 'new', 'contacted', 'scheduled', 'approved'].includes(l.status)).length || 0}
+                    </p>
+                    <p className="text-xs text-gray-700 dark:text-gray-300">Other</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
 
             <div>
               <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Events Per Month (Last 12 Months)</h3>
