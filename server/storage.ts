@@ -160,20 +160,21 @@ export class DatabaseStorage {
         )
       );
 
-    // Get events per week for the last 12 weeks
-    const eventsPerWeek = await db.select({
-      week: sql<string>`TO_CHAR(${events.startDate}, 'YYYY-IW')`,
+    // Get events per month for the last 12 months
+    const eventsPerMonth = await db.select({
+      month: sql<string>`TO_CHAR(${events.startDate}, 'Mon')`,
+      monthSort: sql<string>`TO_CHAR(${events.startDate}, 'YYYY-MM')`,
       count: count()
     })
     .from(events)
     .where(
       and(
         eq(events.isHidden, false),
-        sql`${events.startDate} >= CURRENT_DATE - INTERVAL '12 weeks'`
+        sql`${events.startDate} >= CURRENT_DATE - INTERVAL '12 months'`
       )
     )
-    .groupBy(sql`TO_CHAR(${events.startDate}, 'YYYY-IW')`)
-    .orderBy(sql`TO_CHAR(${events.startDate}, 'YYYY-IW')`);
+    .groupBy(sql`TO_CHAR(${events.startDate}, 'Mon')`, sql`TO_CHAR(${events.startDate}, 'YYYY-MM')`)
+    .orderBy(sql`TO_CHAR(${events.startDate}, 'YYYY-MM')`);
 
     return {
       totalUsers: totalUsersResult.count,
@@ -191,9 +192,9 @@ export class DatabaseStorage {
       // Event analytics
       pastEvents: pastEventsResult.count,
       upcomingEvents: upcomingEventsResult.count,
-      eventsPerWeek: eventsPerWeek.map(w => ({
-        week: w.week,
-        count: Number(w.count)
+      eventsPerWeek: eventsPerMonth.map(m => ({
+        month: m.month,
+        count: Number(m.count)
       }))
     };
   }
