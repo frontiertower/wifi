@@ -1468,12 +1468,13 @@ Rules:
             console.log(`⬇ Downloading image for "${event.name}"...`);
             const localImagePath = await downloadImage(imageUrl, event.id);
             
-            // Update event with local image path
-            await storage.updateEventImage(event.id, localImagePath);
+            // Update event with local image path AND store original URL as fallback
+            await storage.updateEventImage(event.id, localImagePath, imageUrl);
             scrapedImages.push({
               id: event.id,
               name: event.name,
-              imageUrl: localImagePath
+              imageUrl: localImagePath,
+              originalImageUrl: imageUrl
             });
             console.log(`✓ Saved image for "${event.name}" to ${localImagePath}`);
           } else {

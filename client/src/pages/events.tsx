@@ -9,6 +9,30 @@ import { format, formatDistanceToNow, isPast, isFuture, isToday } from "date-fns
 import { Link } from "wouter";
 import type { Event } from "@shared/schema";
 
+function EventImage({ event, className, testId }: { event: Event; className?: string; testId?: string }) {
+  const [imgSrc, setImgSrc] = useState(event.imageUrl);
+  const [hasError, setHasError] = useState(false);
+
+  const handleError = () => {
+    if (!hasError && event.originalImageUrl && event.originalImageUrl !== event.imageUrl) {
+      setImgSrc(event.originalImageUrl);
+      setHasError(true);
+    }
+  };
+
+  if (!imgSrc) return null;
+
+  return (
+    <img
+      src={imgSrc}
+      alt={event.name}
+      className={className}
+      onError={handleError}
+      data-testid={testId}
+    />
+  );
+}
+
 interface EventsResponse {
   success: boolean;
   events: Event[];
@@ -62,6 +86,7 @@ export default function Events() {
           // Prefer Luma URL and image
           url: lumaEvent?.url || ftEvent?.url || duplicates[0].url,
           imageUrl: lumaEvent?.imageUrl || ftEvent?.imageUrl || duplicates[0].imageUrl,
+          originalImageUrl: lumaEvent?.originalImageUrl || ftEvent?.originalImageUrl || duplicates[0].originalImageUrl,
           // Prefer Frontier Tower description (usually better)
           description: ftEvent?.description || lumaEvent?.description || duplicates[0].description,
         };
@@ -207,13 +232,12 @@ export default function Events() {
                   className="overflow-hidden hover-elevate transition-all"
                   data-testid={`card-event-${event.id}`}
                 >
-                  {event.imageUrl && (
+                  {(event.imageUrl || event.originalImageUrl) && (
                     <div className="w-full h-48 overflow-hidden">
-                      <img
-                        src={event.imageUrl}
-                        alt={event.name}
+                      <EventImage
+                        event={event}
                         className="w-full h-full object-cover"
-                        data-testid={`img-event-${event.id}`}
+                        testId={`img-event-${event.id}`}
                       />
                     </div>
                   )}
@@ -316,13 +340,12 @@ export default function Events() {
                 >
                   <div className="p-4">
                     <div className="flex gap-4 items-start">
-                      {event.imageUrl && (
+                      {(event.imageUrl || event.originalImageUrl) && (
                         <div className="w-24 h-24 rounded-md overflow-hidden flex-shrink-0">
-                          <img
-                            src={event.imageUrl}
-                            alt={event.name}
+                          <EventImage
+                            event={event}
                             className="w-full h-full object-cover"
-                            data-testid={`img-list-event-${event.id}`}
+                            testId={`img-list-event-${event.id}`}
                           />
                         </div>
                       )}

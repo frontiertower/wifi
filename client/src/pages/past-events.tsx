@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Clock, MapPin, Users, ExternalLink, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -6,6 +7,30 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { Link } from "wouter";
 import type { Event } from "@shared/schema";
+
+function EventImage({ event, className, testId }: { event: Event; className?: string; testId?: string }) {
+  const [imgSrc, setImgSrc] = useState(event.imageUrl);
+  const [hasError, setHasError] = useState(false);
+
+  const handleError = () => {
+    if (!hasError && event.originalImageUrl && event.originalImageUrl !== event.imageUrl) {
+      setImgSrc(event.originalImageUrl);
+      setHasError(true);
+    }
+  };
+
+  if (!imgSrc) return null;
+
+  return (
+    <img
+      src={imgSrc}
+      alt={event.name}
+      className={className}
+      onError={handleError}
+      data-testid={testId}
+    />
+  );
+}
 
 interface EventsResponse {
   success: boolean;
@@ -46,6 +71,7 @@ export default function PastEvents() {
           // Prefer Luma URL and image
           url: lumaEvent?.url || ftEvent?.url || duplicates[0].url,
           imageUrl: lumaEvent?.imageUrl || ftEvent?.imageUrl || duplicates[0].imageUrl,
+          originalImageUrl: lumaEvent?.originalImageUrl || ftEvent?.originalImageUrl || duplicates[0].originalImageUrl,
           // Prefer Frontier Tower description (usually better)
           description: ftEvent?.description || lumaEvent?.description || duplicates[0].description,
         };
@@ -143,12 +169,11 @@ export default function PastEvents() {
                     className="aspect-[2/1] rounded-lg overflow-hidden opacity-60 md:hidden"
                     data-testid={`icon-event-${event.id}`}
                   >
-                    {event.imageUrl ? (
-                      <img
-                        src={event.imageUrl}
-                        alt={event.name}
+                    {(event.imageUrl || event.originalImageUrl) ? (
+                      <EventImage
+                        event={event}
                         className="w-full h-full object-cover"
-                        data-testid={`img-event-icon-${event.id}`}
+                        testId={`img-event-icon-${event.id}`}
                       />
                     ) : (
                       <div className="w-full h-full bg-muted flex items-center justify-center">
@@ -162,13 +187,12 @@ export default function PastEvents() {
                     className="hidden md:block overflow-hidden opacity-75"
                     data-testid={`card-event-${event.id}`}
                   >
-                    {event.imageUrl && (
+                    {(event.imageUrl || event.originalImageUrl) && (
                       <div className="w-full h-48 overflow-hidden">
-                        <img
-                          src={event.imageUrl}
-                          alt={event.name}
+                        <EventImage
+                          event={event}
                           className="w-full h-full object-cover"
-                          data-testid={`img-event-${event.id}`}
+                          testId={`img-event-${event.id}`}
                         />
                       </div>
                     )}

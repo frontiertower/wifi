@@ -383,10 +383,14 @@ export class DatabaseStorage {
     return event;
   }
 
-  async updateEventImage(eventId: number, imageUrl: string): Promise<void> {
+  async updateEventImage(eventId: number, imageUrl: string, originalImageUrl?: string): Promise<void> {
+    const updateData: { imageUrl: string; originalImageUrl?: string } = { imageUrl };
+    if (originalImageUrl) {
+      updateData.originalImageUrl = originalImageUrl;
+    }
     await db
       .update(events)
-      .set({ imageUrl })
+      .set(updateData)
       .where(eq(events.id, eventId));
   }
 
