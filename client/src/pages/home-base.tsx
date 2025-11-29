@@ -278,6 +278,22 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </button>
 
               <Link
+                href="/code-of-conduct"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-code-of-conduct"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
+                    <Shield className="text-blue-600 dark:text-blue-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Code of Conduct</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Community standards & guidelines</div>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
                 href="/directory"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
                 data-testid="button-view-directory"
@@ -406,58 +422,6 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </Link>
 
               <Link
-                href="/code-of-conduct"
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-code-of-conduct"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
-                    <Shield className="text-blue-600 dark:text-blue-300" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">Code of Conduct</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Community standards & guidelines</div>
-                  </div>
-                </div>
-              </Link>
-
-              <a
-                href="http://ft0.sh"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-important-links"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
-                    <Link2 className="text-indigo-600 dark:text-indigo-300" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">Important Links</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Essential resources & shortcuts</div>
-                  </div>
-                </div>
-              </a>
-
-              <a
-                href="https://fxchange.io/maker/open"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-gigs-jobs"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-teal-100 dark:bg-teal-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-teal-200 dark:group-hover:bg-teal-500/40">
-                    <Briefcase className="text-teal-600 dark:text-teal-300" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.gigsAndBounties}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.gigsAndBountiesDesc}</div>
-                  </div>
-                </div>
-              </a>
-
-              <Link
                 href="/event-host-booking"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
                 data-testid="button-host-event"
@@ -488,6 +452,42 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                   </div>
                 </div>
               </Link>
+
+              <a
+                href="http://ft0.sh"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-important-links"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-slate-100 dark:bg-slate-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-slate-200 dark:group-hover:bg-slate-500/40">
+                    <Link2 className="text-slate-600 dark:text-slate-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Important Links</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Essential resources & shortcuts</div>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://fxchange.io/maker/open"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-gigs-jobs"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-teal-100 dark:bg-teal-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-teal-200 dark:group-hover:bg-teal-500/40">
+                    <Briefcase className="text-teal-600 dark:text-teal-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.gigsAndBounties}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.gigsAndBountiesDesc}</div>
+                  </div>
+                </div>
+              </a>
             </div>
 
             <div className="mt-6 text-center">
