@@ -422,6 +422,24 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </Link>
 
               <a
+                href="http://ft0.sh"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-important-links"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
+                    <Link2 className="text-indigo-600 dark:text-indigo-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Important Links</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Essential resources & shortcuts</div>
+                  </div>
+                </div>
+              </a>
+
+              <a
                 href="https://fxchange.io/maker/open"
                 target="_blank"
                 rel="noopener noreferrer"
