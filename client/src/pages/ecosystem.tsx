@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, Search, Rocket, Linkedin, Mail, Share2 } from "lucide-react";
+import { ExternalLink, Search, Rocket, Linkedin, Mail, Share2, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import type { DirectoryListing } from "@shared/schema";
 
 interface DirectoryListingsResponse {
@@ -62,6 +63,19 @@ export default function EcosystemPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 dark:from-slate-900 dark:to-slate-800 p-4">
       <div className="max-w-6xl mx-auto">
+        {/* Back Home Button */}
+        <Link href="/">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+            data-testid="button-back-home"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back Home
+          </Button>
+        </Link>
+
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-4 mb-4">
