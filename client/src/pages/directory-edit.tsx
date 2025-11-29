@@ -29,7 +29,6 @@ export default function DirectoryEdit() {
   const [editForm, setEditForm] = useState<Partial<DirectoryListing>>({});
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const { toast } = useToast();
 
   // Try to fetch by editSlug first (secure URL)
@@ -83,40 +82,10 @@ export default function DirectoryEdit() {
       setLogoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
+        // Store base64 data URL directly - this persists in the database
         setLogoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const uploadLogo = async (): Promise<string | null> => {
-    if (!logoFile) return null;
-
-    setIsUploadingLogo(true);
-    try {
-      const formData = new FormData();
-      formData.append("logo", logoFile);
-
-      const response = await fetch("/api/upload/logo", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        return data.logoUrl;
-      } else {
-        throw new Error(data.message || "Upload failed");
-      }
-    } catch (error: any) {
-      toast({
-        title: "Upload failed",
-        description: error.message || "Failed to upload logo",
-        variant: "destructive",
-      });
-      return null;
-    } finally {
-      setIsUploadingLogo(false);
     }
   };
 
@@ -182,14 +151,9 @@ export default function DirectoryEdit() {
   const handleUpdate = async () => {
     let updatedForm = { ...editForm };
 
-    // Upload logo if a new file was selected
-    if (logoFile) {
-      const logoUrl = await uploadLogo();
-      if (logoUrl) {
-        updatedForm.logoUrl = logoUrl;
-      } else {
-        return; // Stop if upload failed
-      }
+    // Use base64 preview directly as logoUrl - stores in database, persists across deployments
+    if (logoFile && logoPreview) {
+      updatedForm.logoUrl = logoPreview;
     }
 
     updateMutation.mutate(updatedForm);
@@ -554,11 +518,11 @@ export default function DirectoryEdit() {
               </Link>
               <Button
                 onClick={handleUpdate}
-                disabled={updateMutation.isPending || isUploadingLogo}
+                disabled={updateMutation.isPending}
                 data-testid="button-save"
               >
                 <Save className="mr-2 h-4 w-4" />
-                {isUploadingLogo ? "Uploading..." : "Save Changes"}
+                {updateMutation.isPending ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </CardContent>

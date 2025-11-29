@@ -27,7 +27,6 @@ export default function AddListing() {
   const [listingType, setListingType] = useState<ListingType>("person");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [formData, setFormData] = useState({
     companyName: "",
     contactPerson: "",
@@ -97,40 +96,10 @@ export default function AddListing() {
       setLogoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
+        // Store base64 data URL directly - this persists in the database
         setLogoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const uploadLogo = async (): Promise<string | null> => {
-    if (!logoFile) return null;
-
-    setIsUploadingLogo(true);
-    try {
-      const formData = new FormData();
-      formData.append("logo", logoFile);
-
-      const response = await fetch("/api/upload/logo", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        return data.logoUrl;
-      } else {
-        throw new Error(data.message || "Upload failed");
-      }
-    } catch (error: any) {
-      toast({
-        title: "Upload failed",
-        description: error.message || "Failed to upload logo",
-        variant: "destructive",
-      });
-      return null;
-    } finally {
-      setIsUploadingLogo(false);
     }
   };
 
@@ -142,17 +111,8 @@ export default function AddListing() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    let logoUrl = formData.logoUrl || null;
-
-    // Upload logo if a new file was selected
-    if (logoFile) {
-      const uploadedUrl = await uploadLogo();
-      if (uploadedUrl) {
-        logoUrl = uploadedUrl;
-      } else {
-        return; // Stop if upload failed
-      }
-    }
+    // Use base64 preview directly as logoUrl - stores in database, persists across deployments
+    const logoUrl = logoPreview || null;
 
     const listingData = {
       type: listingType,
@@ -691,11 +651,11 @@ export default function AddListing() {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!isFormValid() || createListingMutation.isPending || isUploadingLogo}
+                  disabled={!isFormValid() || createListingMutation.isPending}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                   data-testid="button-submit"
                 >
-                  {isUploadingLogo ? "Uploading..." : createListingMutation.isPending ? "Adding..." : "Add Listing"}
+                  {createListingMutation.isPending ? "Adding..." : "Add Listing"}
                 </Button>
               </div>
             </form>

@@ -34,7 +34,7 @@ The Homepage features a theme toggle in the top-right corner, a language selecto
 *   **Event Management**: Supports AI-powered bulk event import using OpenAI GPT-4o. Event images are downloaded, secured, and served locally. Events use a soft-delete architecture.
 *   **Guest Management**: Features a unified progressive disclosure guest registration form with conditional fields, multi-step password verification, and error recovery.
 *   **Booking Systems**: Dedicated routes for event/meeting bookings (`/booking`) and building tours (`/tour`), including conditional fields and validation.
-*   **Building Directory**: Displays tenant information with filtering and a `/addlisting` form for user-submitted entries, including unique slug-based edit URLs.
+*   **Building Directory**: Displays tenant information with filtering and a `/addlisting` form for user-submitted entries, including unique slug-based edit URLs. Logo images are stored as base64 data URLs directly in the database's `logoUrl` field to ensure persistence across deployments (no file-based upload storage).
 *   **Membership & Chat Requests**: Routes for membership inquiries (`/apply-to-join`) and Telegram chat invite requests (`/chat`), with data storage and automated email notifications via Resend.
 *   **Member Authentication**: OAuth 2.0 integration with Frontier Tower authentication server, implementing PKCE flow, token refresh, and cookie-based sessions.
 *   **Jobs/Recruitment**: A `/jobs` route offers a retro-futuristic, terminal-themed application for internal positions, storing applications and sending email notifications.
