@@ -480,6 +480,19 @@ export default function DirectoryEdit() {
                 />
               </div>
 
+              <div>
+                <Label htmlFor="twitterHandle">Twitter / X Handle</Label>
+                <Input
+                  id="twitterHandle"
+                  value={editForm.twitterHandle || ""}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, twitterHandle: e.target.value })
+                  }
+                  placeholder="@username"
+                  data-testid="input-twitter"
+                />
+              </div>
+
               <div className="md:col-span-2">
                 <Label htmlFor="logo">Logo Image (Max 2MB)</Label>
                 <div className="space-y-4">
