@@ -33,18 +33,6 @@ export default function CodeOfConduct() {
             </h1>
           </div>
 
-          <p className="text-sm text-blue-600 dark:text-blue-400 mb-6">
-            <a 
-              href="http://ft0.sh/code" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:underline"
-              data-testid="link-short-url"
-            >
-              ft0.sh/code
-            </a>
-          </p>
-
           <p className="text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
             The citizenship committee was elected to define our community standards and set membership guidelines. Any individual who violates community standards may receive a warning, temporary suspension, or ban from the building, depending on severity and frequency. The committee reserves the authority to remove individuals physical access to the property — as well as reinstate access. Anyone may request a review by the committee.
           </p>
