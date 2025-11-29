@@ -467,6 +467,19 @@ export default function DirectoryEdit() {
                 />
               </div>
 
+              <div>
+                <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+                <Input
+                  id="linkedinUrl"
+                  value={editForm.linkedinUrl || ""}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, linkedinUrl: e.target.value })
+                  }
+                  placeholder="https://linkedin.com/in/username"
+                  data-testid="input-linkedin"
+                />
+              </div>
+
               <div className="md:col-span-2">
                 <Label htmlFor="logo">Logo Image (Max 2MB)</Label>
                 <div className="space-y-4">
