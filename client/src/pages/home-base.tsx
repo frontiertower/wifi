@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield } from "lucide-react";
+import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield, Lock, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
@@ -8,6 +8,11 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import frontierTowerQR from "@assets/frontier-tower-qr.png";
 import rabbitImage from "@assets/FuzzyNop_logo_pink_1763832812948.png";
 import { translations, Language } from "@/lib/translations";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import {
   Select,
   SelectContent,
@@ -57,6 +62,16 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
   const [crackIntensity, setCrackIntensity] = useState(0);
   const [showTerminal, setShowTerminal] = useState(false);
   const [, setLocation] = useLocation();
+  const [showPasswordGate, setShowPasswordGate] = useState(false);
+  const [wifiPassword, setWifiPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const { data: settings } = useQuery({
+    queryKey: ['/api/settings'],
+  });
+
+  const passwordRequired = settings?.password_required === 'true';
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
