@@ -19,6 +19,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -2714,16 +2715,14 @@ function SettingsTab() {
                 Manage multiple passwords that guests can use to access WiFi
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Label htmlFor="require-password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Require Password
               </Label>
-              <input
+              <Switch
                 id="require-password"
-                type="checkbox"
                 checked={requireWifiPassword}
-                onChange={(e) => setRequireWifiPassword(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600"
+                onCheckedChange={setRequireWifiPassword}
                 data-testid="toggle-require-password"
               />
             </div>

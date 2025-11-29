@@ -67,7 +67,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
   const [passwordError, setPasswordError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
 
-  const { data: settings } = useQuery({
+  const { data: settings } = useQuery<Record<string, string>>({
     queryKey: ['/api/settings'],
   });
 
@@ -88,7 +88,50 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
   }, []);
 
   const handleRoleSelect = (role: Role) => {
-    setSelectedRole(role);
+    if (role === "guest" && passwordRequired) {
+      setShowPasswordGate(true);
+      setWifiPassword("");
+      setPasswordError("");
+    } else {
+      setSelectedRole(role);
+    }
+  };
+
+  const handleVerifyPassword = async () => {
+    if (!wifiPassword.trim()) {
+      setPasswordError("Please enter a password");
+      return;
+    }
+    
+    setIsVerifying(true);
+    setPasswordError("");
+    
+    try {
+      const response = await fetch('/api/verify-guest-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: wifiPassword }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setShowPasswordGate(false);
+        setSelectedRole("guest");
+      } else {
+        setPasswordError(data.message || "Incorrect password");
+      }
+    } catch (error) {
+      setPasswordError("Failed to verify password. Please try again.");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handlePasswordBack = () => {
+    setShowPasswordGate(false);
+    setWifiPassword("");
+    setPasswordError("");
   };
 
   const handleBack = () => {
@@ -220,7 +263,78 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
         <UnifiedGuestForm onBack={handleBack} onSuccess={handleSuccess} unifiParams={unifiParams} />
       )}
 
-      {!selectedRole && (
+      {showPasswordGate && (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4">
+          <div className="absolute top-6 right-6 z-50">
+            <ThemeToggle />
+          </div>
+          
+          <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+            <div className="bg-primary dark:bg-primary text-primary-foreground p-6">
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handlePasswordBack}
+                  className="text-primary-foreground hover:bg-white/20"
+                  data-testid="button-password-back"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <div className="flex items-center gap-2">
+                  <Lock className="h-6 w-6" />
+                  <h1 className="text-xl font-bold">WiFi Access</h1>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Wifi className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Please enter the WiFi access password to continue
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="wifi-password" className="text-gray-700 dark:text-gray-300">
+                    Password
+                  </Label>
+                  <Input
+                    id="wifi-password"
+                    type="password"
+                    value={wifiPassword}
+                    onChange={(e) => setWifiPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleVerifyPassword()}
+                    placeholder="Enter password"
+                    className="mt-1"
+                    data-testid="input-wifi-password"
+                  />
+                  {passwordError && (
+                    <p className="text-sm text-red-600 dark:text-red-400 mt-2" data-testid="text-password-error">
+                      {passwordError}
+                    </p>
+                  )}
+                </div>
+                
+                <Button
+                  onClick={handleVerifyPassword}
+                  disabled={isVerifying}
+                  className="w-full"
+                  data-testid="button-verify-password"
+                >
+                  {isVerifying ? "Verifying..." : "Continue"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!selectedRole && !showPasswordGate && (
         <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-4 ${isFlashing ? 'screen-flash' : ''}`}
           onAnimationEnd={() => setIsFlashing(false)}
         >
