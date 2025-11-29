@@ -39,6 +39,7 @@ import PillsPage from "@/pages/pills";
 import CareersPage from "@/pages/careers";
 import EcosystemPage from "@/pages/ecosystem";
 import ResidencyPage from "@/pages/residency";
+import CodeOfConduct from "@/pages/code-of-conduct";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -82,6 +83,7 @@ function Router() {
         <Route path="/careers" component={CareersPage} />
         <Route path="/ecosystem" component={EcosystemPage} />
         <Route path="/residency" component={ResidencyPage} />
+        <Route path="/code-of-conduct" component={CodeOfConduct} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
@@ -139,7 +141,7 @@ function AppHeader() {
     }
   };
 
-  const hideRabbitOn = ["/", "/de", "/es", "/zh", "/ko", "/ja", "/fr", "/hi", "/ar", "/sw", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/event-host-booking", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency"];
+  const hideRabbitOn = ["/", "/de", "/es", "/zh", "/ko", "/ja", "/fr", "/hi", "/ar", "/sw", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/event-host-booking", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency", "/code-of-conduct"];
   const shouldHideRabbit = hideRabbitOn.some(path => location === path || location.startsWith(path + "/"));
 
   return (

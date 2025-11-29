@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit } from "lucide-react";
+import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
@@ -401,6 +401,22 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                   <div>
                     <div className="font-medium text-gray-800 dark:text-gray-100">{t.careersAtFrontier}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">{t.careersAtFrontierDesc}</div>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/code-of-conduct"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-code-of-conduct"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
+                    <Shield className="text-blue-600 dark:text-blue-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Code of Conduct</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Community standards & guidelines</div>
                   </div>
                 </div>
               </Link>
