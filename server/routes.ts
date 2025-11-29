@@ -1707,6 +1707,25 @@ Rules:
     }
   });
 
+  app.get("/api/directory/edit/:slug", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const listing = await storage.getDirectoryListingByEditSlug(slug);
+      if (!listing) {
+        return res.status(404).json({
+          success: false,
+          message: "Directory listing not found"
+        });
+      }
+      res.json({ success: true, listing });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch directory listing"
+      });
+    }
+  });
+
   app.post("/api/directory", async (req, res) => {
     try {
       const data = req.body;

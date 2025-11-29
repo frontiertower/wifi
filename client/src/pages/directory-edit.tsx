@@ -32,14 +32,23 @@ export default function DirectoryEdit() {
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const { toast } = useToast();
 
-  const { data: allListings, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
+  // Try to fetch by editSlug first (secure URL)
+  const { data: editSlugData, isLoading: isLoadingEditSlug } = useQuery<{ success: boolean; listing: DirectoryListing }>({
+    queryKey: ["/api/directory/edit", slug],
+    enabled: !!slug,
+  });
+
+  const { data: allListings, isLoading: isLoadingAll } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
     queryKey: ["/api/directory"],
+    enabled: !editSlugData?.listing, // Only fetch all if editSlug didn't find anything
   });
 
   const communities = (allListings?.listings || []).filter(l => l.type === "community");
 
-  // Find listing by slug
-  const listing = allListings?.listings.find((l) => {
+  const isLoading = isLoadingEditSlug || (!editSlugData?.listing && isLoadingAll);
+
+  // First try editSlug match, then fall back to name-based slug
+  const listing = editSlugData?.listing || allListings?.listings.find((l) => {
     const name = l.type === "company" 
       ? l.companyName 
       : l.type === "community"

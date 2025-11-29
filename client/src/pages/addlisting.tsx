@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Building2, User, Users, Upload, X, PartyPopper } from "lucide-react";
+import { ArrowLeft, Building2, User, Users, Upload, X, PartyPopper, Link as LinkIcon, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +23,7 @@ export default function AddListing() {
   const queryClient = useQueryClient();
 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [createdListing, setCreatedListing] = useState<DirectoryListing | null>(null);
   const [listingType, setListingType] = useState<ListingType>("person");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -64,8 +65,11 @@ export default function AddListing() {
       }
       return result;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/directory"] });
+      if (data.listing) {
+        setCreatedListing(data.listing);
+      }
       setShowSuccess(true);
     },
     onError: (error: any) => {
@@ -213,6 +217,40 @@ export default function AddListing() {
             </CardHeader>
 
             <CardContent className="space-y-6">
+              {/* Edit Link Section */}
+              {createdListing?.editSlug && (
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Bookmark className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-100">
+                      Bookmark Your Edit Link
+                    </h3>
+                  </div>
+                  <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                    Save this link to make changes to your listing in the future. Only people with this link can edit your listing.
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-white dark:bg-gray-800 border border-blue-300 dark:border-blue-700 rounded px-3 py-2 text-sm font-mono break-all" data-testid="text-edit-link">
+                      {`${window.location.origin}/directory/edit/${createdListing.editSlug}`}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/directory/edit/${createdListing.editSlug}`);
+                        toast({
+                          title: "Link Copied",
+                          description: "Edit link copied to clipboard",
+                        });
+                      }}
+                      data-testid="button-copy-edit-link"
+                    >
+                      <LinkIcon className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h3 className="text-lg font-semibold text-center mb-2">
                   Help Build Our Community!
@@ -241,6 +279,7 @@ export default function AddListing() {
                 <Button
                   onClick={() => {
                     setShowSuccess(false);
+                    setCreatedListing(null);
                     setFormData({
                       companyName: "",
                       contactPerson: "",

@@ -626,11 +626,23 @@ export class DatabaseStorage {
   }
 
   async createDirectoryListing(listingData: InsertDirectoryListing): Promise<DirectoryListing> {
+    // Generate a unique edit slug
+    const editSlug = this.generateEditSlug();
+    
     const [listing] = await db
       .insert(directoryListings)
-      .values(listingData)
+      .values({ ...listingData, editSlug })
       .returning();
     return listing;
+  }
+
+  private generateEditSlug(): string {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let slug = '';
+    for (let i = 0; i < 24; i++) {
+      slug += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return slug;
   }
 
   async getAllDirectoryListings(): Promise<DirectoryListing[]> {
@@ -642,6 +654,14 @@ export class DatabaseStorage {
       .select()
       .from(directoryListings)
       .where(eq(directoryListings.id, id));
+    return listing || null;
+  }
+
+  async getDirectoryListingByEditSlug(editSlug: string): Promise<DirectoryListing | null> {
+    const [listing] = await db
+      .select()
+      .from(directoryListings)
+      .where(eq(directoryListings.editSlug, editSlug));
     return listing || null;
   }
 

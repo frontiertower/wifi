@@ -138,6 +138,7 @@ export const directoryListings = pgTable("directory_listings", {
   twitterHandle: text("twitter_handle"),
   logoUrl: text("logo_url"),
   description: text("description"),
+  editSlug: text("edit_slug"), // Unique slug for edit URL
   createdAt: timestamp("created_at").defaultNow(),
 });
 
