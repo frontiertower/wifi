@@ -267,7 +267,7 @@ export default function TourBooking() {
                               <RadioGroupItem value="custom" data-testid="radio-tour-custom" />
                             </FormControl>
                             <FormLabel className="font-medium cursor-pointer">
-                              Request a Different Time
+                              Request a New Tour Time
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
