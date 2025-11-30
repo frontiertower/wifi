@@ -11,7 +11,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -221,33 +220,27 @@ export default function TourBooking() {
                     <FormItem className="space-y-3">
                       <FormLabel className="text-base font-semibold">Select Tour Option</FormLabel>
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            const selectedTour = groupTours.find(t => t.id === value);
-                            if (selectedTour) {
-                              form.setValue("groupTourSelection", selectedTour.name);
-                              form.setValue("groupTourUrl", selectedTour.url);
-                            } else if (value === "custom") {
-                              form.setValue("groupTourSelection", "");
-                              form.setValue("groupTourUrl", "");
-                            }
-                          }}
-                          defaultValue={field.value}
-                          className="space-y-3"
-                        >
+                        <div className="space-y-3">
                           {groupTours.map((tour) => (
-                            <FormItem
+                            <button
                               key={tour.id}
-                              className="flex items-start space-x-3 space-y-0 rounded-lg border p-4 hover:bg-accent/50 transition-colors"
+                              type="button"
+                              onClick={() => {
+                                field.onChange(tour.id);
+                                form.setValue("groupTourSelection", tour.name);
+                                form.setValue("groupTourUrl", tour.url);
+                              }}
+                              data-testid={`button-tour-${tour.id}`}
+                              className={`w-full text-left rounded-lg border-2 p-4 transition-all ${
+                                field.value === tour.id
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/50 hover:bg-accent/50"
+                              }`}
                             >
-                              <FormControl>
-                                <RadioGroupItem value={tour.id} data-testid={`radio-tour-${tour.id}`} />
-                              </FormControl>
-                              <div className="flex-1 space-y-1">
-                                <FormLabel className="font-medium cursor-pointer">
+                              <div className="space-y-1">
+                                <p className="font-medium">
                                   {tour.name}
-                                </FormLabel>
+                                </p>
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-sm text-muted-foreground">
                                   <div className="flex items-center gap-1">
                                     <CalendarIcon className="h-3 w-3" />
@@ -268,17 +261,27 @@ export default function TourBooking() {
                                   View on Luma <ExternalLink className="h-3 w-3" />
                                 </a>
                               </div>
-                            </FormItem>
+                            </button>
                           ))}
-                          <FormItem className="flex items-start space-x-3 space-y-0 rounded-lg border p-4 hover:bg-accent/50 transition-colors">
-                            <FormControl>
-                              <RadioGroupItem value="custom" data-testid="radio-tour-custom" />
-                            </FormControl>
-                            <FormLabel className="font-medium cursor-pointer">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              field.onChange("custom");
+                              form.setValue("groupTourSelection", "");
+                              form.setValue("groupTourUrl", "");
+                            }}
+                            data-testid="button-tour-custom"
+                            className={`w-full text-left rounded-lg border-2 p-4 transition-all ${
+                              field.value === "custom"
+                                ? "border-primary bg-primary/5"
+                                : "border-border hover:border-primary/50 hover:bg-accent/50"
+                            }`}
+                          >
+                            <p className="font-medium">
                               Request a New Tour Time
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
+                            </p>
+                          </button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
