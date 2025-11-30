@@ -59,6 +59,14 @@ const allGroupTours = [
     url: "https://luma.com/your-startups-future-hq-exclusive-tour-o-b217",
     datetime: new Date("2024-11-25T11:00:00"),
   },
+  {
+    id: "dec3",
+    name: "Your Startup's Future HQ: Exclusive Tour for Pre-Seed Founders of the Frontier Tower's Private Offices Floor",
+    date: "Wednesday, December 3",
+    time: "11:30 AM - 12:00 PM",
+    url: "https://luma.com/your-startups-future-hq-exclusive-tour-f",
+    datetime: new Date("2024-12-03T11:30:00"),
+  },
 ];
 
 // Filter out past tours
