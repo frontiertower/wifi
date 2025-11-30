@@ -65,7 +65,7 @@ const allGroupTours = [
     date: "Wednesday, December 3",
     time: "11:30 AM - 12:00 PM",
     url: "https://luma.com/your-startups-future-hq-exclusive-tour-f",
-    datetime: new Date("2024-12-03T11:30:00"),
+    datetime: new Date("2025-12-03T11:30:00"),
   },
 ];
 
