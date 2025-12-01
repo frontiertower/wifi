@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ function slugify(text: string): string {
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
   const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("name-asc");
-  const [selectedTypes, setSelectedTypes] = useState<Set<"company" | "person" | "community" | "amenity">>(new Set());
+  const [selectedType, setSelectedType] = useState<"company" | "person" | "community" | "amenity" | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
@@ -32,16 +32,12 @@ export default function Directory() {
 
   const allListings = data?.listings || [];
   
-  const toggleFilterType = (type: "company" | "person" | "community" | "amenity") => {
-    setSelectedTypes(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(type)) {
-        newSet.delete(type);
-      } else {
-        newSet.add(type);
-      }
-      return newSet;
-    });
+  const selectFilterType = (type: "company" | "person" | "community" | "amenity") => {
+    setSelectedType(prev => prev === type ? null : type);
+  };
+  
+  const clearFilter = () => {
+    setSelectedType(null);
   };
 
   const getDisplayName = (listing: DirectoryListing) => {
@@ -83,12 +79,12 @@ export default function Directory() {
     }
     
     // Apply type filter
-    if (selectedTypes.size > 0) {
-      filtered = filtered.filter(listing => selectedTypes.has(listing.type as "company" | "person" | "community" | "amenity"));
+    if (selectedType) {
+      filtered = filtered.filter(listing => listing.type === selectedType);
     }
     
     return filtered;
-  }, [allListings, selectedTypes, searchQuery]);
+  }, [allListings, selectedType, searchQuery]);
   
   const listings = useMemo(() => {
     if (sortMode === "name-asc" || sortMode === "name-desc") {
@@ -196,9 +192,9 @@ export default function Directory() {
           {/* Filter and Sort Buttons */}
           <div className="flex items-center gap-2 flex-wrap">
             <Button
-              variant={selectedTypes.has("company") ? "default" : "outline"}
+              variant={selectedType === "company" ? "default" : "outline"}
               size="sm"
-              onClick={() => toggleFilterType("company")}
+              onClick={() => selectFilterType("company")}
               className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
               data-testid="button-filter-companies"
             >
@@ -206,9 +202,9 @@ export default function Directory() {
               <span className="text-xs">Company</span>
             </Button>
             <Button
-              variant={selectedTypes.has("community") ? "default" : "outline"}
+              variant={selectedType === "community" ? "default" : "outline"}
               size="sm"
-              onClick={() => toggleFilterType("community")}
+              onClick={() => selectFilterType("community")}
               className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
               data-testid="button-filter-communities"
             >
@@ -216,9 +212,9 @@ export default function Directory() {
               <span className="text-xs">Community</span>
             </Button>
             <Button
-              variant={selectedTypes.has("person") ? "default" : "outline"}
+              variant={selectedType === "person" ? "default" : "outline"}
               size="sm"
-              onClick={() => toggleFilterType("person")}
+              onClick={() => selectFilterType("person")}
               className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
               data-testid="button-filter-people"
             >
@@ -226,15 +222,28 @@ export default function Directory() {
               <span className="text-xs">Citizen</span>
             </Button>
             <Button
-              variant={selectedTypes.has("amenity") ? "default" : "outline"}
+              variant={selectedType === "amenity" ? "default" : "outline"}
               size="sm"
-              onClick={() => toggleFilterType("amenity")}
+              onClick={() => selectFilterType("amenity")}
               className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
               data-testid="button-filter-amenities"
             >
               <Coffee className="h-4 w-4" />
               <span className="text-xs">Amenity</span>
             </Button>
+            
+            {selectedType && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearFilter}
+                className="flex items-center gap-1 text-muted-foreground"
+                data-testid="button-clear-filter"
+              >
+                <X className="h-3 w-3" />
+                <span className="text-xs">Clear filter</span>
+              </Button>
+            )}
             
             <div className="w-px h-8 bg-gray-300 dark:bg-gray-600 mx-1" />
             
