@@ -1735,6 +1735,106 @@ Rules:
     }
   });
 
+  app.post("/api/directory/generate-description", async (req, res) => {
+    try {
+      const { websiteUrl, listingType, name } = req.body;
+      
+      if (!websiteUrl) {
+        return res.status(400).json({
+          success: false,
+          message: "Website URL is required"
+        });
+      }
+
+      // Scrape the website
+      let websiteContent = "";
+      try {
+        const response = await fetch(websiteUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; FrontierPortalBot/1.0)'
+          },
+          signal: AbortSignal.timeout(10000)
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const html = await response.text();
+        const { load } = await import('cheerio');
+        const $ = load(html);
+        
+        // Remove script and style elements
+        $('script, style, nav, footer, header, noscript').remove();
+        
+        // Get meta description
+        const metaDescription = $('meta[name="description"]').attr('content') || 
+                               $('meta[property="og:description"]').attr('content') || '';
+        
+        // Get page title
+        const pageTitle = $('title').text().trim() || $('h1').first().text().trim() || '';
+        
+        // Get main content text (limit to avoid token limits)
+        const bodyText = $('body').text()
+          .replace(/\s+/g, ' ')
+          .trim()
+          .substring(0, 3000);
+        
+        websiteContent = `Title: ${pageTitle}\nMeta Description: ${metaDescription}\nContent: ${bodyText}`;
+      } catch (scrapeError: any) {
+        console.error("Error scraping website:", scrapeError);
+        websiteContent = `Unable to scrape website. Name: ${name || 'Unknown'}`;
+      }
+
+      // Generate description using OpenAI
+      const OpenAI = (await import('openai')).default;
+      // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+      const openai = new OpenAI({
+        baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+        apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      });
+
+      const listingTypePrompt = listingType === 'company' 
+        ? 'company or business' 
+        : listingType === 'community' 
+          ? 'community or organization' 
+          : listingType === 'amenity'
+            ? 'amenity or service'
+            : 'person or professional';
+
+      const completion = await openai.chat.completions.create({
+        model: "gpt-5",
+        messages: [
+          {
+            role: "system",
+            content: `You are a professional copywriter. Generate a concise, engaging description for a ${listingTypePrompt} directory listing. 
+The description should be 2-3 sentences, professional yet approachable, and highlight key value propositions.
+Do not include contact information or website URLs in the description.
+Return only the description text, no quotes or additional formatting.`
+          },
+          {
+            role: "user",
+            content: `Generate a description for this ${listingTypePrompt} based on their website content:\n\n${websiteContent}`
+          }
+        ],
+        max_completion_tokens: 200,
+      });
+
+      const generatedDescription = completion.choices[0]?.message?.content?.trim() || "";
+      
+      res.json({ 
+        success: true, 
+        description: generatedDescription 
+      });
+    } catch (error: any) {
+      console.error("Error generating description:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to generate description. Please try again or write your own."
+      });
+    }
+  });
+
   app.post("/api/directory", async (req, res) => {
     try {
       const data = req.body;
