@@ -33,11 +33,22 @@ export default function Directory() {
   const allListings = data?.listings || [];
   
   const selectFilterType = (type: "company" | "person" | "community" | "amenity") => {
-    setSelectedType(prev => prev === type ? null : type);
+    const newType = selectedType === type ? null : type;
+    setSelectedType(newType);
+    
+    // Auto-set sort mode based on filter type
+    if (newType === "company" || newType === "person") {
+      setSortMode("name-asc");
+    } else if (newType === "community") {
+      setSortMode("floor-desc");
+    } else if (newType === "amenity") {
+      setSortMode("floor-asc");
+    }
   };
   
   const clearFilter = () => {
     setSelectedType(null);
+    setSortMode("name-asc");
   };
 
   const getDisplayName = (listing: DirectoryListing) => {
