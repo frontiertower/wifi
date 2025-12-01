@@ -302,9 +302,8 @@ export default function Events() {
                     {event.url && (
                       <div className="mt-4">
                         <Button
-                          variant="outline"
                           size="sm"
-                          className="w-full"
+                          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
                           asChild
                           data-testid={`button-view-event-${event.id}`}
                         >
