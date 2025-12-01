@@ -181,22 +181,75 @@ export default function AddListing() {
     },
   });
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const resizeImage = (file: File, maxWidth: number, maxHeight: number, quality: number): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+          
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Could not get canvas context'));
+            return;
+          }
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          const resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(resizedDataUrl);
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      
+      if (file.size > maxSize) {
         toast({
-          title: "File too large",
-          description: "Logo must be smaller than 2MB",
-          variant: "destructive",
+          title: "Resizing image",
+          description: "Your image is being automatically resized to fit the size limit.",
         });
+        
+        try {
+          const resizedDataUrl = await resizeImage(file, 800, 800, 0.8);
+          setLogoFile(file);
+          setLogoPreview(resizedDataUrl);
+          
+          toast({
+            title: "Image resized successfully",
+            description: "Your logo has been optimized and is ready to use.",
+          });
+        } catch {
+          toast({
+            title: "Could not resize image",
+            description: "Please try uploading a smaller image (under 2MB).",
+            variant: "destructive",
+          });
+        }
         return;
       }
 
       setLogoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Store base64 data URL directly - this persists in the database
         setLogoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
