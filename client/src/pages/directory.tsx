@@ -313,15 +313,15 @@ export default function Directory() {
                   data-testid={`card-listing-${listing.id}`}
                   onClick={() => toggleListing(listing.id)}
                 >
-                  <CardHeader className="pb-3 pt-4">
+                  <CardHeader className="py-2 px-3">
                     {/* Mobile Layout - Vertical */}
                     <div className="flex md:hidden items-center justify-between gap-2">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
                         {listing.logoUrl ? (
                           <img 
                             src={listing.logoUrl} 
                             alt={getDisplayName(listing)}
-                            className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                            className="w-8 h-8 rounded-md object-cover flex-shrink-0"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                               const fallback = e.currentTarget.nextElementSibling;
@@ -329,36 +329,36 @@ export default function Directory() {
                             }}
                           />
                         ) : null}
-                        <div className={`w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
+                        <div className={`w-8 h-8 bg-blue-100 dark:bg-blue-500/30 rounded-md flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
                           {(() => {
                             if (listing.iconName) {
                               const CustomIcon = getIconByName(listing.iconName);
-                              if (CustomIcon) return <CustomIcon className="h-5 w-5 text-blue-600 dark:text-blue-300" />;
+                              if (CustomIcon) return <CustomIcon className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
                             }
-                            if (listing.type === 'company') return <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />;
-                            if (listing.type === 'community') return <Users className="h-5 w-5 text-blue-600 dark:text-blue-300" />;
-                            if (listing.type === 'person') return <User className="h-5 w-5 text-blue-600 dark:text-blue-300" />;
-                            if (listing.type === 'amenity') return <Coffee className="h-5 w-5 text-blue-600 dark:text-blue-300" />;
-                            return <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />;
+                            if (listing.type === 'company') return <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
+                            if (listing.type === 'community') return <Users className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
+                            if (listing.type === 'person') return <User className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
+                            if (listing.type === 'amenity') return <Coffee className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
+                            return <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
                           })()}
                         </div>
-                        <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 break-words flex-1 min-w-0 leading-none">
+                        <CardTitle className="text-sm font-semibold text-gray-900 dark:text-gray-100 break-words flex-1 min-w-0 leading-tight">
                           {getDisplayName(listing)}
                         </CardTitle>
                       </div>
                       {getLocationText(listing) && (
-                        <span className="text-base font-semibold text-gray-900 dark:text-gray-100 flex-shrink-0">{getLocationText(listing)}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex-shrink-0">{getLocationText(listing)}</span>
                       )}
                     </div>
 
                     {/* Desktop Layout - Horizontal */}
-                    <div className="hidden md:flex items-start gap-6">
-                      <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="hidden md:flex items-center gap-4">
+                      <div className="flex items-center gap-2 flex-shrink-0">
                         {listing.logoUrl ? (
                           <img 
                             src={listing.logoUrl} 
                             alt={getDisplayName(listing)}
-                            className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                            className="w-8 h-8 rounded-md object-cover flex-shrink-0"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                               const fallback = e.currentTarget.nextElementSibling;
@@ -366,27 +366,27 @@ export default function Directory() {
                             }}
                           />
                         ) : null}
-                        <div className={`w-12 h-12 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
+                        <div className={`w-8 h-8 bg-blue-100 dark:bg-blue-500/30 rounded-md flex items-center justify-center flex-shrink-0 ${listing.logoUrl ? 'hidden' : ''}`}>
                           {(() => {
                             if (listing.iconName) {
                               const CustomIcon = getIconByName(listing.iconName);
-                              if (CustomIcon) return <CustomIcon className="h-6 w-6 text-blue-600 dark:text-blue-300" />;
+                              if (CustomIcon) return <CustomIcon className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
                             }
-                            if (listing.type === 'company') return <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-300" />;
-                            if (listing.type === 'community') return <Users className="h-6 w-6 text-blue-600 dark:text-blue-300" />;
-                            if (listing.type === 'person') return <User className="h-6 w-6 text-blue-600 dark:text-blue-300" />;
-                            if (listing.type === 'amenity') return <Coffee className="h-6 w-6 text-blue-600 dark:text-blue-300" />;
-                            return <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-300" />;
+                            if (listing.type === 'company') return <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
+                            if (listing.type === 'community') return <Users className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
+                            if (listing.type === 'person') return <User className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
+                            if (listing.type === 'amenity') return <Coffee className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
+                            return <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-300" />;
                           })()}
                         </div>
-                        <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                        <CardTitle className="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight">
                           {getDisplayName(listing)}
                         </CardTitle>
                       </div>
                       
                       <div className="flex-1 min-w-0">
                         {listing.description && !isExpanded && (
-                          <div className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none line-clamp-2">
+                          <div className="text-xs text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none line-clamp-1">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                               {listing.description}
                             </ReactMarkdown>
@@ -395,7 +395,7 @@ export default function Directory() {
                       </div>
 
                       {getLocationText(listing) && (
-                        <span className="text-base font-semibold text-gray-900 dark:text-gray-100 flex-shrink-0">{getLocationText(listing)}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex-shrink-0">{getLocationText(listing)}</span>
                       )}
                     </div>
                   </CardHeader>
