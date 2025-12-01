@@ -33,18 +33,23 @@ import {
 } from "@/components/ui/form";
 
 const eventHostBookingFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Host name is required"),
   company: z.string().optional(),
   phone: z.string().min(1, "Phone number is required"),
   email: z.string().email("Valid email is required").min(1, "Email is required"),
-  eventType: z.string().optional(),
+  eventTitle: z.string().min(1, "Event title is required"),
+  eventType: z.string().min(1, "Event type is required"),
+  eventAccessType: z.string().min(1, "Event access type is required"),
   expectedAttendees: z.preprocess(
     (val) => (val === "" || val === null || val === undefined ? undefined : Number(val)),
-    z.number().int().min(1, "Must be at least 1 attendee").optional()
+    z.number().int().min(1, "Must be at least 1 attendee")
   ),
-  preferredDate: z.date().optional(),
-  preferredTime: z.string().optional(),
-  eventDescription: z.string().optional(),
+  preferredDate: z.date({ required_error: "Preferred date is required" }),
+  preferredTime: z.string().min(1, "Preferred time is required"),
+  eventDescription: z.string().min(1, "Event description is required"),
+  otherContactMethod: z.string().optional(),
+  spaceNeeds: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 type EventHostBookingFormValues = z.infer<typeof eventHostBookingFormSchema>;
@@ -65,13 +70,18 @@ const timeSlots = [
 ];
 
 const eventTypes = [
-  "Workshop",
-  "Conference",
-  "Meetup",
-  "Networking Event",
-  "Product Launch",
-  "Training Session",
-  "Panel Discussion",
+  "Talk/Salon",
+  "Workshop/Training",
+  "Panel",
+  "Social",
+  "Service/Practice",
+  "Other",
+];
+
+const eventAccessTypes = [
+  "Free",
+  "Paid (Ticketed)",
+  "Free (Sponsored)",
   "Other",
 ];
 
@@ -87,8 +97,13 @@ export default function EventHostBooking() {
       company: "",
       phone: "",
       email: "",
+      eventTitle: "",
       eventType: "",
+      eventAccessType: "",
       eventDescription: "",
+      otherContactMethod: "",
+      spaceNeeds: "",
+      notes: "",
     },
   });
 
@@ -137,96 +152,62 @@ export default function EventHostBooking() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Host Your Event</CardTitle>
+            <CardTitle className="text-2xl">Human Flourishing Floor Events Submission</CardTitle>
             <CardDescription>
-              Schedule a call to discuss hosting your event at Frontier Tower
+              Submit your event to be hosted at Frontier Tower
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name *</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Your full name"
-                            data-testid="input-name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {/* Event Title */}
+                <FormField
+                  control={form.control}
+                  name="eventTitle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Event Title *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter your event title"
+                          data-testid="input-event-title"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="company"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Company</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Your company (optional)"
-                            data-testid="input-company"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {/* Event Description */}
+                <FormField
+                  control={form.control}
+                  name="eventDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Event Description *</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe your event in detail"
+                          className="resize-none"
+                          rows={4}
+                          data-testid="textarea-description"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone Number *</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="+1 (555) 123-4567"
-                            data-testid="input-phone"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="your.email@example.com"
-                            data-testid="input-email"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+                {/* Event Type and Access Type */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="eventType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Event Type</FormLabel>
+                        <FormLabel>Event Type *</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger data-testid="select-event-type">
@@ -248,18 +229,62 @@ export default function EventHostBooking() {
 
                   <FormField
                     control={form.control}
-                    name="expectedAttendees"
+                    name="eventAccessType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Expected Attendees</FormLabel>
+                        <FormLabel>Event Access Type *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-access-type">
+                              <SelectValue placeholder="Select access type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {eventAccessTypes.map((type) => (
+                              <SelectItem key={type} value={type} data-testid={`access-type-${type}`}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Host Name and Contact Email */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Host Name(s) *</FormLabel>
                         <FormControl>
                           <Input
-                            type="number"
-                            min="1"
-                            placeholder="Number of attendees"
-                            data-testid="input-attendees"
+                            placeholder="Your full name"
+                            data-testid="input-name"
                             {...field}
-                            value={field.value || ""}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contact Email *</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="your.email@example.com"
+                            data-testid="input-email"
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
@@ -268,13 +293,53 @@ export default function EventHostBooking() {
                   />
                 </div>
 
+                {/* Phone and Other Contact Method */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="+1 (555) 123-4567"
+                            data-testid="input-phone"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="otherContactMethod"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Other Contact Method(s)</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Telegram, WhatsApp, etc."
+                            data-testid="input-other-contact"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Date and Time */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="preferredDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>Preferred Date</FormLabel>
+                        <FormLabel>Preferred Date *</FormLabel>
                         <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -307,9 +372,6 @@ export default function EventHostBooking() {
                             />
                           </PopoverContent>
                         </Popover>
-                        <FormDescription>
-                          Optional - helps us prepare for your call
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -320,7 +382,7 @@ export default function EventHostBooking() {
                     name="preferredTime"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Preferred Time</FormLabel>
+                        <FormLabel>Preferred Time *</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger data-testid="select-time">
@@ -338,33 +400,91 @@ export default function EventHostBooking() {
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormDescription>
-                          Optional - we'll find a time that works
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
 
+                {/* Expected Attendance and Company */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="expectedAttendees"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Expected Attendance *</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="1"
+                            placeholder="Number of attendees"
+                            data-testid="input-attendees"
+                            {...field}
+                            value={field.value || ""}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="company"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Organization/Company</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Your organization (optional)"
+                            data-testid="input-company"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Space Needs */}
                 <FormField
                   control={form.control}
-                  name="eventDescription"
+                  name="spaceNeeds"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Event Description</FormLabel>
+                      <FormLabel>Space Needs (Room, layout, chairs, AV)</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Tell us about your event (optional)"
+                          placeholder="Describe your space requirements: room size, seating arrangement, projector, microphones, etc."
                           className="resize-none"
-                          rows={4}
-                          data-testid="textarea-description"
+                          rows={3}
+                          data-testid="textarea-space-needs"
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
-                        Share details about your event, goals, or any special requirements
-                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Other/Notes */}
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Other Notes</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Any additional information or special requests"
+                          className="resize-none"
+                          rows={3}
+                          data-testid="textarea-notes"
+                          {...field}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -392,7 +512,7 @@ export default function EventHostBooking() {
                     ) : (
                       <>
                         <Send className="mr-2 h-4 w-4" />
-                        Request Call
+                        Submit Event
                       </>
                     )}
                   </Button>
