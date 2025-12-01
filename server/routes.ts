@@ -81,10 +81,11 @@ function verifyImageSignature(buffer: Buffer): boolean {
   return false;
 }
 
-// Helper function to download an image from a URL and save it locally
-async function downloadImage(imageUrl: string, eventId: number): Promise<string> {
-  const maxSize = 10 * 1024 * 1024; // 10MB
-  const maxDuration = 15000; // 15 seconds max download time (reduced from 30)
+// Helper function to download an image from a URL and return as base64 data URL
+// Images are stored in the database as base64 to persist across deployments
+async function downloadImageAsBase64(imageUrl: string): Promise<string> {
+  const maxSize = 2 * 1024 * 1024; // 2MB max for base64 storage
+  const maxDuration = 15000; // 15 seconds max download time
   const abortController = new AbortController();
   let downloadTimer: NodeJS.Timeout | null = null;
   
@@ -128,22 +129,6 @@ async function downloadImage(imageUrl: string, eventId: number): Promise<string>
       throw new Error(`Image too large: ${contentLength} bytes. Max size is ${maxSize} bytes.`);
     }
 
-    // Get the file extension from content type
-    let ext = '.jpg'; // default
-    if (contentType.includes('jpeg') || contentType.includes('jpg')) {
-      ext = '.jpg';
-    } else if (contentType.includes('png')) {
-      ext = '.png';
-    } else if (contentType.includes('webp')) {
-      ext = '.webp';
-    } else if (contentType.includes('gif')) {
-      ext = '.gif';
-    }
-
-    // Create a filename using the event ID
-    const filename = `event-${eventId}${ext}`;
-    const filepath = path.join(eventsUploadsDir, filename);
-
     // Stream download with size limit enforcement
     const chunks: Buffer[] = [];
     let totalSize = 0;
@@ -157,7 +142,6 @@ async function downloadImage(imageUrl: string, eventId: number): Promise<string>
       for await (const chunk of response.body as any) {
         // Check size BEFORE adding chunk and abort immediately if it would exceed limit
         if (totalSize + chunk.length > maxSize) {
-          // Abort the request and destroy the stream
           abortController.abort();
           if (response.body && typeof (response.body as any).cancel === 'function') {
             try { (response.body as any).cancel(); } catch (e) { /* ignore */ }
@@ -169,7 +153,6 @@ async function downloadImage(imageUrl: string, eventId: number): Promise<string>
         chunks.push(chunk);
       }
     } catch (streamError) {
-      // Ensure stream and request are fully aborted
       if (!abortController.signal.aborted) {
         abortController.abort();
       }
@@ -178,7 +161,6 @@ async function downloadImage(imageUrl: string, eventId: number): Promise<string>
       }
       throw new Error(`Stream error: ${streamError instanceof Error ? streamError.message : 'Unknown error'}`);
     } finally {
-      // Clear the timeout
       if (downloadTimer) {
         clearTimeout(downloadTimer);
       }
@@ -191,12 +173,20 @@ async function downloadImage(imageUrl: string, eventId: number): Promise<string>
       throw new Error('Downloaded file is not a valid image (invalid file signature)');
     }
     
-    await fs.promises.writeFile(filepath, buffer);
-
-    // Return the relative URL path
-    return `/uploads/events/${filename}`;
+    // Determine MIME type for data URL
+    let mimeType = 'image/jpeg'; // default
+    if (contentType.includes('png')) {
+      mimeType = 'image/png';
+    } else if (contentType.includes('webp')) {
+      mimeType = 'image/webp';
+    } else if (contentType.includes('gif')) {
+      mimeType = 'image/gif';
+    }
+    
+    // Convert to base64 data URL
+    const base64 = buffer.toString('base64');
+    return `data:${mimeType};base64,${base64}`;
   } catch (error) {
-    // Make sure abort controller is called and timer is cleared
     if (!abortController.signal.aborted) {
       abortController.abort();
     }
@@ -1361,17 +1351,14 @@ Rules:
       const events = await storage.getAllEvents();
       const now = new Date();
       
-      // Filter for future events with URLs that don't have a working local image
+      // Filter for future events with URLs that don't have a stored image
       const eventsWithUrls = events.filter(event => {
         if (!event.url || new Date(event.endDate) < now) return false;
         
-        // Skip if we already have a local image that exists
-        if (event.imageUrl && event.imageUrl.startsWith('/uploads/events/')) {
-          const localPath = path.join(process.cwd(), 'public', event.imageUrl);
-          if (fs.existsSync(localPath)) {
-            console.log(`Skipping "${event.name}" - already has local image`);
-            return false;
-          }
+        // Skip if we already have a base64 image stored
+        if (event.imageUrl && event.imageUrl.startsWith('data:image/')) {
+          console.log(`Skipping "${event.name}" - already has stored image`);
+          return false;
         }
         return true;
       });
@@ -1451,18 +1438,18 @@ Rules:
             
             console.log(`Found image for "${event.name}"`);
             
-            // Download the image
-            const localImagePath = await downloadImage(imageUrl, event.id);
+            // Download the image and convert to base64 for persistent storage
+            const base64Image = await downloadImageAsBase64(imageUrl);
             
-            // Update event with local image path AND store original URL as fallback
-            await storage.updateEventImage(event.id, localImagePath, imageUrl);
+            // Update event with base64 image AND store original URL as fallback
+            await storage.updateEventImage(event.id, base64Image, imageUrl);
             
             return {
               success: true,
               result: {
                 id: event.id,
                 name: event.name,
-                imageUrl: localImagePath,
+                imageUrl: base64Image.substring(0, 50) + '...',
                 originalImageUrl: imageUrl
               }
             };
