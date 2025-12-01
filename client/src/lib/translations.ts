@@ -21,7 +21,7 @@ export const translations = {
     hostYourEvent: "Host Your Event",
     hostYourEventDesc: "Setup a call to discuss an event",
     chatWithUs: "Chat with Us",
-    chatWithUsDesc: "Ask us anything or share feedback",
+    chatWithUsDesc: "Ask anything or share feedback",
     shareWithFriends: "Share with your friends",
     scanToVisit: "Scan to visit thefrontiertower.com",
     followWhiteRabbit: "Follow the white rabbit",
