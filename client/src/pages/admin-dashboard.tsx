@@ -1226,12 +1226,6 @@ export default function AdminDashboard() {
                     </p>
                     <p className="text-xs text-yellow-700 dark:text-yellow-300">Pending</p>
                   </div>
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400" data-testid="leads-status-new">
-                      {unifiedLeads?.leads?.filter(l => l.status === 'new').length || 0}
-                    </p>
-                    <p className="text-xs text-blue-700 dark:text-blue-300">New</p>
-                  </div>
                   <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400" data-testid="leads-status-contacted">
                       {unifiedLeads?.leads?.filter(l => l.status === 'contacted').length || 0}
@@ -1252,7 +1246,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-gray-600 dark:text-gray-400" data-testid="leads-status-other">
-                      {unifiedLeads?.leads?.filter(l => !['pending', 'new', 'contacted', 'scheduled', 'approved'].includes(l.status)).length || 0}
+                      {unifiedLeads?.leads?.filter(l => !['pending', 'contacted', 'scheduled', 'approved'].includes(l.status)).length || 0}
                     </p>
                     <p className="text-xs text-gray-700 dark:text-gray-300">Other</p>
                   </div>
@@ -1691,14 +1685,6 @@ export default function AdminDashboard() {
                       Pending
                     </Button>
                     <Button
-                      variant={selectedLeadStatuses.has('new') ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => toggleLeadStatus('new')}
-                      data-testid="filter-status-new"
-                    >
-                      New
-                    </Button>
-                    <Button
                       variant={selectedLeadStatuses.has('contacted') ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => toggleLeadStatus('contacted')}
@@ -1809,12 +1795,6 @@ export default function AdminDashboard() {
                                 <DropdownMenuItem
                                   onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'pending' })}
                                   data-testid={`status-option-pending-${lead.type}-${lead.id}`}
-                                >
-                                  New
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => updateLeadStatusMutation.mutate({ type: lead.type, id: lead.id, status: 'new' })}
-                                  data-testid={`status-option-new-${lead.type}-${lead.id}`}
                                 >
                                   Pending
                                 </DropdownMenuItem>
