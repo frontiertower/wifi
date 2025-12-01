@@ -346,7 +346,7 @@ export default function Directory() {
                         </CardTitle>
                       </div>
                       {getLocationText(listing) && (
-                        <span className="text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">{getLocationText(listing)}</span>
+                        <span className="text-base font-semibold text-gray-900 dark:text-gray-100 flex-shrink-0">{getLocationText(listing)}</span>
                       )}
                     </div>
 
@@ -394,7 +394,7 @@ export default function Directory() {
                       </div>
 
                       {getLocationText(listing) && (
-                        <span className="text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">{getLocationText(listing)}</span>
+                        <span className="text-base font-semibold text-gray-900 dark:text-gray-100 flex-shrink-0">{getLocationText(listing)}</span>
                       )}
                     </div>
                   </CardHeader>
