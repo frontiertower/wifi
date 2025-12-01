@@ -357,21 +357,6 @@ export default function Directory() {
                             <span className="whitespace-nowrap">{getLocationText(listing)}</span>
                           </div>
                         )}
-                        {isAdmin && (
-                          <Link 
-                            href={`/directory/edit/${slugify(getDisplayName(listing))}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                              data-testid={`button-edit-listing-${listing.id}`}
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        )}
                         <ChevronDown 
                           className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform ${
                             isExpanded ? 'rotate-180' : ''
@@ -431,28 +416,11 @@ export default function Directory() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        {isAdmin && (
-                          <Link 
-                            href={`/directory/edit/${slugify(getDisplayName(listing))}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                              data-testid={`button-edit-listing-desktop-${listing.id}`}
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        )}
-                        <ChevronDown 
-                          className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform mt-1 ${
-                            isExpanded ? 'rotate-180' : ''
-                          }`}
-                        />
-                      </div>
+                      <ChevronDown 
+                        className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform flex-shrink-0 mt-1 ${
+                          isExpanded ? 'rotate-180' : ''
+                        }`}
+                      />
                     </div>
                   </CardHeader>
 
@@ -577,6 +545,24 @@ export default function Directory() {
                               </a>
                             </div>
                           )}
+                        </div>
+                      )}
+                      
+                      {isAdmin && (
+                        <div className="flex justify-end pt-2">
+                          <Link 
+                            href={`/directory/edit/${slugify(getDisplayName(listing))}`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              data-testid={`button-edit-listing-${listing.id}`}
+                            >
+                              <Pencil className="h-4 w-4 mr-2" />
+                              Edit
+                            </Button>
+                          </Link>
                         </div>
                       )}
                     </CardContent>
