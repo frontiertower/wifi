@@ -198,40 +198,44 @@ export default function Directory() {
               variant={selectedTypes.has("company") ? "default" : "outline"}
               size="sm"
               onClick={() => toggleFilterType("company")}
+              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
               data-testid="button-filter-companies"
             >
-              <Building2 className="mr-2 h-4 w-4" />
-              Company
+              <Building2 className="h-4 w-4" />
+              <span className="text-xs">Company</span>
             </Button>
             <Button
               variant={selectedTypes.has("community") ? "default" : "outline"}
               size="sm"
               onClick={() => toggleFilterType("community")}
+              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
               data-testid="button-filter-communities"
             >
-              <Users className="mr-2 h-4 w-4" />
-              Community
+              <Users className="h-4 w-4" />
+              <span className="text-xs">Community</span>
             </Button>
             <Button
               variant={selectedTypes.has("person") ? "default" : "outline"}
               size="sm"
               onClick={() => toggleFilterType("person")}
+              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
               data-testid="button-filter-people"
             >
-              <User className="mr-2 h-4 w-4" />
-              Citizen
+              <User className="h-4 w-4" />
+              <span className="text-xs">Citizen</span>
             </Button>
             <Button
               variant={selectedTypes.has("amenity") ? "default" : "outline"}
               size="sm"
               onClick={() => toggleFilterType("amenity")}
+              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
               data-testid="button-filter-amenities"
             >
-              <Coffee className="mr-2 h-4 w-4" />
-              Amenity
+              <Coffee className="h-4 w-4" />
+              <span className="text-xs">Amenity</span>
             </Button>
             
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+            <div className="w-px h-8 bg-gray-300 dark:bg-gray-600 mx-1" />
             
             <Button
               variant={sortMode === "name-asc" || sortMode === "name-desc" ? "default" : "outline"}
