@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee, X, Pencil, ArrowUpDown, Check } from "lucide-react";
@@ -21,11 +21,43 @@ function slugify(text: string): string {
     .trim();
 }
 
+const hashToType: Record<string, "company" | "person" | "community" | "amenity"> = {
+  companies: "company",
+  communities: "community",
+  citizens: "person",
+  people: "person",
+  amenities: "amenity",
+};
+
+const typeToHash: Record<string, string> = {
+  company: "companies",
+  community: "communities",
+  person: "citizens",
+  amenity: "amenities",
+};
+
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
   const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("name-asc");
   const [selectedType, setSelectedType] = useState<"company" | "person" | "community" | "amenity" | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  
+  // Read hash from URL on initial load
+  useEffect(() => {
+    const hash = window.location.hash.slice(1).toLowerCase();
+    if (hash && hashToType[hash]) {
+      const type = hashToType[hash];
+      setSelectedType(type);
+      // Auto-set sort mode based on filter type
+      if (type === "company" || type === "person") {
+        setSortMode("name-asc");
+      } else if (type === "community") {
+        setSortMode("floor-desc");
+      } else if (type === "amenity") {
+        setSortMode("floor-asc");
+      }
+    }
+  }, []);
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
     queryKey: ["/api/directory"],
@@ -44,6 +76,13 @@ export default function Directory() {
     const newType = selectedType === type ? null : type;
     setSelectedType(newType);
     
+    // Update URL hash
+    if (newType) {
+      window.location.hash = typeToHash[newType];
+    } else {
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+    
     // Auto-set sort mode based on filter type
     if (newType === "company" || newType === "person") {
       setSortMode("name-asc");
@@ -57,6 +96,8 @@ export default function Directory() {
   const clearFilter = () => {
     setSelectedType(null);
     setSortMode("name-asc");
+    // Remove hash from URL
+    history.replaceState(null, "", window.location.pathname + window.location.search);
   };
 
   const getDisplayName = (listing: DirectoryListing) => {
