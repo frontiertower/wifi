@@ -345,11 +345,6 @@ export default function Directory() {
                           {getDisplayName(listing)}
                         </CardTitle>
                       </div>
-                      <ChevronDown 
-                        className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform flex-shrink-0 ${
-                          isExpanded ? 'rotate-180' : ''
-                        }`}
-                      />
                     </div>
 
                     {/* Desktop Layout - Horizontal */}
@@ -395,11 +390,6 @@ export default function Directory() {
                         )}
                       </div>
 
-                      <ChevronDown 
-                        className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform flex-shrink-0 mt-1 ${
-                          isExpanded ? 'rotate-180' : ''
-                        }`}
-                      />
                     </div>
                   </CardHeader>
 
