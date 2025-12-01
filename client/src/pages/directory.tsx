@@ -317,7 +317,7 @@ export default function Directory() {
             </Link>
           </Card>
         ) : (
-          <div className="space-y-1">
+          <div>
             {listings.map((listing) => {
               const isExpanded = expandedListings.has(listing.id);
               
