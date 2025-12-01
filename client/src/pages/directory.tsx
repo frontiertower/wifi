@@ -250,19 +250,6 @@ export default function Directory() {
               <span className="text-xs">Amenities</span>
             </Button>
             
-            {selectedType && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilter}
-                className="flex items-center gap-1 text-muted-foreground"
-                data-testid="button-clear-filter"
-              >
-                <X className="h-3 w-3" />
-                <span className="text-xs">Clear filter</span>
-              </Button>
-            )}
-            
             <div className="w-px h-8 bg-gray-300 dark:bg-gray-600 mx-1" />
             
             <Button
@@ -281,6 +268,19 @@ export default function Directory() {
             >
               Sort by Floor {sortMode === "floor-asc" ? "↑" : sortMode === "floor-desc" ? "↓" : ""}
             </Button>
+            
+            {selectedType && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearFilter}
+                className="flex items-center gap-1"
+                data-testid="button-clear-filter"
+              >
+                <X className="h-3 w-3" />
+                <span className="text-xs">Clear filter</span>
+              </Button>
+            )}
           </div>
         </div>
 
