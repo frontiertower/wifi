@@ -2050,6 +2050,7 @@ export default function AdminDashboard() {
                       
                       const query = directorySearchQuery.toLowerCase();
                       const displayName = listing.type === "company" && listing.companyName ? listing.companyName :
+                                         listing.type === "amenity" && listing.companyName ? listing.companyName :
                                          listing.type === "community" && listing.communityName ? listing.communityName :
                                          listing.type === "person" && listing.lastName && listing.firstName ? `${listing.lastName}, ${listing.firstName}` :
                                          "";
@@ -2070,6 +2071,7 @@ export default function AdminDashboard() {
                     const isEditing = editingDirectoryId === listing.id;
                     const currentData = isEditing ? editDirectoryForm : listing;
                     const displayName = listing.type === "company" && listing.companyName ? listing.companyName :
+                                       listing.type === "amenity" && listing.companyName ? listing.companyName :
                                        listing.type === "community" && listing.communityName ? listing.communityName :
                                        listing.type === "person" && listing.lastName && listing.firstName ? `${listing.lastName}, ${listing.firstName}` :
                                        "Unknown";
@@ -2175,6 +2177,22 @@ export default function AdminDashboard() {
                                   }
                                   disabled={!isEditing}
                                   data-testid={`input-companyName-${listing.id}`}
+                                />
+                              </div>
+                            )}
+
+                            {listing.type === "amenity" && (
+                              <div>
+                                <Label htmlFor={`companyName-${listing.id}`}>Amenity Name</Label>
+                                <Input
+                                  id={`companyName-${listing.id}`}
+                                  value={currentData.companyName || ""}
+                                  onChange={(e) =>
+                                    isEditing &&
+                                    setEditDirectoryForm({ ...editDirectoryForm, companyName: e.target.value })
+                                  }
+                                  disabled={!isEditing}
+                                  data-testid={`input-amenityName-${listing.id}`}
                                 />
                               </div>
                             )}

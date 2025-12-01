@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,7 +22,7 @@ function slugify(text: string): string {
 export default function Directory() {
   const [expandedListings, setExpandedListings] = useState<Set<number>>(new Set());
   const [sortMode, setSortMode] = useState<"name-asc" | "name-desc" | "floor-asc" | "floor-desc">("name-asc");
-  const [selectedTypes, setSelectedTypes] = useState<Set<"company" | "person" | "community">>(new Set());
+  const [selectedTypes, setSelectedTypes] = useState<Set<"company" | "person" | "community" | "amenity">>(new Set());
   const [searchQuery, setSearchQuery] = useState<string>("");
   
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
@@ -31,7 +31,7 @@ export default function Directory() {
 
   const allListings = data?.listings || [];
   
-  const toggleFilterType = (type: "company" | "person" | "community") => {
+  const toggleFilterType = (type: "company" | "person" | "community" | "amenity") => {
     setSelectedTypes(prev => {
       const newSet = new Set(prev);
       if (newSet.has(type)) {
@@ -45,6 +45,9 @@ export default function Directory() {
 
   const getDisplayName = (listing: DirectoryListing) => {
     if (listing.type === "company" && listing.companyName) {
+      return listing.companyName;
+    }
+    if (listing.type === "amenity" && listing.companyName) {
       return listing.companyName;
     }
     if (listing.type === "community" && listing.communityName) {
@@ -80,7 +83,7 @@ export default function Directory() {
     
     // Apply type filter
     if (selectedTypes.size > 0) {
-      filtered = filtered.filter(listing => selectedTypes.has(listing.type as "company" | "person" | "community"));
+      filtered = filtered.filter(listing => selectedTypes.has(listing.type as "company" | "person" | "community" | "amenity"));
     }
     
     return filtered;
@@ -217,6 +220,15 @@ export default function Directory() {
             >
               <User className="mr-2 h-4 w-4" />
               Citizen
+            </Button>
+            <Button
+              variant={selectedTypes.has("amenity") ? "default" : "outline"}
+              size="sm"
+              onClick={() => toggleFilterType("amenity")}
+              data-testid="button-filter-amenities"
+            >
+              <Coffee className="mr-2 h-4 w-4" />
+              Amenity
             </Button>
           </div>
 

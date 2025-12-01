@@ -120,7 +120,7 @@ export const bookings = pgTable("bookings", {
 
 export const directoryListings = pgTable("directory_listings", {
   id: serial("id").primaryKey(),
-  type: text("type").notNull(), // company, person, or community
+  type: text("type").notNull(), // company, person, community, or amenity
   companyName: text("company_name"),
   contactPerson: text("contact_person"),
   communityName: text("community_name"),

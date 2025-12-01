@@ -118,14 +118,14 @@ export default function DirectoryEdit() {
     },
   });
 
-  const handleTypeChange = (newType: "company" | "community" | "person") => {
+  const handleTypeChange = (newType: "company" | "community" | "person" | "amenity") => {
     const currentName = editForm.companyName || editForm.communityName || 
                        (editForm.firstName && editForm.lastName ? `${editForm.firstName} ${editForm.lastName}` : "");
 
     const updates: Partial<DirectoryListing> = { type: newType };
 
     // Transfer name to appropriate field based on new type
-    if (newType === "company") {
+    if (newType === "company" || newType === "amenity") {
       updates.companyName = currentName;
       updates.communityName = null;
       updates.firstName = null;
@@ -161,6 +161,9 @@ export default function DirectoryEdit() {
 
   const getDisplayName = (listing: DirectoryListing) => {
     if (listing.type === "company" && listing.companyName) {
+      return listing.companyName;
+    }
+    if (listing.type === "amenity" && listing.companyName) {
       return listing.companyName;
     }
     if (listing.type === "community" && listing.communityName) {
@@ -239,7 +242,7 @@ export default function DirectoryEdit() {
                 <Label htmlFor="type">Type</Label>
                 <Select
                   value={editForm.type || ""}
-                  onValueChange={(value) => handleTypeChange(value as "company" | "community" | "person")}
+                  onValueChange={(value) => handleTypeChange(value as "company" | "community" | "person" | "amenity")}
                 >
                   <SelectTrigger id="type" data-testid="select-type">
                     <SelectValue placeholder="Select type" />
@@ -247,7 +250,8 @@ export default function DirectoryEdit() {
                   <SelectContent>
                     <SelectItem value="company">Company</SelectItem>
                     <SelectItem value="community">Community</SelectItem>
-                    <SelectItem value="person">Person</SelectItem>
+                    <SelectItem value="person">Citizen</SelectItem>
+                    <SelectItem value="amenity">Amenity</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -263,6 +267,33 @@ export default function DirectoryEdit() {
                         setEditForm({ ...editForm, companyName: e.target.value })
                       }
                       data-testid="input-companyName"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contactPerson">Contact Person</Label>
+                    <Input
+                      id="contactPerson"
+                      value={editForm.contactPerson || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, contactPerson: e.target.value })
+                      }
+                      data-testid="input-contactPerson"
+                    />
+                  </div>
+                </>
+              )}
+
+              {editForm.type === "amenity" && (
+                <>
+                  <div>
+                    <Label htmlFor="companyName">Amenity Name</Label>
+                    <Input
+                      id="companyName"
+                      value={editForm.companyName || ""}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, companyName: e.target.value })
+                      }
+                      data-testid="input-amenityName"
                     />
                   </div>
                   <div>

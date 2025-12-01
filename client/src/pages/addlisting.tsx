@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Building2, User, Users, Upload, X, PartyPopper, Link as LinkIcon, Bookmark } from "lucide-react";
+import { ArrowLeft, Building2, User, Users, Upload, X, PartyPopper, Link as LinkIcon, Bookmark, Coffee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { DirectoryListing } from "@shared/schema";
 import { QRCodeSVG } from "qrcode.react";
 
-type ListingType = "company" | "person" | "community";
+type ListingType = "company" | "person" | "community" | "amenity";
 
 export default function AddListing() {
   const [, setLocation] = useLocation();
@@ -116,8 +116,8 @@ export default function AddListing() {
 
     const listingData = {
       type: listingType,
-      companyName: listingType === "company" ? formData.companyName : null,
-      contactPerson: (listingType === "company" || listingType === "community") ? (formData.contactPerson || null) : null,
+      companyName: (listingType === "company" || listingType === "amenity") ? formData.companyName : null,
+      contactPerson: (listingType === "company" || listingType === "community" || listingType === "amenity") ? (formData.contactPerson || null) : null,
       communityName: listingType === "community" ? formData.communityName : null,
       firstName: listingType === "person" ? formData.firstName : null,
       lastName: listingType === "person" ? formData.lastName : null,
@@ -144,7 +144,7 @@ export default function AddListing() {
   };
 
   const isFormValid = () => {
-    if (listingType === "company") {
+    if (listingType === "company" || listingType === "amenity") {
       return formData.companyName.trim().length > 0;
     }
     if (listingType === "community") {
@@ -339,6 +339,13 @@ export default function AddListing() {
                       Community
                     </Label>
                   </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="amenity" id="type-amenity" data-testid="radio-type-amenity" />
+                    <Label htmlFor="type-amenity" className="font-normal cursor-pointer flex items-center gap-2">
+                      <Coffee className="h-4 w-4" />
+                      Amenity
+                    </Label>
+                  </div>
                 </RadioGroup>
               </div>
 
@@ -365,6 +372,32 @@ export default function AddListing() {
                       value={formData.contactPerson}
                       onChange={(e) => handleInputChange("contactPerson", e.target.value)}
                       data-testid="input-contact-person"
+                    />
+                  </div>
+                </>
+              ) : listingType === "amenity" ? (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="amenity-name">Amenity Name *</Label>
+                    <Input
+                      id="amenity-name"
+                      type="text"
+                      placeholder="Enter amenity name"
+                      value={formData.companyName}
+                      onChange={(e) => handleInputChange("companyName", e.target.value)}
+                      required
+                      data-testid="input-amenity-name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-person-amenity">Contact Person</Label>
+                    <Input
+                      id="contact-person-amenity"
+                      type="text"
+                      placeholder="Enter contact person name"
+                      value={formData.contactPerson}
+                      onChange={(e) => handleInputChange("contactPerson", e.target.value)}
+                      data-testid="input-contact-person-amenity"
                     />
                   </div>
                 </>

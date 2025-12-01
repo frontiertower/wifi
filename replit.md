@@ -20,7 +20,7 @@ The backend is powered by Node.js with Express.js, providing RESTful API endpoin
 
 ### Data Storage
 
-PostgreSQL, accessed via Neon's serverless driver, is the chosen database. Drizzle ORM with TypeScript schema definitions manages the data, including tables for admin users, captive WiFi users, events, bookings, directory listings (companies, communities, persons with hierarchical support), and UniFi configurations. Drizzle-Zod ensures consistent schema validation.
+PostgreSQL, accessed via Neon's serverless driver, is the chosen database. Drizzle ORM with TypeScript schema definitions manages the data, including tables for admin users, captive WiFi users, events, bookings, directory listings (companies, communities, citizens/persons, and amenities with hierarchical support), and UniFi configurations. Drizzle-Zod ensures consistent schema validation.
 
 ### UI/UX Decisions
 
