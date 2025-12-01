@@ -417,7 +417,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                   </div>
                   <div>
                     <div className="font-medium text-gray-800 dark:text-gray-100">Code of Conduct</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Community standards & guidelines</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Our rules & guidelines</div>
                   </div>
                 </div>
               </Link>
