@@ -560,9 +560,9 @@ export default function Directory() {
         </div>
       </div>
 
-      {/* Mobile Floating Dock */}
-      <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
-        <div className="bg-background/95 backdrop-blur-sm border rounded-2xl shadow-lg p-2 flex items-center justify-between gap-1">
+      {/* Mobile App Dock */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+        <div className="bg-background border-t pt-2 pb-6 px-2 flex items-center justify-around">
           <Button
             variant={selectedType === "company" ? "default" : "ghost"}
             size="sm"
