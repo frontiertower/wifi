@@ -199,7 +199,7 @@ export default function Directory() {
               data-testid="button-filter-companies"
             >
               <Building2 className="h-4 w-4" />
-              <span className="text-xs">Company</span>
+              <span className="text-xs">Companies</span>
             </Button>
             <Button
               variant={selectedType === "community" ? "default" : "outline"}
@@ -209,7 +209,7 @@ export default function Directory() {
               data-testid="button-filter-communities"
             >
               <Users className="h-4 w-4" />
-              <span className="text-xs">Community</span>
+              <span className="text-xs">Communities</span>
             </Button>
             <Button
               variant={selectedType === "person" ? "default" : "outline"}
@@ -219,7 +219,7 @@ export default function Directory() {
               data-testid="button-filter-people"
             >
               <User className="h-4 w-4" />
-              <span className="text-xs">Citizen</span>
+              <span className="text-xs">Citizens</span>
             </Button>
             <Button
               variant={selectedType === "amenity" ? "default" : "outline"}
@@ -229,7 +229,7 @@ export default function Directory() {
               data-testid="button-filter-amenities"
             >
               <Coffee className="h-4 w-4" />
-              <span className="text-xs">Amenity</span>
+              <span className="text-xs">Amenities</span>
             </Button>
             
             {selectedType && (
