@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee, X } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee, X, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,13 @@ export default function Directory() {
   const { data, isLoading } = useQuery<{ success: boolean; listings: DirectoryListing[] }>({
     queryKey: ["/api/directory"],
   });
+  
+  // Check admin session for edit functionality
+  const { data: sessionData } = useQuery<{ authenticated: boolean; role?: string }>({
+    queryKey: ["/api/admin/session"],
+  });
+  
+  const isAdmin = sessionData?.authenticated === true;
 
   const allListings = data?.listings || [];
   
@@ -350,6 +357,21 @@ export default function Directory() {
                             <span className="whitespace-nowrap">{getLocationText(listing)}</span>
                           </div>
                         )}
+                        {isAdmin && (
+                          <Link 
+                            href={`/directory/edit/${slugify(getDisplayName(listing))}`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              data-testid={`button-edit-listing-${listing.id}`}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        )}
                         <ChevronDown 
                           className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform ${
                             isExpanded ? 'rotate-180' : ''
@@ -409,11 +431,28 @@ export default function Directory() {
                         )}
                       </div>
 
-                      <ChevronDown 
-                        className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform flex-shrink-0 mt-1 ${
-                          isExpanded ? 'rotate-180' : ''
-                        }`}
-                      />
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {isAdmin && (
+                          <Link 
+                            href={`/directory/edit/${slugify(getDisplayName(listing))}`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              data-testid={`button-edit-listing-desktop-${listing.id}`}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        )}
+                        <ChevronDown 
+                          className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform mt-1 ${
+                            isExpanded ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </div>
                     </div>
                   </CardHeader>
 
