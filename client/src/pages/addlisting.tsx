@@ -9,6 +9,7 @@ import {
   Car, Plane, Train, Ship, Bike, Home, Store, Factory, Warehouse, Hospital,
   GraduationCap, School, Library, Microscope, Atom, Dna, Pill, Stethoscope,
   Utensils, Pizza, Wine, Beer, IceCream, Cake, Apple, Carrot, Fish, Egg,
+  Bot, Sofa,
   type LucideIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ export const AVAILABLE_ICONS: { name: string; icon: LucideIcon; category: string
   { name: "Rocket", icon: Rocket, category: "Tech" },
   { name: "Zap", icon: Zap, category: "Tech" },
   { name: "Shield", icon: Shield, category: "Tech" },
+  { name: "Bot", icon: Bot, category: "Tech" },
   { name: "Lightbulb", icon: Lightbulb, category: "Creative" },
   { name: "Palette", icon: Palette, category: "Creative" },
   { name: "Camera", icon: Camera, category: "Creative" },
@@ -74,6 +76,7 @@ export const AVAILABLE_ICONS: { name: string; icon: LucideIcon; category: string
   { name: "Hospital", icon: Hospital, category: "Places" },
   { name: "School", icon: School, category: "Places" },
   { name: "Library", icon: Library, category: "Places" },
+  { name: "Sofa", icon: Sofa, category: "Places" },
   { name: "GraduationCap", icon: GraduationCap, category: "Education" },
   { name: "Book", icon: Book, category: "Education" },
   { name: "Microscope", icon: Microscope, category: "Science" },
