@@ -185,14 +185,9 @@ export default function Directory() {
             </Link>
           </div>
 
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-              Building Directory
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Find companies, communities, and members in Frontier Tower
-            </p>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            Building Directory
+          </h1>
 
           {/* Search Bar */}
           <div className="relative mb-4">
