@@ -2,7 +2,7 @@ export const translations = {
   en: {
     connectToWiFi: "Connect to WiFi",
     connectToWiFiDesc: "Connect to super fast Internet",
-    buildingDirectory: "Building Directory",
+    buildingDirectory: "Tower Directory",
     buildingDirectoryDesc: "Browse companies and members",
     ecosystem: "Startup Ecosystem",
     ecosystemDesc: "Meet our startups and partners",
