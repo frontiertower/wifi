@@ -603,18 +603,6 @@ export default function Directory() {
             <Coffee className="h-5 w-5" />
             <span className="text-[10px]">Amenities</span>
           </Button>
-          {selectedType && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearFilter}
-              className="flex flex-col items-center gap-0.5 h-auto py-2 px-2"
-              data-testid="button-clear-filter-mobile"
-            >
-              <X className="h-5 w-5" />
-              <span className="text-[10px]">Clear</span>
-            </Button>
-          )}
         </div>
       </div>
     </div>
