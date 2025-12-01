@@ -11,6 +11,7 @@ import {
   Utensils, Pizza, Wine, Beer, IceCream, Cake, Apple, Carrot, Fish, Egg,
   Bot, Sofa, Brain, BrainCircuit, Activity, HeartPulse, Dumbbell, Salad, Sparkles,
   Binary, Network, ScanFace, AudioLines, PenTool, Brush, Frame, Shapes,
+  Laptop, Wifi, Armchair, Printer, Projector, DoorOpen, Lamp, Plug, CalendarDays, Clock,
   type LucideIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -87,6 +88,16 @@ export const AVAILABLE_ICONS: { name: string; icon: LucideIcon; category: string
   { name: "School", icon: School, category: "Places" },
   { name: "Library", icon: Library, category: "Places" },
   { name: "Sofa", icon: Sofa, category: "Places" },
+  { name: "Laptop", icon: Laptop, category: "Coworking" },
+  { name: "Wifi", icon: Wifi, category: "Coworking" },
+  { name: "Armchair", icon: Armchair, category: "Coworking" },
+  { name: "Printer", icon: Printer, category: "Coworking" },
+  { name: "Projector", icon: Projector, category: "Coworking" },
+  { name: "DoorOpen", icon: DoorOpen, category: "Coworking" },
+  { name: "Lamp", icon: Lamp, category: "Coworking" },
+  { name: "Plug", icon: Plug, category: "Coworking" },
+  { name: "CalendarDays", icon: CalendarDays, category: "Coworking" },
+  { name: "Clock", icon: Clock, category: "Coworking" },
   { name: "GraduationCap", icon: GraduationCap, category: "Education" },
   { name: "Book", icon: Book, category: "Education" },
   { name: "Microscope", icon: Microscope, category: "Science" },
