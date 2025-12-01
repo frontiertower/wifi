@@ -152,7 +152,7 @@ export default function EventHostBooking() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Human Flourishing Floor Events Submission</CardTitle>
+            <CardTitle className="text-2xl">Host your event at Frontier Tower</CardTitle>
             <CardDescription>
               Submit your event to be hosted at Frontier Tower
             </CardDescription>
