@@ -190,8 +190,8 @@ export default function Directory() {
             Building Directory
           </h1>
 
-          {/* Search Bar */}
-          <div className="relative mb-4">
+          {/* Search Bar - Desktop only */}
+          <div className="hidden md:block relative mb-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               type="text"
@@ -563,48 +563,62 @@ export default function Directory() {
 
       {/* Mobile App Dock */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
-        <div className="bg-background border-t pt-2 pb-6 px-2 flex items-center justify-around">
-          <Button
-            variant={selectedType === "company" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => selectFilterType("company")}
-            className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
-            data-testid="button-filter-companies-mobile"
-          >
-            <Building2 className="h-5 w-5" />
-            <span className="text-[10px]">Companies</span>
-          </Button>
-          <Button
-            variant={selectedType === "community" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => selectFilterType("community")}
-            className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
-            data-testid="button-filter-communities-mobile"
-          >
-            <Users className="h-5 w-5" />
-            <span className="text-[10px]">Communities</span>
-          </Button>
-          <Button
-            variant={selectedType === "person" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => selectFilterType("person")}
-            className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
-            data-testid="button-filter-people-mobile"
-          >
-            <User className="h-5 w-5" />
-            <span className="text-[10px]">Citizens</span>
-          </Button>
-          <Button
-            variant={selectedType === "amenity" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => selectFilterType("amenity")}
-            className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
-            data-testid="button-filter-amenities-mobile"
-          >
-            <Coffee className="h-5 w-5" />
-            <span className="text-[10px]">Amenities</span>
-          </Button>
-          <Popover>
+        <div className="bg-background border-t">
+          {/* Search Bar */}
+          <div className="relative px-3 pt-2">
+            <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search listings..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-9"
+              data-testid="input-search-mobile"
+            />
+          </div>
+          {/* Filter Buttons */}
+          <div className="pt-2 pb-6 px-2 flex items-center justify-around">
+            <Button
+              variant={selectedType === "company" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => selectFilterType("company")}
+              className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+              data-testid="button-filter-companies-mobile"
+            >
+              <Building2 className="h-5 w-5" />
+              <span className="text-[10px]">Companies</span>
+            </Button>
+            <Button
+              variant={selectedType === "community" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => selectFilterType("community")}
+              className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+              data-testid="button-filter-communities-mobile"
+            >
+              <Users className="h-5 w-5" />
+              <span className="text-[10px]">Communities</span>
+            </Button>
+            <Button
+              variant={selectedType === "person" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => selectFilterType("person")}
+              className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+              data-testid="button-filter-people-mobile"
+            >
+              <User className="h-5 w-5" />
+              <span className="text-[10px]">Citizens</span>
+            </Button>
+            <Button
+              variant={selectedType === "amenity" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => selectFilterType("amenity")}
+              className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+              data-testid="button-filter-amenities-mobile"
+            >
+              <Coffee className="h-5 w-5" />
+              <span className="text-[10px]">Amenities</span>
+            </Button>
+            <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
