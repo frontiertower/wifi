@@ -165,6 +165,21 @@ export default function Directory() {
     return null;
   };
 
+  const getSearchPlaceholder = () => {
+    switch (selectedType) {
+      case "company":
+        return "Search companies...";
+      case "community":
+        return "Search communities...";
+      case "person":
+        return "Search citizens...";
+      case "amenity":
+        return "Search amenities...";
+      default:
+        return "Search directory...";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="absolute top-4 right-4">
@@ -195,7 +210,7 @@ export default function Directory() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               type="text"
-              placeholder="Search listings..."
+              placeholder={getSearchPlaceholder()}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -569,7 +584,7 @@ export default function Directory() {
             <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               type="text"
-              placeholder="Search listings..."
+              placeholder={getSearchPlaceholder()}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 h-9"
