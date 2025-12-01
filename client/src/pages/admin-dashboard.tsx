@@ -1181,7 +1181,7 @@ export default function AdminDashboard() {
                     <p className="text-2xl font-bold text-blue-600 dark:text-blue-400" data-testid="leads-count-tour">
                       {unifiedLeads?.leads?.filter(l => l.type === 'tour').length || 0}
                     </p>
-                    <p className="text-xs text-blue-700 dark:text-blue-300">Tour</p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">Tour Request</p>
                   </div>
                   <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-purple-600 dark:text-purple-400" data-testid="leads-count-event-host">
@@ -1627,7 +1627,7 @@ export default function AdminDashboard() {
                       onClick={() => toggleLeadType('tour')}
                       data-testid="filter-type-tour"
                     >
-                      Tour
+                      Tour Request
                     </Button>
                     <Button
                       variant={selectedLeadTypes.has('event-host') ? 'default' : 'outline'}
@@ -1768,7 +1768,7 @@ export default function AdminDashboard() {
                         <TableRow key={`${lead.type}-${lead.id}`} data-testid={`lead-${lead.type}-${lead.id}`}>
                           <TableCell>
                             <Badge variant="outline" data-testid={`badge-type-${lead.type}`}>
-                              {lead.type === 'tour' && 'Tour'}
+                              {lead.type === 'tour' && 'Tour Request'}
                               {lead.type === 'event-host' && 'Event Host'}
                               {lead.type === 'membership' && 'Membership'}
                               {lead.type === 'chat-invite' && 'Chat Invite'}
