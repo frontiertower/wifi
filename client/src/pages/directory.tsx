@@ -224,7 +224,7 @@ export default function Directory() {
               variant={selectedType === "company" ? "default" : "outline"}
               size="sm"
               onClick={() => selectFilterType("company")}
-              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
+              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2 min-w-[76px]"
               data-testid="button-filter-companies"
             >
               <Building2 className="h-4 w-4" />
@@ -234,7 +234,7 @@ export default function Directory() {
               variant={selectedType === "community" ? "default" : "outline"}
               size="sm"
               onClick={() => selectFilterType("community")}
-              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
+              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2 min-w-[76px]"
               data-testid="button-filter-communities"
             >
               <Users className="h-4 w-4" />
@@ -244,7 +244,7 @@ export default function Directory() {
               variant={selectedType === "person" ? "default" : "outline"}
               size="sm"
               onClick={() => selectFilterType("person")}
-              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
+              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2 min-w-[76px]"
               data-testid="button-filter-people"
             >
               <User className="h-4 w-4" />
@@ -254,7 +254,7 @@ export default function Directory() {
               variant={selectedType === "amenity" ? "default" : "outline"}
               size="sm"
               onClick={() => selectFilterType("amenity")}
-              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2"
+              className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-2 min-w-[76px]"
               data-testid="button-filter-amenities"
             >
               <Coffee className="h-4 w-4" />
