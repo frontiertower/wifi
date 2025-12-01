@@ -425,7 +425,7 @@ export default function Directory() {
                   </CardHeader>
 
                   {isExpanded && (
-                    <CardContent className="pt-0 space-y-3">
+                    <CardContent className="pt-0 space-y-3 relative">
                       {/* Show full description when expanded */}
                       {listing.description && (
                         <div className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none">
@@ -549,20 +549,19 @@ export default function Directory() {
                       )}
                       
                       {isAdmin && (
-                        <div className="flex justify-end pt-2">
-                          <Link 
-                            href={`/directory/edit/${slugify(getDisplayName(listing))}`}
-                            onClick={(e) => e.stopPropagation()}
+                        <Link 
+                          href={`/directory/edit/${slugify(getDisplayName(listing))}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="absolute bottom-2 right-2"
+                        >
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            data-testid={`button-edit-listing-${listing.id}`}
                           >
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              data-testid={`button-edit-listing-${listing.id}`}
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        </div>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </Link>
                       )}
                     </CardContent>
                   )}
