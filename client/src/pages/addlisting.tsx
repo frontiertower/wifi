@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Building2, User, Users, Upload, X, PartyPopper, Link as LinkIcon, Bookmark, Coffee } from "lucide-react";
+import { 
+  ArrowLeft, Building2, User, Users, Upload, X, PartyPopper, Link as LinkIcon, Bookmark, Coffee,
+  Briefcase, Code, Palette, Music, Camera, Heart, Star, Zap, Globe, Rocket,
+  Cpu, Database, Shield, Target, Lightbulb, Award, Crown, Gem, Flame, Leaf,
+  Sun, Moon, Cloud, Umbrella, Anchor, Compass, Map, Flag, Gift, Bell,
+  Book, Gamepad2, Headphones, Mic, Radio, Tv, Monitor, Smartphone, Tablet, Watch,
+  Car, Plane, Train, Ship, Bike, Home, Store, Factory, Warehouse, Hospital,
+  GraduationCap, School, Library, Microscope, Atom, Dna, Pill, Stethoscope,
+  Utensils, Pizza, Wine, Beer, IceCream, Cake, Apple, Carrot, Fish, Egg,
+  type LucideIcon
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +27,75 @@ import { QRCodeSVG } from "qrcode.react";
 
 type ListingType = "company" | "person" | "community" | "amenity";
 
+export const AVAILABLE_ICONS: { name: string; icon: LucideIcon; category: string }[] = [
+  { name: "Building2", icon: Building2, category: "Business" },
+  { name: "Briefcase", icon: Briefcase, category: "Business" },
+  { name: "Store", icon: Store, category: "Business" },
+  { name: "Factory", icon: Factory, category: "Business" },
+  { name: "Warehouse", icon: Warehouse, category: "Business" },
+  { name: "Code", icon: Code, category: "Tech" },
+  { name: "Cpu", icon: Cpu, category: "Tech" },
+  { name: "Database", icon: Database, category: "Tech" },
+  { name: "Monitor", icon: Monitor, category: "Tech" },
+  { name: "Smartphone", icon: Smartphone, category: "Tech" },
+  { name: "Globe", icon: Globe, category: "Tech" },
+  { name: "Rocket", icon: Rocket, category: "Tech" },
+  { name: "Zap", icon: Zap, category: "Tech" },
+  { name: "Shield", icon: Shield, category: "Tech" },
+  { name: "Lightbulb", icon: Lightbulb, category: "Creative" },
+  { name: "Palette", icon: Palette, category: "Creative" },
+  { name: "Camera", icon: Camera, category: "Creative" },
+  { name: "Music", icon: Music, category: "Creative" },
+  { name: "Headphones", icon: Headphones, category: "Creative" },
+  { name: "Mic", icon: Mic, category: "Creative" },
+  { name: "Gamepad2", icon: Gamepad2, category: "Creative" },
+  { name: "User", icon: User, category: "People" },
+  { name: "Users", icon: Users, category: "People" },
+  { name: "Heart", icon: Heart, category: "People" },
+  { name: "Star", icon: Star, category: "General" },
+  { name: "Award", icon: Award, category: "General" },
+  { name: "Crown", icon: Crown, category: "General" },
+  { name: "Gem", icon: Gem, category: "General" },
+  { name: "Target", icon: Target, category: "General" },
+  { name: "Flag", icon: Flag, category: "General" },
+  { name: "Gift", icon: Gift, category: "General" },
+  { name: "Bell", icon: Bell, category: "General" },
+  { name: "Flame", icon: Flame, category: "Nature" },
+  { name: "Leaf", icon: Leaf, category: "Nature" },
+  { name: "Sun", icon: Sun, category: "Nature" },
+  { name: "Moon", icon: Moon, category: "Nature" },
+  { name: "Cloud", icon: Cloud, category: "Nature" },
+  { name: "Compass", icon: Compass, category: "Travel" },
+  { name: "Map", icon: Map, category: "Travel" },
+  { name: "Plane", icon: Plane, category: "Travel" },
+  { name: "Car", icon: Car, category: "Travel" },
+  { name: "Bike", icon: Bike, category: "Travel" },
+  { name: "Home", icon: Home, category: "Places" },
+  { name: "Hospital", icon: Hospital, category: "Places" },
+  { name: "School", icon: School, category: "Places" },
+  { name: "Library", icon: Library, category: "Places" },
+  { name: "GraduationCap", icon: GraduationCap, category: "Education" },
+  { name: "Book", icon: Book, category: "Education" },
+  { name: "Microscope", icon: Microscope, category: "Science" },
+  { name: "Atom", icon: Atom, category: "Science" },
+  { name: "Dna", icon: Dna, category: "Science" },
+  { name: "Stethoscope", icon: Stethoscope, category: "Health" },
+  { name: "Pill", icon: Pill, category: "Health" },
+  { name: "Coffee", icon: Coffee, category: "Food" },
+  { name: "Utensils", icon: Utensils, category: "Food" },
+  { name: "Pizza", icon: Pizza, category: "Food" },
+  { name: "Wine", icon: Wine, category: "Food" },
+  { name: "Beer", icon: Beer, category: "Food" },
+  { name: "Cake", icon: Cake, category: "Food" },
+  { name: "Apple", icon: Apple, category: "Food" },
+  { name: "PartyPopper", icon: PartyPopper, category: "Events" },
+];
+
+export function getIconByName(name: string): LucideIcon | null {
+  const found = AVAILABLE_ICONS.find(i => i.name === name);
+  return found ? found.icon : null;
+}
+
 export default function AddListing() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -27,6 +106,8 @@ export default function AddListing() {
   const [listingType, setListingType] = useState<ListingType>("person");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [visualType, setVisualType] = useState<"logo" | "icon">("logo");
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     companyName: "",
     contactPerson: "",
@@ -112,7 +193,8 @@ export default function AddListing() {
     e.preventDefault();
 
     // Use base64 preview directly as logoUrl - stores in database, persists across deployments
-    const logoUrl = logoPreview || null;
+    const logoUrl = visualType === "logo" ? (logoPreview || null) : null;
+    const iconName = visualType === "icon" ? selectedIcon : null;
 
     const listingData = {
       type: listingType,
@@ -133,6 +215,7 @@ export default function AddListing() {
       linkedinUrl: formData.linkedinUrl || null,
       twitterHandle: formData.twitterHandle || null,
       logoUrl,
+      iconName,
       description: formData.description || null,
     };
 
@@ -262,6 +345,8 @@ export default function AddListing() {
                     });
                     setLogoFile(null);
                     setLogoPreview(null);
+                    setVisualType("logo");
+                    setSelectedIcon(null);
                   }}
                   variant="outline"
                   className="flex-1"
@@ -482,43 +567,124 @@ export default function AddListing() {
                 </>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="logo">Logo / Avatar Image (Max 2MB)</Label>
-                <div className="space-y-4">
-                  {logoPreview && (
-                    <div className="relative inline-block">
-                      <img
-                        src={logoPreview}
-                        alt="Logo preview"
-                        className="h-32 w-32 object-contain border rounded-md"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute -top-2 -right-2 h-6 w-6"
-                        onClick={removeLogo}
-                        data-testid="button-remove-logo"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="logo"
-                      type="file"
-                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                      onChange={handleLogoChange}
-                      className="flex-1"
-                      data-testid="input-logo"
-                    />
-                    <Upload className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Upload an image that represents {listingType === "company" ? "your company" : listingType === "community" ? "your community" : "yourself"} (JPEG, PNG, GIF, WebP - Max 2MB)
-                  </p>
+              <div className="space-y-4">
+                <Label>Logo / Avatar</Label>
+                
+                {/* Toggle between Logo Upload and Icon Selection */}
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant={visualType === "logo" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setVisualType("logo");
+                      setSelectedIcon(null);
+                    }}
+                    data-testid="button-visual-logo"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Image
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={visualType === "icon" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setVisualType("icon");
+                      setLogoFile(null);
+                      setLogoPreview(null);
+                    }}
+                    data-testid="button-visual-icon"
+                  >
+                    <Star className="h-4 w-4 mr-2" />
+                    Select Icon
+                  </Button>
                 </div>
+
+                {visualType === "logo" ? (
+                  <div className="space-y-4">
+                    {logoPreview && (
+                      <div className="relative inline-block">
+                        <img
+                          src={logoPreview}
+                          alt="Logo preview"
+                          className="h-32 w-32 object-contain border rounded-md"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-6 w-6"
+                          onClick={removeLogo}
+                          data-testid="button-remove-logo"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Input
+                        id="logo"
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                        onChange={handleLogoChange}
+                        className="flex-1"
+                        data-testid="input-logo"
+                      />
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Upload an image (JPEG, PNG, GIF, WebP - Max 2MB)
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {selectedIcon && (
+                      <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <div className="h-12 w-12 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center">
+                          {(() => {
+                            const IconComponent = getIconByName(selectedIcon);
+                            return IconComponent ? <IconComponent className="h-6 w-6 text-blue-600 dark:text-blue-400" /> : null;
+                          })()}
+                        </div>
+                        <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          Selected: {selectedIcon}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedIcon(null)}
+                          className="ml-auto"
+                          data-testid="button-clear-icon"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-8 sm:grid-cols-10 gap-2 max-h-48 overflow-y-auto p-2 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                      {AVAILABLE_ICONS.map(({ name, icon: IconComponent }) => (
+                        <button
+                          key={name}
+                          type="button"
+                          onClick={() => setSelectedIcon(name)}
+                          className={`p-2 rounded-md transition-colors flex items-center justify-center ${
+                            selectedIcon === name
+                              ? "bg-blue-500 text-white"
+                              : "bg-white dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-300"
+                          }`}
+                          title={name}
+                          data-testid={`icon-${name}`}
+                        >
+                          <IconComponent className="h-5 w-5" />
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Select an icon to represent your listing
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">

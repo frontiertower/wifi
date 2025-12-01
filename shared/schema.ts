@@ -138,6 +138,7 @@ export const directoryListings = pgTable("directory_listings", {
   linkedinUrl: text("linkedin_url"),
   twitterHandle: text("twitter_handle"),
   logoUrl: text("logo_url"),
+  iconName: text("icon_name"), // Lucide icon name as alternative to logo
   description: text("description"),
   editSlug: text("edit_slug"), // Unique slug for edit URL
   createdAt: timestamp("created_at").defaultNow(),

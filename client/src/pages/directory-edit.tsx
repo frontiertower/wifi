@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useParams, useLocation } from "wouter";
-import { ArrowLeft, Save, Upload, X } from "lucide-react";
+import { ArrowLeft, Save, Upload, X, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { DirectoryListing } from "@shared/schema";
+import { getIconByName, AVAILABLE_ICONS } from "./addlisting";
 
 function slugify(text: string): string {
   return text
@@ -29,6 +30,8 @@ export default function DirectoryEdit() {
   const [editForm, setEditForm] = useState<Partial<DirectoryListing>>({});
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [visualType, setVisualType] = useState<"logo" | "icon">("logo");
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Try to fetch by editSlug first (secure URL)
@@ -63,6 +66,10 @@ export default function DirectoryEdit() {
       setEditForm({ ...listing });
       if (listing.logoUrl) {
         setLogoPreview(listing.logoUrl);
+        setVisualType("logo");
+      } else if (listing.iconName) {
+        setSelectedIcon(listing.iconName);
+        setVisualType("icon");
       }
     }
   }, [listing]);
@@ -93,6 +100,11 @@ export default function DirectoryEdit() {
     setLogoFile(null);
     setLogoPreview(null);
     setEditForm({ ...editForm, logoUrl: null });
+  };
+
+  const clearIcon = () => {
+    setSelectedIcon(null);
+    setEditForm({ ...editForm, iconName: null });
   };
 
   const updateMutation = useMutation({
@@ -151,9 +163,15 @@ export default function DirectoryEdit() {
   const handleUpdate = async () => {
     let updatedForm = { ...editForm };
 
-    // Use base64 preview directly as logoUrl - stores in database, persists across deployments
-    if (logoFile && logoPreview) {
-      updatedForm.logoUrl = logoPreview;
+    // Handle logo vs icon based on visual type selection
+    if (visualType === "logo") {
+      if (logoFile && logoPreview) {
+        updatedForm.logoUrl = logoPreview;
+      }
+      updatedForm.iconName = null;
+    } else {
+      updatedForm.iconName = selectedIcon;
+      updatedForm.logoUrl = null;
     }
 
     updateMutation.mutate(updatedForm);
@@ -488,43 +506,124 @@ export default function DirectoryEdit() {
                 />
               </div>
 
-              <div className="md:col-span-2">
-                <Label htmlFor="logo">Logo Image (Max 2MB)</Label>
-                <div className="space-y-4">
-                  {logoPreview && (
-                    <div className="relative inline-block">
-                      <img
-                        src={logoPreview}
-                        alt="Logo preview"
-                        className="h-32 w-32 object-contain border rounded-md"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute -top-2 -right-2 h-6 w-6"
-                        onClick={removeLogo}
-                        data-testid="button-remove-logo"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="logo"
-                      type="file"
-                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                      onChange={handleLogoChange}
-                      className="flex-1"
-                      data-testid="input-logo"
-                    />
-                    <Upload className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Accepted formats: JPEG, PNG, GIF, WebP (Max 2MB)
-                  </p>
+              <div className="md:col-span-2 space-y-4">
+                <Label>Logo / Avatar</Label>
+                
+                {/* Toggle between Logo Upload and Icon Selection */}
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant={visualType === "logo" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setVisualType("logo");
+                      setSelectedIcon(null);
+                    }}
+                    data-testid="button-visual-logo"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Image
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={visualType === "icon" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setVisualType("icon");
+                      setLogoFile(null);
+                      setLogoPreview(null);
+                    }}
+                    data-testid="button-visual-icon"
+                  >
+                    <Star className="h-4 w-4 mr-2" />
+                    Select Icon
+                  </Button>
                 </div>
+
+                {visualType === "logo" ? (
+                  <div className="space-y-4">
+                    {logoPreview && (
+                      <div className="relative inline-block">
+                        <img
+                          src={logoPreview}
+                          alt="Logo preview"
+                          className="h-32 w-32 object-contain border rounded-md"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute -top-2 -right-2 h-6 w-6"
+                          onClick={removeLogo}
+                          data-testid="button-remove-logo"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Input
+                        id="logo"
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                        onChange={handleLogoChange}
+                        className="flex-1"
+                        data-testid="input-logo"
+                      />
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Accepted formats: JPEG, PNG, GIF, WebP (Max 2MB)
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {selectedIcon && (
+                      <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <div className="h-12 w-12 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center">
+                          {(() => {
+                            const IconComponent = getIconByName(selectedIcon);
+                            return IconComponent ? <IconComponent className="h-6 w-6 text-blue-600 dark:text-blue-400" /> : null;
+                          })()}
+                        </div>
+                        <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                          Selected: {selectedIcon}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={clearIcon}
+                          className="ml-auto"
+                          data-testid="button-clear-icon"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-8 sm:grid-cols-10 gap-2 max-h-48 overflow-y-auto p-2 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                      {AVAILABLE_ICONS.map(({ name, icon: IconComponent }) => (
+                        <button
+                          key={name}
+                          type="button"
+                          onClick={() => setSelectedIcon(name)}
+                          className={`p-2 rounded-md transition-colors flex items-center justify-center ${
+                            selectedIcon === name
+                              ? "bg-blue-500 text-white"
+                              : "bg-white dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-300"
+                          }`}
+                          title={name}
+                          data-testid={`icon-${name}`}
+                        >
+                          <IconComponent className="h-5 w-5" />
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Select an icon to represent your listing
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="md:col-span-2">
