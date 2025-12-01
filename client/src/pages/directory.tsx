@@ -192,8 +192,8 @@ export default function Directory() {
             />
           </div>
 
-          {/* Filter Buttons */}
-          <div className="flex items-center gap-2 flex-wrap mb-4">
+          {/* Filter and Sort Buttons */}
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
               variant={selectedTypes.has("company") ? "default" : "outline"}
               size="sm"
@@ -230,41 +230,24 @@ export default function Directory() {
               <Coffee className="mr-2 h-4 w-4" />
               Amenity
             </Button>
-          </div>
-
-          {/* Sort Buttons */}
-          <div className="flex items-center gap-2 flex-wrap">
+            
+            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+            
             <Button
-              variant={sortMode === "name-asc" ? "default" : "outline"}
+              variant={sortMode === "name-asc" || sortMode === "name-desc" ? "default" : "outline"}
               size="sm"
-              onClick={() => setSortMode("name-asc")}
-              data-testid="button-sort-name-asc"
+              onClick={() => setSortMode(sortMode === "name-asc" ? "name-desc" : "name-asc")}
+              data-testid="button-sort-name"
             >
-              Name A-Z
+              Sort by Name {sortMode === "name-asc" ? "↑" : sortMode === "name-desc" ? "↓" : ""}
             </Button>
             <Button
-              variant={sortMode === "name-desc" ? "default" : "outline"}
+              variant={sortMode === "floor-asc" || sortMode === "floor-desc" ? "default" : "outline"}
               size="sm"
-              onClick={() => setSortMode("name-desc")}
-              data-testid="button-sort-name-desc"
+              onClick={() => setSortMode(sortMode === "floor-asc" ? "floor-desc" : "floor-asc")}
+              data-testid="button-sort-floor"
             >
-              Name Z-A
-            </Button>
-            <Button
-              variant={sortMode === "floor-asc" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSortMode("floor-asc")}
-              data-testid="button-sort-floor-asc"
-            >
-              Floors 1-16
-            </Button>
-            <Button
-              variant={sortMode === "floor-desc" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSortMode("floor-desc")}
-              data-testid="button-sort-floor-desc"
-            >
-              Floors 16-1
+              Sort by Floor {sortMode === "floor-asc" ? "↑" : sortMode === "floor-desc" ? "↓" : ""}
             </Button>
           </div>
         </div>
