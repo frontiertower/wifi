@@ -1177,6 +1177,12 @@ export default function AdminDashboard() {
               <Card className="p-4 sm:p-6">
                 <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Leads by Type</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="bg-cyan-50 dark:bg-cyan-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-cyan-600 dark:text-cyan-400" data-testid="leads-count-wifi-guest">
+                      {unifiedLeads?.leads?.filter(l => l.type === 'wifi-guest').length || 0}
+                    </p>
+                    <p className="text-xs text-cyan-700 dark:text-cyan-300">Tour Interest</p>
+                  </div>
                   <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-blue-600 dark:text-blue-400" data-testid="leads-count-tour">
                       {unifiedLeads?.leads?.filter(l => l.type === 'tour').length || 0}
@@ -1206,12 +1212,6 @@ export default function AdminDashboard() {
                       {unifiedLeads?.leads?.filter(l => l.type === 'residency').length || 0}
                     </p>
                     <p className="text-xs text-pink-700 dark:text-pink-300">Residency</p>
-                  </div>
-                  <div className="bg-cyan-50 dark:bg-cyan-900/20 rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-cyan-600 dark:text-cyan-400" data-testid="leads-count-wifi-guest">
-                      {unifiedLeads?.leads?.filter(l => l.type === 'wifi-guest').length || 0}
-                    </p>
-                    <p className="text-xs text-cyan-700 dark:text-cyan-300">WiFi Guest</p>
                   </div>
                 </div>
               </Card>
@@ -1622,6 +1622,14 @@ export default function AdminDashboard() {
                   <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Filter by Type</Label>
                   <div className="flex flex-wrap gap-2">
                     <Button
+                      variant={selectedLeadTypes.has('wifi-guest') ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => toggleLeadType('wifi-guest')}
+                      data-testid="filter-type-wifi-guest"
+                    >
+                      Tour Interest
+                    </Button>
+                    <Button
                       variant={selectedLeadTypes.has('tour') ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => toggleLeadType('tour')}
@@ -1660,14 +1668,6 @@ export default function AdminDashboard() {
                       data-testid="filter-type-residency"
                     >
                       Residency
-                    </Button>
-                    <Button
-                      variant={selectedLeadTypes.has('wifi-guest') ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => toggleLeadType('wifi-guest')}
-                      data-testid="filter-type-wifi-guest"
-                    >
-                      WiFi Guest
                     </Button>
                   </div>
                 </div>
@@ -1773,7 +1773,7 @@ export default function AdminDashboard() {
                               {lead.type === 'membership' && 'Membership'}
                               {lead.type === 'chat-invite' && 'Chat Invite'}
                               {lead.type === 'residency' && 'Residency'}
-                              {lead.type === 'wifi-guest' && 'WiFi Guest'}
+                              {lead.type === 'wifi-guest' && 'Tour Interest'}
                             </Badge>
                           </TableCell>
                           <TableCell className="font-medium">{lead.name}</TableCell>
