@@ -202,8 +202,8 @@ export default function Directory() {
             />
           </div>
 
-          {/* Filter and Sort Buttons */}
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Desktop Filter and Sort Buttons */}
+          <div className="hidden md:flex items-center gap-2 flex-wrap">
             <Button
               variant={selectedType === "company" ? "default" : "outline"}
               size="sm"
@@ -547,7 +547,7 @@ export default function Directory() {
         )}
 
         {/* Add Listing Button at Bottom */}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 mb-24 md:mb-8 flex justify-center">
           <Link href="/addlisting">
             <Button
               size="lg"
@@ -557,6 +557,64 @@ export default function Directory() {
               Add Listing
             </Button>
           </Link>
+        </div>
+      </div>
+
+      {/* Mobile Floating Dock */}
+      <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
+        <div className="bg-background/95 backdrop-blur-sm border rounded-2xl shadow-lg p-2 flex items-center justify-between gap-1">
+          <Button
+            variant={selectedType === "company" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => selectFilterType("company")}
+            className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+            data-testid="button-filter-companies-mobile"
+          >
+            <Building2 className="h-5 w-5" />
+            <span className="text-[10px]">Companies</span>
+          </Button>
+          <Button
+            variant={selectedType === "community" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => selectFilterType("community")}
+            className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+            data-testid="button-filter-communities-mobile"
+          >
+            <Users className="h-5 w-5" />
+            <span className="text-[10px]">Communities</span>
+          </Button>
+          <Button
+            variant={selectedType === "person" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => selectFilterType("person")}
+            className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+            data-testid="button-filter-people-mobile"
+          >
+            <User className="h-5 w-5" />
+            <span className="text-[10px]">Citizens</span>
+          </Button>
+          <Button
+            variant={selectedType === "amenity" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => selectFilterType("amenity")}
+            className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+            data-testid="button-filter-amenities-mobile"
+          >
+            <Coffee className="h-5 w-5" />
+            <span className="text-[10px]">Amenities</span>
+          </Button>
+          {selectedType && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilter}
+              className="flex flex-col items-center gap-0.5 h-auto py-2 px-2"
+              data-testid="button-clear-filter-mobile"
+            >
+              <X className="h-5 w-5" />
+              <span className="text-[10px]">Clear</span>
+            </Button>
+          )}
         </div>
       </div>
     </div>
