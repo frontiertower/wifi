@@ -555,12 +555,11 @@ export default function Directory() {
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Button
-                              variant="outline"
-                              size="sm"
+                              variant="ghost"
+                              size="icon"
                               data-testid={`button-edit-listing-${listing.id}`}
                             >
-                              <Pencil className="h-4 w-4 mr-2" />
-                              Edit
+                              <Pencil className="h-4 w-4" />
                             </Button>
                           </Link>
                         </div>
