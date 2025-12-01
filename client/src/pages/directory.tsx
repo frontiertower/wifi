@@ -1,10 +1,11 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee, X, Pencil } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee, X, Pencil, ArrowUpDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/theme-toggle";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -603,6 +604,63 @@ export default function Directory() {
             <Coffee className="h-5 w-5" />
             <span className="text-[10px]">Amenities</span>
           </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex flex-col items-center gap-0.5 h-auto py-2 px-3 flex-1"
+                data-testid="button-sort-mobile"
+              >
+                <ArrowUpDown className="h-5 w-5" />
+                <span className="text-[10px]">Sort</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-1" align="end" side="top">
+              <div className="flex flex-col">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => setSortMode("name-asc")}
+                  data-testid="button-sort-name-asc-mobile"
+                >
+                  {sortMode === "name-asc" && <Check className="h-4 w-4 mr-2" />}
+                  <span className={sortMode === "name-asc" ? "" : "ml-6"}>Name A-Z</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => setSortMode("name-desc")}
+                  data-testid="button-sort-name-desc-mobile"
+                >
+                  {sortMode === "name-desc" && <Check className="h-4 w-4 mr-2" />}
+                  <span className={sortMode === "name-desc" ? "" : "ml-6"}>Name Z-A</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => setSortMode("floor-asc")}
+                  data-testid="button-sort-floor-asc-mobile"
+                >
+                  {sortMode === "floor-asc" && <Check className="h-4 w-4 mr-2" />}
+                  <span className={sortMode === "floor-asc" ? "" : "ml-6"}>Floor Low-High</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => setSortMode("floor-desc")}
+                  data-testid="button-sort-floor-desc-mobile"
+                >
+                  {sortMode === "floor-desc" && <Check className="h-4 w-4 mr-2" />}
+                  <span className={sortMode === "floor-desc" ? "" : "ml-6"}>Floor High-Low</span>
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </div>
