@@ -675,6 +675,7 @@ export default function Directory() {
               </div>
             </PopoverContent>
           </Popover>
+          </div>
         </div>
       </div>
     </div>
