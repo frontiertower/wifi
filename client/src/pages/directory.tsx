@@ -258,7 +258,7 @@ export default function Directory() {
               onClick={() => setSortMode(sortMode === "name-asc" ? "name-desc" : "name-asc")}
               data-testid="button-sort-name"
             >
-              Sort by Name {sortMode === "name-asc" ? "↑" : sortMode === "name-desc" ? "↓" : ""}
+              Sort by Name
             </Button>
             <Button
               variant={sortMode === "floor-asc" || sortMode === "floor-desc" ? "default" : "outline"}
@@ -266,7 +266,7 @@ export default function Directory() {
               onClick={() => setSortMode(sortMode === "floor-asc" ? "floor-desc" : "floor-asc")}
               data-testid="button-sort-floor"
             >
-              Sort by Floor {sortMode === "floor-asc" ? "↑" : sortMode === "floor-desc" ? "↓" : ""}
+              Sort by Floor
             </Button>
             
             {selectedType && (
@@ -350,19 +350,11 @@ export default function Directory() {
                           {getDisplayName(listing)}
                         </CardTitle>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        {getLocationText(listing) && (
-                          <div className="flex items-center gap-1 text-base font-semibold text-gray-600 dark:text-gray-400 leading-none">
-                            <MapPin className="h-4 w-4 flex-shrink-0" />
-                            <span className="whitespace-nowrap">{getLocationText(listing)}</span>
-                          </div>
-                        )}
-                        <ChevronDown 
-                          className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform ${
-                            isExpanded ? 'rotate-180' : ''
-                          }`}
-                        />
-                      </div>
+                      <ChevronDown 
+                        className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform flex-shrink-0 ${
+                          isExpanded ? 'rotate-180' : ''
+                        }`}
+                      />
                     </div>
 
                     {/* Desktop Layout - Horizontal */}
@@ -393,17 +385,9 @@ export default function Directory() {
                             return <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-300" />;
                           })()}
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 leading-tight">
-                            {getDisplayName(listing)}
-                          </CardTitle>
-                          {getLocationText(listing) && (
-                            <div className="flex items-center gap-1 text-base font-semibold text-gray-600 dark:text-gray-400 leading-none">
-                              <MapPin className="h-4 w-4 flex-shrink-0" />
-                              <span className="whitespace-nowrap">{getLocationText(listing)}</span>
-                            </div>
-                          )}
-                        </div>
+                        <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                          {getDisplayName(listing)}
+                        </CardTitle>
                       </div>
                       
                       <div className="flex-1 min-w-0">
