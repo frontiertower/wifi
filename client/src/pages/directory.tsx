@@ -341,15 +341,13 @@ export default function Directory() {
                             return <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-300" />;
                           })()}
                         </div>
-                        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                          <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 break-words leading-none">
-                            {getDisplayName(listing)}
-                          </CardTitle>
-                          {getLocationText(listing) && (
-                            <span className="text-sm text-gray-600 dark:text-gray-400">{getLocationText(listing)}</span>
-                          )}
-                        </div>
+                        <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 break-words flex-1 min-w-0 leading-none">
+                          {getDisplayName(listing)}
+                        </CardTitle>
                       </div>
+                      {getLocationText(listing) && (
+                        <span className="text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">{getLocationText(listing)}</span>
+                      )}
                     </div>
 
                     {/* Desktop Layout - Horizontal */}
@@ -380,14 +378,9 @@ export default function Directory() {
                             return <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-300" />;
                           })()}
                         </div>
-                        <div className="flex flex-col gap-0.5">
-                          <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 leading-tight">
-                            {getDisplayName(listing)}
-                          </CardTitle>
-                          {getLocationText(listing) && (
-                            <span className="text-sm text-gray-600 dark:text-gray-400">{getLocationText(listing)}</span>
-                          )}
-                        </div>
+                        <CardTitle className="text-base font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                          {getDisplayName(listing)}
+                        </CardTitle>
                       </div>
                       
                       <div className="flex-1 min-w-0">
@@ -400,6 +393,9 @@ export default function Directory() {
                         )}
                       </div>
 
+                      {getLocationText(listing) && (
+                        <span className="text-sm text-gray-600 dark:text-gray-400 flex-shrink-0">{getLocationText(listing)}</span>
+                      )}
                     </div>
                   </CardHeader>
 
