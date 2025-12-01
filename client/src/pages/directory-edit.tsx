@@ -53,11 +53,13 @@ export default function DirectoryEdit() {
   const listing = editSlugData?.listing || allListings?.listings.find((l) => {
     const name = l.type === "company" 
       ? l.companyName 
-      : l.type === "community"
-        ? l.communityName
-        : l.lastName && l.firstName 
-          ? `${l.lastName}, ${l.firstName}` 
-          : null;
+      : l.type === "amenity"
+        ? l.companyName
+        : l.type === "community"
+          ? l.communityName
+          : l.lastName && l.firstName 
+            ? `${l.lastName}, ${l.firstName}` 
+            : null;
     return name && slugify(name) === slug;
   });
 
