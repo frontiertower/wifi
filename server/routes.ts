@@ -84,7 +84,7 @@ function verifyImageSignature(buffer: Buffer): boolean {
 // Helper function to download an image from a URL and save it locally
 async function downloadImage(imageUrl: string, eventId: number): Promise<string> {
   const maxSize = 10 * 1024 * 1024; // 10MB
-  const maxDuration = 30000; // 30 seconds max download time
+  const maxDuration = 15000; // 15 seconds max download time (reduced from 30)
   const abortController = new AbortController();
   let downloadTimer: NodeJS.Timeout | null = null;
   
@@ -92,7 +92,7 @@ async function downloadImage(imageUrl: string, eventId: number): Promise<string>
     const httpsAgent = new https.Agent({
       rejectUnauthorized: false,
       keepAlive: true,
-      timeout: 15000
+      timeout: 8000
     });
 
     // Set up overall download timeout
@@ -1361,100 +1361,87 @@ Rules:
       const events = await storage.getAllEvents();
       const now = new Date();
       
-      // Filter for future events with URLs
-      const eventsWithUrls = events.filter(event => 
-        event.url && 
-        new Date(event.endDate) >= now
-      );
+      // Filter for future events with URLs that don't have a working local image
+      const eventsWithUrls = events.filter(event => {
+        if (!event.url || new Date(event.endDate) < now) return false;
+        
+        // Skip if we already have a local image that exists
+        if (event.imageUrl && event.imageUrl.startsWith('/uploads/events/')) {
+          const localPath = path.join(process.cwd(), 'public', event.imageUrl);
+          if (fs.existsSync(localPath)) {
+            console.log(`Skipping "${event.name}" - already has local image`);
+            return false;
+          }
+        }
+        return true;
+      });
       
       if (eventsWithUrls.length === 0) {
         return res.json({
           success: true,
-          message: "No future events with URLs to scrape",
+          message: "No future events need image scraping",
           scrapedCount: 0,
-          failedCount: 0
+          failedCount: 0,
+          skippedCount: events.filter(e => e.url && new Date(e.endDate) >= now).length
         });
       }
 
       const { load } = await import('cheerio');
-      const scrapedImages = [];
+      const scrapedImages: Array<{ id: number; name: string; imageUrl: string; originalImageUrl: string }> = [];
       const failedScrapes: Array<{ id: number; name: string; error: string }> = [];
 
-      // Process all future events
-      const eventsToScrape = eventsWithUrls;
-      console.log(`Starting image scrape for ${eventsToScrape.length} future events`);
+      console.log(`Starting image scrape for ${eventsWithUrls.length} events (${events.filter(e => e.url && new Date(e.endDate) >= now).length - eventsWithUrls.length} already have images)`);
 
-      // Create HTTPS agent that doesn't reject unauthorized certificates
+      // Create HTTPS agent with shorter timeout
       const httpsAgent = new https.Agent({
         rejectUnauthorized: false,
         keepAlive: true,
-        timeout: 15000
+        timeout: 8000
       });
 
-      for (const event of eventsToScrape) {
+      // Process a single event's image
+      const scrapeEventImage = async (event: typeof events[0]): Promise<{ success: boolean; result?: any; error?: string }> => {
         try {
-          if (!event.url) continue;
+          if (!event.url) return { success: false, error: "No URL" };
+          
           const eventUrl = event.url.trim();
           const lumaUrl = eventUrl.startsWith('http') ? eventUrl : `https://lu.ma/${eventUrl}`;
-          console.log(`Scraping image for event: ${event.name} from ${lumaUrl}`);
+          console.log(`Scraping: ${event.name}`);
           
-          let response;
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 10000);
+          
           try {
-            // Use node-fetch with comprehensive browser-like headers
-            response = await fetch(lumaUrl, {
+            const response = await fetch(lumaUrl, {
               method: 'GET',
               headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Connection': 'keep-alive',
-                'Upgrade-Insecure-Requests': '1',
-                'Sec-Fetch-Dest': 'document',
-                'Sec-Fetch-Mode': 'navigate',
-                'Sec-Fetch-Site': 'none',
-                'Cache-Control': 'max-age=0'
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
               },
               agent: httpsAgent,
               redirect: 'follow',
-              timeout: 15000
+              signal: controller.signal as any
             } as any);
-          } catch (fetchError) {
-            if (fetchError instanceof Error && fetchError.name === 'AbortError') {
-              throw new Error("Request timed out");
+            
+            clearTimeout(timeout);
+
+            if (!response.ok) {
+              return { success: false, error: `HTTP ${response.status}` };
             }
-            throw new Error(`Fetch failed: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
-          }
 
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
+            const html = await response.text();
+            const $ = load(html);
+            
+            // Try to find the event image
+            let imageUrl = $('meta[property="og:image"]').attr('content') ||
+                          $('meta[name="twitter:image"]').attr('content') ||
+                          $('img[class*="event"]').first().attr('src') ||
+                          $('img[class*="hero"], img[class*="cover"]').first().attr('src');
 
-          const html = await response.text();
-          const $ = load(html);
-          
-          // Try multiple selectors to find the event image
-          let imageUrl = null;
-          
-          // Try Open Graph image
-          imageUrl = $('meta[property="og:image"]').attr('content');
-          
-          // Try Twitter image
-          if (!imageUrl) {
-            imageUrl = $('meta[name="twitter:image"]').attr('content');
-          }
-          
-          // Try main event image
-          if (!imageUrl) {
-            imageUrl = $('img[class*="event"]').first().attr('src');
-          }
-          
-          // Try any image with event-related class or in hero section
-          if (!imageUrl) {
-            imageUrl = $('img[class*="hero"], img[class*="cover"]').first().attr('src');
-          }
+            if (!imageUrl) {
+              return { success: false, error: "No image found" };
+            }
 
-          if (imageUrl) {
             // Ensure it's a full URL
             if (imageUrl.startsWith('//')) {
               imageUrl = 'https:' + imageUrl;
@@ -1462,38 +1449,59 @@ Rules:
               imageUrl = 'https://lu.ma' + imageUrl;
             }
             
-            console.log(`✓ Found image for "${event.name}": ${imageUrl.substring(0, 80)}...`);
+            console.log(`Found image for "${event.name}"`);
             
-            // Download the image and save it locally
-            console.log(`⬇ Downloading image for "${event.name}"...`);
+            // Download the image
             const localImagePath = await downloadImage(imageUrl, event.id);
             
             // Update event with local image path AND store original URL as fallback
             await storage.updateEventImage(event.id, localImagePath, imageUrl);
-            scrapedImages.push({
+            
+            return {
+              success: true,
+              result: {
+                id: event.id,
+                name: event.name,
+                imageUrl: localImagePath,
+                originalImageUrl: imageUrl
+              }
+            };
+          } catch (fetchError) {
+            clearTimeout(timeout);
+            if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+              return { success: false, error: "Timeout" };
+            }
+            return { success: false, error: fetchError instanceof Error ? fetchError.message : 'Fetch failed' };
+          }
+        } catch (err) {
+          return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
+        }
+      }
+
+      // Process events in parallel batches of 3 to avoid timeouts
+      const BATCH_SIZE = 3;
+      for (let i = 0; i < eventsWithUrls.length; i += BATCH_SIZE) {
+        const batch = eventsWithUrls.slice(i, i + BATCH_SIZE);
+        const results = await Promise.all(batch.map(event => scrapeEventImage(event)));
+        
+        results.forEach((result, idx) => {
+          const event = batch[idx];
+          if (result.success && result.result) {
+            scrapedImages.push(result.result);
+            console.log(`✓ Saved image for "${event.name}"`);
+          } else {
+            console.error(`✗ Failed "${event.name}": ${result.error}`);
+            failedScrapes.push({
               id: event.id,
               name: event.name,
-              imageUrl: localImagePath,
-              originalImageUrl: imageUrl
+              error: result.error || 'Unknown error'
             });
-            console.log(`✓ Saved image for "${event.name}" to ${localImagePath}`);
-          } else {
-            throw new Error("No image found in HTML");
           }
-          
-          // Longer delay to avoid rate limiting (2 seconds between requests)
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
-        } catch (scrapeError) {
-          const errorMessage = scrapeError instanceof Error ? scrapeError.message : 'Unknown error';
-          console.error(`Failed to scrape image for "${event.name}":`, errorMessage);
-          failedScrapes.push({
-            id: event.id,
-            name: event.name,
-            error: errorMessage
-          });
-          // Small delay even on error
-          await new Promise(resolve => setTimeout(resolve, 1000));
+        });
+        
+        // Small delay between batches to avoid rate limiting
+        if (i + BATCH_SIZE < eventsWithUrls.length) {
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
       }
 
