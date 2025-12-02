@@ -246,7 +246,7 @@ export default function GreenHome() {
               </a>
 
               <Link
-                href="/event-host-booking"
+                href="/hosting"
                 className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
                 data-testid="button-host-event"
               >

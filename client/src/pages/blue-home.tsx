@@ -368,7 +368,7 @@ export default function BlueHome() {
               </a>
 
               <Link
-                href="/event-host-booking"
+                href="/hosting"
                 className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
                 style={{
                   backgroundColor: '#003d82',

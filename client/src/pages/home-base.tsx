@@ -567,7 +567,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </Link>
 
               <Link
-                href="/event-host-booking"
+                href="/hosting"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
                 data-testid="button-host-event"
               >

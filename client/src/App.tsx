@@ -75,7 +75,7 @@ function Router() {
         <Route path="/booking" component={Booking} />
         <Route path="/tour" component={TourBooking} />
         <Route path="/rent-office" component={RentOffice} />
-        <Route path="/event-host-booking" component={EventHostBooking} />
+        <Route path="/hosting" component={EventHostBooking} />
         <Route path="/apply-to-join" component={ApplyToJoin} />
         <Route path="/chat" component={Chat} />
         <Route path="/Regen" component={HiringPage} />
@@ -143,7 +143,7 @@ function AppHeader() {
     }
   };
 
-  const hideRabbitOn = ["/", "/de", "/es", "/zh", "/ko", "/ja", "/fr", "/hi", "/ar", "/sw", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/event-host-booking", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency", "/code-of-conduct"];
+  const hideRabbitOn = ["/", "/de", "/es", "/zh", "/ko", "/ja", "/fr", "/hi", "/ar", "/sw", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/hosting", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency", "/code-of-conduct", "/about"];
   const shouldHideRabbit = hideRabbitOn.some(path => location === path || location.startsWith(path + "/"));
 
   return (
