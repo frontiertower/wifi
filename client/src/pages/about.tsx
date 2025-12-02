@@ -1,9 +1,10 @@
 import { Link } from "wouter";
-import { ArrowLeft, Building2, MapPin, Users, Zap, Palette, Brain, Heart, Dumbbell, Rocket, Code, Lightbulb, Home, Calendar, Phone, Mail, ExternalLink } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Users, Zap, Palette, Brain, Heart, Dumbbell, Rocket, Code, Lightbulb, Home, Calendar, Phone, Mail, ExternalLink, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
+import frontierVideo from "@assets/WhatsApp_Video_2025-12-02_at_09.27.20_1764705445697.mp4";
 
 const floors = [
   { floor: "16", name: "d/acc Lounge", description: "Cross-pollination space for all communities to mingle. Host friends, investors, or enjoy panoramic city views.", icon: Users },
@@ -106,6 +107,23 @@ export default function AboutPage() {
                   </div>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-8 overflow-hidden">
+            <CardContent className="p-0">
+              <video 
+                className="w-full aspect-video object-cover"
+                controls
+                autoPlay
+                muted
+                loop
+                playsInline
+                data-testid="video-frontier-tour"
+              >
+                <source src={frontierVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </CardContent>
           </Card>
         </section>
