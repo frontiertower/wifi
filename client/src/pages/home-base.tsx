@@ -551,9 +551,9 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </Link>
 
               <Link
-                href="/apply-to-join"
+                href="/membership"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-apply-to-join"
+                data-testid="button-membership-inquiry"
               >
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/40">
