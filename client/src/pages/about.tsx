@@ -20,7 +20,6 @@ const floors = [
   { floor: "4", name: "Robotics & Hard Tech", description: "Next-gen robotics, advanced hardware, and breakthrough materials development.", icon: Zap },
   { floor: "3", name: "Private Offices", description: "For when ideas evolve into businesses. Offices for teams up to 20 people.", icon: Building2 },
   { floor: "2", name: "Event & Hackathon Space", description: "300-person industrial space with high ceilings and top-tier AV equipment.", icon: Calendar },
-  { floor: "M", name: "Co-Living", description: "On-site accommodation for in-residence scientists, speakers, engineers, and guests.", icon: Home },
   { floor: "G", name: "Entrance", description: "Welcome to the heart of it all. Where your journey begins.", icon: Building2 },
 ];
 
