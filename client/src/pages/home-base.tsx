@@ -455,22 +455,6 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </Link>
 
               <Link
-                href="/virtual-tour"
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-virtual-tour"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-cyan-100 dark:bg-cyan-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-cyan-200 dark:group-hover:bg-cyan-500/40">
-                    <Map className="text-cyan-600 dark:text-cyan-300" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.virtualTour}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.virtualTourDesc}</div>
-                  </div>
-                </div>
-              </Link>
-
-              <Link
                 href="/ecosystem"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-all duration-200 text-left group block"
                 data-testid="button-view-ecosystem"

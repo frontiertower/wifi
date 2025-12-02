@@ -1,10 +1,27 @@
 import { Link } from "wouter";
-import { ArrowLeft, Building2, MapPin, Users, Zap, Palette, Brain, Heart, Dumbbell, Rocket, Code, Lightbulb, Home, Calendar, Phone, Mail, ExternalLink, Play } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Users, Zap, Palette, Brain, Heart, Dumbbell, Rocket, Code, Lightbulb, Home, Calendar, Phone, Mail, ExternalLink, ChevronDown, ChevronUp, Globe, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import frontierVideo from "@assets/WhatsApp_Video_2025-12-02_at_09.27.20_1764705445697.mp4";
+
+interface DirectoryListing {
+  id: number;
+  type: 'company' | 'community' | 'citizen' | 'amenity';
+  companyName?: string;
+  communityName?: string;
+  personName?: string;
+  floor?: string;
+  description?: string;
+  website?: string;
+  logoUrl?: string;
+  iconName?: string;
+}
 
 const floors = [
   { floor: "16", name: "d/acc Lounge", description: "Cross-pollination space for all communities to mingle. Host friends, investors, or enjoy panoramic city views.", icon: Users },
@@ -64,7 +81,86 @@ const pricingPlans = [
   }
 ];
 
+function getFloorSortValue(floor?: string): number {
+  if (!floor) return -1;
+  if (floor.toLowerCase() === 'g' || floor.toLowerCase() === 'ground') return 0;
+  if (floor.toLowerCase() === 'm' || floor.toLowerCase() === 'mezzanine') return 0.5;
+  const num = parseInt(floor);
+  return isNaN(num) ? -1 : num;
+}
+
+function ListingCard({ listing, type }: { listing: DirectoryListing; type: 'amenity' | 'community' }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const name = type === 'amenity' ? listing.companyName : listing.communityName;
+  
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Card className="hover-elevate transition-all" data-testid={`card-${type}-${listing.id}`}>
+        <CollapsibleTrigger asChild>
+          <CardContent className="py-4 cursor-pointer">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {listing.logoUrl ? (
+                  <img 
+                    src={listing.logoUrl} 
+                    alt={name || ''} 
+                    className="w-10 h-10 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Star className="w-5 h-5 text-primary" />
+                  </div>
+                )}
+                <div>
+                  <h3 className="font-semibold">{name}</h3>
+                  {listing.floor && (
+                    <p className="text-sm text-muted-foreground">Floor {listing.floor}</p>
+                  )}
+                </div>
+              </div>
+              {isOpen ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+            </div>
+          </CardContent>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-0 pb-4 border-t">
+            {listing.description && (
+              <p className="text-sm text-muted-foreground mt-3 mb-3">{listing.description}</p>
+            )}
+            {listing.website && (
+              <a 
+                href={listing.website.startsWith('http') ? listing.website : `https://${listing.website}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button variant="outline" size="sm" data-testid={`link-${type}-website-${listing.id}`}>
+                  <Globe className="w-4 h-4 mr-2" />
+                  Visit Website
+                </Button>
+              </a>
+            )}
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+}
+
 export default function AboutPage() {
+  const { data: directoryData, isLoading } = useQuery<{ success: boolean; listings?: DirectoryListing[]; data?: DirectoryListing[] }>({
+    queryKey: ['/api/directory'],
+  });
+
+  const listings = directoryData?.listings || directoryData?.data || [];
+  
+  const amenities = listings
+    .filter((l: DirectoryListing) => l.type === 'amenity')
+    .sort((a: DirectoryListing, b: DirectoryListing) => getFloorSortValue(b.floor) - getFloorSortValue(a.floor));
+  
+  const communities = listings
+    .filter((l: DirectoryListing) => l.type === 'community')
+    .sort((a: DirectoryListing, b: DirectoryListing) => getFloorSortValue(b.floor) - getFloorSortValue(a.floor));
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b">
@@ -156,84 +252,69 @@ export default function AboutPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-center">Spaces & Amenities</h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <h2 className="text-2xl font-bold mb-6 text-center">Amenities</h2>
+          {isLoading ? (
+            <div className="grid gap-3">
+              {[1, 2, 3].map((i) => (
+                <Card key={i}>
+                  <CardContent className="py-4">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="w-10 h-10 rounded-lg" />
+                      <div className="flex-1">
+                        <Skeleton className="h-5 w-32 mb-2" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : amenities.length > 0 ? (
+            <div className="grid gap-3">
+              {amenities.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} type="amenity" />
+              ))}
+            </div>
+          ) : (
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Event Space (2nd Floor)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>300-person capacity with high ceilings</li>
-                  <li>5+ conference rooms included</li>
-                  <li>Industrial-chic vibe with top-tier AV</li>
-                  <li>Perfect for hackathons, workshops, meetups</li>
-                  <li>State-of-the-art audio-visual setup</li>
-                  <li>In-house tech team for production support</li>
-                </ul>
+              <CardContent className="py-8 text-center">
+                <p className="text-muted-foreground">No amenities listed yet.</p>
               </CardContent>
             </Card>
+          )}
+        </section>
 
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-center">Communities</h2>
+          {isLoading ? (
+            <div className="grid gap-3">
+              {[1, 2, 3].map((i) => (
+                <Card key={i}>
+                  <CardContent className="py-4">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="w-10 h-10 rounded-lg" />
+                      <div className="flex-1">
+                        <Skeleton className="h-5 w-32 mb-2" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : communities.length > 0 ? (
+            <div className="grid gap-3">
+              {communities.map((listing) => (
+                <ListingCard key={listing.id} listing={listing} type="community" />
+              ))}
+            </div>
+          ) : (
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  Penthouse Lounge (16th Floor)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>100-person event capacity</li>
-                  <li>3 conference rooms</li>
-                  <li>Panoramic penthouse views</li>
-                  <li>Comfortable lounge furnishings</li>
-                  <li>Ideal for investor gatherings</li>
-                  <li>Perfect for networking mixers</li>
-                </ul>
+              <CardContent className="py-8 text-center">
+                <p className="text-muted-foreground">No communities listed yet.</p>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5" />
-                  Private Offices (3rd Floor)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>Secure private offices for teams</li>
-                  <li>Scale from solo to 20+ people</li>
-                  <li>Free kombucha and coffee</li>
-                  <li>Access to all common areas</li>
-                  <li>Conference room access</li>
-                  <li>High-end furniture throughout</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Dumbbell className="w-5 h-5" />
-                  Wellness & Fitness (5th Floor)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>Modern gym facilities</li>
-                  <li>Yoga and movement classes</li>
-                  <li>Sauna and cold plunge</li>
-                  <li>Convertible event space</li>
-                  <li>Sound bath sessions</li>
-                  <li>Wellness activations</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
+          )}
         </section>
 
         <section className="mb-12">
