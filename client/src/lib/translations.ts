@@ -2,6 +2,8 @@ export const translations = {
   en: {
     connectToWiFi: "Connect to WiFi",
     connectToWiFiDesc: "Connect to super fast Internet",
+    aboutFrontierTower: "About Frontier Tower",
+    aboutFrontierTowerDesc: "Our vertical village for frontier tech",
     buildingDirectory: "Tower Directory",
     buildingDirectoryDesc: "Browse companies and members",
     ecosystem: "Startup Ecosystem",
@@ -33,6 +35,8 @@ export const translations = {
   de: {
     connectToWiFi: "Mit WiFi verbinden",
     connectToWiFiDesc: "Verbindung zum superschnellen Internet",
+    aboutFrontierTower: "Über Frontier Tower",
+    aboutFrontierTowerDesc: "Unser vertikales Dorf für Zukunftstechnologie",
     buildingDirectory: "Gebäudeverzeichnis",
     buildingDirectoryDesc: "Unternehmen und Mitglieder durchsuchen",
     ecosystem: "Startup-Ökosystem",
@@ -64,6 +68,8 @@ export const translations = {
   es: {
     connectToWiFi: "Conectarse a WiFi",
     connectToWiFiDesc: "Conectarse a Internet súper rápido",
+    aboutFrontierTower: "Sobre Frontier Tower",
+    aboutFrontierTowerDesc: "Nuestra aldea vertical de tecnología frontera",
     buildingDirectory: "Directorio del Edificio",
     buildingDirectoryDesc: "Explora empresas y miembros",
     ecosystem: "Ecosistema de Startups",
@@ -95,6 +101,8 @@ export const translations = {
   zh: {
     connectToWiFi: "连接到WiFi",
     connectToWiFiDesc: "连接到超快速互联网",
+    aboutFrontierTower: "关于Frontier Tower",
+    aboutFrontierTowerDesc: "前沿科技的垂直村落",
     buildingDirectory: "楼层信息",
     buildingDirectoryDesc: "浏览公司和成员",
     ecosystem: "创业生态系统",
@@ -126,6 +134,8 @@ export const translations = {
   ko: {
     connectToWiFi: "WiFi에 연결",
     connectToWiFiDesc: "초고속 인터넷에 연결",
+    aboutFrontierTower: "Frontier Tower 소개",
+    aboutFrontierTowerDesc: "프론티어 기술을 위한 수직 마을",
     buildingDirectory: "건물 디렉토리",
     buildingDirectoryDesc: "회사 및 회원 찾아보기",
     ecosystem: "스타트업 에코시스템",
@@ -157,6 +167,8 @@ export const translations = {
   ja: {
     connectToWiFi: "WiFiに接続",
     connectToWiFiDesc: "超高速インターネットに接続",
+    aboutFrontierTower: "Frontier Towerについて",
+    aboutFrontierTowerDesc: "フロンティア技術のための垂直村",
     buildingDirectory: "ビルディングディレクトリ",
     buildingDirectoryDesc: "企業とメンバーを閲覧",
     ecosystem: "スタートアップエコシステム",
@@ -188,6 +200,8 @@ export const translations = {
   fr: {
     connectToWiFi: "Se connecter au WiFi",
     connectToWiFiDesc: "Connectez-vous à Internet ultra-rapide",
+    aboutFrontierTower: "À propos de Frontier Tower",
+    aboutFrontierTowerDesc: "Notre village vertical pour la technologie de pointe",
     buildingDirectory: "Annuaire du Bâtiment",
     buildingDirectoryDesc: "Parcourir les entreprises et les membres",
     ecosystem: "Écosystème de Startups",
@@ -219,6 +233,8 @@ export const translations = {
   hi: {
     connectToWiFi: "WiFi से कनेक्ट करें",
     connectToWiFiDesc: "अति तीव्र इंटरनेट से कनेक्ट करें",
+    aboutFrontierTower: "Frontier Tower के बारे में",
+    aboutFrontierTowerDesc: "फ्रंटियर तकनीक के लिए हमारा वर्टिकल विलेज",
     buildingDirectory: "भवन निर्देशिका",
     buildingDirectoryDesc: "कंपनियों और सदस्यों को ब्राउज़ करें",
     ecosystem: "स्टार्टअप इकोसिस्टम",
@@ -250,6 +266,8 @@ export const translations = {
   ar: {
     connectToWiFi: "الاتصال بـ WiFi",
     connectToWiFiDesc: "الاتصال بالإنترنت السريع جداً",
+    aboutFrontierTower: "عن Frontier Tower",
+    aboutFrontierTowerDesc: "قريتنا العمودية للتقنيات الرائدة",
     buildingDirectory: "دليل المباني",
     buildingDirectoryDesc: "تصفح الشركات والأعضاء",
     ecosystem: "نظام بيئة الشركات الناشئة",
@@ -281,6 +299,8 @@ export const translations = {
   sw: {
     connectToWiFi: "Unganisha kwenye WiFi",
     connectToWiFiDesc: "Unganisha kwenye Intaneti kasi sana",
+    aboutFrontierTower: "Kuhusu Frontier Tower",
+    aboutFrontierTowerDesc: "Kijiji chetu cha wima kwa teknolojia ya mpaka",
     buildingDirectory: "Saraka ya Jengo",
     buildingDirectoryDesc: "Tembelea makampuni na wanajamii",
     ecosystem: "Eko-Sistema ya Startups",

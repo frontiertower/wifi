@@ -407,13 +407,29 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </button>
 
               <Link
-                href="/code-of-conduct"
+                href="/about"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-code-of-conduct"
+                data-testid="button-about-tower"
               >
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
-                    <Shield className="text-blue-600 dark:text-blue-300" />
+                    <Building2 className="text-blue-600 dark:text-blue-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.aboutFrontierTower}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.aboutFrontierTowerDesc}</div>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/code-of-conduct"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-code-of-conduct"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-teal-100 dark:bg-teal-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-teal-200 dark:group-hover:bg-teal-500/40">
+                    <Shield className="text-teal-600 dark:text-teal-300" />
                   </div>
                   <div>
                     <div className="font-medium text-gray-800 dark:text-gray-100">Code of Conduct</div>
