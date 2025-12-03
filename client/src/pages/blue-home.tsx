@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Zap, Rocket, Home, Briefcase } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Zap, Rocket, Home, Briefcase, Shield, Link2 } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import MemberForm from "@/components/member-form";
@@ -177,6 +177,48 @@ export default function BlueHome() {
               </button>
 
               <Link
+                href="/about"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-about-tower"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">ABOUT FRONTIER</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Building information</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/code-of-conduct"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-code-of-conduct"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">CODE OF CONDUCT</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Rules & guidelines</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
                 href="/ecosystem"
                 className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
                 style={{
@@ -303,14 +345,14 @@ export default function BlueHome() {
               </Link>
 
               <Link
-                href="/apply-to-join"
+                href="/membership"
                 className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
                 style={{
                   backgroundColor: '#003d82',
                   border: '2px solid #ffffff',
                   color: '#ffffff',
                 }}
-                data-testid="button-apply-to-join"
+                data-testid="button-membership-inquiry"
               >
                 <div className="flex items-start">
                   <div className="mr-3 flex-shrink-0 mt-1">
@@ -408,6 +450,29 @@ export default function BlueHome() {
                   </div>
                 </div>
               </Link>
+
+              <a
+                href="http://ft0.sh"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-important-links"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <Link2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">IMPORTANT LINKS</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Essential resources</p>
+                  </div>
+                </div>
+              </a>
             </div>
 
             {/* QR Code with Blueprint styling */}

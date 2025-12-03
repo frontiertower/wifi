@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2 } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import MemberForm from "@/components/member-form";
@@ -118,6 +118,34 @@ export default function GreenHome() {
               </button>
 
               <Link
+                href="/about"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-about-tower"
+              >
+                <div className="flex items-start">
+                  <Building2 className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">ABOUT FRONTIER</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Learn about the tower</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/code-of-conduct"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-code-of-conduct"
+              >
+                <div className="flex items-start">
+                  <Shield className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">CODE OF CONDUCT</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Our rules & guidelines</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
                 href="/directory"
                 className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
                 data-testid="button-view-directory"
@@ -202,9 +230,9 @@ export default function GreenHome() {
               </Link>
 
               <Link
-                href="/apply-to-join"
+                href="/membership"
                 className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
-                data-testid="button-apply-to-join"
+                data-testid="button-membership-inquiry"
               >
                 <div className="flex items-start">
                   <UserPlus className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
@@ -272,6 +300,22 @@ export default function GreenHome() {
                   </div>
                 </div>
               </Link>
+
+              <a
+                href="http://ft0.sh"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-important-links"
+              >
+                <div className="flex items-start">
+                  <Link2 className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">IMPORTANT LINKS</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Essential resources</p>
+                  </div>
+                </div>
+              </a>
             </div>
 
             {/* QR Code */}
