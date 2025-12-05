@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench } from "lucide-react";
-import { SiDiscord } from "react-icons/si";
+import { SiDiscord, SiYoutube } from "react-icons/si";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import MemberForm from "@/components/member-form";
@@ -146,6 +146,22 @@ export default function GreenHome() {
                   <div>
                     <h3 className="font-bold text-terminal-green">DEV KITS & WORKSHOPS</h3>
                     <p className="text-terminal-dim text-xs mt-1">Learning resources & tutorials</p>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://bit.ly/sensaiYT"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-youtube-workshops"
+              >
+                <div className="flex items-start">
+                  <SiYoutube className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">YOUTUBE WORKSHOPS</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Watch video tutorials</p>
                   </div>
                 </div>
               </a>
