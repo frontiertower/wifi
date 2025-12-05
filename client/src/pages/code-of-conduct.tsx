@@ -190,10 +190,15 @@ export default function CodeOfConduct() {
             </li>
           </ol>
 
-          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row gap-4">
             <Link href="/event-organizer-guide">
               <Button variant="outline" data-testid="button-view-event-guide">
                 View Event Organizer Guide
+              </Button>
+            </Link>
+            <Link href="/">
+              <Button data-testid="button-agree-code-of-conduct">
+                I Agree to the Code of Conduct
               </Button>
             </Link>
           </div>
