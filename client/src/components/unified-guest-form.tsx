@@ -304,7 +304,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         name: data.name,
         email: data.email,
         telegramUsername: data.telegramUsername,
-        host: "Visitor",
+        host: "SensAI Hacker",
         phone: data.phone || undefined,
         tourInterest: data.tourInterest || undefined,
         unifiParams: unifiParams,
@@ -777,7 +777,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                     onClick={() => setGuestType("visitor")}
                     data-testid="button-visitor"
                   >
-                    <span className="font-semibold">Visitor</span>
+                    <span className="font-semibold">SensAI Hacker</span>
                   </Button>
                 </div>
               </div>
