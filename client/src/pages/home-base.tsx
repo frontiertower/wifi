@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield, Lock, ArrowLeft, Map, Wrench, Trophy, Laptop } from "lucide-react";
+import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield, Lock, ArrowLeft, Map, Wrench, Trophy, Laptop, GraduationCap } from "lucide-react";
 import { SiDiscord, SiYoutube } from "react-icons/si";
 import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
@@ -494,6 +494,24 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                   </div>
                 </div>
               </Link>
+
+              <a
+                href="https://sensaihackademy.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-sensai-hackademy"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-violet-100 dark:bg-violet-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-violet-200 dark:group-hover:bg-violet-500/40">
+                    <GraduationCap className="text-violet-600 dark:text-violet-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Join SensAI Hackademy</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Learn & build with AI</div>
+                  </div>
+                </div>
+              </a>
 
               <Link
                 href="/about"

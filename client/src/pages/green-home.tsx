@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench, Trophy, Laptop } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench, Trophy, Laptop, GraduationCap } from "lucide-react";
 import { SiDiscord, SiYoutube } from "react-icons/si";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -195,6 +195,22 @@ export default function GreenHome() {
                   </div>
                 </div>
               </Link>
+
+              <a
+                href="https://sensaihackademy.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-sensai-hackademy"
+              >
+                <div className="flex items-start">
+                  <GraduationCap className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">JOIN SENSAI HACKADEMY</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Learn & build with AI</p>
+                  </div>
+                </div>
+              </a>
 
               <Link
                 href="/about"
