@@ -273,7 +273,15 @@ export default function GreenHome() {
                   </div>
                 </div>
               </a>
+            </div>
 
+            <div className="my-6 flex items-center gap-4">
+              <div className="flex-1 h-px bg-terminal-green/30"></div>
+              <span className="text-sm font-bold text-terminal-green">FRONTIER TOWER</span>
+              <div className="flex-1 h-px bg-terminal-green/30"></div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 mb-8">
               <Link
                 href="/about"
                 className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"

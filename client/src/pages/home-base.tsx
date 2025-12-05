@@ -582,7 +582,15 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                   </div>
                 </div>
               </a>
+            </div>
 
+            <div className="my-6 flex items-center gap-4">
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600"></div>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Frontier Tower</span>
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600"></div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Link
                 href="/about"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group block"

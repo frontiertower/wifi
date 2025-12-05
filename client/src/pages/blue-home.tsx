@@ -402,7 +402,15 @@ export default function BlueHome() {
                   </div>
                 </div>
               </a>
+            </div>
 
+            <div className="my-6 flex items-center gap-4">
+              <div className="flex-1 h-px bg-white/30"></div>
+              <span className="text-sm font-bold font-mono text-white">FRONTIER TOWER</span>
+              <div className="flex-1 h-px bg-white/30"></div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 mb-8">
               <Link
                 href="/about"
                 className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
