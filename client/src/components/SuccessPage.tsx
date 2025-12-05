@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Wifi, ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle2, Wifi, ChevronDown, ChevronUp, Home } from "lucide-react";
 import successImage from '@assets/generated_images/WiFi_connection_success_illustration_501db2d5.png';
 import step1Image from '@assets/step 1_1763765971195.jpeg';
 import step2Image from '@assets/step 2_1763765971195.jpeg';
@@ -77,6 +78,16 @@ export default function SuccessPage({
             >
               Continue Now
             </Button>
+            <Link href="/">
+              <Button
+                variant="outline"
+                className="w-full"
+                data-testid="button-back-home"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Back to Home
+              </Button>
+            </Link>
           </div>
         </Card>
 
