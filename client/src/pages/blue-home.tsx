@@ -199,29 +199,6 @@ export default function BlueHome() {
               </Link>
 
               <a
-                href="https://sensaihack.space"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
-                style={{
-                  backgroundColor: '#003d82',
-                  border: '2px solid #ffffff',
-                  color: '#ffffff',
-                }}
-                data-testid="button-room-finder"
-              >
-                <div className="flex items-start">
-                  <div className="mr-3 flex-shrink-0 mt-1">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold font-mono text-sm">ROOM FINDER</h3>
-                    <p className="text-xs mt-1 font-mono opacity-75">Find rooms & spaces</p>
-                  </div>
-                </div>
-              </a>
-
-              <a
                 href="https://discord.com/invite/Bwk5qm53sc"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -399,6 +376,29 @@ export default function BlueHome() {
                   <div>
                     <h3 className="font-bold font-mono text-sm">HACKATHON NOTION</h3>
                     <p className="text-xs mt-1 font-mono opacity-75">Event details & info</p>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://sensaihack.space"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-room-finder"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">ROOM FINDER</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Find rooms & spaces</p>
                   </div>
                 </div>
               </a>

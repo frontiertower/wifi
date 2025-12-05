@@ -133,22 +133,6 @@ export default function GreenHome() {
               </Link>
 
               <a
-                href="https://sensaihack.space"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
-                data-testid="button-room-finder"
-              >
-                <div className="flex items-start">
-                  <MapPin className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
-                  <div>
-                    <h3 className="font-bold text-terminal-green">ROOM FINDER</h3>
-                    <p className="text-terminal-dim text-xs mt-1">Find rooms & spaces</p>
-                  </div>
-                </div>
-              </a>
-
-              <a
                 href="https://discord.com/invite/Bwk5qm53sc"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -270,6 +254,22 @@ export default function GreenHome() {
                   <div>
                     <h3 className="font-bold text-terminal-green">HACKATHON NOTION</h3>
                     <p className="text-terminal-dim text-xs mt-1">Event details & info</p>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://sensaihack.space"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-room-finder"
+              >
+                <div className="flex items-start">
+                  <MapPin className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">ROOM FINDER</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Find rooms & spaces</p>
                   </div>
                 </div>
               </a>
