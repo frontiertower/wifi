@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench, Trophy, Laptop, GraduationCap } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench, Trophy, Laptop, GraduationCap, ClipboardList } from "lucide-react";
 import { SiDiscord, SiYoutube } from "react-icons/si";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -208,6 +208,22 @@ export default function GreenHome() {
                   <div>
                     <h3 className="font-bold text-terminal-green">JOIN SENSAI HACKADEMY</h3>
                     <p className="text-terminal-dim text-xs mt-1">Learn & build with AI</p>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://sensai-hack-san-francisco.devpost.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-register-devpost"
+              >
+                <div className="flex items-start">
+                  <ClipboardList className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">REGISTER ON DEVPOST</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Join the hackathon</p>
                   </div>
                 </div>
               </a>
