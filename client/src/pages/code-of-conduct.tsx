@@ -112,7 +112,7 @@ export default function CodeOfConduct() {
               <span className="font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">2.</span>
               <div>
                 <span className="font-bold text-gray-900 dark:text-gray-100">No sleeping in the building</span>
-                <span className="text-gray-700 dark:text-gray-300"> - No sleep overs or overnight stays in the building. We are applying for residential rezoning and a fine is $20,000</span>
+                <span className="text-gray-700 dark:text-gray-300"> - No sleep overs or overnight stays in the building.</span>
               </div>
             </li>
             <li className="flex gap-3">
