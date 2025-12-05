@@ -150,6 +150,14 @@ export default function EventHostBooking() {
           </Button>
         </Link>
 
+        <div className="mb-4">
+          <Link href="/event-organizer-guide">
+            <Button variant="outline" data-testid="button-view-event-guide">
+              View Event Organizer Guide
+            </Button>
+          </Link>
+        </div>
+
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Host your event at Frontier Tower</CardTitle>
