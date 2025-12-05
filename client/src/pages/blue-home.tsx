@@ -178,7 +178,7 @@ export default function BlueHome() {
               </button>
 
               <a
-                href="https://discord.gg/wVkzA8uUah"
+                href="https://discord.com/invite/Bwk5qm53sc"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"

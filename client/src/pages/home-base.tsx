@@ -408,7 +408,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </button>
 
               <a
-                href="https://discord.gg/wVkzA8uUah"
+                href="https://discord.com/invite/Bwk5qm53sc"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"

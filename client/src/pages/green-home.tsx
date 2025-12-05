@@ -119,7 +119,7 @@ export default function GreenHome() {
               </button>
 
               <a
-                href="https://discord.gg/wVkzA8uUah"
+                href="https://discord.com/invite/Bwk5qm53sc"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
