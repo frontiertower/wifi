@@ -96,10 +96,6 @@ export default function CodeOfConduct() {
 
           <hr className="border-gray-200 dark:border-gray-700 my-8" />
 
-          <p className="text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
-            The citizenship committee was elected to define our community standards and set membership guidelines. Any individual who violates community standards may receive a warning, temporary suspension, or ban from the building, depending on severity and frequency. The committee reserves the authority to remove individuals physical access to the property — as well as reinstate access. Anyone may request a review by the committee.
-          </p>
-
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
             COMMUNITY STANDARDS
           </h2>
