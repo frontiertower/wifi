@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2 } from "lucide-react";
+import { SiDiscord } from "react-icons/si";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import MemberForm from "@/components/member-form";
@@ -116,6 +117,22 @@ export default function GreenHome() {
                   </div>
                 </div>
               </button>
+
+              <a
+                href="https://discord.gg/wVkzA8uUah"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-join-discord"
+              >
+                <div className="flex items-start">
+                  <SiDiscord className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">JOIN SENSAI DISCORD</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Connect with our community</p>
+                  </div>
+                </div>
+              </a>
 
               <Link
                 href="/about"

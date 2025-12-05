@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield, Lock, ArrowLeft, Map } from "lucide-react";
+import { SiDiscord } from "react-icons/si";
 import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
 import UnifiedGuestForm from "@/components/unified-guest-form";
@@ -405,6 +406,24 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                   </div>
                 </div>
               </button>
+
+              <a
+                href="https://discord.gg/wVkzA8uUah"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-join-discord"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-500/40">
+                    <SiDiscord className="text-indigo-600 dark:text-indigo-300 w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Join SensAI Discord</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Connect with our community</div>
+                  </div>
+                </div>
+              </a>
 
               <Link
                 href="/about"
