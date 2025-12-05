@@ -437,7 +437,7 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                     <Wrench className="text-orange-600 dark:text-orange-300" />
                   </div>
                   <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">Dev Kits & Workshops</div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Dev Kits & Resources</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">Learning resources & tutorials</div>
                   </div>
                 </div>

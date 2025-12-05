@@ -217,7 +217,7 @@ export default function BlueHome() {
                     <Wrench className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold font-mono text-sm">DEV KITS & WORKSHOPS</h3>
+                    <h3 className="font-bold font-mono text-sm">DEV KITS & RESOURCES</h3>
                     <p className="text-xs mt-1 font-mono opacity-75">Learning resources</p>
                   </div>
                 </div>

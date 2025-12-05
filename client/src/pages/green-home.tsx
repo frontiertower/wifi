@@ -144,7 +144,7 @@ export default function GreenHome() {
                 <div className="flex items-start">
                   <Wrench className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
                   <div>
-                    <h3 className="font-bold text-terminal-green">DEV KITS & WORKSHOPS</h3>
+                    <h3 className="font-bold text-terminal-green">DEV KITS & RESOURCES</h3>
                     <p className="text-terminal-dim text-xs mt-1">Learning resources & tutorials</p>
                   </div>
                 </div>
