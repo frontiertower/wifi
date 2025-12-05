@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2 } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench } from "lucide-react";
 import { SiDiscord } from "react-icons/si";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -130,6 +130,22 @@ export default function GreenHome() {
                   <div>
                     <h3 className="font-bold text-terminal-green">JOIN SENSAI DISCORD</h3>
                     <p className="text-terminal-dim text-xs mt-1">Connect with our community</p>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://sensaihack.notion.site/How-to-Prepare-Learning-Resources-Workshops-22ad7964cb7c81838c6cff5e275dbecc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-dev-kits"
+              >
+                <div className="flex items-start">
+                  <Wrench className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">DEV KITS & WORKSHOPS</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Learning resources & tutorials</p>
                   </div>
                 </div>
               </a>

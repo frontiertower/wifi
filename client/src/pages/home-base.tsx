@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield, Lock, ArrowLeft, Map } from "lucide-react";
+import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield, Lock, ArrowLeft, Map, Wrench } from "lucide-react";
 import { SiDiscord } from "react-icons/si";
 import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
@@ -421,6 +421,24 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                   <div>
                     <div className="font-medium text-gray-800 dark:text-gray-100">Join SensAI Discord</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">Connect with our community</div>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://sensaihack.notion.site/How-to-Prepare-Learning-Resources-Workshops-22ad7964cb7c81838c6cff5e275dbecc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-dev-kits"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-orange-100 dark:bg-orange-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-orange-200 dark:group-hover:bg-orange-500/40">
+                    <Wrench className="text-orange-600 dark:text-orange-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Dev Kits & Workshops</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Learning resources & tutorials</div>
                   </div>
                 </div>
               </a>

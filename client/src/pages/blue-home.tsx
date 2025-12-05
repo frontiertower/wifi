@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Zap, Rocket, Home, Briefcase, Shield, Link2 } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Zap, Rocket, Home, Briefcase, Shield, Link2, Wrench } from "lucide-react";
 import { SiDiscord } from "react-icons/si";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -196,6 +196,29 @@ export default function BlueHome() {
                   <div>
                     <h3 className="font-bold font-mono text-sm">JOIN SENSAI DISCORD</h3>
                     <p className="text-xs mt-1 font-mono opacity-75">Connect with community</p>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://sensaihack.notion.site/How-to-Prepare-Learning-Resources-Workshops-22ad7964cb7c81838c6cff5e275dbecc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-dev-kits"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <Wrench className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">DEV KITS & WORKSHOPS</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Learning resources</p>
                   </div>
                 </div>
               </a>
