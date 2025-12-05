@@ -764,7 +764,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300"
+                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-700 dark:text-orange-300"
                     onClick={() => setGuestType("tower_member")}
                     data-testid="button-tower-member"
                   >
@@ -773,7 +773,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-700 dark:text-orange-300"
+                    className="h-20 flex flex-col items-center justify-center gap-2 border-2 border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300"
                     onClick={() => setGuestType("visitor")}
                     data-testid="button-visitor"
                   >
