@@ -41,6 +41,7 @@ import EcosystemPage from "@/pages/ecosystem";
 import ResidencyPage from "@/pages/residency";
 import CodeOfConduct from "@/pages/code-of-conduct";
 import AboutPage from "@/pages/about";
+import CoworkingPage from "@/pages/coworking";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -87,6 +88,7 @@ function Router() {
         <Route path="/residency" component={ResidencyPage} />
         <Route path="/code-of-conduct" component={CodeOfConduct} />
         <Route path="/about" component={AboutPage} />
+        <Route path="/coworking" component={CoworkingPage} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
