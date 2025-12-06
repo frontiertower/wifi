@@ -407,6 +407,42 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                 </div>
               </button>
 
+              <a
+                href="https://sensaihack.notion.site/SensAI-Hack-in-San-Francisco-27dd7964cb7c80eebd4af085a55b7832"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-stone-500 hover:bg-stone-50 dark:hover:bg-stone-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-hackathon-notion"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-stone-100 dark:bg-stone-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-stone-200 dark:group-hover:bg-stone-500/40">
+                    <FileText className="text-stone-600 dark:text-stone-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Hackathon Notion</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Event details & info</div>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                href="https://sensaihack.space"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-room-finder"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/40">
+                    <MapPin className="text-emerald-600 dark:text-emerald-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Room Finder</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Find rooms & spaces</div>
+                  </div>
+                </div>
+              </a>
+
               <Link
                 href="/code-of-conduct"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block"
@@ -547,41 +583,6 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                 </div>
               </a>
 
-              <a
-                href="https://sensaihack.notion.site/SensAI-Hack-in-San-Francisco-27dd7964cb7c80eebd4af085a55b7832"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-stone-500 hover:bg-stone-50 dark:hover:bg-stone-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-hackathon-notion"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-stone-100 dark:bg-stone-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-stone-200 dark:group-hover:bg-stone-500/40">
-                    <FileText className="text-stone-600 dark:text-stone-300" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">Hackathon Notion</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Event details & info</div>
-                  </div>
-                </div>
-              </a>
-
-              <a
-                href="https://sensaihack.space"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-room-finder"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/40">
-                    <MapPin className="text-emerald-600 dark:text-emerald-300" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">Room Finder</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Find rooms & spaces</div>
-                  </div>
-                </div>
-              </a>
             </div>
 
             <div className="my-6 flex items-center gap-4">
