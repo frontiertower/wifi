@@ -26,6 +26,7 @@ interface DirectoryListing {
 const floors = [
   { floor: "16", name: "d/acc Lounge", description: "Cross-pollination space for all communities to mingle. Host friends, investors, or enjoy panoramic city views.", icon: Users },
   { floor: "15", name: "Coworking & The Library", description: "Deep work sessions with noise-cancelling environment. Perfect for focused execution.", icon: Code },
+  { floor: "14", name: "Human Flourishing", description: "Exploring alignment of flourishing, sense-making, and coordination powered by frontier tech.", icon: Heart },
   { floor: "12", name: "Ethereum & Decentralized Tech", description: "Shape the future of finance with blockchain, DeFi, Layer 2 solutions, and Real World Assets.", icon: Zap },
   { floor: "11", name: "Health & Longevity", description: "Aging research, longevity biotech, and optimized health habits with cutting-edge biomarker tracking.", icon: Heart },
   { floor: "10", name: "Frontier @ Accelerate", description: "Collaborate with top talent, build relationships with investors, and kickstart projects.", icon: Rocket },
