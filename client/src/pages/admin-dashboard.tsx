@@ -1492,17 +1492,17 @@ export default function AdminDashboard() {
             <div className="mt-8">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2">Building Location Map</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-8">
-                Frontier Tower - 16 Story Office Building (Floor 13 omitted)
+                Frontier Tower - 16 Story Office Building (Floors 13 & 14 omitted)
               </p>
               
               <div className="flex justify-center py-8">
                 <div className="w-full max-w-2xl">
                   {/* Building floors - displayed from top to bottom */}
-                  {['16', '15', '14', '12', '11', '10', '9', '8', '7', '6', '5', '4', '3', '2'].map((floor, index) => {
+                  {['16', '15', '12', '11', '10', '9', '8', '7', '6', '5', '4', '3', '2'].map((floor, index) => {
                     const floorData = floorStats?.floorStats?.[floor] || { count: 0, names: [] };
                     const userCount = floorData.count;
                     const userNames = floorData.names || [];
-                    const totalFloors = 14;
+                    const totalFloors = 13;
                     const isTop = index === 0;
                     const isBottom = index === totalFloors - 1;
                     
