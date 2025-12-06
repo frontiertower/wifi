@@ -178,6 +178,29 @@ export default function BlueHome() {
               </button>
 
               <a
+                href="https://sensai-hack-san-francisco.devpost.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
+                style={{
+                  backgroundColor: '#003d82',
+                  border: '2px solid #ffffff',
+                  color: '#ffffff',
+                }}
+                data-testid="button-register-devpost"
+              >
+                <div className="flex items-start">
+                  <div className="mr-3 flex-shrink-0 mt-1">
+                    <ClipboardList className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold font-mono text-sm">REGISTER ON DEVPOST</h3>
+                    <p className="text-xs mt-1 font-mono opacity-75">Join the hackathon</p>
+                  </div>
+                </div>
+              </a>
+
+              <a
                 href="https://sensaihack.notion.site/SensAI-Hack-in-San-Francisco-27dd7964cb7c80eebd4af085a55b7832"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -376,29 +399,6 @@ export default function BlueHome() {
                   <div>
                     <h3 className="font-bold font-mono text-sm">JOIN SENSAI HACKADEMY</h3>
                     <p className="text-xs mt-1 font-mono opacity-75">Learn & build with AI</p>
-                  </div>
-                </div>
-              </a>
-
-              <a
-                href="https://sensai-hack-san-francisco.devpost.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 transition-all duration-200 text-left hover:bg-white hover:bg-opacity-10 block"
-                style={{
-                  backgroundColor: '#003d82',
-                  border: '2px solid #ffffff',
-                  color: '#ffffff',
-                }}
-                data-testid="button-register-devpost"
-              >
-                <div className="flex items-start">
-                  <div className="mr-3 flex-shrink-0 mt-1">
-                    <ClipboardList className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold font-mono text-sm">REGISTER ON DEVPOST</h3>
-                    <p className="text-xs mt-1 font-mono opacity-75">Join the hackathon</p>
                   </div>
                 </div>
               </a>
