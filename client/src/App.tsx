@@ -40,6 +40,7 @@ import CareersPage from "@/pages/careers";
 import EcosystemPage from "@/pages/ecosystem";
 import ResidencyPage from "@/pages/residency";
 import CodeOfConduct from "@/pages/code-of-conduct";
+import WorkshopVideos from "@/pages/workshop-videos";
 import AboutPage from "@/pages/about";
 import CoworkingPage from "@/pages/coworking";
 import EventOrganizerGuide from "@/pages/event-organizer-guide";
@@ -88,6 +89,7 @@ function Router() {
         <Route path="/ecosystem" component={EcosystemPage} />
         <Route path="/residency" component={ResidencyPage} />
         <Route path="/code-of-conduct" component={CodeOfConduct} />
+        <Route path="/workshop-videos" component={WorkshopVideos} />
         <Route path="/about" component={AboutPage} />
         <Route path="/coworking" component={CoworkingPage} />
         <Route path="/event-organizer-guide" component={EventOrganizerGuide} />

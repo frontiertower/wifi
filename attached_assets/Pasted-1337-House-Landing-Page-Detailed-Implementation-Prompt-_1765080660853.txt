@@ -1,0 +1,319 @@
+1337 House Landing Page - Detailed Implementation Prompt
+Project Overview
+Create a vibey, NeuBrutalist-style landing page for "1337 House" - an exclusive co-living space in Alamo Square, San Francisco for founders in top VC programs and PhD students from elite universities. The site should feel authentic, cool, and down-to-earth while maintaining an air of exclusivity.
+Core Concept & Vibe
+Name: 1337 House (leet speak for "elite")
+Tagline: "Where builders live, ship, and vibe"
+Tone: Cool but not try-hard, exclusive but welcoming, intellectual but fun
+Target: Founders in YC/a16z/Sequoia programs, Stanford/Berkeley/Harvard PhD students
+Mission: Create serendipitous collisions between the brightest technical minds
+Design System: NeuBrutalism + ACEternity
+Color Palette
+--primary-black: #000000
+--off-white: #FAFAF8
+--electric-blue: #0066FF
+--neon-green: #00FF88
+--hot-pink: #FF0099
+--cyber-yellow: #FFD700
+--brutal-purple: #7928CA
+--shadow-color: #000000
+Typography
+Headlines: Space Grotesk or Clash Display (Bold, all caps for impact)
+Body: Inter or IBM Plex Mono
+Accents: JetBrains Mono for code-like elements
+Sizes: Exaggerated scale differences (96px headlines, 18px body)
+NeuBrutalist Design Principles
+Thick Black Borders: 4-8px solid black borders on all containers
+Hard Shadows: Offset shadows (8px right, 8px down) in contrasting colors
+Asymmetric Layouts: Intentionally unbalanced grid systems
+Bold Color Blocks: Solid color backgrounds with no gradients
+Overlapping Elements: Cards that intentionally overlap for depth
+Retro-Futuristic: Mix of 90s web nostalgia with modern tech aesthetics
+Page Sections & Components
+1. Hero Section
+Layout: Full viewport height, split asymmetrically (60/40)
+Left Side (60%):
+Massive "1337" in ASCII art or custom typography (200px+)
+Rotating taglines on typewriter effect:
+"Build weird stuff at 3am"
+"Ship code from the kitchen"
+"Debug life over coffee"
+"Where 10x engineers become 100x friends"
+Pulsing cursor animation
+Right Side (40%):
+Tilted polaroid-style photos of the house (-5deg rotation)
+Hard drop shadows in neon colors
+Images show: rooftop views, coding sessions, house dinners
+Interactive Elements:
+Mouse-following gradient orb in background
+Glitch effect on hover over "1337"
+Terminal-style typing animation
+2. The Vibe Check Section
+Component: Bento grid with varying card sizes
+Cards (each with thick borders and colored shadows):
+"The Space" (large card):
+360° photo viewer of the house
+Stats overlay: "7 bedrooms | 3 floors | 1 epic roof deck | ∞ ideas"
+"The Location" (medium card):
+Interactive map with custom markers
+"2 min to Alamo Square Park, 15 min to Mission, 20 min to South Bay"
+"The Setup" (small cards grid):
+Icons with labels: "Gigabit fiber", "Standing desks", "4K monitors", "Espresso machine", "Whiteboard walls"
+"House Values" (vertical card):
+Scrolling marquee of values:
+"Ship > Talk"
+"Open Source Everything"
+"Radical Candor"
+"Build in Public"
+"Party Responsibly"
+3. Current Residents Section
+Title: "The Current Crew" (glitch text effect)
+Layout: Horizontal scrolling card carousel with momentum scrolling
+Profile Cards:
+// Each card structure:
+- Photo with duotone filter effect
+- Name + Twitter handle
+- Company/University badge (YC W24, Stanford CS, etc.)
+- "Building: [one-line description]"
+- Mini terminal window showing their latest GitHub commit
+- Hover: Card lifts with spring animation
+No Real Names Mode: Toggle switch to show everyone as "Anon Builder #1", etc.
+4. The Selection Criteria
+Title: "Are You 1337 Enough?"
+Design: Retro computer terminal aesthetic
+> whoami
+You must be:
+├── In YC, a16z, Sequoia, Founders Fund, or similar tier-1 program
+│   OR
+├── PhD student at Stanford, MIT, Harvard, Berkeley, CMU
+│   OR
+└── Have shipped something used by 10K+ developers
+> requirements.txt
+- Age: 21-29 (exceptions for exceptional builders)
+- Commitment: 6+ months
+- Vibe: High agency, low ego
+- Mode: Build first, party second
+- Stack: Any (we have Vim and Emacs users living in harmony)
+5. Life at 1337 House
+Component: Animated timeline/schedule
+Daily Rhythm Visualization:
+Interactive 24-hour clock showing typical day
+Hover over time slots for details:
+7am: "Coffee & code reviews on the roof"
+12pm: "Lunch & learn (this week: ZKML)"
+3pm: "Deep work time (house is in flow state)"
+7pm: "Family dinner (mandatory fun)"
+10pm: "Demo hour (show what you shipped today)"
+2am: "Late night debugging sessions"
+Photo Gallery:
+Masonry grid layout
+Mix of: hackathons, dinners, rooftop parties, work sessions
+Hover: RGB split glitch effect
+Click: Fullscreen with film grain overlay
+6. The Application Form
+Title: "Ready to Join?"
+Multi-step form with progress bar (styled as loading bar):
+Step 1: The Basics
+<Input label="Full Name" placeholder="Satoshi Nakamoto" />
+<Input label="Email" placeholder="builder@1337house.com" />
+<Input label="Twitter/X" placeholder="@" />
+<Input label="GitHub" placeholder="github.com/" />
+<Input label="LinkedIn" placeholder="linkedin.com/in/" />
+Step 2: Your Program
+<Select label="Your Program">
+  <Option>YC (specify batch)</Option>
+  <Option>a16z CSX</Option>
+  <Option>Sequoia Arc</Option>
+  <Option>Founders Fund FF50</Option>
+  <Option>Stanford PhD (specify department)</Option>
+  <Option>MIT PhD (specify department)</Option>
+  <Option>Harvard PhD (specify department)</Option>
+  <Option>Berkeley PhD (specify department)</Option>
+  <Option>Other (must be compelling)</Option>
+</Select>
+<Input label="Specify Batch/Year/Department" />
+Step 3: What You're Building
+<Textarea
+  label="What are you building? (Be specific)"
+  placeholder="I'm building the Uber for X using Y technology..."
+  maxLength={280}
+/>
+<Input label="Demo URL (required)" placeholder="https://" />
+<Input label="Monthly Revenue or Users" placeholder="$10K MRR or 50K MAU" />
+Step 4: The Vibe Check
+<RadioGroup label="Your Superpower">
+  <Radio>I can debug anything at 3am</Radio>
+  <Radio>I ship a feature before breakfast</Radio>
+  <Radio>I can explain transformers to a 5-year-old</Radio>
+  <Radio>I've contributed to a project with 1K+ stars</Radio>
+</RadioGroup>
+<Textarea
+  label="Tell us a weird fact about yourself"
+  placeholder="I once fixed a production bug while skydiving..."
+/>
+<Textarea
+  label="Your favorite 3am snack?"
+  placeholder="Essential for late night hacking sessions..."
+/>
+Step 5: Logistics
+<DatePicker label="When do you want to move in?" />
+<Select label="Preferred room type">
+  <Option>Master bedroom ($2800/mo)</Option>
+  <Option>Large room ($2400/mo)</Option>
+  <Option>Standard room ($2000/mo)</Option>
+  <Option>Flex on budget, need the best room</Option>
+</Select>
+Submit Button:
+Text: "SHIP APPLICATION →"
+Animation: Matrix-style code rain on hover
+Success state: Confetti explosion + "Application received! We'll ping you within 48h"
+7. FAQ Section
+Design: Accordion with brutal borders
+Questions:
+"Is this a hacker house or a party house?"
+   > "Yes. We work hard and play hard. 80% building, 20% vibing."
+"Do I need to be technical?"
+   > "You need to be a builder. Whether that's code, hardware, or companies."
+"What about guests and partners?"
+   > "Partners welcome if they vibe. Random Tinder dates less so."
+"Is there parking?"
+   > "Street parking. But real builders take e-bikes."
+"Can I bring my mechanical keyboard?"
+   > "Required. We judge you if it's not at least 65%."
+8. Footer
+Design: Terminal-style with ASCII art
+┌──────────────────────────────────────────┐
+│  1337 HOUSE - ALAMO SQUARE, SF          │
+├──────────────────────────────────────────┤
+│  > ping hello@1337house.com             │
+│  > follow @1337house                    │
+│  > fork github.com/1337house            │
+│                                          │
+│  Made with ♥ and RedBull by residents   │
+│  © 2024 - Probably no rights reserved   │
+└──────────────────────────────────────────┘
+Interactive Features & Animations
+Micro-interactions
+Button hovers: Slight rotation + color inversion
+Card hovers: Lift with shadow expansion
+Link hovers: Underline draws from left to right
+Form focus: Border thickens and changes color
+Scroll triggers: Elements slide in with spring physics
+Easter Eggs
+Konami code: Triggers party mode (colors go wild)
+Type "sudo": Unlocks "admin view" showing house wifi password
+Click 1337 seven times: Shows secret residents-only Discord link
+Hover on photos for 3 sec: Shows developer tools jokes
+Performance Optimizations
+Lazy load images below the fold
+Use Intersection Observer for animations
+Implement virtual scrolling for resident cards
+Optimize font loading with font-display: swap
+Use CSS containment for card layouts
+Technical Implementation with Shadcn
+Components to Use/Extend
+// Core Shadcn components needed:
+import { Button } from "@/components/ui/button"           // Customize with thick borders
+import { Card } from "@/components/ui/card"               // Add brutal shadows
+import { Input } from "@/components/ui/input"             // Style with black borders
+import { Select } from "@/components/ui/select"           // Custom dropdown styling
+import { Textarea } from "@/components/ui/textarea"       // Monospace font option
+import { RadioGroup } from "@/components/ui/radio-group"  // Custom radio styles
+import { Accordion } from "@/components/ui/accordion"     // FAQ section
+import { Badge } from "@/components/ui/badge"             // For tags/labels
+import { Tabs } from "@/components/ui/tabs"               // For multi-step form
+import { Progress } from "@/components/ui/progress"       // Form progress bar
+import { ScrollArea } from "@/components/ui/scroll-area"  // Custom scrollbars
+import { Sheet } from "@/components/ui/sheet"             // Mobile menu
+import { Carousel } from "@/components/ui/carousel"       // Resident cards
+Custom Components to Build
+// 1. GlitchText component
+<GlitchText text="1337 HOUSE" />
+// 2. TypewriterText component
+<TypewriterText phrases={taglines} />
+// 3. TerminalWindow component
+<TerminalWindow commands={githubCommits} />
+// 4. ASCIILogo component
+<ASCIILogo text="1337" />
+// 5. ParticleBackground component
+<ParticleBackground density={50} />
+// 6. BentoGrid component
+<BentoGrid items={houseFeatures} />
+// 7. ThreeSixtyViewer component
+<ThreeSixtyViewer images={housePhotos} />
+Responsive Design Breakpoints
+/* Mobile: Stack everything, reduce type scale */
+@media (max-width: 640px) {
+  /* Single column layouts */
+  /* Reduce heading sizes by 40% */
+  /* Stack form steps vertically */
+  /* Hide decorative elements */
+}
+/* Tablet: 2-column grids */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* 2-column bento grids */
+  /* Side-by-side form layout */
+}
+/* Desktop: Full brutal glory */
+@media (min-width: 1025px) {
+  /* All asymmetric layouts */
+  /* Maximum shadow offsets */
+  /* All animations enabled */
+}
+Content & Copy Guidelines
+Voice & Tone
+Smart but not pretentious: "We're building the future, one commit at a time"
+Inclusive exclusivity: "If you know, you know"
+Technical but accessible: Use developer terms but explain when needed
+Meme-aware: Reference developer culture naturally
+Anti-corporate: No business jargon, keep it real
+Headlines Examples
+"Stop living with normies"
+"Your code deserves better roommates"
+"Where 'works on my machine' becomes 'works on our machine'"
+"Peer programming > peer pressure"
+CTAs
+Primary: "APPLY NOW" / "SHIP IT" / "LET'S GO"
+Secondary: "Take the house tour" / "Meet the builders" / "Check the vibe"
+SEO & Meta Tags
+<title>1337 House | Elite SF Hacker House for Founders & PhDs</title>
+<meta name="description" content="Exclusive co-living space in Alamo Square for YC founders, top VC program participants, and Stanford/MIT/Harvard PhD students. Apply to live with the best builders in SF.">
+<meta property="og:title" content="1337 House - Where SF's Best Builders Live">
+<meta property="og:description" content="Join an elite community of founders and researchers shipping the future">
+<meta property="og:image" content="/1337-house-social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+Analytics & Tracking Events
+Track these key events:
+Application starts
+Application step completions
+Social link clicks
+Photo gallery interactions
+Resident card clicks
+FAQ expansions
+Easter egg discoveries
+Time on page
+Scroll depth
+Launch Checklist
+Mobile responsive testing on all devices
+Cross-browser compatibility (Chrome, Safari, Firefox, Arc)
+Form validation and error states
+Loading states for all async operations
+404 and error pages matching the aesthetic
+Social sharing cards optimized
+Analytics implementation
+A/B test different headlines
+Set up application notification system
+Create application review dashboard
+Test payment integration for deposits
+Set up automated email responses
+Create waitlist functionality
+Implement referral system
+Post-Launch Features
+Resident Portal: Dashboard for current residents
+Event Calendar: Public events at the house
+Alumni Network: Past residents and their companies
+Blog: "Dispatches from 1337 House"
+API: Public API for house statistics
+Merch Store: House branded items
+Virtual Tour: 3D walkthrough of the space
+This landing page should feel like entering a secret club that's too cool to care about being cool, where the smartest builders in SF come to create the future while having an absurdly good time.

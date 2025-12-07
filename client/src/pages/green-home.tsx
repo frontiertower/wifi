@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench, Trophy, Laptop, GraduationCap, ClipboardList, FileText, MapPin } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench, Trophy, Laptop, GraduationCap, ClipboardList, FileText, MapPin, Video } from "lucide-react";
 import { SiDiscord, SiYoutube } from "react-icons/si";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -227,6 +227,20 @@ export default function GreenHome() {
                   </div>
                 </div>
               </a>
+
+              <Link
+                href="/workshop-videos"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-workshop-videos"
+              >
+                <div className="flex items-start">
+                  <Video className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">WORKSHOP VIDEOS</h3>
+                    <p className="text-terminal-dim text-xs mt-1">XR & AI crash courses</p>
+                  </div>
+                </div>
+              </Link>
 
               <a
                 href="https://start-developer-competition.devpost.com"
