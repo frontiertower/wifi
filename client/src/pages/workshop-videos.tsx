@@ -20,6 +20,13 @@ const videos = [
     color: "blue",
   },
   {
+    title: "Build Your First XR App with Unity",
+    description: "Step-by-step guide to creating XR applications in Unity",
+    url: "https://www.youtube.com/watch?v=WmOXKcG9dBk&list=PLRQI9ZSqDkKckICPBwv19jPT9hLKxvNlL&index=4",
+    icon: SiYoutube,
+    color: "green",
+  },
+  {
     title: "SensAI Workshop Playlist",
     description: "Full collection of SensAI hackathon workshop recordings",
     url: "https://www.youtube.com/playlist?list=PLRQI9ZSqDkKckICPBwv19jPT9hLKxvNlL",
@@ -57,6 +64,7 @@ export default function WorkshopVideos() {
             const colorClasses = {
               purple: "bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400",
               blue: "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400",
+              green: "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400",
               red: "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400",
             };
             
