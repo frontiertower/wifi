@@ -513,24 +513,6 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                 </div>
               </a>
 
-              <a
-                href="https://bit.ly/sensaiYT"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 text-left group block"
-                data-testid="button-youtube-workshops"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-red-100 dark:bg-red-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-red-200 dark:group-hover:bg-red-500/40">
-                    <SiYoutube className="text-red-600 dark:text-red-300 w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">YouTube Workshops</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Watch video tutorials</div>
-                  </div>
-                </div>
-              </a>
-
               <Link
                 href="/workshop-videos"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-all duration-200 text-left group block"

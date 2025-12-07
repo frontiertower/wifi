@@ -212,22 +212,6 @@ export default function GreenHome() {
                 </div>
               </a>
 
-              <a
-                href="https://bit.ly/sensaiYT"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
-                data-testid="button-youtube-workshops"
-              >
-                <div className="flex items-start">
-                  <SiYoutube className="text-terminal-green mr-3 flex-shrink-0 mt-1 w-5 h-5" />
-                  <div>
-                    <h3 className="font-bold text-terminal-green">YOUTUBE WORKSHOPS</h3>
-                    <p className="text-terminal-dim text-xs mt-1">Watch video tutorials</p>
-                  </div>
-                </div>
-              </a>
-
               <Link
                 href="/workshop-videos"
                 className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
