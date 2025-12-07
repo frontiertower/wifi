@@ -166,20 +166,6 @@ export default function GreenHome() {
                 </div>
               </a>
 
-              <Link
-                href="/code-of-conduct"
-                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
-                data-testid="button-code-of-conduct"
-              >
-                <div className="flex items-start">
-                  <Shield className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-bold text-terminal-green">CODE OF CONDUCT</h3>
-                    <p className="text-terminal-dim text-xs mt-1">Our rules & guidelines</p>
-                  </div>
-                </div>
-              </Link>
-
               <a
                 href="https://discord.com/invite/Bwk5qm53sc"
                 target="_blank"
@@ -291,6 +277,20 @@ export default function GreenHome() {
                   <div>
                     <h3 className="font-bold text-terminal-green">ABOUT FRONTIER</h3>
                     <p className="text-terminal-dim text-xs mt-1">Learn about the tower</p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/code-of-conduct"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="button-code-of-conduct"
+              >
+                <div className="flex items-start">
+                  <Shield className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">CODE OF CONDUCT</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Our rules & guidelines</p>
                   </div>
                 </div>
               </Link>
