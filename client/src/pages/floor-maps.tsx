@@ -63,13 +63,6 @@ export default function FloorMaps() {
 
       <div className="flex h-[calc(100vh-73px)]">
         <aside className="w-72 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 hidden md:flex md:flex-col">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-2">
-              <Layers className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              <h2 className="font-semibold text-gray-900 dark:text-white">Quick Access</h2>
-            </div>
-          </div>
-          
           <div className="flex-1 overflow-y-auto p-4">
             <div className="space-y-1">
               <button
