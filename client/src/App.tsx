@@ -44,6 +44,7 @@ import WorkshopVideos from "@/pages/workshop-videos";
 import AboutPage from "@/pages/about";
 import CoworkingPage from "@/pages/coworking";
 import EventOrganizerGuide from "@/pages/event-organizer-guide";
+import FloorMaps from "@/pages/floor-maps";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -93,6 +94,7 @@ function Router() {
         <Route path="/about" component={AboutPage} />
         <Route path="/coworking" component={CoworkingPage} />
         <Route path="/event-organizer-guide" component={EventOrganizerGuide} />
+        <Route path="/floor-maps" component={FloorMaps} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
@@ -150,7 +152,7 @@ function AppHeader() {
     }
   };
 
-  const hideRabbitOn = ["/", "/de", "/es", "/zh", "/ko", "/ja", "/fr", "/hi", "/ar", "/sw", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/hosting", "/membership", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency", "/code-of-conduct", "/about"];
+  const hideRabbitOn = ["/", "/de", "/es", "/zh", "/ko", "/ja", "/fr", "/hi", "/ar", "/sw", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/hosting", "/membership", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency", "/code-of-conduct", "/about", "/floor-maps"];
   const shouldHideRabbit = hideRabbitOn.some(path => location === path || location.startsWith(path + "/"));
 
   return (
