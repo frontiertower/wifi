@@ -131,7 +131,6 @@ app.use((req, res, next) => {
     server.listen({
       port,
       host: "0.0.0.0",
-      reusePort: true,
     }, () => {
       console.log(`[startup] Server is ready and listening on http://0.0.0.0:${port}`);
       log(`serving on port ${port}`);
