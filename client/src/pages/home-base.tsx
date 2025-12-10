@@ -88,6 +88,39 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
     console.log('UniFi Parameters:', params);
   }, []);
 
+  // Idle timeout - show pill modal after 30 seconds of no clicks
+  useEffect(() => {
+    // Only trigger on homepage when no role selected and modal not showing
+    if (selectedRole || showPillModal || showPasswordGate) return;
+
+    let idleTimer: NodeJS.Timeout | null = null;
+
+    const resetIdleTimer = () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        setIsFlashing(true);
+        setTimeout(() => {
+          setShowPillModal(true);
+        }, 500);
+      }, 30000); // 30 seconds
+    };
+
+    // Start the timer initially
+    resetIdleTimer();
+
+    // Reset timer on any click
+    const handleClick = () => {
+      resetIdleTimer();
+    };
+
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      document.removeEventListener('click', handleClick);
+    };
+  }, [selectedRole, showPillModal, showPasswordGate]);
+
   const handleRoleSelect = (role: Role) => {
     if (role === "guest" && passwordRequired) {
       setShowPasswordGate(true);
