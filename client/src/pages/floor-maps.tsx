@@ -85,7 +85,7 @@ export default function FloorMaps() {
                 }`}
                 data-testid="button-floor-all"
               >
-                All Spaces (Spreadsheet)
+                Frontier Tower Spaces
               </button>
               
               <div className="border-t border-gray-200 dark:border-gray-700 my-3"></div>
@@ -132,7 +132,7 @@ export default function FloorMaps() {
           <iframe
             src={floorFinderUrl}
             className="w-full h-full border-0"
-            title="Floor Maps - SensAI Hack"
+            title="Floor Maps - Frontier Tower"
             allow="fullscreen"
             data-testid="iframe-floor-maps"
           />
