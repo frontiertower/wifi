@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench, Trophy, Laptop, GraduationCap, ClipboardList, FileText, MapPin, Video } from "lucide-react";
+import { Wifi, Building2, Calendar, DoorOpen, UserPlus, PartyPopper, MessageCircle, Rocket, Home, Briefcase, Shield, Link2, Wrench, Trophy, Laptop, GraduationCap, ClipboardList, FileText, MapPin, Video, Map } from "lucide-react";
 import { SiDiscord, SiYoutube } from "react-icons/si";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -117,6 +117,20 @@ export default function GreenHome() {
                   </div>
                 </div>
               </button>
+
+              <Link
+                href="/floor-maps"
+                className="terminal-card hover:border-terminal-green transition-all duration-200 text-left group block"
+                data-testid="link-floor-maps"
+              >
+                <div className="flex items-start">
+                  <Map className="text-terminal-green mr-3 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-bold text-terminal-green">FLOOR MAPS</h3>
+                    <p className="text-terminal-dim text-xs mt-1">Interactive building maps</p>
+                  </div>
+                </div>
+              </Link>
             </div>
 
             <div className="my-6 flex items-center gap-4">
