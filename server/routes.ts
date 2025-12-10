@@ -2865,6 +2865,39 @@ Return only the description text, no quotes or additional formatting.`
     }
   });
 
+  // Pill Choice Routes
+  app.post("/api/pill-choices", async (req, res) => {
+    try {
+      const { choice } = req.body;
+      if (!choice || !["green", "blue"].includes(choice)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid choice. Must be 'green' or 'blue'"
+        });
+      }
+      
+      await storage.recordPillChoice(choice);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to record pill choice"
+      });
+    }
+  });
+
+  app.get("/api/pill-choices/stats", async (req, res) => {
+    try {
+      const stats = await storage.getPillChoiceStats();
+      res.json({ success: true, stats });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch pill choice stats"
+      });
+    }
+  });
+
   // Unified Leads Endpoint - Fetches all leads from all tables
   app.get("/api/admin/leads", verifyAdminSession, async (req, res) => {
     try {

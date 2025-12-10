@@ -536,6 +536,17 @@ export const insertResidencyBookingSchema = createInsertSchema(residencyBookings
   { message: "Check-out date must be after check-in date", path: ["checkOutDate"] }
 );
 
+export const pillChoices = pgTable("pill_choices", {
+  id: serial("id").primaryKey(),
+  choice: text("choice").notNull(), // "green" or "blue"
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPillChoiceSchema = createInsertSchema(pillChoices).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -576,3 +587,5 @@ export type JobListing = typeof jobListings.$inferSelect;
 export type InsertJobListing = z.infer<typeof insertJobListingSchema>;
 export type ResidencyBooking = typeof residencyBookings.$inferSelect;
 export type InsertResidencyBooking = z.infer<typeof insertResidencyBookingSchema>;
+export type PillChoice = typeof pillChoices.$inferSelect;
+export type InsertPillChoice = z.infer<typeof insertPillChoiceSchema>;

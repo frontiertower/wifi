@@ -1,14 +1,42 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import rabbitImage from "@assets/FuzzyNop_logo_pink_1763832812948.png";
 
 type PillChoice = "green" | "blue" | null;
+
+const COLORS = {
+  green: "#22c55e",
+  blue: "#3b82f6"
+};
 
 export default function PillsPage() {
   const [crackIntensity, setCrackIntensity] = useState(0);
   const [showTerminal, setShowTerminal] = useState(false);
   const [buttonShakeState, setButtonShakeState] = useState<"green" | "blue" | null>(null);
   const [, setLocation] = useLocation();
+
+  const { data: statsData } = useQuery<{ success: boolean; stats: { green: number; blue: number } }>({
+    queryKey: ["/api/pill-choices/stats"],
+  });
+
+  const recordChoiceMutation = useMutation({
+    mutationFn: async (choice: string) => {
+      return apiRequest("POST", "/api/pill-choices", { choice });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/pill-choices/stats"] });
+    },
+  });
+
+  const stats = statsData?.stats || { green: 0, blue: 0 };
+  const totalChoices = stats.green + stats.blue;
+  const pieData = totalChoices > 0 ? [
+    { name: "Regenerate", value: stats.green, color: COLORS.green },
+    { name: "Accelerate", value: stats.blue, color: COLORS.blue },
+  ] : [];
 
   // Glass cracking effect on load
   useEffect(() => {
@@ -64,7 +92,12 @@ export default function PillsPage() {
   };
 
   const handlePillChoice = (choice: PillChoice) => {
+    if (!choice) return;
+    
     setButtonShakeState(choice);
+    
+    // Record the choice in database
+    recordChoiceMutation.mutate(choice);
     
     // Generate extra sparks on pill selection
     setCrackIntensity(Math.min(crackIntensity + 3, 10));
@@ -274,6 +307,41 @@ export default function PillsPage() {
               </span>
             </button>
           </div>
+
+          {/* Pie Chart showing choice distribution */}
+          {totalChoices > 0 && (
+            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                Community Choices ({totalChoices} total)
+              </p>
+              <div className="h-48" data-testid="chart-pill-choices">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={70}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: number, name: string) => [
+                        `${value} (${((value / totalChoices) * 100).toFixed(1)}%)`,
+                        name
+                      ]}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
