@@ -116,42 +116,44 @@ export default function FloorMaps() {
           </div>
         </aside>
 
-        <main className="flex-1 relative">
+        <main className="flex-1 relative pr-12 md:pr-0">
           <FloorMapViewer 
             floor={currentFloor || null}
           />
         </main>
       </div>
 
-      {/* Mobile floor selector */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-2">
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          <button
-            onClick={() => setSelectedFloor(null)}
-            className={`flex-shrink-0 px-3 py-2 rounded-lg text-sm ${
-              selectedFloor === null 
-                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-            }`}
-            data-testid="button-mobile-floor-all"
-          >
-            Overview
-          </button>
-          {floors.map((floor) => (
-            <button
-              key={floor.id}
-              onClick={() => setSelectedFloor(floor.id)}
-              className={`flex-shrink-0 px-3 py-2 rounded-lg text-sm ${
-                selectedFloor === floor.id 
-                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' 
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-              }`}
-              data-testid={`button-mobile-floor-${floor.id}`}
-            >
-              {floor.level === 0 ? 'B' : floor.level === 17 ? 'R' : floor.level}
-            </button>
-          ))}
+      {/* Mobile vertical floor selector - right side */}
+      <div className="md:hidden fixed right-0 top-[73px] bottom-0 w-12 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-l border-gray-200 dark:border-gray-700 flex flex-col">
+        <div className="flex-1 overflow-y-auto py-1">
+          <div className="flex flex-col gap-1 px-1">
+            {[...floors].reverse().map((floor) => (
+              <button
+                key={floor.id}
+                onClick={() => setSelectedFloor(floor.id)}
+                className={`w-10 h-10 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                  selectedFloor === floor.id 
+                    ? 'bg-blue-500 text-white' 
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                }`}
+                data-testid={`button-mobile-floor-${floor.id}`}
+              >
+                {floor.level === 0 ? 'B' : floor.level === 17 ? 'R' : floor.level}
+              </button>
+            ))}
+          </div>
         </div>
+        <button
+          onClick={() => setSelectedFloor(null)}
+          className={`mx-1 mb-2 h-10 flex items-center justify-center rounded-lg text-xs font-medium transition-colors ${
+            selectedFloor === null 
+              ? 'bg-blue-500 text-white' 
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+          }`}
+          data-testid="button-mobile-floor-all"
+        >
+          All
+        </button>
       </div>
     </div>
   );
