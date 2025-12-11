@@ -41,17 +41,30 @@ export function FloorMapViewer({ floor }: FloorMapViewerProps) {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [initialZoom, setInitialZoom] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
+    if (floor && containerRef.current) {
+      const container = containerRef.current;
+      const viewBox = blueprintViewBoxes[floor.id] || "0 0 400 250";
+      const [, , vbWidth] = viewBox.split(" ").map(Number);
+      const containerWidth = container.clientWidth;
+      const calculatedZoom = Math.max(1, containerWidth / vbWidth * 0.9);
+      setInitialZoom(calculatedZoom);
+      setZoom(calculatedZoom);
+      setPan({ x: 0, y: 0 });
+    } else {
+      setInitialZoom(1);
+      setZoom(1);
+      setPan({ x: 0, y: 0 });
+    }
   }, [floor?.id]);
 
   const handleZoomIn = () => setZoom((z) => Math.min(z + 0.25, 5));
   const handleZoomOut = () => setZoom((z) => Math.max(z - 0.25, 0.25));
   const handleReset = () => {
-    setZoom(1);
+    setZoom(initialZoom);
     setPan({ x: 0, y: 0 });
   };
 
