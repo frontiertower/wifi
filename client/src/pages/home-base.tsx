@@ -423,37 +423,39 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </Select>
             </div>
 
-            <Link
-              href="/code-of-conduct"
-              className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block mb-3"
-              data-testid="button-code-of-conduct"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-teal-100 dark:bg-teal-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-teal-200 dark:group-hover:bg-teal-500/40">
-                  <Shield className="text-teal-600 dark:text-teal-300" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+              <Link
+                href="/code-of-conduct"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-code-of-conduct"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-teal-100 dark:bg-teal-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-teal-200 dark:group-hover:bg-teal-500/40">
+                    <Shield className="text-teal-600 dark:text-teal-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Code of Conduct</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Our rules & guidelines</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">Code of Conduct</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Our rules & guidelines</div>
-                </div>
-              </div>
-            </Link>
+              </Link>
 
-            <button
-              onClick={() => handleRoleSelect("guest")}
-              className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 text-left group"
-              data-testid="button-select-guest"
-            >
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
-                  <Wifi className="text-green-600 dark:text-green-300" />
+              <button
+                onClick={() => handleRoleSelect("guest")}
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 text-left group"
+                data-testid="button-select-guest"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
+                    <Wifi className="text-green-600 dark:text-green-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.connectToWiFi}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.connectToWiFiDesc}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.connectToWiFi}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.connectToWiFiDesc}</div>
-                </div>
-              </div>
-            </button>
+              </button>
+            </div>
 
             <div className="my-6 flex items-center gap-4">
               <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600"></div>
