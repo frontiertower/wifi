@@ -45,20 +45,51 @@ export function FloorMapViewer({ floor }: FloorMapViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (floor && containerRef.current) {
-      const container = containerRef.current;
-      const viewBox = blueprintViewBoxes[floor.id] || "0 0 400 250";
-      const [, , vbWidth] = viewBox.split(" ").map(Number);
-      const containerWidth = container.clientWidth;
-      const calculatedZoom = Math.max(1, containerWidth / vbWidth * 0.9);
-      setInitialZoom(calculatedZoom);
-      setZoom(calculatedZoom);
-      setPan({ x: 0, y: 0 });
-    } else {
+    const calculateZoom = () => {
+      if (floor && containerRef.current) {
+        const container = containerRef.current;
+        const viewBox = blueprintViewBoxes[floor.id] || "0 0 400 250";
+        const [, , vbWidth] = viewBox.split(" ").map(Number);
+        const containerWidth = container.clientWidth;
+        
+        // Only calculate if we have a valid container width
+        if (containerWidth > 0) {
+          // Scale to fill most of the container width
+          const calculatedZoom = Math.max(1.5, (containerWidth / vbWidth) * 0.85);
+          setInitialZoom(calculatedZoom);
+          setZoom(calculatedZoom);
+          setPan({ x: 0, y: 0 });
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // Try immediately
+    if (calculateZoom()) return;
+
+    // If container wasn't ready, retry after a short delay
+    const timer = setTimeout(() => {
+      if (!calculateZoom()) {
+        // Fallback: use window width as approximation
+        if (floor) {
+          const viewBox = blueprintViewBoxes[floor.id] || "0 0 400 250";
+          const [, , vbWidth] = viewBox.split(" ").map(Number);
+          const calculatedZoom = Math.max(1.5, (window.innerWidth * 0.7) / vbWidth);
+          setInitialZoom(calculatedZoom);
+          setZoom(calculatedZoom);
+          setPan({ x: 0, y: 0 });
+        }
+      }
+    }, 100);
+
+    if (!floor) {
       setInitialZoom(1);
       setZoom(1);
       setPan({ x: 0, y: 0 });
     }
+
+    return () => clearTimeout(timer);
   }, [floor?.id]);
 
   const handleZoomIn = () => setZoom((z) => Math.min(z + 0.25, 5));
