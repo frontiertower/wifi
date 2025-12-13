@@ -439,39 +439,21 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </div>
             </Link>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <button
-                onClick={() => handleRoleSelect("guest")}
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 text-left group"
-                data-testid="button-select-guest"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
-                    <Wifi className="text-green-600 dark:text-green-300" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">{t.connectToWiFi}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{t.connectToWiFiDesc}</div>
-                  </div>
+            <button
+              onClick={() => handleRoleSelect("guest")}
+              className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 text-left group"
+              data-testid="button-select-guest"
+            >
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40">
+                  <Wifi className="text-green-600 dark:text-green-300" />
                 </div>
-              </button>
-
-              <Link
-                href="/floor-maps"
-                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group block"
-                data-testid="link-floor-maps"
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
-                    <Map className="text-blue-600 dark:text-blue-300" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-800 dark:text-gray-100">Floor Maps</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">Interactive building maps</div>
-                  </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">{t.connectToWiFi}</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">{t.connectToWiFiDesc}</div>
                 </div>
-              </Link>
-            </div>
+              </div>
+            </button>
 
             <div className="my-6 flex items-center gap-4">
               <div className="flex-1 h-px bg-gray-200 dark:bg-gray-600"></div>
@@ -508,6 +490,22 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                   <div>
                     <div className="font-medium text-gray-800 dark:text-gray-100">{t.buildingDirectory}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">{t.buildingDirectoryDesc}</div>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/floor-maps"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group block"
+                data-testid="link-floor-maps"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40">
+                    <Map className="text-blue-600 dark:text-blue-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Floor Maps</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Interactive building maps</div>
                   </div>
                 </div>
               </Link>
