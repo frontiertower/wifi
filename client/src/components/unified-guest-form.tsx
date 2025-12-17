@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Shield, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,7 +44,7 @@ interface FormData {
   tourInterest: "yes" | "maybe" | "no" | "";
 }
 
-type FlowStep = 'form' | 'password' | 'congrats';
+type FlowStep = 'form' | 'code-of-conduct' | 'password' | 'congrats';
 
 export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: UnifiedGuestFormProps) {
   const [flowStep, setFlowStep] = useState<FlowStep>('form');
@@ -334,14 +334,13 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const nextStep = requirePassword ? 'password' : 'congrats';
-
+    // After form, always go to code of conduct first
     if (guestType === "member") {
       setPendingRegistrationData({
         type: "member",
         data: formData
       });
-      setFlowStep(nextStep);
+      setFlowStep('code-of-conduct');
     } else if (guestType === "tower_member") {
       if (!formData.floor) {
         toast({
@@ -355,13 +354,13 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         type: "tower_member",
         data: formData
       });
-      setFlowStep(nextStep);
+      setFlowStep('code-of-conduct');
     } else if (guestType === "visitor") {
       setPendingRegistrationData({
         type: "visitor",
         data: formData
       });
-      setFlowStep(nextStep);
+      setFlowStep('code-of-conduct');
     } else if (guestType === "event") {
       if (!isValidEvent) {
         toast({
@@ -383,8 +382,13 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           eventName: finalEventName
         }
       });
-      setFlowStep(nextStep);
+      setFlowStep('code-of-conduct');
     }
+  };
+
+  const handleAgreeToCodeOfConduct = () => {
+    const nextStep = requirePassword ? 'password' : 'congrats';
+    setFlowStep(nextStep);
   };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
