@@ -134,7 +134,7 @@ export default function CodeOfConduct() {
 
           <div className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6" data-testid="heading-hackathon-code">
-              HACKATHON CODE OF CONDUCT
+              DEVLABS CODE OF CONDUCT
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
