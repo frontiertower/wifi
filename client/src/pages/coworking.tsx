@@ -8,7 +8,7 @@ export default function Coworking() {
   const events = [
     {
       id: 1,
-      title: "SensAI Hacker Coworking - T-Minus 2 Days",
+      title: "DevLabs Builder Coworking - T-Minus 2 Days",
       date: "Monday, Dec 8",
       time: "10 AM - 10 PM",
       description: "12 hours of focused coworking time to build your project",
@@ -16,7 +16,7 @@ export default function Coworking() {
     },
     {
       id: 2,
-      title: "SensAI Hacker Coworking - Submission Day",
+      title: "DevLabs Builder Coworking - Submission Day",
       date: "Tuesday, Dec 9",
       time: "10 AM - 12 PM",
       description: "Final coworking session before submissions close",
