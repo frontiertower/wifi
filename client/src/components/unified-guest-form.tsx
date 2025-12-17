@@ -44,12 +44,15 @@ interface FormData {
   tourInterest: "yes" | "maybe" | "no" | "";
 }
 
-type FlowStep = 'form' | 'congrats';
+type FlowStep = 'form' | 'password' | 'congrats';
 
 export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: UnifiedGuestFormProps) {
   const [flowStep, setFlowStep] = useState<FlowStep>('form');
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [guestType, setGuestType] = useState<GuestType>(null);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [requirePassword, setRequirePassword] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -71,6 +74,16 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
   const { toast } = useToast();
 
+  const { data: settings } = useQuery<Record<string, string>>({
+    queryKey: ['/api/admin/settings'],
+  });
+
+  useEffect(() => {
+    if (settings) {
+      setRequirePassword(settings.password_required === 'true');
+    }
+  }, [settings]);
+
   // Hide rabbit and theme toggle when showing the form
   useEffect(() => {
     if (flowStep === 'form') {
@@ -80,6 +93,43 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       };
     }
   }, [flowStep]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const passwordParam = urlParams.get('password');
+    if (passwordParam) {
+      setPasswordInput(passwordParam);
+    }
+  }, []);
+
+  const verifyPasswordMutation = useMutation({
+    mutationFn: async (password: string) => {
+      const response = await apiRequest("POST", "/api/verify-guest-password", { password });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        setPasswordError("");
+        setFlowStep('congrats');
+        // Complete the registration after showing congrats
+        setTimeout(() => {
+          completeRegistration();
+        }, 100);
+      } else {
+        setPasswordError("Incorrect password. Please try again.");
+      }
+    },
+    onError: () => {
+      setPasswordError("Failed to verify password. Please try again.");
+    },
+  });
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput.trim()) {
+      verifyPasswordMutation.mutate(passwordInput);
+    }
+  };
 
   const completeRegistration = () => {
     if (!pendingRegistrationData) return;
@@ -169,7 +219,9 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       });
     },
     onError: (error) => {
-      setFlowStep('form');
+      setFlowStep('password');
+      setPasswordInput("");
+      setPasswordError("");
       toast({
         title: "Registration Failed",
         description: error instanceof Error ? error.message : "Failed to register guest. Please try again.",
@@ -200,7 +252,9 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       });
     },
     onError: (error) => {
-      setFlowStep('form');
+      setFlowStep('password');
+      setPasswordInput("");
+      setPasswordError("");
       toast({
         title: "Registration Failed",
         description: error instanceof Error ? error.message : "Failed to register for event. Please try again.",
@@ -232,7 +286,9 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       });
     },
     onError: (error) => {
-      setFlowStep('form');
+      setFlowStep('password');
+      setPasswordInput("");
+      setPasswordError("");
       toast({
         title: "Registration Failed",
         description: error instanceof Error ? error.message : "Failed to register as tower member. Please try again.",
@@ -264,7 +320,9 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       });
     },
     onError: (error) => {
-      setFlowStep('form');
+      setFlowStep('password');
+      setPasswordInput("");
+      setPasswordError("");
       toast({
         title: "Registration Failed",
         description: error instanceof Error ? error.message : "Failed to register as visitor. Please try again.",
@@ -276,12 +334,14 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const nextStep = requirePassword ? 'password' : 'congrats';
+
     if (guestType === "member") {
       setPendingRegistrationData({
         type: "member",
         data: formData
       });
-      setFlowStep('congrats');
+      setFlowStep(nextStep);
     } else if (guestType === "tower_member") {
       if (!formData.floor) {
         toast({
@@ -295,13 +355,13 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         type: "tower_member",
         data: formData
       });
-      setFlowStep('congrats');
+      setFlowStep(nextStep);
     } else if (guestType === "visitor") {
       setPendingRegistrationData({
         type: "visitor",
         data: formData
       });
-      setFlowStep('congrats');
+      setFlowStep(nextStep);
     } else if (guestType === "event") {
       if (!isValidEvent) {
         toast({
@@ -323,7 +383,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           eventName: finalEventName
         }
       });
-      setFlowStep('congrats');
+      setFlowStep(nextStep);
     }
   };
 
@@ -350,7 +410,76 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
   const isSubmitting = registerMemberGuestMutation.isPending || registerEventGuestMutation.isPending || registerTowerMemberMutation.isPending || registerVisitorMutation.isPending;
 
-  // Show congratulations screen after form submission
+  // Show password verification screen after form submission
+  if (flowStep === 'password') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+        <div className="absolute top-6 right-6">
+          <ThemeToggle />
+        </div>
+        <div className="max-w-lg mx-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+            <div className="p-6">
+              <Button
+                onClick={() => setFlowStep('form')}
+                variant="ghost"
+                size="sm"
+                className="mb-4"
+                data-testid="button-back"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+              </Button>
+              <h1 className="text-xl font-bold">WiFi Password</h1>
+              <p className="text-muted-foreground text-sm mt-1">Almost done! Just ask your host for the password for the WiFi</p>
+            </div>
+
+            <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
+              <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  Almost done! Please ask your host for the password to the WiFi! Enter the password below.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">WiFi Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={passwordInput}
+                  onChange={(e) => {
+                    setPasswordInput(e.target.value);
+                    setPasswordError("");
+                  }}
+                  required
+                  placeholder="Enter WiFi password"
+                  className="h-12"
+                  data-testid="input-guest-password"
+                  autoFocus
+                />
+                {passwordError && (
+                  <p className="text-sm text-red-600 dark:text-red-400" data-testid="text-password-error">
+                    {passwordError}
+                  </p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full h-12"
+                disabled={verifyPasswordMutation.isPending || !passwordInput.trim()}
+                data-testid="button-verify-password"
+              >
+                {verifyPasswordMutation.isPending ? "Verifying..." : "Complete Connection"}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show congratulations screen after password verification
   if (flowStep === 'congrats') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 flex items-center justify-center">
