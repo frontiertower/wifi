@@ -1,8 +1,7 @@
 import { Link } from "wouter";
-import { ArrowLeft, Shield, Heart, Briefcase, MessageSquare, Eye, Users } from "lucide-react";
+import { ArrowLeft, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Card, CardContent } from "@/components/ui/card";
 
 export default function CodeOfConduct() {
   return (
@@ -130,66 +129,6 @@ export default function CodeOfConduct() {
                 I Agree to the Code of Conduct
               </Button>
             </Link>
-          </div>
-
-          <div className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6" data-testid="heading-hackathon-code">
-              DEVLABS CODE OF CONDUCT
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <Card className="bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 border-slate-600">
-                <CardContent className="pt-6 text-center">
-                  <Heart className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                  <h3 className="text-lg font-bold text-slate-100 mb-2">Respect Others</h3>
-                  <p className="text-slate-300 text-sm">
-                    Treat all participants with kindness, respect, and consideration.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 border-slate-600">
-                <CardContent className="pt-6 text-center">
-                  <Briefcase className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                  <h3 className="text-lg font-bold text-slate-100 mb-2">Act Professionally</h3>
-                  <p className="text-slate-300 text-sm">
-                    Avoid harassment, sexism, racism, or inappropriate behavior.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 border-slate-600">
-                <CardContent className="pt-6 text-center">
-                  <MessageSquare className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                  <h3 className="text-lg font-bold text-slate-100 mb-2">Communicate Constructively</h3>
-                  <p className="text-slate-300 text-sm">
-                    Critique ideas, not individuals, avoid demeaning or harassing behavior.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card className="bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 border-slate-600">
-                <CardContent className="pt-6 text-center">
-                  <Eye className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                  <h3 className="text-lg font-bold text-slate-100 mb-2">Be Mindful of Your Surroundings</h3>
-                  <p className="text-slate-300 text-sm">
-                    Alert event organizers if you notice a dangerous situation or someone in distress.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-700 dark:to-slate-800 border-slate-600">
-                <CardContent className="pt-6 text-center">
-                  <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                  <h3 className="text-lg font-bold text-slate-100 mb-2">Participate Authentically</h3>
-                  <p className="text-slate-300 text-sm">
-                    Engage authentically and contribute positively to the community.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
           </div>
         </div>
       </div>

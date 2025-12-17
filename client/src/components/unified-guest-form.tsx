@@ -414,7 +414,134 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
 
   const isSubmitting = registerMemberGuestMutation.isPending || registerEventGuestMutation.isPending || registerTowerMemberMutation.isPending || registerVisitorMutation.isPending;
 
-  // Show password verification screen after form submission
+  // Show code of conduct agreement screen after form submission
+  if (flowStep === 'code-of-conduct') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+        <div className="absolute top-6 right-6">
+          <ThemeToggle />
+        </div>
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+            <div className="p-6">
+              <Button
+                onClick={() => setFlowStep('form')}
+                variant="ghost"
+                size="sm"
+                className="mb-4"
+                data-testid="button-back-to-form"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+              </Button>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100" data-testid="heading-code-of-conduct">
+                  Code of Conduct
+                </h1>
+              </div>
+              <p className="text-muted-foreground text-sm mb-6">
+                Please review and agree to our community standards before connecting to WiFi.
+              </p>
+            </div>
+
+            <div className="px-6 pb-6 space-y-6">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+                  COMMUNITY STANDARDS
+                </h2>
+                <ol className="space-y-3 text-sm">
+                  <li className="flex gap-2">
+                    <span className="font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">1.</span>
+                    <div>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">Respect shared spaces</span>
+                      <span className="text-gray-600 dark:text-gray-400"> - Clean up after yourself, follow building guidelines, keep noise levels considerate</span>
+                    </div>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">2.</span>
+                    <div>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">No sleeping in the building</span>
+                      <span className="text-gray-600 dark:text-gray-400"> - No sleep overs, sleeping bags, or beds</span>
+                    </div>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">3.</span>
+                    <div>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">Respectful conduct</span>
+                      <span className="text-gray-600 dark:text-gray-400"> - Be respectful and inclusive of all backgrounds</span>
+                    </div>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">4.</span>
+                    <div>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">Guest responsibility</span>
+                      <span className="text-gray-600 dark:text-gray-400"> - You're accountable for your guests' behavior</span>
+                    </div>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-bold text-gray-900 dark:text-gray-100 flex-shrink-0">5.</span>
+                    <div>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">Communication</span>
+                      <span className="text-gray-600 dark:text-gray-400"> - Address conflicts directly and respectfully</span>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+
+              <hr className="border-gray-200 dark:border-gray-700" />
+
+              <div>
+                <h2 className="text-lg font-bold text-red-600 dark:text-red-400 mb-3">
+                  IMMEDIATE REMOVAL OFFENSES
+                </h2>
+                <p className="text-xs text-gray-500 dark:text-gray-400 italic mb-3">
+                  The following result in immediate membership revocation and building ban:
+                </p>
+                <ol className="space-y-2 text-sm">
+                  <li className="flex gap-2">
+                    <span className="font-bold text-red-600 dark:text-red-400 flex-shrink-0">1.</span>
+                    <span className="text-gray-600 dark:text-gray-400"><span className="font-bold text-red-600 dark:text-red-400">Violence or threats</span> - Any violence, threats, or intimidation</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-bold text-red-600 dark:text-red-400 flex-shrink-0">2.</span>
+                    <span className="text-gray-600 dark:text-gray-400"><span className="font-bold text-red-600 dark:text-red-400">Harassment</span> - Repeated unwelcome behavior creating a hostile environment</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-bold text-red-600 dark:text-red-400 flex-shrink-0">3.</span>
+                    <span className="text-gray-600 dark:text-gray-400"><span className="font-bold text-red-600 dark:text-red-400">Theft or property damage</span> - Taking belongings or damaging property</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-bold text-red-600 dark:text-red-400 flex-shrink-0">4.</span>
+                    <span className="text-gray-600 dark:text-gray-400"><span className="font-bold text-red-600 dark:text-red-400">Illegal activities</span> - Unlawful purposes or illegal substances/weapons</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="font-bold text-red-600 dark:text-red-400 flex-shrink-0">5.</span>
+                    <span className="text-gray-600 dark:text-gray-400"><span className="font-bold text-red-600 dark:text-red-400">Compromising security</span> - Sharing access, propping doors, unauthorized entry</span>
+                  </li>
+                </ol>
+              </div>
+
+              <div className="pt-4">
+                <Button
+                  onClick={handleAgreeToCodeOfConduct}
+                  className="w-full h-12"
+                  data-testid="button-agree-code-of-conduct"
+                >
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  I Agree to the Code of Conduct
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show password verification screen after code of conduct
   if (flowStep === 'password') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
@@ -425,7 +552,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
             <div className="p-6">
               <Button
-                onClick={() => setFlowStep('form')}
+                onClick={() => setFlowStep('code-of-conduct')}
                 variant="ghost"
                 size="sm"
                 className="mb-4"
