@@ -37,6 +37,8 @@ import HiringPage from "@/pages/hiring";
 import FinancePage from "@/pages/finance";
 import PillsPage from "@/pages/pills";
 import CareersPage from "@/pages/careers";
+import ProductManagerPage from "@/pages/careers-product-manager";
+import CommunityEventsPage from "@/pages/careers-community-events";
 import EcosystemPage from "@/pages/ecosystem";
 import ResidencyPage from "@/pages/residency";
 import CodeOfConduct from "@/pages/code-of-conduct";
@@ -87,6 +89,8 @@ function Router() {
         <Route path="/Finance" component={FinancePage} />
         <Route path="/rabbit" component={PillsPage} />
         <Route path="/careers" component={CareersPage} />
+        <Route path="/careers/product-manager" component={ProductManagerPage} />
+        <Route path="/careers/community-events" component={CommunityEventsPage} />
         <Route path="/ecosystem" component={EcosystemPage} />
         <Route path="/residency" component={ResidencyPage} />
         <Route path="/code-of-conduct" component={CodeOfConduct} />

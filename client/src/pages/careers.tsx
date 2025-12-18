@@ -411,6 +411,16 @@ export default function CareersPage() {
 }
 
 function JobListingCard({ listing, featured = false }: { listing: JobListing; featured?: boolean }) {
+  const getInternalJobUrl = (title: string): string | null => {
+    const titleLower = title.toLowerCase();
+    if (titleLower === "product manager") return "/careers/product-manager";
+    if (titleLower === "community & events manager") return "/careers/community-events";
+    if (titleLower === "head of finance") return "/Finance";
+    return null;
+  };
+
+  const internalUrl = getInternalJobUrl(listing.title);
+
   return (
     <Card className={featured ? "border-primary" : ""} data-testid={`card-job-${listing.id}`}>
       <CardHeader>
@@ -454,7 +464,13 @@ function JobListingCard({ listing, featured = false }: { listing: JobListing; fe
           {listing.createdBy && `Posted by ${listing.createdBy}`}
         </div>
         <div className="flex gap-2">
-          {listing.applyUrl ? (
+          {internalUrl ? (
+            <Link href={internalUrl}>
+              <Button size="sm" data-testid={`button-apply-${listing.id}`}>
+                Learn More
+              </Button>
+            </Link>
+          ) : listing.applyUrl ? (
             <a href={listing.applyUrl} target="_blank" rel="noopener noreferrer">
               <Button size="sm" data-testid={`button-apply-${listing.id}`}>
                 Learn More
