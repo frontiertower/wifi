@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { ZoomIn, ZoomOut, Move, RotateCcw, Building2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DOMPurify from "dompurify";
 
 interface Floor {
   id: string;
@@ -17,24 +18,26 @@ const availableBlueprints = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '
 
 const GITHUB_RAW_URL = "https://raw.githubusercontent.com/frontiertower/floorfinder/main/src/components/floor-svgs/blueprints";
 
-// Allowlist of safe SVG elements and attributes for sanitization
-const ALLOWED_ELEMENTS = new Set(['g', 'path', 'line', 'circle', 'rect', 'ellipse', 'polygon', 'polyline', 'text', 'tspan', 'defs', 'use', 'clipPath', 'mask', 'style']);
-const ALLOWED_ATTRIBUTES = new Set(['d', 'class', 'transform', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'opacity', 'x', 'y', 'cx', 'cy', 'r', 'rx', 'ry', 'width', 'height', 'points', 'viewBox', 'id', 'clip-path', 'mask']);
+// Configure DOMPurify with strict SVG profile
+// Only allow safe SVG elements and attributes
+const ALLOWED_TAGS = ['g', 'path', 'line', 'circle', 'rect', 'ellipse', 'polygon', 'polyline', 'text', 'tspan', 'defs', 'use', 'clipPath', 'mask', 'style', 'svg'];
+const ALLOWED_ATTR = ['d', 'class', 'transform', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'opacity', 'x', 'y', 'x1', 'x2', 'y1', 'y2', 'cx', 'cy', 'r', 'rx', 'ry', 'width', 'height', 'points', 'viewBox', 'id', 'clip-path', 'mask', 'fill-rule', 'clip-rule', 'font-family', 'font-size', 'text-anchor'];
 
-// Sanitize SVG content by removing unsafe elements and attributes
+// Sanitize SVG content using DOMPurify with strict SVG-only configuration
 function sanitizeSvgContent(content: string): string {
-  // Remove any script tags and event handlers
-  let sanitized = content
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
-    .replace(/on\w+\s*=\s*[^\s>]*/gi, '')
-    .replace(/javascript:/gi, '')
-    .replace(/data:/gi, 'data-blocked:')
-    .replace(/<\s*iframe[^>]*>[\s\S]*?<\/\s*iframe\s*>/gi, '')
-    .replace(/<\s*object[^>]*>[\s\S]*?<\/\s*object\s*>/gi, '')
-    .replace(/<\s*embed[^>]*>/gi, '')
-    .replace(/<\s*link[^>]*>/gi, '')
-    .replace(/<\s*meta[^>]*>/gi, '');
+  // Use DOMPurify with strict SVG configuration
+  const sanitized = DOMPurify.sanitize(content, {
+    USE_PROFILES: { svg: true },
+    ALLOWED_TAGS,
+    ALLOWED_ATTR,
+    FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'link', 'meta', 'foreignObject', 'a', 'animate', 'animateMotion', 'animateTransform', 'set'],
+    FORBID_ATTR: ['onload', 'onclick', 'onerror', 'onmouseover', 'onmouseenter', 'onfocus', 'onblur', 'onchange', 'xlink:href', 'href'],
+    ALLOW_DATA_ATTR: false,
+    RETURN_DOM: false,
+    RETURN_DOM_FRAGMENT: false,
+    RETURN_TRUSTED_TYPE: false,
+    SANITIZE_DOM: true,
+  });
   
   return sanitized;
 }
