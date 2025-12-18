@@ -30,6 +30,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing, JobApplication, ResidencyBooking } from "@shared/schema";
 
 type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers";
@@ -289,6 +297,11 @@ export default function AdminDashboard() {
 
   const { data: jobListingsData } = useQuery<JobListingsResponse>({
     queryKey: ["/api/admin/job-listings"],
+    enabled: activeTab === "careers",
+  });
+
+  const { data: jobApplicationsData } = useQuery<{ applications: JobApplication[] }>({
+    queryKey: ["/api/admin/job-applications"],
     enabled: activeTab === "careers",
   });
 
@@ -1959,6 +1972,164 @@ export default function AdminDashboard() {
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+
+            {/* Job Applications Section */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    Job Applications
+                  </h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    View applications submitted through career pages
+                  </p>
+                </div>
+                <Badge variant="secondary">
+                  {jobApplicationsData?.applications?.length || 0} Applications
+                </Badge>
+              </div>
+
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Experience</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Submitted</TableHead>
+                      <TableHead>Details</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {!jobApplicationsData?.applications || jobApplicationsData.applications.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={8} className="text-center text-gray-500 dark:text-gray-400">
+                          No job applications yet
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      jobApplicationsData.applications.map((application: JobApplication) => (
+                        <TableRow key={application.id} data-testid={`job-application-${application.id}`}>
+                          <TableCell className="font-medium">{application.name}</TableCell>
+                          <TableCell>
+                            <a href={`mailto:${application.email}`} className="text-blue-600 hover:underline">
+                              {application.email}
+                            </a>
+                          </TableCell>
+                          <TableCell>{application.phone}</TableCell>
+                          <TableCell>{application.location}</TableCell>
+                          <TableCell>
+                            {application.startupYears ? `${application.startupYears}+ yrs` : '-'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={application.status === 'pending' ? 'secondary' : 'default'}>
+                              {application.status || 'pending'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-sm text-gray-500">
+                            {application.createdAt ? new Date(application.createdAt).toLocaleString() : 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button size="sm" variant="outline" data-testid={`button-view-application-${application.id}`}>
+                                  View
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>Application from {application.name}</DialogTitle>
+                                  <DialogDescription>
+                                    Submitted on {application.createdAt ? new Date(application.createdAt).toLocaleString() : 'N/A'}
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4 mt-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <Label className="text-sm text-gray-500">Email</Label>
+                                      <p className="font-medium">{application.email}</p>
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm text-gray-500">Phone</Label>
+                                      <p className="font-medium">{application.phone}</p>
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm text-gray-500">Location</Label>
+                                      <p className="font-medium">{application.location}</p>
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm text-gray-500">Experience</Label>
+                                      <p className="font-medium">{application.startupYears ? `${application.startupYears} years` : 'Not specified'}</p>
+                                    </div>
+                                  </div>
+                                  
+                                  {application.linkedinUrl && (
+                                    <div>
+                                      <Label className="text-sm text-gray-500">LinkedIn</Label>
+                                      <p>
+                                        <a href={application.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                          {application.linkedinUrl}
+                                        </a>
+                                      </p>
+                                    </div>
+                                  )}
+                                  
+                                  {application.portfolioUrl && (
+                                    <div>
+                                      <Label className="text-sm text-gray-500">Portfolio</Label>
+                                      <p>
+                                        <a href={application.portfolioUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                          {application.portfolioUrl}
+                                        </a>
+                                      </p>
+                                    </div>
+                                  )}
+                                  
+                                  {application.resumeUrl && (
+                                    <div>
+                                      <Label className="text-sm text-gray-500">Resume/CV</Label>
+                                      <p>
+                                        <a href={application.resumeUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                          {application.resumeUrl}
+                                        </a>
+                                      </p>
+                                    </div>
+                                  )}
+                                  
+                                  <div>
+                                    <Label className="text-sm text-gray-500">Motivation Statement</Label>
+                                    <p className="mt-1 whitespace-pre-wrap bg-gray-50 dark:bg-gray-800 p-3 rounded-md">
+                                      {application.motivationStatement}
+                                    </p>
+                                  </div>
+                                  
+                                  {application.referralSource && (
+                                    <div>
+                                      <Label className="text-sm text-gray-500">How they heard about us</Label>
+                                      <p className="font-medium">{application.referralSource}</p>
+                                    </div>
+                                  )}
+                                  
+                                  <div className="flex items-center gap-2 pt-2 border-t">
+                                    <Label className="text-sm text-gray-500">Values Alignment</Label>
+                                    <Badge variant={application.valuesAlignment ? 'default' : 'secondary'}>
+                                      {application.valuesAlignment ? 'Confirmed' : 'Not confirmed'}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
                           </TableCell>
                         </TableRow>
                       ))
