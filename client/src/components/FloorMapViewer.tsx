@@ -1,14 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { ZoomIn, ZoomOut, Move, RotateCcw, Building2 } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { ZoomIn, ZoomOut, Move, RotateCcw, Building2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { 
-  Floor2Blueprint, 
-  Floor7Blueprint, 
-  Floor12Blueprint, 
-  Floor15Blueprint, 
-  Floor16Blueprint,
-  availableBlueprints 
-} from "./floor-blueprints";
 
 interface Floor {
   id: string;
@@ -20,21 +12,32 @@ interface FloorMapViewerProps {
   floor: Floor | null;
 }
 
-const blueprintComponents: Record<string, () => JSX.Element> = {
-  "2": Floor2Blueprint,
-  "7": Floor7Blueprint,
-  "12": Floor12Blueprint,
-  "15": Floor15Blueprint,
-  "16": Floor16Blueprint,
-};
+// All available floors from GitHub repository (excluding floor 13 which doesn't exist)
+const availableBlueprints = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '14', '15', '16', '17'];
 
-const blueprintViewBoxes: Record<string, string> = {
-  "2": "0 0 600 400",
-  "7": "0 0 400 250",
-  "12": "0 0 400 250",
-  "15": "0 0 400 250",
-  "16": "0 0 400 250",
-};
+const GITHUB_RAW_URL = "https://raw.githubusercontent.com/frontiertower/floorfinder/main/src/components/floor-svgs/blueprints";
+
+// Allowlist of safe SVG elements and attributes for sanitization
+const ALLOWED_ELEMENTS = new Set(['g', 'path', 'line', 'circle', 'rect', 'ellipse', 'polygon', 'polyline', 'text', 'tspan', 'defs', 'use', 'clipPath', 'mask', 'style']);
+const ALLOWED_ATTRIBUTES = new Set(['d', 'class', 'transform', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'opacity', 'x', 'y', 'cx', 'cy', 'r', 'rx', 'ry', 'width', 'height', 'points', 'viewBox', 'id', 'clip-path', 'mask']);
+
+// Sanitize SVG content by removing unsafe elements and attributes
+function sanitizeSvgContent(content: string): string {
+  // Remove any script tags and event handlers
+  let sanitized = content
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/on\w+\s*=\s*[^\s>]*/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/data:/gi, 'data-blocked:')
+    .replace(/<\s*iframe[^>]*>[\s\S]*?<\/\s*iframe\s*>/gi, '')
+    .replace(/<\s*object[^>]*>[\s\S]*?<\/\s*object\s*>/gi, '')
+    .replace(/<\s*embed[^>]*>/gi, '')
+    .replace(/<\s*link[^>]*>/gi, '')
+    .replace(/<\s*meta[^>]*>/gi, '');
+  
+  return sanitized;
+}
 
 export function FloorMapViewer({ floor }: FloorMapViewerProps) {
   const [zoom, setZoom] = useState(1);
@@ -42,25 +45,95 @@ export function FloorMapViewer({ floor }: FloorMapViewerProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialZoom, setInitialZoom] = useState(1);
+  const [svgContent, setSvgContent] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const calculateZoom = () => {
-      if (floor && containerRef.current) {
-        const container = containerRef.current;
-        const viewBox = blueprintViewBoxes[floor.id] || "0 0 400 250";
-        const [, , vbWidth] = viewBox.split(" ").map(Number);
-        const containerWidth = container.clientWidth;
+  // Fetch blueprint from GitHub with sanitization
+  const fetchBlueprint = useCallback(async (floorId: string) => {
+    setIsLoading(true);
+    setLoadError(null);
+    
+    try {
+      const response = await fetch(`${GITHUB_RAW_URL}/floor-${floorId}.tsx`);
+      if (!response.ok) {
+        throw new Error(`Blueprint not found for floor ${floorId}`);
+      }
+      
+      const text = await response.text();
+      
+      // Extract the transform from the React component
+      const transformMatch = text.match(/transform=\{`([^`]+)`\}/);
+      const transform = transformMatch ? transformMatch[1] : "";
+      
+      // Extract all SVG path content - find all <path> and other SVG elements
+      // Use a more robust extraction that captures all g content including nested groups
+      const gContentMatch = text.match(/<g[^>]*>([\s\S]*)<\/g>/);
+      
+      if (gContentMatch) {
+        let pathContent = gContentMatch[0];
         
-        // Only calculate if we have a valid container width
-        if (containerWidth > 0) {
-          // Scale to fill most of the container width
-          const calculatedZoom = Math.max(1.5, (containerWidth / vbWidth) * 0.85);
-          setInitialZoom(calculatedZoom);
-          setZoom(calculatedZoom);
-          setPan({ x: 0, y: 0 });
-          return true;
+        // Convert React className to standard SVG class
+        pathContent = pathContent
+          .replace(/className="g1"/g, 'class="blueprint-stroke-primary"')
+          .replace(/className="g2"/g, 'class="blueprint-stroke-secondary"')
+          .replace(/className='g1'/g, 'class="blueprint-stroke-primary"')
+          .replace(/className='g2'/g, 'class="blueprint-stroke-secondary"');
+        
+        // Apply the transform if present (to the outer g element)
+        // Clean up any backticks or template literal syntax from the transform
+        if (transform && !pathContent.includes('transform=')) {
+          const cleanTransform = transform.replace(/`/g, '').trim();
+          pathContent = pathContent.replace('<g', `<g transform="${cleanTransform}"`);
         }
+        
+        // Sanitize the SVG content to prevent XSS
+        const sanitizedContent = sanitizeSvgContent(pathContent);
+        
+        setSvgContent(sanitizedContent);
+      } else {
+        throw new Error("Could not parse floor plan SVG");
+      }
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : "Failed to load floor plan");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Load blueprint when floor changes
+  useEffect(() => {
+    if (floor && availableBlueprints.includes(floor.id)) {
+      fetchBlueprint(floor.id);
+    } else {
+      setSvgContent(null);
+      setLoadError(null);
+      // Only reset zoom/pan when switching to non-blueprint floor or no floor
+      setInitialZoom(1);
+      setZoom(1);
+      setPan({ x: 0, y: 0 });
+    }
+  }, [floor?.id, fetchBlueprint]);
+
+  // Calculate and set zoom only after SVG content has loaded
+  useEffect(() => {
+    if (!svgContent || !containerRef.current) return;
+    
+    const calculateZoom = () => {
+      const container = containerRef.current;
+      if (!container) return false;
+      
+      const containerWidth = container.clientWidth;
+      
+      // Only calculate if we have a valid container width
+      if (containerWidth > 0) {
+        // Scale to fill most of the container width
+        const calculatedZoom = Math.max(1.5, (containerWidth / 400) * 0.85);
+        setInitialZoom(calculatedZoom);
+        setZoom(calculatedZoom);
+        setPan({ x: 0, y: 0 });
+        return true;
       }
       return false;
     };
@@ -72,25 +145,15 @@ export function FloorMapViewer({ floor }: FloorMapViewerProps) {
     const timer = setTimeout(() => {
       if (!calculateZoom()) {
         // Fallback: use window width as approximation
-        if (floor) {
-          const viewBox = blueprintViewBoxes[floor.id] || "0 0 400 250";
-          const [, , vbWidth] = viewBox.split(" ").map(Number);
-          const calculatedZoom = Math.max(1.5, (window.innerWidth * 0.7) / vbWidth);
-          setInitialZoom(calculatedZoom);
-          setZoom(calculatedZoom);
-          setPan({ x: 0, y: 0 });
-        }
+        const calculatedZoom = Math.max(1.5, (window.innerWidth * 0.7) / 400);
+        setInitialZoom(calculatedZoom);
+        setZoom(calculatedZoom);
+        setPan({ x: 0, y: 0 });
       }
     }, 100);
 
-    if (!floor) {
-      setInitialZoom(1);
-      setZoom(1);
-      setPan({ x: 0, y: 0 });
-    }
-
     return () => clearTimeout(timer);
-  }, [floor?.id]);
+  }, [svgContent]);
 
   const handleZoomIn = () => setZoom((z) => Math.min(z + 0.25, 5));
   const handleZoomOut = () => setZoom((z) => Math.max(z - 0.25, 0.25));
@@ -147,9 +210,7 @@ export function FloorMapViewer({ floor }: FloorMapViewerProps) {
     );
   }
 
-  const BlueprintComponent = blueprintComponents[floor.id];
   const hasBlueprint = availableBlueprints.includes(floor.id);
-  const viewBox = blueprintViewBoxes[floor.id] || "0 0 400 250";
 
   return (
     <div className="relative h-full flex flex-col bg-white dark:bg-gray-950">
@@ -213,12 +274,45 @@ export function FloorMapViewer({ floor }: FloorMapViewerProps) {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
+        data-testid="floor-map-container"
       >
-        {hasBlueprint && BlueprintComponent ? (
+        {isLoading && (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center p-8">
+              <Loader2 className="w-12 h-12 text-blue-500 animate-spin mx-auto mb-4" />
+              <p className="text-gray-500 dark:text-gray-400">Loading floor plan...</p>
+            </div>
+          </div>
+        )}
+
+        {loadError && (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center p-8">
+              <Building2 className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                {floor.name}
+              </h3>
+              <p className="text-sm text-red-500 dark:text-red-400 mt-2">
+                {loadError}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-4"
+                onClick={() => fetchBlueprint(floor.id)}
+                data-testid="button-retry-load"
+              >
+                Try Again
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {!isLoading && !loadError && svgContent && (
           <svg
             width="100%"
             height="100%"
-            viewBox={viewBox}
+            viewBox="0 0 400 250"
             className="select-none blueprint-svg"
             preserveAspectRatio="xMidYMid meet"
             style={{
@@ -258,9 +352,11 @@ export function FloorMapViewer({ floor }: FloorMapViewerProps) {
                 }
               `}
             </style>
-            <BlueprintComponent />
+            <g dangerouslySetInnerHTML={{ __html: svgContent }} />
           </svg>
-        ) : (
+        )}
+
+        {!isLoading && !loadError && !svgContent && !hasBlueprint && (
           <div className="flex items-center justify-center h-full">
             <div className="text-center p-8">
               <Building2 className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />

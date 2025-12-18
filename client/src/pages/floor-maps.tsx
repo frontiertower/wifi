@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { FloorMapViewer } from "@/components/FloorMapViewer";
 
 // Floor data imported from https://github.com/frontiertower/floorfinder
+// All 17 floors (excluding floor 13 which doesn't exist in building numbering)
 const floors = [
-  { id: "0", name: "Basement", level: 0 },
-  { id: "1", name: "Lobby", level: 1 },
+  { id: "0", name: "Basement / Ground Level", level: 0 },
+  { id: "1", name: "Lobby & Reception", level: 1 },
   { id: "2", name: "Event Space-ship", level: 2 },
   { id: "3", name: "Fitness Center", level: 3 },
   { id: "4", name: "Cyberpunk Robotics Lab", level: 4 },
@@ -22,7 +23,7 @@ const floors = [
   { id: "14", name: "Human Flourishing", level: 14 },
   { id: "15", name: "Hackathon Desk Area", level: 15 },
   { id: "16", name: "Hacker Lounge & Tables", level: 16 },
-  { id: "17", name: "Roof", level: 17 },
+  { id: "17", name: "Rooftop Terrace", level: 17 },
 ];
 
 export default function FloorMaps() {
