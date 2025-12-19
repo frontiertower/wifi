@@ -561,6 +561,19 @@ export default function DirectoryEdit() {
                 />
               </div>
 
+              <div>
+                <Label htmlFor="youtubeUrl">YouTube Channel</Label>
+                <Input
+                  id="youtubeUrl"
+                  value={editForm.youtubeUrl || ""}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, youtubeUrl: e.target.value })
+                  }
+                  placeholder="https://youtube.com/@channel"
+                  data-testid="input-youtube"
+                />
+              </div>
+
               <div className="md:col-span-2 space-y-4">
                 <Label>Logo / Avatar</Label>
                 

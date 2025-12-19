@@ -137,6 +137,7 @@ export const directoryListings = pgTable("directory_listings", {
   website: text("website"),
   linkedinUrl: text("linkedin_url"),
   twitterHandle: text("twitter_handle"),
+  youtubeUrl: text("youtube_url"),
   logoUrl: text("logo_url"),
   iconName: text("icon_name"), // Lucide icon name as alternative to logo
   description: text("description"),

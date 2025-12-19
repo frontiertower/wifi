@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Coffee, X, Pencil, ArrowUpDown, Check } from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Globe, MessageCircle, Plus, ArrowLeft, ChevronDown, User, Users, Search, Linkedin, Twitter, Youtube, Coffee, X, Pencil, ArrowUpDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -574,6 +574,22 @@ export default function Directory() {
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 @{listing.twitterHandle.replace('@', '')}
+                              </a>
+                            </div>
+                          )}
+
+                          {listing.youtubeUrl && (
+                            <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                              <Youtube className="h-4 w-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                              <a
+                                href={listing.youtubeUrl.startsWith('http') ? listing.youtubeUrl : `https://${listing.youtubeUrl}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-blue-600 dark:hover:text-blue-400 break-words"
+                                data-testid={`link-youtube-${listing.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                YouTube
                               </a>
                             </div>
                           )}

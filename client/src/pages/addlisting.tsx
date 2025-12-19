@@ -155,6 +155,7 @@ export default function AddListing() {
     website: "",
     linkedinUrl: "",
     twitterHandle: "",
+    youtubeUrl: "",
     logoUrl: "",
     description: "",
   });
@@ -297,6 +298,7 @@ export default function AddListing() {
       website: formData.website || null,
       linkedinUrl: formData.linkedinUrl || null,
       twitterHandle: formData.twitterHandle || null,
+      youtubeUrl: formData.youtubeUrl || null,
       logoUrl,
       iconName,
       description: formData.description || null,
@@ -423,6 +425,7 @@ export default function AddListing() {
                       website: "",
                       linkedinUrl: "",
                       twitterHandle: "",
+                      youtubeUrl: "",
                       logoUrl: "",
                       description: "",
                     });
@@ -916,6 +919,18 @@ export default function AddListing() {
                       value={formData.twitterHandle}
                       onChange={(e) => handleInputChange("twitterHandle", e.target.value)}
                       data-testid="input-twitter"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="youtube">YouTube Channel</Label>
+                    <Input
+                      id="youtube"
+                      type="url"
+                      placeholder="https://youtube.com/@channel"
+                      value={formData.youtubeUrl}
+                      onChange={(e) => handleInputChange("youtubeUrl", e.target.value)}
+                      data-testid="input-youtube"
                     />
                   </div>
                 </div>
