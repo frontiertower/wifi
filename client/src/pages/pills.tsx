@@ -281,30 +281,34 @@ export default function PillsPage() {
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => handlePillChoice("green")}
-              className={`flex flex-col items-center justify-center p-6 border-2 border-green-500 rounded-lg hover:bg-green-50 dark:hover:bg-green-950/30 transition-colors duration-200 group ${buttonShakeState === "green" ? "animate-bounce" : ""}`}
+              className={`p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 text-left group ${buttonShakeState === "green" ? "animate-bounce border-green-500" : ""}`}
               data-testid="button-green-pill-choice"
             >
-              <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 mb-2 group-hover:scale-110 transition-transform ${buttonShakeState === "green" ? "scale-125" : ""}`} />
-              <span className="text-sm font-bold text-green-600 dark:text-green-400">
-                GREEN PILL
-              </span>
-              <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                Regenerate
-              </span>
+              <div className="flex items-center">
+                <div className={`w-10 h-10 bg-green-100 dark:bg-green-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 dark:group-hover:bg-green-500/40 transition-colors ${buttonShakeState === "green" ? "scale-110" : ""}`}>
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-400 to-green-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Green Pill</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Regenerate</div>
+                </div>
+              </div>
             </button>
 
             <button
               onClick={() => handlePillChoice("blue")}
-              className={`flex flex-col items-center justify-center p-6 border-2 border-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors duration-200 group ${buttonShakeState === "blue" ? "animate-bounce" : ""}`}
+              className={`p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 text-left group ${buttonShakeState === "blue" ? "animate-bounce border-blue-500" : ""}`}
               data-testid="button-blue-pill-choice"
             >
-              <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 mb-2 group-hover:scale-110 transition-transform ${buttonShakeState === "blue" ? "scale-125" : ""}`} />
-              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                BLUE PILL
-              </span>
-              <span className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                Accelerate
-              </span>
+              <div className="flex items-center">
+                <div className={`w-10 h-10 bg-blue-100 dark:bg-blue-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/40 transition-colors ${buttonShakeState === "blue" ? "scale-110" : ""}`}>
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-blue-600" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800 dark:text-gray-100">Blue Pill</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Accelerate</div>
+                </div>
+              </div>
             </button>
           </div>
 
