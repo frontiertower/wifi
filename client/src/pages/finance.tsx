@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ChevronLeft } from "lucide-react";
+import { ArrowRight, ChevronLeft, Shield, Wifi } from "lucide-react";
 import { Link } from "wouter";
 
 type JobApplicationFormData = z.infer<typeof insertJobApplicationSchema>;
@@ -194,6 +194,47 @@ export default function FinancePage() {
               <div style={{ fontSize: '9px' }}>2069</div>
             </div>
           </div>
+        </div>
+
+        {/* Quick Navigation */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+          <Link
+            href="/code-of-conduct"
+            className="p-4 border-2 rounded-lg hover:bg-white/10 transition-all duration-200 text-left group block"
+            style={{
+              borderColor: 'rgba(255, 255, 255, 0.3)',
+            }}
+            data-testid="button-code-of-conduct"
+          >
+            <div className="flex items-center">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3 group-hover:bg-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                <Shield className="text-white" />
+              </div>
+              <div>
+                <div className="font-medium" style={{ color: '#ffffff', fontFamily: 'monospace' }}>Code of Conduct</div>
+                <div className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)', fontFamily: 'monospace' }}>Our rules & guidelines</div>
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/"
+            className="p-4 border-2 rounded-lg hover:bg-white/10 transition-all duration-200 text-left group block"
+            style={{
+              borderColor: 'rgba(255, 255, 255, 0.3)',
+            }}
+            data-testid="button-connect-wifi"
+          >
+            <div className="flex items-center">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3 group-hover:bg-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                <Wifi className="text-white" />
+              </div>
+              <div>
+                <div className="font-medium" style={{ color: '#ffffff', fontFamily: 'monospace' }}>Connect to WiFi</div>
+                <div className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)', fontFamily: 'monospace' }}>Get online access</div>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* About Section */}

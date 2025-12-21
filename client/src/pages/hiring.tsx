@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, Power } from "lucide-react";
+import { ArrowRight, Power, Shield, Wifi } from "lucide-react";
 import { Link } from "wouter";
 
 type JobApplicationFormData = z.infer<typeof insertJobApplicationSchema>;
@@ -138,6 +138,41 @@ export default function HiringPage() {
           <p className="text-center text-terminal-dim text-sm md:text-base">
             INITIATE PERSONNEL DATA INPUT PROTOCOL • REMOTE OR HYBRID
           </p>
+        </div>
+
+        {/* Quick Navigation */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+          <Link
+            href="/code-of-conduct"
+            className="p-4 border-2 border-terminal-green/30 rounded-lg hover:border-terminal-green hover:bg-terminal-green/10 transition-all duration-200 text-left group block"
+            data-testid="button-code-of-conduct"
+          >
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-terminal-green/20 rounded-lg flex items-center justify-center mr-3 group-hover:bg-terminal-green/30">
+                <Shield className="text-terminal-green" />
+              </div>
+              <div>
+                <div className="font-medium text-terminal-bright">Code of Conduct</div>
+                <div className="text-sm text-terminal-dim">Our rules & guidelines</div>
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/"
+            className="p-4 border-2 border-terminal-green/30 rounded-lg hover:border-terminal-green hover:bg-terminal-green/10 transition-all duration-200 text-left group block"
+            data-testid="button-connect-wifi"
+          >
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-terminal-green/20 rounded-lg flex items-center justify-center mr-3 group-hover:bg-terminal-green/30">
+                <Wifi className="text-terminal-green" />
+              </div>
+              <div>
+                <div className="font-medium text-terminal-bright">Connect to WiFi</div>
+                <div className="text-sm text-terminal-dim">Get online access</div>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* Role Description Grid */}
