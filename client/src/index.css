@@ -107,18 +107,18 @@
 
 .black-hole-collapse {
   background: #000;
-  animation: blackHoleVortex 2s ease-in forwards;
+  animation: blackHoleVortex 1s ease-in forwards;
 }
 
 .black-hole-vortex {
   background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 50%, #000 100%);
-  animation: blackHoleVortex 2s ease-in forwards;
+  animation: blackHoleVortex 1s ease-in forwards;
 }
 
 .black-hole-singularity {
   background: #000;
   border-radius: 50%;
-  animation: blackHoleSingularity 2s ease-in forwards;
+  animation: blackHoleSingularity 1s ease-in forwards;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -126,7 +126,7 @@
 }
 
 .black-hole-pull {
-  animation: blackHolePull 2s ease-in forwards;
+  animation: blackHolePull 1s ease-in forwards;
 }
 
 /* Shake and trippy effects */

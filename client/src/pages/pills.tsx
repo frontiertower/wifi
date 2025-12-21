@@ -44,7 +44,7 @@ export default function PillsPage() {
       setCrackIntensity((prev) => {
         if (prev >= 10) {
           clearInterval(interval);
-          setTimeout(() => setShowTerminal(true), 2000);
+          setTimeout(() => setShowTerminal(true), 800);
           return 10;
         }
         return prev + 1;
