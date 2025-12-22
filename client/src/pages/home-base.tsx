@@ -531,6 +531,22 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
               </Link>
 
               <Link
+                href="/gallery"
+                className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all duration-200 text-left group block"
+                data-testid="button-view-gallery"
+              >
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-rose-100 dark:bg-rose-500/30 rounded-lg flex items-center justify-center mr-3 group-hover:bg-rose-200 dark:group-hover:bg-rose-500/40">
+                    <Camera className="text-rose-600 dark:text-rose-300" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">Photo Gallery</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Life at Frontier Tower</div>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
                 href="/events"
                 className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-200 text-left group block"
                 data-testid="button-view-events"

@@ -221,6 +221,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // iCloud Shared Album Photos API with caching
+  let cachedGalleryData: { photos: any[]; albumTitle: string; cachedAt: number } | null = null;
+  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+  app.get("/api/gallery/photos", async (req, res) => {
+    try {
+      // Return cached data if available and fresh
+      if (cachedGalleryData && Date.now() - cachedGalleryData.cachedAt < CACHE_DURATION) {
+        return res.json({ photos: cachedGalleryData.photos, albumTitle: cachedGalleryData.albumTitle });
+      }
+
+      const { getImages } = await import("icloud-shared-album");
+      const albumToken = "B2NGq6kMgGcF56U";
+      const data: any = await getImages(albumToken);
+      
+      // Transform the data to extract photo URLs
+      // derivatives are keyed by height (e.g., "720", "1024", "1920")
+      const photos = data.photos.map((photo: any) => {
+        const derivatives = photo.derivatives || {};
+        const heights = Object.keys(derivatives).filter(k => !isNaN(parseInt(k))).sort((a, b) => parseInt(b) - parseInt(a));
+        
+        // Get largest derivative for full view, and a smaller one for thumbnail
+        const largestKey = heights[0];
+        const thumbnailKey = heights.find(h => parseInt(h) <= 720) || heights[heights.length - 1] || largestKey;
+        
+        return {
+          id: photo.photoGuid || photo.guid || Math.random().toString(36).substr(2, 9),
+          url: derivatives[largestKey]?.url || "",
+          thumbnailUrl: derivatives[thumbnailKey]?.url || derivatives[largestKey]?.url || "",
+          width: derivatives[largestKey]?.width || 0,
+          height: derivatives[largestKey]?.height || 0,
+          caption: photo.caption || "",
+          dateCreated: photo.dateCreated || "",
+        };
+      }).filter((photo: any) => photo.url);
+      
+      const albumTitle = data.metadata?.streamName || "Frontier Tower Gallery";
+      
+      // Cache the result
+      cachedGalleryData = { photos, albumTitle, cachedAt: Date.now() };
+      
+      res.json({ photos, albumTitle });
+    } catch (error: any) {
+      console.error("Failed to fetch iCloud photos:", error);
+      // If we have stale cached data, return it on error
+      if (cachedGalleryData) {
+        return res.json({ photos: cachedGalleryData.photos, albumTitle: cachedGalleryData.albumTitle });
+      }
+      res.status(500).json({ error: "Failed to fetch photos from gallery" });
+    }
+  });
+
   // Captive portal detection endpoints
   app.get("/generate_204", (req, res) => {
     res.redirect(302, "/");

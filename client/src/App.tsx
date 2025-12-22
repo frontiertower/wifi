@@ -47,6 +47,7 @@ import AboutPage from "@/pages/about";
 import CoworkingPage from "@/pages/coworking";
 import EventOrganizerGuide from "@/pages/event-organizer-guide";
 import FloorMaps from "@/pages/floor-maps";
+import Gallery from "@/pages/gallery";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -99,6 +100,7 @@ function Router() {
         <Route path="/coworking" component={CoworkingPage} />
         <Route path="/event-organizer-guide" component={EventOrganizerGuide} />
         <Route path="/floor-maps" component={FloorMaps} />
+        <Route path="/gallery" component={Gallery} />
         <Route path="/directory" component={Directory} />
         <Route path="/directory/admin" component={DirectoryAdmin} />
         <Route path="/directory/edit/:slug" component={DirectoryEdit} />
