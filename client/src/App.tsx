@@ -158,7 +158,7 @@ function AppHeader() {
     }
   };
 
-  const hideRabbitOn = ["/", "/de", "/es", "/zh", "/ko", "/ja", "/fr", "/hi", "/ar", "/sw", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/hosting", "/membership", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency", "/code-of-conduct", "/about", "/floor-maps"];
+  const hideRabbitOn = ["/", "/de", "/es", "/zh", "/ko", "/ja", "/fr", "/hi", "/ar", "/sw", "/Regen", "/Finance", "/Green", "/Blue", "/admin", "/admin-login", "/events", "/past-events", "/booking", "/tour", "/rent-office", "/hosting", "/membership", "/apply-to-join", "/chat", "/directory", "/addlisting", "/careers", "/ecosystem", "/residency", "/code-of-conduct", "/about", "/floor-maps", "/gallery"];
   const shouldHideRabbit = hideRabbitOn.some(path => location === path || location.startsWith(path + "/"));
 
   return (
