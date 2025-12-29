@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield, Lock, ArrowLeft, Map, Wrench, Trophy, Laptop, GraduationCap, ClipboardList, FileText, MapPin, Video } from "lucide-react";
+import { Brain, Calendar, UserPlus, Wifi, Briefcase, MessageCircle, Building2, Camera, Link2, DoorOpen, PartyPopper, Rocket, Home, Rabbit, Shield, Lock, ArrowLeft, Map, Wrench, Trophy, Laptop, GraduationCap, ClipboardList, FileText, MapPin, Video, ExternalLink } from "lucide-react";
 import { SiDiscord, SiYoutube } from "react-icons/si";
 import { Link, useLocation } from "wouter";
 import MemberForm from "@/components/member-form";
@@ -729,6 +729,17 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
                 {t.scanToVisit}
               </p>
             </div>
+
+            <a
+              href="https://frontiertower.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mt-6 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors duration-200 flex items-center justify-center gap-2 font-medium"
+              data-testid="link-frontier-tower-website"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Visit FrontierTower.io
+            </a>
 
             <button
               onClick={handleWhiteRabbit}
