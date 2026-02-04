@@ -42,6 +42,7 @@ interface FormData {
   eventName: string;
   floor: string;
   tourInterest: "yes" | "maybe" | "no" | "";
+  moltbookUsername: string;
 }
 
 type FlowStep = 'form' | 'code-of-conduct' | 'password' | 'congrats';
@@ -62,6 +63,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
     eventName: "",
     floor: "",
     tourInterest: "",
+    moltbookUsername: "",
   });
   const [pendingRegistrationData, setPendingRegistrationData] = useState<any>(null);
 
@@ -239,6 +241,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         telegramUsername: data.telegramUsername,
         eventName: data.eventName,
         organization: "",
+        moltbookUsername: data.moltbookUsername || undefined,
         unifiParams: unifiParams,
       });
       return response.json();
@@ -307,6 +310,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         host: "OpenClaw Agent",
         phone: data.phone || undefined,
         tourInterest: data.tourInterest || undefined,
+        moltbookUsername: data.moltbookUsername || undefined,
         unifiParams: unifiParams,
       });
       return response.json();
@@ -1065,6 +1069,22 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   )}
                 </div>
               </>
+            )}
+
+            {/* Moltbook Username - for Event Guests and OpenClaw Agent */}
+            {(guestType === "event" || guestType === "visitor") && (
+              <div className="space-y-2">
+                <Label htmlFor="moltbookUsername">Moltbook Username (optional)</Label>
+                <Input
+                  id="moltbookUsername"
+                  type="text"
+                  value={formData.moltbookUsername}
+                  onChange={(e) => handleInputChange("moltbookUsername", e.target.value)}
+                  placeholder="@username"
+                  className="h-12"
+                  data-testid="input-moltbook-username"
+                />
+              </div>
             )}
 
             {/* Tour Interest Question */}

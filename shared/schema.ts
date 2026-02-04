@@ -35,6 +35,8 @@ export const captiveUsers = pgTable("captive_users", {
   eventName: text("event_name"),
   organization: text("organization"),
   registrationType: text("registration_type"),
+  // Social fields
+  moltbookUsername: text("moltbook_username"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -352,6 +354,7 @@ export const insertCaptiveUserSchema = createInsertSchema(captiveUsers).omit({
   name: z.string().optional(),
   ethereumAddress: z.string().optional(),
   registrationType: z.string().optional(),
+  moltbookUsername: z.string().optional(),
 });
 
 export const insertVoucherSchema = createInsertSchema(vouchers).omit({
