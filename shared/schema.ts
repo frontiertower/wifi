@@ -590,3 +590,18 @@ export type ResidencyBooking = typeof residencyBookings.$inferSelect;
 export type InsertResidencyBooking = z.infer<typeof insertResidencyBookingSchema>;
 export type PillChoice = typeof pillChoices.$inferSelect;
 export type InsertPillChoice = z.infer<typeof insertPillChoiceSchema>;
+
+// Page visits tracking for analytics
+export const pageVisits = pgTable("page_visits", {
+  id: serial("id").primaryKey(),
+  path: text("path").notNull(),
+  visitorId: text("visitor_id"),
+  userAgent: text("user_agent"),
+  referrer: text("referrer"),
+  ipAddress: text("ip_address"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPageVisitSchema = createInsertSchema(pageVisits).omit({ id: true, createdAt: true });
+export type PageVisit = typeof pageVisits.$inferSelect;
+export type InsertPageVisit = z.infer<typeof insertPageVisitSchema>;

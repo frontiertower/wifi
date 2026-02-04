@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { WhiteRabbitButton } from "@/components/white-rabbit-button";
+import { usePageTracking } from "@/hooks/use-page-tracking";
 import Home from "@/pages/home";
 import HomeDE from "@/pages/home-de";
 import HomeES from "@/pages/home-es";
@@ -61,6 +62,8 @@ function ScrollToTop() {
 }
 
 function Router() {
+  usePageTracking();
+  
   return (
     <>
       <ScrollToTop />

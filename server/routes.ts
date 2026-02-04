@@ -3159,6 +3159,47 @@ Return only the description text, no quotes or additional formatting.`
     }
   });
 
+  // Page visit tracking - public endpoint
+  app.post("/api/track/visit", async (req, res) => {
+    try {
+      const { path, visitorId, referrer } = req.body;
+      
+      if (!path || typeof path !== 'string') {
+        return res.status(400).json({ success: false, message: "Path is required" });
+      }
+
+      const userAgent = req.headers['user-agent'] || null;
+      const ipAddress = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.socket.remoteAddress || null;
+
+      await storage.recordPageVisit({
+        path,
+        visitorId: visitorId || null,
+        userAgent,
+        referrer: referrer || null,
+        ipAddress,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Failed to record page visit:", error);
+      res.status(500).json({ success: false, message: "Failed to record visit" });
+    }
+  });
+
+  // Page visit stats - admin only
+  app.get("/api/admin/visitor-stats", verifyAdminSession, async (req, res) => {
+    try {
+      const stats = await storage.getPageVisitStats();
+      res.json({ success: true, stats });
+    } catch (error) {
+      console.error("Failed to fetch visitor stats:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch visitor statistics"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

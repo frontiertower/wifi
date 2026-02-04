@@ -266,6 +266,19 @@ export default function AdminDashboard() {
     enabled: activeTab === "analytics",
   });
 
+  const { data: visitorStats } = useQuery<{
+    success: boolean;
+    stats: {
+      totalVisits: number;
+      visitsToday: number;
+      uniqueVisitorsToday: number;
+      visitsByPage: { path: string; count: number }[];
+    };
+  }>({
+    queryKey: ['/api/admin/visitor-stats'],
+    enabled: activeTab === "analytics",
+  });
+
   const { data: unifiedLeads } = useQuery<UnifiedLeadsResponse>({
     queryKey: ['/api/admin/leads'],
     enabled: activeTab === "leads" || activeTab === "analytics",
@@ -1374,7 +1387,21 @@ export default function AdminDashboard() {
             {/* Lifetime Totals */}
             <div className="mt-8">
               <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Lifetime Totals</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-cyan-950 dark:to-cyan-900 rounded-lg p-4 sm:p-6 border border-cyan-200 dark:border-cyan-800">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400">Total Page Views</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-cyan-900 dark:text-cyan-100 mt-2" data-testid="text-total-page-views">
+                        {visitorStats?.stats?.totalVisits || 0}
+                      </p>
+                    </div>
+                    <div className="w-12 h-12 bg-cyan-200 dark:bg-cyan-800 rounded-lg flex items-center justify-center">
+                      <Eye className="text-cyan-700 dark:text-cyan-300" />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 rounded-lg p-4 sm:p-6 border border-purple-200 dark:border-purple-800">
                   <div className="flex items-center justify-between">
                     <div>
@@ -1450,7 +1477,19 @@ export default function AdminDashboard() {
             {/* Today's Activity */}
             <div className="mt-8">
               <h3 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-300 mb-4">Today's Activity</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center">
+                      <Eye className="text-cyan-600 dark:text-cyan-400" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="text-visitors-today">{visitorStats?.stats?.uniqueVisitorsToday || 0}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Visitors Today</p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
                     <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">

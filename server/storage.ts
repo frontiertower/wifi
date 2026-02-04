@@ -1,4 +1,4 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, jobApplications, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, jobListings, residencyBookings, pillChoices, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type JobApplication, type InsertJobApplication, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin, type JobListing, type InsertJobListing, type ResidencyBooking, type InsertResidencyBooking, type PillChoice, type InsertPillChoice } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, jobApplications, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, jobListings, residencyBookings, pillChoices, pageVisits, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type JobApplication, type InsertJobApplication, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin, type JobListing, type InsertJobListing, type ResidencyBooking, type InsertResidencyBooking, type PillChoice, type InsertPillChoice, type PageVisit, type InsertPageVisit } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, count, and } from "drizzle-orm";
 
@@ -1133,6 +1133,65 @@ export class DatabaseStorage {
     return {
       green: greenCount[0]?.count || 0,
       blue: blueCount[0]?.count || 0,
+    };
+  }
+
+  async recordPageVisit(visit: InsertPageVisit): Promise<PageVisit> {
+    const [record] = await db
+      .insert(pageVisits)
+      .values(visit)
+      .returning();
+    return record;
+  }
+
+  async getPageVisitStats(): Promise<{
+    totalVisits: number;
+    visitsToday: number;
+    uniqueVisitorsToday: number;
+    visitsByPage: { path: string; count: number }[];
+  }> {
+    const [totalResult] = await db.select({ count: count() }).from(pageVisits);
+    
+    // Visits today (since 4am as per existing convention)
+    const [todayResult] = await db
+      .select({ count: count() })
+      .from(pageVisits)
+      .where(
+        sql`${pageVisits.createdAt} >= CASE 
+          WHEN EXTRACT(HOUR FROM NOW()) >= 4 
+          THEN CURRENT_DATE + INTERVAL '4 hours'
+          ELSE CURRENT_DATE - INTERVAL '1 day' + INTERVAL '4 hours'
+        END`
+      );
+    
+    // Unique visitors today (by visitor_id)
+    const uniqueResult = await db
+      .select({ uniqueCount: sql<number>`COUNT(DISTINCT ${pageVisits.visitorId})` })
+      .from(pageVisits)
+      .where(
+        sql`${pageVisits.createdAt} >= CASE 
+          WHEN EXTRACT(HOUR FROM NOW()) >= 4 
+          THEN CURRENT_DATE + INTERVAL '4 hours'
+          ELSE CURRENT_DATE - INTERVAL '1 day' + INTERVAL '4 hours'
+        END`
+      );
+    
+    // Top pages by visit count
+    const visitsByPage = await db
+      .select({
+        path: pageVisits.path,
+        count: sql<number>`COUNT(*)::int`,
+      })
+      .from(pageVisits)
+      .groupBy(pageVisits.path)
+      .orderBy(sql`COUNT(*) DESC`)
+      .limit(10);
+    
+    return {
+      totalVisits: totalResult?.count || 0,
+      visitsToday: todayResult?.count || 0,
+      uniqueVisitorsToday: uniqueResult[0]?.uniqueCount || 0,
+      visitsByPage: visitsByPage.map(v => ({ path: v.path, count: v.count })),
     };
   }
 }
