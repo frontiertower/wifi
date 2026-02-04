@@ -2768,7 +2768,7 @@ function AdminLoginsTab() {
 
 function SettingsTab() {
   const { toast } = useToast();
-  const [apiType, setApiType] = useState<'modern' | 'legacy' | 'none'>('none');
+  const [apiType, setApiType] = useState<'modern' | 'legacy' | 'none'>('modern');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordDescription, setNewPasswordDescription] = useState('');
   const [requireWifiPassword, setRequireWifiPassword] = useState(true);

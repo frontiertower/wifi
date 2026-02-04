@@ -328,14 +328,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const data = schema.parse(req.body);
 
-      // Get settings from database (fallback to env vars for backwards compatibility)
+      // Get settings from database, but prefer secrets for UniFi credentials
       const dbSettings = await storage.getSettings();
-      const apiType = dbSettings.unifi_api_type || (process.env.UNIFI_API_KEY ? 'modern' : process.env.UNIFI_USERNAME ? 'legacy' : 'none');
-      const controllerUrl = dbSettings.unifi_controller_url || process.env.UNIFI_CONTROLLER_URL;
-      const apiKey = dbSettings.unifi_api_key || process.env.UNIFI_API_KEY;
-      const username = dbSettings.unifi_username || process.env.UNIFI_USERNAME;
-      const password = dbSettings.unifi_password || process.env.UNIFI_PASSWORD;
-      const siteId = dbSettings.unifi_site || process.env.UNIFI_SITE || "default";
+      
+      // Use secrets for UniFi configuration (secrets take priority)
+      const apiKey = process.env.UNIFI_API_KEY;
+      const controllerUrl = process.env.UNIFI_CONTROLLER_URL;
+      const siteId = process.env.UNIFI_SITE || "default";
+      
+      // Legacy API credentials (for backwards compatibility)
+      const username = process.env.UNIFI_USERNAME;
+      const password = process.env.UNIFI_PASSWORD;
+      
+      // Default to 'modern' API when API key is available
+      const apiType = apiKey ? 'modern' : (dbSettings.unifi_api_type || 'none');
 
       console.log('UniFi Authorization Request:', {
         macAddress: data.macAddress,
