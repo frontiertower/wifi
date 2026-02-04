@@ -2769,11 +2769,6 @@ function AdminLoginsTab() {
 function SettingsTab() {
   const { toast } = useToast();
   const [apiType, setApiType] = useState<'modern' | 'legacy' | 'none'>('none');
-  const [controllerUrl, setControllerUrl] = useState('');
-  const [apiKey, setApiKey] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [site, setSite] = useState('default');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordDescription, setNewPasswordDescription] = useState('');
   const [requireWifiPassword, setRequireWifiPassword] = useState(true);
@@ -2855,11 +2850,6 @@ function SettingsTab() {
   useEffect(() => {
     if (settings) {
       setApiType((settings.unifi_api_type as any) || 'none');
-      setControllerUrl(settings.unifi_controller_url || '');
-      setApiKey(settings.unifi_api_key || '');
-      setUsername(settings.unifi_username || '');
-      setPassword(settings.unifi_password || '');
-      setSite(settings.unifi_site || 'default');
       setRequireWifiPassword(settings.password_required !== 'false');
     }
   }, [settings]);
@@ -2867,17 +2857,8 @@ function SettingsTab() {
   const handleSave = () => {
     const data: Record<string, string> = {
       unifi_api_type: apiType,
-      unifi_controller_url: controllerUrl,
-      unifi_site: site,
       password_required: requireWifiPassword ? 'true' : 'false',
     };
-
-    if (apiType === 'modern') {
-      data.unifi_api_key = apiKey;
-    } else if (apiType === 'legacy') {
-      data.unifi_username = username;
-      data.unifi_password = password;
-    }
 
     saveSettingsMutation.mutate(data);
   };
@@ -3049,124 +3030,18 @@ function SettingsTab() {
         </div>
 
         {apiType !== 'none' && (
-          <>
-            <div>
-              <Label htmlFor="controller-url" className="text-sm font-medium text-gray-700">
-                Controller URL
-              </Label>
-              <Input
-                id="controller-url"
-                data-testid="input-controller-url"
-                type="text"
-                placeholder="https://192.168.1.1 or https://your-cloud-gateway"
-                value={controllerUrl}
-                onChange={(e) => setControllerUrl(e.target.value)}
-                className="mt-1"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                The URL of your UniFi controller (without /api path)
+          <div className="mt-4 p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+            <h3 className="text-sm font-medium text-green-900 dark:text-green-100">Configuration Status</h3>
+            <div className="mt-2 text-sm text-green-700 dark:text-green-300">
+              <p>UniFi credentials are configured via environment secrets:</p>
+              <ul className="list-disc list-inside mt-2 ml-2 space-y-1">
+                <li><code className="bg-green-100 dark:bg-green-800 px-1 rounded">UNIFI_API_KEY</code> - API Key</li>
+                <li><code className="bg-green-100 dark:bg-green-800 px-1 rounded">UNIFI_CONTROLLER_URL</code> - Controller URL</li>
+                <li><code className="bg-green-100 dark:bg-green-800 px-1 rounded">UNIFI_SITE</code> - Site ID</li>
+              </ul>
+              <p className="mt-2 text-xs text-green-600 dark:text-green-400">
+                These values are securely stored and managed through the Secrets panel.
               </p>
-            </div>
-
-            <div>
-              <Label htmlFor="site" className="text-sm font-medium text-gray-700">
-                Site ID
-              </Label>
-              <Input
-                id="site"
-                data-testid="input-site"
-                type="text"
-                placeholder="default"
-                value={site}
-                onChange={(e) => setSite(e.target.value)}
-                className="mt-1"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Usually "default" unless you have multiple sites
-              </p>
-            </div>
-
-            {apiType === 'modern' && (
-              <div>
-                <Label htmlFor="api-key" className="text-sm font-medium text-gray-700">
-                  API Key
-                </Label>
-                <Input
-                  id="api-key"
-                  data-testid="input-api-key"
-                  type="password"
-                  placeholder="Enter your API key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="mt-1"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Generate in Network → Control Plane → Integrations
-                </p>
-              </div>
-            )}
-
-            {apiType === 'legacy' && (
-              <>
-                <div>
-                  <Label htmlFor="username" className="text-sm font-medium text-gray-700">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    data-testid="input-username"
-                    type="text"
-                    placeholder="Admin username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-                    Password
-                  </Label>
-                  <Input
-                    id="password"
-                    data-testid="input-password"
-                    type="password"
-                    placeholder="Admin password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-              </>
-            )}
-          </>
-        )}
-
-        {apiType !== 'none' && (
-          <div className="mt-6 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-            <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">Setup Instructions</h3>
-            <div className="mt-2 text-sm text-blue-700 dark:text-blue-300 space-y-2">
-              {apiType === 'modern' ? (
-                <>
-                  <p><strong>Modern API Setup:</strong></p>
-                  <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>Open UniFi Network Application</li>
-                    <li>Navigate to <strong>Network → Control Plane → Integrations</strong></li>
-                    <li>Generate a new API key</li>
-                    <li>Copy the key and paste it above</li>
-                    <li>Enter your controller URL and site ID</li>
-                  </ol>
-                </>
-              ) : (
-                <>
-                  <p><strong>Legacy API Setup:</strong></p>
-                  <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>Enter your UniFi controller URL (e.g., https://192.168.1.1:8443)</li>
-                    <li>Provide admin username and password</li>
-                    <li>Enter site name (usually "default")</li>
-                  </ol>
-                </>
-              )}
             </div>
           </div>
         )}
