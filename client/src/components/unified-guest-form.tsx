@@ -130,7 +130,7 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         if (data.payload?.valid) {
           if (data.description?.includes('Mock')) {
             setAuthStatus('mock');
-            setAuthMessage('Demo Mode - WiFi authorization simulated');
+            setAuthMessage('Please follow manual connection steps');
           } else {
             setAuthStatus('success');
             setAuthMessage('Network access authorized successfully');
