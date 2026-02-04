@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Shield, CheckCircle } from "lucide-react";
+import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Shield, CheckCircle, Wifi, WifiOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,6 +54,8 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const [guestType, setGuestType] = useState<GuestType>(null);
   const [showInstructions, setShowInstructions] = useState(false);
   const [requirePassword, setRequirePassword] = useState(false);
+  const [authStatus, setAuthStatus] = useState<'pending' | 'success' | 'mock' | 'error'>('pending');
+  const [authMessage, setAuthMessage] = useState<string>('');
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -103,6 +105,48 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
       setPasswordInput(passwordParam);
     }
   }, []);
+
+  // Trigger UniFi authorization when reaching congrats step
+  useEffect(() => {
+    if (flowStep !== 'congrats') return;
+    
+    const authorizeGuest = async () => {
+      setAuthStatus('pending');
+      setAuthMessage('Authorizing network access...');
+      
+      try {
+        const response = await fetch('/api/authorize-guest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            acceptTou: "true",
+            accessPointMacAddress: unifiParams.ap || "unknown",
+            macAddress: unifiParams.id || unifiParams.mac || "unknown",
+          }),
+        });
+        
+        const data = await response.json();
+        
+        if (data.payload?.valid) {
+          if (data.description?.includes('Mock')) {
+            setAuthStatus('mock');
+            setAuthMessage('Demo Mode - WiFi authorization simulated');
+          } else {
+            setAuthStatus('success');
+            setAuthMessage('Network access authorized successfully');
+          }
+        } else {
+          setAuthStatus('error');
+          setAuthMessage(data.message || 'Authorization pending - please follow manual connection steps');
+        }
+      } catch (error) {
+        setAuthStatus('error');
+        setAuthMessage('Authorization pending - please follow manual connection steps');
+      }
+    };
+    
+    authorizeGuest();
+  }, [flowStep, unifiParams]);
 
   const verifyPasswordMutation = useMutation({
     mutationFn: async (password: string) => {
@@ -625,11 +669,25 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden p-8">
             <div className="mb-6 text-center">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2" data-testid="heading-registration-complete">
-                Configure Secure Wi-Fi
+                Connecting to WiFi
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-                Now connect to WiFi using one of the methods below
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+                Now connecting to WiFi
               </p>
+              
+              {/* UniFi Authorization Status */}
+              <div className={`flex items-center justify-center gap-2 p-3 rounded-lg mb-4 ${
+                authStatus === 'pending' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' :
+                authStatus === 'success' ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300' :
+                authStatus === 'mock' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300' :
+                'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300'
+              }`} data-testid="auth-status">
+                {authStatus === 'pending' && <Loader2 className="w-5 h-5 animate-spin" />}
+                {authStatus === 'success' && <Wifi className="w-5 h-5" />}
+                {authStatus === 'mock' && <Wifi className="w-5 h-5" />}
+                {authStatus === 'error' && <WifiOff className="w-5 h-5" />}
+                <span className="text-sm font-medium">{authMessage}</span>
+              </div>
             </div>
             
             {isSubmitting ? (
