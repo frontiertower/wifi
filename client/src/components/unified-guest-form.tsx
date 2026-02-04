@@ -848,6 +848,22 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
               />
             </div>
 
+            {/* Moltbook Username - for Event Guests and OpenClaw Agent */}
+            {(guestType === "event" || guestType === "visitor") && (
+              <div className="space-y-2">
+                <Label htmlFor="moltbookUsername">Moltbook Username (optional)</Label>
+                <Input
+                  id="moltbookUsername"
+                  type="text"
+                  value={formData.moltbookUsername}
+                  onChange={(e) => handleInputChange("moltbookUsername", e.target.value)}
+                  placeholder="@username"
+                  className="h-12"
+                  data-testid="input-moltbook-username"
+                />
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="telegramUsername">Telegram Username</Label>
               <Input
@@ -1069,22 +1085,6 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                   )}
                 </div>
               </>
-            )}
-
-            {/* Moltbook Username - for Event Guests and OpenClaw Agent */}
-            {(guestType === "event" || guestType === "visitor") && (
-              <div className="space-y-2">
-                <Label htmlFor="moltbookUsername">Moltbook Username (optional)</Label>
-                <Input
-                  id="moltbookUsername"
-                  type="text"
-                  value={formData.moltbookUsername}
-                  onChange={(e) => handleInputChange("moltbookUsername", e.target.value)}
-                  placeholder="@username"
-                  className="h-12"
-                  data-testid="input-moltbook-username"
-                />
-              </div>
             )}
 
             {/* Tour Interest Question */}
