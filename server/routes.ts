@@ -2532,18 +2532,23 @@ Return only the description text, no quotes or additional formatting.`
       const data = baseSchema.parse(req.body);
 
       // Validate required fields based on API type
+      // Note: Secrets (UNIFI_API_KEY, UNIFI_CONTROLLER_URL) take priority over form fields
       if (data.unifi_api_type === 'modern') {
-        if (!data.unifi_controller_url || !data.unifi_api_key) {
+        const hasSecrets = process.env.UNIFI_API_KEY && process.env.UNIFI_CONTROLLER_URL;
+        const hasFormFields = data.unifi_controller_url && data.unifi_api_key;
+        if (!hasSecrets && !hasFormFields) {
           return res.status(400).json({
             success: false,
-            message: "Modern API requires Controller URL and API Key"
+            message: "Modern API requires UNIFI_API_KEY and UNIFI_CONTROLLER_URL secrets to be configured"
           });
         }
       } else if (data.unifi_api_type === 'legacy') {
-        if (!data.unifi_controller_url || !data.unifi_username || !data.unifi_password) {
+        const hasSecrets = process.env.UNIFI_USERNAME && process.env.UNIFI_PASSWORD && process.env.UNIFI_CONTROLLER_URL;
+        const hasFormFields = data.unifi_controller_url && data.unifi_username && data.unifi_password;
+        if (!hasSecrets && !hasFormFields) {
           return res.status(400).json({
             success: false,
-            message: "Legacy API requires Controller URL, Username, and Password"
+            message: "Legacy API requires UNIFI_USERNAME, UNIFI_PASSWORD, and UNIFI_CONTROLLER_URL secrets"
           });
         }
       }
