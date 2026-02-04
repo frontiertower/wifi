@@ -1221,20 +1221,30 @@ Rules:
   });
 
   app.post("/api/admin/events/sync", verifyAdminSession, async (req, res) => {
-    const externalEventSchema = z.object({
-      id: z.string().min(1),
+    const lumaEventSchema = z.object({
+      api_id: z.string().min(1),
       name: z.string().min(1),
-      description: z.string().optional().default(''),
-      startsAt: z.string(),
-      endsAt: z.string(),
-      host: z.string().optional(),
-      location: z.string().optional(),
-      originalLocation: z.string().optional(),
-      color: z.string().optional(),
+      description: z.string().nullable().optional(),
+      description_md: z.string().nullable().optional(),
+      start_at: z.string(),
+      end_at: z.string(),
+      timezone: z.string().optional(),
       url: z.string().optional(),
-      source: z.string().optional().default('external'),
-      maxAttendees: z.number().optional(),
-      currentAttendees: z.number().optional(),
+      cover_url: z.string().nullable().optional(),
+      event_type: z.string().optional(),
+      location_type: z.string().optional(),
+      geo_address_json: z.object({
+        city: z.string().optional(),
+        region: z.string().optional(),
+        country: z.string().optional(),
+        address: z.string().optional(),
+        description: z.string().optional(),
+        full_address: z.string().optional(),
+        place_id: z.string().optional(),
+      }).nullable().optional(),
+      geo_latitude: z.string().nullable().optional(),
+      geo_longitude: z.string().nullable().optional(),
+      visibility: z.string().optional(),
     });
 
     try {
@@ -1242,50 +1252,69 @@ Rules:
       const deletedCount = await storage.deleteEventsWithoutUrls();
       console.log(`Deleted ${deletedCount} event(s) without URLs during cleanup`);
 
-      const externalApiUrl = "https://studio--frontier-tower-timeline.us-central1.hosted.app/api/events";
+      // Use Luma API directly
+      const LUMA_API_KEY = process.env.LUMA_API_KEY;
+      const CALENDAR_ID = process.env.CALENDAR_ID;
+
+      if (!LUMA_API_KEY || !CALENDAR_ID) {
+        throw new Error("LUMA_API_KEY or CALENDAR_ID environment variables are not configured");
+      }
+
+      const lumaApiUrl = `https://api.lu.ma/public/v1/calendar/list-events?calendar_api_id=${encodeURIComponent(CALENDAR_ID)}`;
       
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 10000);
+      const timeout = setTimeout(() => controller.abort(), 30000);
 
       let response;
       try {
-        response = await fetch(externalApiUrl, { 
+        response = await fetch(lumaApiUrl, { 
           signal: controller.signal,
+          headers: {
+            'x-luma-api-key': LUMA_API_KEY,
+            'Accept': 'application/json',
+          },
         });
         clearTimeout(timeout);
       } catch (fetchError) {
         clearTimeout(timeout);
         if (fetchError instanceof Error && fetchError.name === 'AbortError') {
-          throw new Error("External API request timed out after 10 seconds");
+          throw new Error("Luma API request timed out after 30 seconds");
         }
-        throw new Error(`Failed to connect to external API: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
+        throw new Error(`Failed to connect to Luma API: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
       }
 
       if (!response.ok) {
-        throw new Error(`External API returned status ${response.status}`);
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`Luma API returned status ${response.status}: ${errorText}`);
       }
 
-      let rawData;
+      let responseData: { entries?: any[]; has_more?: boolean; next_cursor?: string };
       try {
-        rawData = await response.json();
+        responseData = await response.json();
       } catch (parseError) {
-        throw new Error("Failed to parse external API response as JSON");
+        throw new Error("Failed to parse Luma API response as JSON");
       }
 
-      if (!Array.isArray(rawData)) {
-        throw new Error("External API did not return an array");
+      // Luma API returns { entries: [...], has_more: boolean, next_cursor: string }
+      const entries = responseData.entries;
+      if (!Array.isArray(entries)) {
+        throw new Error("Luma API did not return an entries array");
       }
+
+      // Extract just the event objects from entries
+      const rawData = entries.map((entry: any) => entry.event).filter(Boolean);
 
       const syncedEvents = [];
       const failedEvents: Array<{ id: string; error: string }> = [];
 
+      console.log(`Processing ${rawData.length} events from Luma API`);
+
       for (const rawEvent of rawData) {
         try {
-          const externalEvent = externalEventSchema.parse(rawEvent);
+          const lumaEvent = lumaEventSchema.parse(rawEvent);
           
           // Generate a friendly event code from the event name
-          // Take first 2-3 words, remove special characters, limit to 8 chars, add random suffix
-          const nameWords = externalEvent.name
+          const nameWords = lumaEvent.name
             .split(/\s+/)
             .slice(0, 3)
             .join('')
@@ -1297,55 +1326,48 @@ Rules:
           const randomSuffix = Math.random().toString(36).substring(2, 5).toUpperCase();
           const code = `${nameWords}${randomSuffix}`.substring(0, 12);
 
-          const startDate = new Date(externalEvent.startsAt);
-          const endDate = new Date(externalEvent.endsAt);
+          const startDate = new Date(lumaEvent.start_at);
+          const endDate = new Date(lumaEvent.end_at);
 
           if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            console.error(`Invalid dates for event ${externalEvent.id}: startsAt=${externalEvent.startsAt}, endsAt=${externalEvent.endsAt}`);
+            console.error(`Invalid dates for event ${lumaEvent.api_id}: start_at=${lumaEvent.start_at}, end_at=${lumaEvent.end_at}`);
             throw new Error('Invalid date format');
           }
 
-          // Extract Luma URL from description
-          let lumaUrl = externalEvent.url;
-          if (!lumaUrl && externalEvent.description) {
-            const urlMatch = externalEvent.description.match(/https?:\/\/(?:lu\.ma|luma\.com)\/[^\s\n]+/);
-            if (urlMatch) {
-              // Strip trailing punctuation that might be part of the sentence
-              lumaUrl = urlMatch[0].replace(/[.,;:!?)}\]]+$/, '').trim();
-              // Ensure https prefix
-              if (lumaUrl && !lumaUrl.startsWith('http')) {
-                lumaUrl = `https://${lumaUrl}`;
-              }
-            }
-          }
-          
-          // Normalize URL if present
-          if (lumaUrl) {
-            lumaUrl = lumaUrl.trim();
-            if (!lumaUrl.startsWith('http')) {
-              lumaUrl = `https://${lumaUrl}`;
-            }
+          // Build Luma URL from the url slug
+          let lumaUrl = lumaEvent.url ? `https://lu.ma/${lumaEvent.url}` : null;
+
+          // Get location from geo_address_json
+          let location = null;
+          if (lumaEvent.geo_address_json) {
+            location = lumaEvent.geo_address_json.description || 
+                       lumaEvent.geo_address_json.address || 
+                       lumaEvent.geo_address_json.full_address || 
+                       null;
           }
 
           // Clean location by removing "Frontier Tower @" prefix
-          let cleanedLocation = externalEvent.originalLocation || externalEvent.location || null;
-          if (cleanedLocation && typeof cleanedLocation === 'string') {
-            cleanedLocation = cleanedLocation.replace(/^Frontier Tower @\s*/i, '').trim() || null;
+          if (location && typeof location === 'string') {
+            location = location.replace(/^Frontier Tower @\s*/i, '').trim() || null;
           }
 
+          // Use description_md if available, otherwise fall back to description
+          const description = lumaEvent.description_md || lumaEvent.description || '';
+
           const eventData: any = {
-            name: externalEvent.name,
+            name: lumaEvent.name,
             code: code,
-            description: externalEvent.description,
+            description: description,
             startDate,
             endDate,
-            host: externalEvent.host || null,
-            originalLocation: cleanedLocation,
-            color: externalEvent.color || null,
-            externalId: externalEvent.id,
-            source: externalEvent.source,
-            maxAttendees: externalEvent.maxAttendees || null,
-            currentAttendees: externalEvent.currentAttendees || null,
+            host: null, // Luma doesn't include host in list-events response
+            originalLocation: location,
+            color: null,
+            externalId: lumaEvent.api_id,
+            source: 'luma',
+            maxAttendees: null,
+            currentAttendees: null,
+            imageUrl: lumaEvent.cover_url || null,
           };
           
           if (lumaUrl) {
@@ -1355,7 +1377,7 @@ Rules:
           const event = await storage.upsertEventByExternalId(eventData);
           syncedEvents.push(event);
         } catch (eventError) {
-          const eventId = typeof rawEvent === 'object' && rawEvent && 'id' in rawEvent ? String(rawEvent.id) : 'Unknown ID';
+          const eventId = typeof rawEvent === 'object' && rawEvent && 'api_id' in rawEvent ? String(rawEvent.api_id) : 'Unknown ID';
           const errorMessage = eventError instanceof Error ? eventError.message : 'Unknown error';
           console.error(`Failed to sync event ${eventId}:`, errorMessage, rawEvent);
           failedEvents.push({ id: eventId, error: errorMessage });
@@ -1388,8 +1410,8 @@ Rules:
         message
       });
     } catch (error) {
-      console.error('Error syncing events:', error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to sync events from external feed";
+      console.error('Error syncing events from Luma:', error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to sync events from Luma";
       res.status(500).json({
         success: false,
         message: errorMessage
