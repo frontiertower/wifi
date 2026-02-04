@@ -88,16 +88,21 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
     console.log('UniFi Parameters:', params);
   }, []);
 
-  // Idle timeout - show pill modal after 30 seconds of no clicks
+  // Idle timeout - show pill modal after 30 seconds of no clicks (only once per session)
   useEffect(() => {
-    // Only trigger on homepage when no role selected and modal not showing
-    if (selectedRole || showPillModal || showPasswordGate) return;
+    // Check if modal was already shown this session
+    const modalShown = sessionStorage.getItem('pill_modal_shown');
+    
+    // Only trigger on homepage when no role selected, modal not showing, and not already shown
+    if (selectedRole || showPillModal || showPasswordGate || modalShown) return;
 
     let idleTimer: NodeJS.Timeout | null = null;
 
     const resetIdleTimer = () => {
       if (idleTimer) clearTimeout(idleTimer);
       idleTimer = setTimeout(() => {
+        // Mark as shown before displaying
+        sessionStorage.setItem('pill_modal_shown', 'true');
         setIsFlashing(true);
         setTimeout(() => {
           setShowPillModal(true);
