@@ -435,8 +435,14 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   };
 
   const handleAgreeToCodeOfConduct = () => {
-    const nextStep = requirePassword ? 'password' : 'congrats';
-    setFlowStep(nextStep);
+    if (requirePassword) {
+      setFlowStep('password');
+    } else {
+      setFlowStep('congrats');
+      setTimeout(() => {
+        completeRegistration();
+      }, 100);
+    }
   };
 
   const handleInputChange = (field: keyof FormData, value: string) => {
