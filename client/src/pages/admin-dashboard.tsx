@@ -1363,7 +1363,15 @@ export default function AdminDashboard() {
                   <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Event Guests</h2>
                   {lumaGuestsData?.guests && (
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      {new Set(lumaGuestsData.guests.map(g => g.email ?? `__${g.id}`)).size} people &bull; {lumaGuestsData.guests.length} registration{lumaGuestsData.guests.length !== 1 ? "s" : ""} &bull; {new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? [])).size} categor{new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? [])).size !== 1 ? "ies" : "y"} &bull; {new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size} event{new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size !== 1 ? "s" : ""}
+                      {(() => {
+                        const excluded = new Set(["invited", "declined"]);
+                        const active = lumaGuestsData.guests.filter(g => !excluded.has(g.approvalStatus ?? ""));
+                        const people = new Set(active.map(g => g.email ?? `__${g.id}`)).size;
+                        const regs = active.length;
+                        const cats = new Set(active.flatMap(g => g.segments ?? [])).size;
+                        const evts = new Set(active.map(g => g.eventExternalId)).size;
+                        return `${people} people \u2022 ${regs} registration${regs !== 1 ? "s" : ""} \u2022 ${cats} categor${cats !== 1 ? "ies" : "y"} \u2022 ${evts} event${evts !== 1 ? "s" : ""}`;
+                      })()}
                     </p>
                   )}
                 </div>
