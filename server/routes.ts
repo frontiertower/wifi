@@ -1626,6 +1626,24 @@ Rules:
     }
   });
 
+  // Return the next unsynced Luma event (for button label preview)
+  app.get("/api/admin/events/next-unsynced", verifyAdminSession, async (req, res) => {
+    try {
+      const allEvents = await storage.getAllEvents();
+      const now = new Date();
+      const isValidLumaId = (id: string) => id.startsWith("evt-");
+      const next = allEvents
+        .filter(e => e.externalId && isValidLumaId(e.externalId) && e.source === 'luma' && new Date(e.endDate) < now && !e.guestsSyncedAt)
+        .sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())[0] ?? null;
+      const remaining = allEvents.filter(e =>
+        e.externalId && isValidLumaId(e.externalId) && e.source === 'luma' && new Date(e.endDate) < now && !e.guestsSyncedAt
+      ).length;
+      res.json({ success: true, event: next ? { id: next.id, name: next.name, externalId: next.externalId } : null, remaining });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Failed to fetch next unsynced event" });
+    }
+  });
+
   // Sync Luma event guests
   app.post("/api/admin/events/sync-guests", verifyAdminSession, async (req, res) => {
     try {

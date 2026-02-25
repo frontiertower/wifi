@@ -699,6 +699,14 @@ export default function AdminDashboard() {
     },
   });
 
+  const { data: nextUnsyncedData, refetch: refetchNextUnsynced } = useQuery<{ success: boolean; event: { id: number; name: string; externalId: string } | null; remaining: number }>({
+    queryKey: ['/api/admin/events/next-unsynced'],
+    refetchInterval: false,
+  });
+
+  const nextUnsyncedEvent = nextUnsyncedData?.event ?? null;
+  const unsyncedRemaining = nextUnsyncedData?.remaining ?? 0;
+
   const syncGuestsMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/admin/events/sync-guests", {});
@@ -710,6 +718,7 @@ export default function AdminDashboard() {
         description: data.message || `Synced ${data.totalGuests} guests`,
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/luma-guests'] });
+      refetchNextUnsynced();
     },
     onError: (error) => {
       toast({
@@ -1420,20 +1429,28 @@ export default function AdminDashboard() {
                 <div className="flex flex-wrap gap-2">
                   <Button
                     onClick={() => syncGuestsMutation.mutate()}
-                    disabled={syncGuestsMutation.isPending}
+                    disabled={syncGuestsMutation.isPending || !nextUnsyncedEvent}
                     variant="outline"
                     className="w-full sm:w-auto"
                     data-testid="button-sync-guests"
                   >
                     {syncGuestsMutation.isPending ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-                        Syncing Guests...
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2 flex-shrink-0"></div>
+                        <span className="truncate max-w-[200px]">Syncing: {nextUnsyncedEvent?.name ?? '...'}</span>
+                      </>
+                    ) : nextUnsyncedEvent ? (
+                      <>
+                        <Users className="mr-2 h-4 w-4 flex-shrink-0" />
+                        <span className="truncate max-w-[200px]">Sync: {nextUnsyncedEvent.name}</span>
+                        {unsyncedRemaining > 1 && (
+                          <span className="ml-1.5 text-xs text-muted-foreground flex-shrink-0">({unsyncedRemaining} left)</span>
+                        )}
                       </>
                     ) : (
                       <>
                         <Users className="mr-2 h-4 w-4" />
-                        Sync Guests
+                        All Events Synced
                       </>
                     )}
                   </Button>
@@ -1542,11 +1559,20 @@ export default function AdminDashboard() {
                   </p>
                   <Button
                     onClick={() => syncGuestsMutation.mutate()}
-                    disabled={syncGuestsMutation.isPending}
+                    disabled={syncGuestsMutation.isPending || !nextUnsyncedEvent}
                     variant="outline"
                   >
-                    <Users className="mr-2 h-4 w-4" />
-                    Sync Guests
+                    {syncGuestsMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2 flex-shrink-0"></div>
+                        <span className="truncate max-w-[200px]">Syncing: {nextUnsyncedEvent?.name ?? '...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Users className="mr-2 h-4 w-4" />
+                        {nextUnsyncedEvent ? `Sync: ${nextUnsyncedEvent.name}` : 'All Events Synced'}
+                      </>
+                    )}
                   </Button>
                 </div>
               ) : (
