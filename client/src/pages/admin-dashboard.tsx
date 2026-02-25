@@ -1465,6 +1465,7 @@ export default function AdminDashboard() {
                       <TableHead className="text-center">Approved</TableHead>
                       <TableHead className="text-center">Waitlisted</TableHead>
                       <TableHead className="text-center">Pending</TableHead>
+                      <TableHead>Interests</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -1537,6 +1538,14 @@ export default function AdminDashboard() {
                             {person.pending > 0 ? (
                               <Badge variant="outline">{person.pending}</Badge>
                             ) : <span className="text-gray-400 text-sm">—</span>}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {Array.from(person.segments).sort().map(seg => (
+                                <Badge key={seg} variant="secondary" className="text-xs">{seg}</Badge>
+                              ))}
+                              {person.segments.size === 0 && <span className="text-gray-400 text-sm">—</span>}
+                            </div>
                           </TableCell>
                         </TableRow>
                       ));
