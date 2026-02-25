@@ -741,6 +741,27 @@ export default function AdminDashboard() {
     },
   });
 
+  const clearInterestsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/guests/clear-interests", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Interests Cleared",
+        description: data.message || "All interests have been cleared",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/luma-guests'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to Clear Interests",
+        description: error instanceof Error ? error.message : "Could not clear interests",
+        variant: "destructive",
+      });
+    },
+  });
+
   const syncDescriptionsMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/admin/events/sync-descriptions", {});
@@ -1432,6 +1453,29 @@ export default function AdminDashboard() {
                       <>
                         <Sparkles className="mr-2 h-4 w-4" />
                         Analyze Interests
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (confirm("Clear all interests from every event? This cannot be undone.")) {
+                        clearInterestsMutation.mutate();
+                      }
+                    }}
+                    disabled={clearInterestsMutation.isPending}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                    data-testid="button-clear-interests"
+                  >
+                    {clearInterestsMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Clearing...
+                      </>
+                    ) : (
+                      <>
+                        <X className="mr-2 h-4 w-4" />
+                        Clear Interests
                       </>
                     )}
                   </Button>

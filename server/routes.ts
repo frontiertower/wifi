@@ -1966,6 +1966,25 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
     }
   });
 
+  // Clear all event segments (interests)
+  app.post("/api/admin/guests/clear-interests", verifyAdminSession, async (req, res) => {
+    try {
+      const allEvents = await storage.getAllEventsWithSegments();
+      const withSegments = allEvents.filter(e => e.segments && e.segments.length > 0);
+      for (const event of withSegments) {
+        await storage.updateEventSegments(event.id, []);
+      }
+      res.json({
+        success: true,
+        message: `Cleared interests from ${withSegments.length} event${withSegments.length !== 1 ? 's' : ''}`,
+        cleared: withSegments.length,
+      });
+    } catch (error) {
+      console.error('Error clearing interests:', error);
+      res.status(500).json({ success: false, message: error instanceof Error ? error.message : "Failed to clear interests" });
+    }
+  });
+
   // Get segment summary
   app.get("/api/admin/segments", verifyAdminSession, async (req, res) => {
     try {
