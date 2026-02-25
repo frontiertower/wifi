@@ -1514,9 +1514,19 @@ export default function AdminDashboard() {
                 />
               </div>
               {lumaGuestsData?.guests && (() => {
-                const categoryCounts: Record<string, number> = {};
+                const EXCLUDED_STATUSES = new Set(["invited", "declined"]);
+                // Deduplicate by email: union interests across all active registrations per person
+                const byEmail = new Map<string, Set<string>>();
                 for (const g of lumaGuestsData.guests) {
-                  for (const seg of g.segments ?? []) {
+                  if (EXCLUDED_STATUSES.has(g.approvalStatus ?? "")) continue;
+                  const key = (g.email ?? g.name ?? g.lumaGuestId ?? "").toLowerCase();
+                  if (!byEmail.has(key)) byEmail.set(key, new Set());
+                  for (const seg of g.segments ?? []) byEmail.get(key)!.add(seg);
+                }
+                const uniquePeople = byEmail.size;
+                const categoryCounts: Record<string, number> = {};
+                for (const segs of byEmail.values()) {
+                  for (const seg of segs) {
                     categoryCounts[seg] = (categoryCounts[seg] ?? 0) + 1;
                   }
                 }
@@ -1530,7 +1540,7 @@ export default function AdminDashboard() {
                       data-testid="button-guest-filter-all"
                     >
                       All Categories
-                      <span className="ml-1.5 text-xs opacity-70">{lumaGuestsData.guests.length}</span>
+                      <span className="ml-1.5 text-xs opacity-70">{uniquePeople}</span>
                     </Button>
                     {categories.map(category => (
                       <Button
