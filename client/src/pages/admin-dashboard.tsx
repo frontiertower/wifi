@@ -1552,10 +1552,13 @@ export default function AdminDashboard() {
                       </div>
                     </div>
 
-                    {/* Interests — categories from all RSVPs, ranked by frequency */}
+                    {/* Interests — categories from RSVPs where guest showed genuine interest */}
                     {(() => {
+                      const DISINTERESTED = new Set(["invited", "declined"]);
                       const catCounts: Record<string, number> = {};
                       for (const rsvp of profileRsvps) {
+                        const status = (rsvp.approvalStatus ?? "").toLowerCase();
+                        if (DISINTERESTED.has(status)) continue;
                         for (const seg of (rsvp.segments ?? [])) {
                           catCounts[seg] = (catCounts[seg] ?? 0) + 1;
                         }
