@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut, Briefcase, Check, Star } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut, Briefcase, Check, Star, Mail, UserCircle, CheckCircle2, XCircle, Clock, LogIn } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +38,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing, JobApplication, ResidencyBooking } from "@shared/schema";
 
 type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers" | "segments" | "guests";
@@ -285,6 +292,7 @@ export default function AdminDashboard() {
 
   const [guestEventFilter, setGuestEventFilter] = useState<string>("all");
   const [guestSearch, setGuestSearch] = useState<string>("");
+  const [selectedGuestEmail, setSelectedGuestEmail] = useState<string | null>(null);
 
   const { data: floorStats } = useQuery<FloorStatsResponse>({
     queryKey: ['/api/admin/floor-stats'],
@@ -1391,8 +1399,22 @@ export default function AdminDashboard() {
                         return matchesCategory && matchesSearch;
                       })
                       .map(guest => (
-                        <TableRow key={guest.id} data-testid={`row-guest-${guest.id}`}>
-                          <TableCell className="font-medium">{guest.name || "-"}</TableCell>
+                        <TableRow
+                          key={guest.id}
+                          data-testid={`row-guest-${guest.id}`}
+                          className="cursor-pointer hover-elevate"
+                          onClick={() => setSelectedGuestEmail(guest.email)}
+                        >
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                <span className="text-xs font-semibold text-primary">
+                                  {guest.name ? guest.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase() : "?"}
+                                </span>
+                              </div>
+                              {guest.name || "-"}
+                            </div>
+                          </TableCell>
                           <TableCell className="text-sm text-gray-600 dark:text-gray-400">{guest.email || "-"}</TableCell>
                           <TableCell className="text-sm">{guest.eventName || "-"}</TableCell>
                           <TableCell>
@@ -1406,7 +1428,12 @@ export default function AdminDashboard() {
                             {guest.registeredAt ? new Date(guest.registeredAt).toLocaleDateString() : "-"}
                           </TableCell>
                           <TableCell className="text-sm whitespace-nowrap">
-                            {guest.checkedInAt ? new Date(guest.checkedInAt).toLocaleDateString() : "-"}
+                            {guest.checkedInAt ? (
+                              <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                {new Date(guest.checkedInAt).toLocaleDateString()}
+                              </span>
+                            ) : "-"}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -1414,6 +1441,136 @@ export default function AdminDashboard() {
                 </Table>
               )}
             </div>
+
+            {/* Guest Profile Sheet */}
+            {(() => {
+              const profileRsvps = selectedGuestEmail && lumaGuestsData?.guests
+                ? lumaGuestsData.guests.filter(g => g.email === selectedGuestEmail).sort((a, b) => new Date(b.registeredAt ?? 0).getTime() - new Date(a.registeredAt ?? 0).getTime())
+                : [];
+              const profileName = profileRsvps[0]?.name ?? selectedGuestEmail ?? "";
+              const initials = profileName.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase() || "?";
+              const checkedInCount = profileRsvps.filter(r => !!r.checkedInAt).length;
+
+              const statusIcon = (status: string | null) => {
+                if (!status) return <Clock className="h-4 w-4 text-gray-400" />;
+                if (status === "approved" || status === "accepted") return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+                if (status === "declined" || status === "rejected") return <XCircle className="h-4 w-4 text-red-500" />;
+                return <Clock className="h-4 w-4 text-gray-400" />;
+              };
+
+              const statusVariant = (status: string | null): "default" | "destructive" | "secondary" => {
+                if (!status) return "secondary";
+                if (status === "approved" || status === "accepted") return "default";
+                if (status === "declined" || status === "rejected") return "destructive";
+                return "secondary";
+              };
+
+              return (
+                <Sheet open={!!selectedGuestEmail} onOpenChange={(open) => { if (!open) setSelectedGuestEmail(null); }}>
+                  <SheetContent className="w-full sm:max-w-lg overflow-y-auto" data-testid="sheet-guest-profile">
+                    <SheetHeader className="pb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span className="text-xl font-bold text-primary">{initials}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <SheetTitle className="text-left text-lg leading-tight truncate">{profileName}</SheetTitle>
+                          {selectedGuestEmail && (
+                            <SheetDescription className="text-left mt-1 flex items-center gap-1.5">
+                              <Mail className="h-3.5 w-3.5 flex-shrink-0" />
+                              <span className="truncate">{selectedGuestEmail}</span>
+                            </SheetDescription>
+                          )}
+                        </div>
+                      </div>
+                    </SheetHeader>
+
+                    {/* Summary stats */}
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                      <div className="rounded-md border border-gray-200 dark:border-gray-700 p-3 text-center">
+                        <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{profileRsvps.length}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">RSVPs</p>
+                      </div>
+                      <div className="rounded-md border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-3 text-center">
+                        <p className="text-2xl font-bold text-green-700 dark:text-green-300">{checkedInCount}</p>
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-0.5">Attended</p>
+                      </div>
+                      <div className="rounded-md border border-gray-200 dark:border-gray-700 p-3 text-center">
+                        <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                          {profileRsvps.length > 0 ? Math.round((checkedInCount / profileRsvps.length) * 100) : 0}%
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Show-up rate</p>
+                      </div>
+                    </div>
+
+                    {/* Event history */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        Event History
+                      </h3>
+                      {profileRsvps.length === 0 ? (
+                        <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">No RSVPs found.</p>
+                      ) : (
+                        <div className="space-y-3">
+                          {profileRsvps.map((rsvp) => {
+                            const isPast = rsvp.checkedInAt !== null || (rsvp.registeredAt ? new Date(rsvp.registeredAt) < new Date() : false);
+                            return (
+                              <div
+                                key={rsvp.id}
+                                className="rounded-md border border-gray-200 dark:border-gray-700 p-3 space-y-2"
+                                data-testid={`profile-rsvp-${rsvp.id}`}
+                              >
+                                <div className="flex items-start justify-between gap-2">
+                                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight">{rsvp.eventName || "Unknown event"}</p>
+                                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                                    {statusIcon(rsvp.approvalStatus)}
+                                    <Badge variant={statusVariant(rsvp.approvalStatus)} className="text-xs capitalize">
+                                      {rsvp.approvalStatus?.replace(/_/g, " ") ?? "pending"}
+                                    </Badge>
+                                  </div>
+                                </div>
+
+                                {/* Categories */}
+                                {rsvp.segments && rsvp.segments.length > 0 && (
+                                  <div className="flex flex-wrap gap-1">
+                                    {rsvp.segments.map(seg => (
+                                      <span key={seg} className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-primary/10 text-primary font-medium">
+                                        {seg}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+
+                                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                                  {rsvp.registeredAt && (
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" />
+                                      Registered {new Date(rsvp.registeredAt).toLocaleDateString()}
+                                    </span>
+                                  )}
+                                  {rsvp.checkedInAt ? (
+                                    <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                                      <LogIn className="h-3 w-3" />
+                                      Checked in {new Date(rsvp.checkedInAt).toLocaleDateString()}
+                                    </span>
+                                  ) : (
+                                    <span className="flex items-center gap-1 text-gray-400">
+                                      <XCircle className="h-3 w-3" />
+                                      Did not check in
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              );
+            })()}
           </div>
         )}
 
