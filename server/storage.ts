@@ -1195,6 +1195,10 @@ export class DatabaseStorage {
     };
   }
 
+  async updateEventDescription(eventId: number, description: string): Promise<void> {
+    await db.update(events).set({ description }).where(eq(events.id, eventId));
+  }
+
   async markEventGuestsSynced(eventId: number): Promise<void> {
     await db.update(events).set({ guestsSyncedAt: new Date() }).where(eq(events.id, eventId));
   }

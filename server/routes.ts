@@ -1570,6 +1570,75 @@ Rules:
     }
   });
 
+  // Backfill event descriptions from Luma calendar/list-events API
+  app.post("/api/admin/events/sync-descriptions", verifyAdminSession, async (req, res) => {
+    try {
+      const LUMA_API_KEY = process.env.LUMA_API_KEY;
+      const CALENDAR_ID = process.env.CALENDAR_ID;
+      if (!LUMA_API_KEY || !CALENDAR_ID) {
+        throw new Error("LUMA_API_KEY or CALENDAR_ID environment variables are not configured");
+      }
+
+      const allEvents = await storage.getAllEvents();
+      // Build a lookup by URL slug (last path segment) for fast matching
+      const bySlug = new Map<string, typeof allEvents[0]>();
+      const byExternalId = new Map<string, typeof allEvents[0]>();
+      for (const e of allEvents) {
+        if (e.url) {
+          const slug = e.url.split('/').filter(Boolean).pop();
+          if (slug) bySlug.set(slug, e);
+        }
+        if (e.externalId) byExternalId.set(e.externalId, e);
+      }
+
+      let cursor: string | undefined;
+      let updated = 0;
+      let skipped = 0;
+
+      const isPlaceholder = (d: string | null | undefined) =>
+        !d || d.trim() === '' || /get up-to-date information at/i.test(d);
+
+      do {
+        const url = new URL(`https://api.lu.ma/public/v1/calendar/list-events`);
+        url.searchParams.set("calendar_api_id", CALENDAR_ID);
+        url.searchParams.set("pagination_limit", "100");
+        if (cursor) url.searchParams.set("pagination_cursor", cursor);
+
+        const data = await lumaGet<{ entries?: any[]; has_more?: boolean; next_cursor?: string }>(url.toString(), LUMA_API_KEY);
+        const entries = data.entries || [];
+
+        for (const entry of entries) {
+          const raw = entry.event || entry;
+          const desc = raw.description_md || raw.description || '';
+          if (isPlaceholder(desc)) { skipped++; continue; }
+
+          // Match by externalId first, then by URL slug
+          const slug = raw.url;
+          const dbEvent = byExternalId.get(raw.api_id) ?? (slug ? bySlug.get(slug) : undefined);
+          if (!dbEvent) { skipped++; continue; }
+
+          // Only overwrite if the stored description is a placeholder or empty
+          if (!isPlaceholder(dbEvent.description)) { skipped++; continue; }
+
+          await storage.updateEventDescription(dbEvent.id, desc);
+          updated++;
+        }
+
+        cursor = data.has_more ? data.next_cursor : undefined;
+      } while (cursor);
+
+      res.json({
+        success: true,
+        message: `Updated descriptions for ${updated} event${updated !== 1 ? 's' : ''}${skipped > 0 ? ` (${skipped} already had descriptions or had no match)` : ''}`,
+        updated,
+        skipped,
+      });
+    } catch (error) {
+      console.error('Error syncing event descriptions:', error);
+      res.status(500).json({ success: false, message: error instanceof Error ? error.message : "Failed to sync descriptions" });
+    }
+  });
+
   // Sync Luma event guests
   app.post("/api/admin/events/sync-guests", verifyAdminSession, async (req, res) => {
     try {

@@ -718,6 +718,27 @@ export default function AdminDashboard() {
     },
   });
 
+  const syncDescriptionsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/events/sync-descriptions", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Descriptions Synced",
+        description: data.message || `Updated ${data.updated} event descriptions`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/events'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to Sync Descriptions",
+        description: error instanceof Error ? error.message : "Could not sync event descriptions",
+        variant: "destructive",
+      });
+    },
+  });
+
   const deduplicateEventsMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/admin/events/cleanup", {});
@@ -1072,6 +1093,27 @@ export default function AdminDashboard() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         Sync Images
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    onClick={() => syncDescriptionsMutation.mutate()}
+                    disabled={syncDescriptionsMutation.isPending}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                    data-testid="button-sync-descriptions"
+                  >
+                    {syncDescriptionsMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Syncing...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Sync Descriptions
                       </>
                     )}
                   </Button>
