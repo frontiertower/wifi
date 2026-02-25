@@ -1667,65 +1667,74 @@ Rules:
         return res.json({ success: true, message: msg, totalGuests: 0, syncedEvents: 0 });
       }
 
-      const event = pastLumaEvents[0];
       let totalGuests = 0;
-      let cursor: string | undefined;
+      let syncedEvents = 0;
+      const errors: string[] = [];
 
-      do {
-        const url = new URL("https://api.lu.ma/public/v1/event/get-guests");
-        url.searchParams.set("event_api_id", event.externalId!);
-        url.searchParams.set("pagination_limit", "100");
-        if (cursor) url.searchParams.set("pagination_cursor", cursor);
-
-        let data: { entries?: any[]; has_more?: boolean; next_cursor?: string };
+      for (const event of pastLumaEvents) {
         try {
-          data = await lumaGet<{ entries?: any[]; has_more?: boolean; next_cursor?: string }>(url.toString(), LUMA_API_KEY);
-        } catch (fetchErr) {
-          throw new Error(`Luma API error: ${fetchErr instanceof Error ? fetchErr.message : 'Unknown'}`);
+          let eventGuests = 0;
+          let cursor: string | undefined;
+
+          do {
+            const url = new URL("https://api.lu.ma/public/v1/event/get-guests");
+            url.searchParams.set("event_api_id", event.externalId!);
+            url.searchParams.set("pagination_limit", "100");
+            if (cursor) url.searchParams.set("pagination_cursor", cursor);
+
+            let data: { entries?: any[]; has_more?: boolean; next_cursor?: string };
+            try {
+              data = await lumaGet<{ entries?: any[]; has_more?: boolean; next_cursor?: string }>(url.toString(), LUMA_API_KEY);
+            } catch (fetchErr) {
+              throw new Error(`Luma API error: ${fetchErr instanceof Error ? fetchErr.message : 'Unknown'}`);
+            }
+            const entries = data.entries || [];
+
+            for (const entry of entries) {
+              const guest = entry.guest || entry;
+              const guestId = entry.api_id || guest.api_id;
+              if (!guestId) continue;
+
+              const rawAnswers: Array<{ label: string; value: unknown; answer: unknown; question_id: string; question_type: string }> =
+                guest.registration_answers ?? entry.registration_answers ?? [];
+              const registrationAnswers = rawAnswers
+                .filter(a => a.question_type !== "terms" && a.answer !== "" && a.answer !== null && a.answer !== undefined && a.answer !== false)
+                .map(a => ({ label: a.label, answer: String(a.answer), type: a.question_type }));
+
+              await storage.upsertLumaGuest({
+                lumaGuestId: guestId,
+                eventExternalId: event.externalId!,
+                eventName: event.name,
+                name: guest.name || entry.name || null,
+                email: guest.email || entry.email || null,
+                approvalStatus: entry.approval_status || guest.approval_status || null,
+                registeredAt: entry.registered_at ? new Date(entry.registered_at) : null,
+                checkedInAt: entry.checked_in_at ? new Date(entry.checked_in_at) : null,
+                registrationAnswers: registrationAnswers.length > 0 ? registrationAnswers : null,
+              });
+              eventGuests++;
+            }
+
+            cursor = data.has_more ? data.next_cursor : undefined;
+          } while (cursor);
+
+          await storage.markEventGuestsSynced(event.id);
+          console.log(`Synced ${eventGuests} guests for event "${event.name}"`);
+          totalGuests += eventGuests;
+          syncedEvents++;
+        } catch (eventError) {
+          const msg = `"${event.name}": ${eventError instanceof Error ? eventError.message : 'Unknown error'}`;
+          console.error(`Failed to sync guests for ${msg}`);
+          errors.push(msg);
         }
-        const entries = data.entries || [];
-
-        for (const entry of entries) {
-          const guest = entry.guest || entry;
-          const guestId = entry.api_id || guest.api_id;
-          if (!guestId) continue;
-
-          const rawAnswers: Array<{ label: string; value: unknown; answer: unknown; question_id: string; question_type: string }> =
-            guest.registration_answers ?? entry.registration_answers ?? [];
-          const registrationAnswers = rawAnswers
-            .filter(a => a.question_type !== "terms" && a.answer !== "" && a.answer !== null && a.answer !== undefined && a.answer !== false)
-            .map(a => ({ label: a.label, answer: String(a.answer), type: a.question_type }));
-
-          await storage.upsertLumaGuest({
-            lumaGuestId: guestId,
-            eventExternalId: event.externalId!,
-            eventName: event.name,
-            name: guest.name || entry.name || null,
-            email: guest.email || entry.email || null,
-            approvalStatus: entry.approval_status || guest.approval_status || null,
-            registeredAt: entry.registered_at ? new Date(entry.registered_at) : null,
-            checkedInAt: entry.checked_in_at ? new Date(entry.checked_in_at) : null,
-            registrationAnswers: registrationAnswers.length > 0 ? registrationAnswers : null,
-          });
-          totalGuests++;
-        }
-
-        cursor = data.has_more ? data.next_cursor : undefined;
-      } while (cursor);
-
-      // Mark this event as synced so it won't be re-synced
-      await storage.markEventGuestsSynced(event.id);
-      console.log(`Synced ${totalGuests} guests for event "${event.name}"`);
-
-      const remaining = pastLumaEvents.length - 1;
+      }
 
       res.json({
         success: true,
-        message: `Synced ${totalGuests} guest${totalGuests !== 1 ? 's' : ''} from "${event.name}"${remaining > 0 ? ` — ${remaining} more past event${remaining !== 1 ? 's' : ''} ready to sync` : ' — all past events are now synced'}`,
+        message: `Synced ${totalGuests} guest${totalGuests !== 1 ? 's' : ''} across ${syncedEvents} event${syncedEvents !== 1 ? 's' : ''}${errors.length > 0 ? ` (${errors.length} failed)` : ' — all past events synced'}`,
         totalGuests,
-        syncedEvents: 1,
-        eventName: event.name,
-        remainingUnsyncedEvents: remaining,
+        syncedEvents,
+        errors: errors.length > 0 ? errors : undefined,
       });
     } catch (error) {
       console.error('Error syncing Luma guests:', error);
