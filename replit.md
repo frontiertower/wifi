@@ -55,3 +55,4 @@ The Homepage features a theme toggle in the top-right corner, a language selecto
 *   **AI Integration**: OpenAI GPT-4o (for event parsing).
 *   **Email Service**: Resend (for transactional emails).
 *   **iCloud Integration**: icloud-shared-album (for photo gallery scraping).
+*   **Luma Guest Sync**: Admin Events tab has a "Sync Guests" button that calls `GET https://api.lu.ma/public/v1/event/get-guests` for each Luma event, storing results in the `luma_guests` table. Guests are displayed in a filterable table below the events list, showing name, email, event, approval status, registration date, and check-in date. Supports pagination via `next_cursor`.

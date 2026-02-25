@@ -540,6 +540,27 @@ export const insertResidencyBookingSchema = createInsertSchema(residencyBookings
   { message: "Check-out date must be after check-in date", path: ["checkOutDate"] }
 );
 
+export const lumaGuests = pgTable("luma_guests", {
+  id: serial("id").primaryKey(),
+  lumaGuestId: text("luma_guest_id").notNull().unique(),
+  eventExternalId: text("event_external_id"),
+  eventName: text("event_name"),
+  name: text("name"),
+  email: text("email"),
+  approvalStatus: text("approval_status"),
+  registeredAt: timestamp("registered_at"),
+  checkedInAt: timestamp("checked_in_at"),
+  syncedAt: timestamp("synced_at").defaultNow(),
+});
+
+export const insertLumaGuestSchema = createInsertSchema(lumaGuests).omit({
+  id: true,
+  syncedAt: true,
+});
+
+export type LumaGuest = typeof lumaGuests.$inferSelect;
+export type InsertLumaGuest = z.infer<typeof insertLumaGuestSchema>;
+
 export const pillChoices = pgTable("pill_choices", {
   id: serial("id").primaryKey(),
   choice: text("choice").notNull(), // "green" or "blue"

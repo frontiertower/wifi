@@ -1,6 +1,6 @@
-import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, jobApplications, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, jobListings, residencyBookings, pillChoices, pageVisits, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type JobApplication, type InsertJobApplication, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin, type JobListing, type InsertJobListing, type ResidencyBooking, type InsertResidencyBooking, type PillChoice, type InsertPillChoice, type PageVisit, type InsertPageVisit } from "@shared/schema";
+import { users, captiveUsers, events, vouchers, sessions, dailyStats, settings, bookings, directoryListings, tourBookings, eventHostBookings, membershipApplications, chatInviteRequests, jobApplications, privateOfficeRentals, authenticatedMembers, wifiPasswords, adminLogins, jobListings, residencyBookings, pillChoices, pageVisits, lumaGuests, type User, type InsertUser, type CaptiveUser, type InsertCaptiveUser, type Event, type Voucher, type InsertVoucher, type Session, type DailyStats, type Booking, type InsertBooking, type DirectoryListing, type InsertDirectoryListing, type TourBooking, type InsertTourBooking, type EventHostBooking, type InsertEventHostBooking, type MembershipApplication, type InsertMembershipApplication, type ChatInviteRequest, type InsertChatInviteRequest, type JobApplication, type InsertJobApplication, type PrivateOfficeRental, type InsertPrivateOfficeRental, type AuthenticatedMember, type WifiPassword, type InsertWifiPassword, type AdminLogin, type InsertAdminLogin, type JobListing, type InsertJobListing, type ResidencyBooking, type InsertResidencyBooking, type PillChoice, type InsertPillChoice, type PageVisit, type InsertPageVisit, type LumaGuest, type InsertLumaGuest } from "@shared/schema";
 import { db } from "./db";
-import { eq, sql, count, and } from "drizzle-orm";
+import { eq, sql, count, and, desc } from "drizzle-orm";
 
 export class DatabaseStorage {
   async getUser(id: number): Promise<User | undefined> {
@@ -1193,6 +1193,35 @@ export class DatabaseStorage {
       uniqueVisitorsToday: uniqueResult[0]?.uniqueCount || 0,
       visitsByPage: visitsByPage.map(v => ({ path: v.path, count: v.count })),
     };
+  }
+
+  async upsertLumaGuest(guest: InsertLumaGuest): Promise<LumaGuest> {
+    const [result] = await db
+      .insert(lumaGuests)
+      .values({ ...guest, syncedAt: new Date() })
+      .onConflictDoUpdate({
+        target: lumaGuests.lumaGuestId,
+        set: {
+          eventExternalId: guest.eventExternalId,
+          eventName: guest.eventName,
+          name: guest.name,
+          email: guest.email,
+          approvalStatus: guest.approvalStatus,
+          registeredAt: guest.registeredAt,
+          checkedInAt: guest.checkedInAt,
+          syncedAt: new Date(),
+        },
+      })
+      .returning();
+    return result;
+  }
+
+  async getAllLumaGuests(): Promise<LumaGuest[]> {
+    return db.select().from(lumaGuests).orderBy(desc(lumaGuests.registeredAt));
+  }
+
+  async getLumaGuestsByEvent(eventExternalId: string): Promise<LumaGuest[]> {
+    return db.select().from(lumaGuests).where(eq(lumaGuests.eventExternalId, eventExternalId)).orderBy(desc(lumaGuests.registeredAt));
   }
 }
 

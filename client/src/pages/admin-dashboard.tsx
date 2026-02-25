@@ -261,6 +261,13 @@ export default function AdminDashboard() {
     enabled: activeTab === "events",
   });
 
+  const { data: lumaGuestsData } = useQuery<{ success: boolean; guests: Array<{ id: number; lumaGuestId: string; eventExternalId: string | null; eventName: string | null; name: string | null; email: string | null; approvalStatus: string | null; registeredAt: string | null; checkedInAt: string | null; syncedAt: string | null }> }>({
+    queryKey: ['/api/admin/luma-guests'],
+    enabled: activeTab === "events",
+  });
+
+  const [guestEventFilter, setGuestEventFilter] = useState<string>("all");
+
   const { data: floorStats } = useQuery<FloorStatsResponse>({
     queryKey: ['/api/admin/floor-stats'],
     enabled: activeTab === "analytics",
@@ -598,6 +605,27 @@ export default function AdminDashboard() {
       toast({
         title: "Failed to Sync Events",
         description: error instanceof Error ? error.message : "Could not sync events from external feed",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const syncGuestsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/events/sync-guests", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Guests Synced",
+        description: data.message || `Synced ${data.totalGuests} guests`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/luma-guests'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to Sync Guests",
+        description: error instanceof Error ? error.message : "Could not sync guests from Luma",
         variant: "destructive",
       });
     },
@@ -978,6 +1006,25 @@ export default function AdminDashboard() {
                       </>
                     )}
                   </Button>
+                  <Button
+                    onClick={() => syncGuestsMutation.mutate()}
+                    disabled={syncGuestsMutation.isPending}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                    data-testid="button-sync-guests"
+                  >
+                    {syncGuestsMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Syncing Guests...
+                      </>
+                    ) : (
+                      <>
+                        <Users className="mr-2 h-4 w-4" />
+                        Sync Guests
+                      </>
+                    )}
+                  </Button>
                   <Button 
                     onClick={() => setShowEventForm(!showEventForm)}
                     className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white w-full sm:w-auto" 
@@ -1064,6 +1111,80 @@ export default function AdminDashboard() {
                 </Button>
               </div>
             </div>
+
+            {/* Luma Guests Table */}
+            {lumaGuestsData && lumaGuestsData.guests && lumaGuestsData.guests.length > 0 && (
+              <div className="border-t border-gray-200 dark:border-gray-700">
+                <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      Luma Event Guests
+                      <Badge variant="secondary">{lumaGuestsData.guests.length}</Badge>
+                    </h3>
+                    <div className="flex flex-wrap gap-2 sm:ml-4">
+                      <Button
+                        size="sm"
+                        variant={guestEventFilter === "all" ? "default" : "outline"}
+                        onClick={() => setGuestEventFilter("all")}
+                        data-testid="button-guest-filter-all"
+                      >
+                        All Events
+                      </Button>
+                      {Array.from(new Set(lumaGuestsData.guests.map(g => g.eventName).filter(Boolean))).map(eventName => (
+                        <Button
+                          key={eventName}
+                          size="sm"
+                          variant={guestEventFilter === eventName ? "default" : "outline"}
+                          onClick={() => setGuestEventFilter(eventName!)}
+                          data-testid={`button-guest-filter-${eventName}`}
+                        >
+                          {eventName}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Event</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Registered</TableHead>
+                        <TableHead>Checked In</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {lumaGuestsData.guests
+                        .filter(g => guestEventFilter === "all" || g.eventName === guestEventFilter)
+                        .map(guest => (
+                          <TableRow key={guest.id} data-testid={`row-guest-${guest.id}`}>
+                            <TableCell className="font-medium">{guest.name || "-"}</TableCell>
+                            <TableCell className="text-sm text-gray-600 dark:text-gray-400">{guest.email || "-"}</TableCell>
+                            <TableCell className="text-sm">{guest.eventName || "-"}</TableCell>
+                            <TableCell>
+                              {guest.approvalStatus ? (
+                                <Badge variant={guest.approvalStatus === "approved" ? "default" : guest.approvalStatus === "declined" ? "destructive" : "secondary"}>
+                                  {guest.approvalStatus.replace(/_/g, " ")}
+                                </Badge>
+                              ) : "-"}
+                            </TableCell>
+                            <TableCell className="text-sm whitespace-nowrap">
+                              {guest.registeredAt ? new Date(guest.registeredAt).toLocaleDateString() : "-"}
+                            </TableCell>
+                            <TableCell className="text-sm whitespace-nowrap">
+                              {guest.checkedInAt ? new Date(guest.checkedInAt).toLocaleDateString() : "-"}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
 
             <div className="overflow-x-auto">
               <Table>

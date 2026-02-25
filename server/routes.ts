@@ -1595,6 +1595,106 @@ Rules:
     }
   });
 
+  // Sync Luma event guests
+  app.post("/api/admin/events/sync-guests", verifyAdminSession, async (req, res) => {
+    try {
+      const LUMA_API_KEY = process.env.LUMA_API_KEY;
+      if (!LUMA_API_KEY) {
+        throw new Error("LUMA_API_KEY environment variable is not configured");
+      }
+
+      const allEvents = await storage.getAllEvents();
+      const lumaEvents = allEvents.filter(e => e.externalId && e.source === 'luma');
+
+      if (lumaEvents.length === 0) {
+        return res.json({ success: true, message: "No Luma events found to sync guests for", totalGuests: 0, syncedEvents: 0 });
+      }
+
+      let totalGuests = 0;
+      let syncedEvents = 0;
+      const errors: string[] = [];
+
+      for (const event of lumaEvents) {
+        try {
+          let cursor: string | undefined;
+          let pageGuests = 0;
+
+          do {
+            const url = new URL("https://api.lu.ma/public/v1/event/get-guests");
+            url.searchParams.set("event_api_id", event.externalId!);
+            url.searchParams.set("pagination_limit", "100");
+            if (cursor) url.searchParams.set("pagination_cursor", cursor);
+
+            const response = await fetch(url.toString(), {
+              headers: {
+                "x-luma-api-key": LUMA_API_KEY,
+                "Accept": "application/json",
+              },
+            });
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`Luma API returned ${response.status}: ${errorText}`);
+            }
+
+            const data = await response.json();
+            const entries = data.entries || [];
+
+            for (const entry of entries) {
+              const guest = entry.guest || entry;
+              const guestId = entry.api_id || guest.api_id;
+              if (!guestId) continue;
+
+              await storage.upsertLumaGuest({
+                lumaGuestId: guestId,
+                eventExternalId: event.externalId!,
+                eventName: event.name,
+                name: guest.name || entry.name || null,
+                email: guest.email || entry.email || null,
+                approvalStatus: entry.approval_status || guest.approval_status || null,
+                registeredAt: entry.registered_at ? new Date(entry.registered_at) : null,
+                checkedInAt: entry.checked_in_at ? new Date(entry.checked_in_at) : null,
+              });
+              pageGuests++;
+            }
+
+            cursor = data.has_more ? data.next_cursor : undefined;
+          } while (cursor);
+
+          totalGuests += pageGuests;
+          syncedEvents++;
+          console.log(`Synced ${pageGuests} guests for event "${event.name}"`);
+        } catch (eventError) {
+          const msg = `Failed to sync guests for "${event.name}": ${eventError instanceof Error ? eventError.message : 'Unknown error'}`;
+          console.error(msg);
+          errors.push(msg);
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `Synced ${totalGuests} guest${totalGuests !== 1 ? 's' : ''} across ${syncedEvents} event${syncedEvents !== 1 ? 's' : ''}${errors.length > 0 ? ` (${errors.length} event${errors.length !== 1 ? 's' : ''} failed)` : ''}`,
+        totalGuests,
+        syncedEvents,
+        errors: errors.length > 0 ? errors : undefined,
+      });
+    } catch (error) {
+      console.error('Error syncing Luma guests:', error);
+      res.status(500).json({ success: false, message: error instanceof Error ? error.message : "Failed to sync guests" });
+    }
+  });
+
+  // Get all Luma guests
+  app.get("/api/admin/luma-guests", verifyAdminSession, async (req, res) => {
+    try {
+      const guests = await storage.getAllLumaGuests();
+      res.json({ success: true, guests });
+    } catch (error) {
+      console.error('Error fetching Luma guests:', error);
+      res.status(500).json({ success: false, message: "Failed to fetch guests" });
+    }
+  });
+
   app.post("/api/bookings", async (req, res) => {
     try {
       let bookingData = req.body;
