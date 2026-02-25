@@ -1595,12 +1595,15 @@ export default function AdminDashboard() {
                       <TableHead className="text-center">Approved</TableHead>
                       <TableHead className="text-center">Waitlisted</TableHead>
                       <TableHead className="text-center">Pending</TableHead>
+                      <TableHead className="text-center">
+                        {guestEventFilter === "all" ? "Points" : `${guestEventFilter} Pts`}
+                      </TableHead>
                       <TableHead>Interests</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {(() => {
-                      // Deduplicate by email, aggregating status counts and segments
+                      // Deduplicate by email, aggregating status counts, segments, and category points
                       type PersonRow = {
                         email: string | null;
                         name: string | null;
@@ -1608,6 +1611,7 @@ export default function AdminDashboard() {
                         waitlisted: number;
                         pending: number;
                         segments: Set<string>;
+                        categoryApproved: number;
                       };
                       const EXCLUDED_STATUSES = new Set(["invited", "declined"]);
                       const byEmail = new Map<string, PersonRow>();
@@ -1615,24 +1619,31 @@ export default function AdminDashboard() {
                         if (EXCLUDED_STATUSES.has(g.approvalStatus ?? "")) continue;
                         const key = g.email ?? `__noemail_${g.id}`;
                         if (!byEmail.has(key)) {
-                          byEmail.set(key, { email: g.email, name: g.name, approved: 0, waitlisted: 0, pending: 0, segments: new Set() });
+                          byEmail.set(key, { email: g.email, name: g.name, approved: 0, waitlisted: 0, pending: 0, segments: new Set(), categoryApproved: 0 });
                         }
                         const p = byEmail.get(key)!;
                         if (!p.name && g.name) p.name = g.name;
                         const s = g.approvalStatus;
-                        if (s === "approved") p.approved++;
-                        else if (s === "waitlisted") p.waitlisted++;
+                        if (s === "approved") {
+                          p.approved++;
+                          // Points: approved registrations in the active category (or all)
+                          if (guestEventFilter === "all" || (g.segments ?? []).includes(guestEventFilter)) {
+                            p.categoryApproved++;
+                          }
+                        } else if (s === "waitlisted") p.waitlisted++;
                         else p.pending++;
                         for (const seg of g.segments ?? []) p.segments.add(seg);
                       }
 
-                      // Filter by category and search
-                      const people = Array.from(byEmail.values()).filter(p => {
-                        const matchesCategory = guestEventFilter === "all" || p.segments.has(guestEventFilter);
-                        const q = guestSearch.toLowerCase();
-                        const matchesSearch = !q || (p.name?.toLowerCase().includes(q) ?? false) || (p.email?.toLowerCase().includes(q) ?? false);
-                        return matchesCategory && matchesSearch;
-                      });
+                      // Filter by category and search, sort by points descending
+                      const people = Array.from(byEmail.values())
+                        .filter(p => {
+                          const matchesCategory = guestEventFilter === "all" || p.segments.has(guestEventFilter);
+                          const q = guestSearch.toLowerCase();
+                          const matchesSearch = !q || (p.name?.toLowerCase().includes(q) ?? false) || (p.email?.toLowerCase().includes(q) ?? false);
+                          return matchesCategory && matchesSearch;
+                        })
+                        .sort((a, b) => b.categoryApproved - a.categoryApproved);
 
                       const totalPages = Math.max(1, Math.ceil(people.length / GUESTS_PER_PAGE));
                       const safePage = Math.min(guestPage, totalPages);
@@ -1669,6 +1680,11 @@ export default function AdminDashboard() {
                           <TableCell className="text-center">
                             {person.pending > 0 ? (
                               <Badge variant="outline">{person.pending}</Badge>
+                            ) : <span className="text-gray-400 text-sm">—</span>}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {person.categoryApproved > 0 ? (
+                              <Badge variant="default" className="font-bold">{person.categoryApproved}</Badge>
                             ) : <span className="text-gray-400 text-sm">—</span>}
                           </TableCell>
                           <TableCell>
