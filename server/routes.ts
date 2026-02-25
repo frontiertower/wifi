@@ -1570,68 +1570,55 @@ Rules:
     }
   });
 
-  // Backfill event descriptions from Luma calendar/list-events API
+  // Backfill event descriptions using Luma event/get API (full description per event)
   app.post("/api/admin/events/sync-descriptions", verifyAdminSession, async (req, res) => {
     try {
       const LUMA_API_KEY = process.env.LUMA_API_KEY;
-      const CALENDAR_ID = process.env.CALENDAR_ID;
-      if (!LUMA_API_KEY || !CALENDAR_ID) {
-        throw new Error("LUMA_API_KEY or CALENDAR_ID environment variables are not configured");
+      if (!LUMA_API_KEY) {
+        throw new Error("LUMA_API_KEY environment variable is not configured");
       }
-
-      const allEvents = await storage.getAllEvents();
-      // Build a lookup by URL slug (last path segment) for fast matching
-      const bySlug = new Map<string, typeof allEvents[0]>();
-      const byExternalId = new Map<string, typeof allEvents[0]>();
-      for (const e of allEvents) {
-        if (e.url) {
-          const slug = e.url.split('/').filter(Boolean).pop();
-          if (slug) bySlug.set(slug, e);
-        }
-        if (e.externalId) byExternalId.set(e.externalId, e);
-      }
-
-      let cursor: string | undefined;
-      let updated = 0;
-      let skipped = 0;
 
       const isPlaceholder = (d: string | null | undefined) =>
         !d || d.trim() === '' || /get up-to-date information at/i.test(d);
 
-      do {
-        const url = new URL(`https://api.lu.ma/public/v1/calendar/list-events`);
-        url.searchParams.set("calendar_api_id", CALENDAR_ID);
-        url.searchParams.set("pagination_limit", "100");
-        if (cursor) url.searchParams.set("pagination_cursor", cursor);
+      const allEvents = await storage.getAllEvents();
+      // Only target events with a real Luma externalId (evt- prefix) that still have placeholder descriptions
+      const targets = allEvents.filter(e =>
+        e.externalId && e.externalId.startsWith('evt-') && isPlaceholder(e.description)
+      );
 
-        const data = await lumaGet<{ entries?: any[]; has_more?: boolean; next_cursor?: string }>(url.toString(), LUMA_API_KEY);
-        const entries = data.entries || [];
+      let updated = 0;
+      let skipped = 0;
+      let failed = 0;
 
-        for (const entry of entries) {
-          const raw = entry.event || entry;
+      for (const dbEvent of targets) {
+        try {
+          const url = `https://api.lu.ma/public/v1/event/get?api_id=${encodeURIComponent(dbEvent.externalId!)}`;
+          const data = await lumaGet<{ event?: any }>(url, LUMA_API_KEY);
+          const raw = data.event || data;
+
+          // Prefer description_md (markdown), then description (plain/html)
           const desc = raw.description_md || raw.description || '';
-          if (isPlaceholder(desc)) { skipped++; continue; }
 
-          // Match by externalId first, then by URL slug
-          const slug = raw.url;
-          const dbEvent = byExternalId.get(raw.api_id) ?? (slug ? bySlug.get(slug) : undefined);
-          if (!dbEvent) { skipped++; continue; }
-
-          // Only overwrite if the stored description is a placeholder or empty
-          if (!isPlaceholder(dbEvent.description)) { skipped++; continue; }
+          if (isPlaceholder(desc)) {
+            skipped++;
+            continue;
+          }
 
           await storage.updateEventDescription(dbEvent.id, desc);
           updated++;
+        } catch (err) {
+          console.warn(`Failed to fetch description for event ${dbEvent.externalId}:`, err instanceof Error ? err.message : err);
+          failed++;
         }
-
-        cursor = data.has_more ? data.next_cursor : undefined;
-      } while (cursor);
+      }
 
       res.json({
         success: true,
-        message: `Updated descriptions for ${updated} event${updated !== 1 ? 's' : ''}${skipped > 0 ? ` (${skipped} already had descriptions or had no match)` : ''}`,
+        message: `Updated descriptions for ${updated} event${updated !== 1 ? 's' : ''}${skipped > 0 ? `, ${skipped} had no description in Luma` : ''}${failed > 0 ? `, ${failed} failed` : ''}`,
         updated,
         skipped,
+        failed,
       });
     } catch (error) {
       console.error('Error syncing event descriptions:', error);
