@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/sheet";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing, JobApplication, ResidencyBooking } from "@shared/schema";
 
-type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers" | "segments" | "guests";
+type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers" | "segments" | "guests" | "hosts";
 
 // Helper function to generate URL slugs from listing names
 function slugify(text: string): string {
@@ -293,6 +293,32 @@ export default function AdminDashboard() {
   const [guestEventFilter, setGuestEventFilter] = useState<string>("all");
   const [guestSearch, setGuestSearch] = useState<string>("");
   const [selectedGuestEmail, setSelectedGuestEmail] = useState<string | null>(null);
+
+  type HostEvent = { id: number; name: string; externalId: string | null; url: string | null; startDate: string; endDate: string; segments: string[] };
+  type EnrichedHost = { id: number; lumaHostId: string; name: string | null; email: string | null; avatarUrl: string | null; eventExternalIds: string[]; syncedAt: string | null; hostedEvents: HostEvent[]; segments: Array<{ name: string; count: number }>; eventCount: number };
+
+  const { data: hostsData, isLoading: hostsLoading } = useQuery<{ success: boolean; hosts: EnrichedHost[]; allSegmentNames: string[] }>({
+    queryKey: ['/api/admin/hosts'],
+    enabled: activeTab === "hosts",
+  });
+
+  const [hostCategoryFilter, setHostCategoryFilter] = useState<string>("all");
+  const [hostSearch, setHostSearch] = useState<string>("");
+  const [selectedHostId, setSelectedHostId] = useState<string | null>(null);
+
+  const syncHostsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/hosts/sync", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({ title: "Hosts Synced", description: data.message });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/hosts'] });
+    },
+    onError: (error) => {
+      toast({ title: "Sync Failed", description: error instanceof Error ? error.message : "Could not sync hosts", variant: "destructive" });
+    },
+  });
 
   const { data: floorStats } = useQuery<FloorStatsResponse>({
     queryKey: ['/api/admin/floor-stats'],
@@ -782,6 +808,7 @@ export default function AdminDashboard() {
     { id: "users", label: "Users", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
     { id: "guests", label: "Guests", icon: Ticket },
+    { id: "hosts", label: "Hosts", icon: UserCircle },
     { id: "segments", label: "Segments", icon: Filter },
     { id: "leads", label: "Leads", icon: ClipboardList },
     { id: "careers", label: "Careers", icon: Briefcase },
@@ -1619,6 +1646,269 @@ export default function AdminDashboard() {
                           })}
                         </div>
                       )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              );
+            })()}
+          </div>
+        )}
+
+        {activeTab === "hosts" && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            {/* Header */}
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div>
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Event Hosts</h2>
+                  {hostsData?.hosts && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      {hostsData.hosts.length} host{hostsData.hosts.length !== 1 ? "s" : ""} &bull; {hostsData.allSegmentNames.length} categor{hostsData.allSegmentNames.length !== 1 ? "ies" : "y"}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  onClick={() => syncHostsMutation.mutate()}
+                  disabled={syncHostsMutation.isPending}
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  data-testid="button-sync-hosts"
+                >
+                  {syncHostsMutation.isPending ? (
+                    <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />Syncing Hosts…</>
+                  ) : (
+                    <><UserCircle className="mr-2 h-4 w-4" />Sync Hosts</>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 space-y-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by name or email…"
+                  value={hostSearch}
+                  onChange={e => setHostSearch(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                  data-testid="input-host-search"
+                />
+              </div>
+              {hostsData?.allSegmentNames && hostsData.allSegmentNames.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant={hostCategoryFilter === "all" ? "default" : "outline"} onClick={() => setHostCategoryFilter("all")} data-testid="button-host-filter-all">
+                    All Categories
+                  </Button>
+                  {hostsData.allSegmentNames.map(cat => (
+                    <Button key={cat} size="sm" variant={hostCategoryFilter === cat ? "default" : "outline"} onClick={() => setHostCategoryFilter(cat)} data-testid={`button-host-filter-${cat}`}>
+                      {cat}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+              {hostsLoading ? (
+                <div className="flex items-center justify-center py-16">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+                </div>
+              ) : !hostsData?.hosts?.length ? (
+                <div className="text-center py-16">
+                  <UserCircle className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No hosts synced yet</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">Click "Sync Hosts" to pull host profiles from all your Luma events.</p>
+                  <Button onClick={() => syncHostsMutation.mutate()} disabled={syncHostsMutation.isPending} variant="outline">
+                    <UserCircle className="mr-2 h-4 w-4" />Sync Hosts
+                  </Button>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Host</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Categories</TableHead>
+                      <TableHead className="text-center">Events</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {hostsData.hosts
+                      .filter(h => {
+                        const matchesCat = hostCategoryFilter === "all" || h.segments.some(s => s.name === hostCategoryFilter);
+                        const q = hostSearch.toLowerCase();
+                        const matchesSearch = !q || (h.name?.toLowerCase().includes(q) ?? false) || (h.email?.toLowerCase().includes(q) ?? false);
+                        return matchesCat && matchesSearch;
+                      })
+                      .map(host => {
+                        const initials = host.name ? host.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase() : "?";
+                        const PILL_COLORS = [
+                          "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+                          "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300",
+                          "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
+                          "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300",
+                          "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300",
+                          "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300",
+                          "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300",
+                          "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
+                          "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300",
+                          "bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300",
+                        ];
+                        const hashCode = (s: string) => s.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+                        return (
+                          <TableRow
+                            key={host.lumaHostId}
+                            className="cursor-pointer hover-elevate"
+                            onClick={() => setSelectedHostId(host.lumaHostId)}
+                            data-testid={`row-host-${host.lumaHostId}`}
+                          >
+                            <TableCell className="font-medium">
+                              <div className="flex items-center gap-2">
+                                {host.avatarUrl ? (
+                                  <img src={host.avatarUrl} alt={host.name ?? ""} className="h-7 w-7 rounded-full object-cover flex-shrink-0" />
+                                ) : (
+                                  <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                    <span className="text-xs font-semibold text-primary">{initials}</span>
+                                  </div>
+                                )}
+                                {host.name || <span className="text-gray-400 italic">Unknown</span>}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-sm text-gray-600 dark:text-gray-400">{host.email || "-"}</TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {host.segments.slice(0, 4).map(seg => (
+                                  <span key={seg.name} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${PILL_COLORS[hashCode(seg.name) % PILL_COLORS.length]}`}>
+                                    {seg.name}{seg.count > 1 && <span className="opacity-60">×{seg.count}</span>}
+                                  </span>
+                                ))}
+                                {host.segments.length > 4 && <span className="text-xs text-gray-400">+{host.segments.length - 4} more</span>}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-center">
+                              <Badge variant="secondary">{host.eventCount}</Badge>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                  </TableBody>
+                </Table>
+              )}
+            </div>
+
+            {/* Host Profile Sheet */}
+            {(() => {
+              const host = hostsData?.hosts?.find(h => h.lumaHostId === selectedHostId) ?? null;
+              if (!host) return (
+                <Sheet open={false} onOpenChange={() => setSelectedHostId(null)}>
+                  <SheetContent className="w-full sm:max-w-lg overflow-y-auto" />
+                </Sheet>
+              );
+              const initials = host.name ? host.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase() : "?";
+              const PILL_COLORS = [
+                "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+                "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300",
+                "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
+                "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300",
+                "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300",
+                "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300",
+                "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300",
+                "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
+                "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300",
+                "bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300",
+              ];
+              const hashCode = (s: string) => s.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+              const upcomingCount = host.hostedEvents.filter(e => new Date(e.endDate) >= new Date()).length;
+              return (
+                <Sheet open={!!selectedHostId} onOpenChange={(open) => { if (!open) setSelectedHostId(null); }}>
+                  <SheetContent className="w-full sm:max-w-lg overflow-y-auto" data-testid="sheet-host-profile">
+                    <SheetHeader className="pb-4">
+                      <div className="flex items-center gap-4">
+                        {host.avatarUrl ? (
+                          <img src={host.avatarUrl} alt={host.name ?? ""} className="h-14 w-14 rounded-full object-cover flex-shrink-0" />
+                        ) : (
+                          <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xl font-bold text-primary">{initials}</span>
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <SheetTitle className="text-left text-lg leading-tight">{host.name || "Unknown Host"}</SheetTitle>
+                          {host.email && (
+                            <SheetDescription className="text-left mt-1 flex items-center gap-1.5">
+                              <Mail className="h-3.5 w-3.5 flex-shrink-0" />
+                              <span className="truncate">{host.email}</span>
+                            </SheetDescription>
+                          )}
+                        </div>
+                      </div>
+                    </SheetHeader>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      <div className="rounded-md border border-gray-200 dark:border-gray-700 p-3 text-center">
+                        <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{host.eventCount}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Events Hosted</p>
+                      </div>
+                      <div className="rounded-md border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-3 text-center">
+                        <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{upcomingCount}</p>
+                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-0.5">Upcoming</p>
+                      </div>
+                    </div>
+
+                    {/* Categories */}
+                    {host.segments.length > 0 && (
+                      <div className="mb-6">
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+                          <Sparkles className="h-4 w-4" />
+                          Specialties
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {host.segments.map(seg => (
+                            <span key={seg.name} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${PILL_COLORS[hashCode(seg.name) % PILL_COLORS.length]}`} data-testid={`host-specialty-${seg.name}`}>
+                              {seg.name}
+                              {seg.count > 1 && <span className="opacity-60 font-normal">×{seg.count}</span>}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Events hosted */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        Events Hosted
+                      </h3>
+                      <div className="space-y-3">
+                        {host.hostedEvents
+                          .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+                          .map(ev => {
+                            const isPast = new Date(ev.endDate) < new Date();
+                            return (
+                              <div key={ev.id} className={`rounded-md border border-gray-200 dark:border-gray-700 p-3 space-y-2 ${isPast ? "opacity-70" : ""}`} data-testid={`host-event-${ev.id}`}>
+                                <div className="flex items-start justify-between gap-2">
+                                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight">
+                                    {ev.url ? <a href={ev.url} target="_blank" rel="noopener noreferrer" className="hover:underline">{ev.name}</a> : ev.name}
+                                  </p>
+                                  {isPast ? <Badge variant="secondary" className="text-xs flex-shrink-0">Past</Badge> : <Badge variant="default" className="text-xs flex-shrink-0">Upcoming</Badge>}
+                                </div>
+                                {ev.segments.length > 0 && (
+                                  <div className="flex flex-wrap gap-1">
+                                    {ev.segments.map(seg => (
+                                      <span key={seg} className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${PILL_COLORS[hashCode(seg) % PILL_COLORS.length]}`}>{seg}</span>
+                                    ))}
+                                  </div>
+                                )}
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  {new Date(ev.startDate).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                                </p>
+                              </div>
+                            );
+                          })}
+                      </div>
                     </div>
                   </SheetContent>
                 </Sheet>

@@ -562,6 +562,20 @@ export const insertLumaGuestSchema = createInsertSchema(lumaGuests).omit({
 export type LumaGuest = typeof lumaGuests.$inferSelect;
 export type InsertLumaGuest = z.infer<typeof insertLumaGuestSchema>;
 
+export const lumaHosts = pgTable("luma_hosts", {
+  id: serial("id").primaryKey(),
+  lumaHostId: text("luma_host_id").notNull().unique(),
+  name: text("name"),
+  email: text("email"),
+  avatarUrl: text("avatar_url"),
+  eventExternalIds: text("event_external_ids").array().default([]),
+  syncedAt: timestamp("synced_at").defaultNow(),
+});
+
+export const insertLumaHostSchema = createInsertSchema(lumaHosts).omit({ id: true, syncedAt: true });
+export type LumaHost = typeof lumaHosts.$inferSelect;
+export type InsertLumaHost = z.infer<typeof insertLumaHostSchema>;
+
 export const pillChoices = pgTable("pill_choices", {
   id: serial("id").primaryKey(),
   choice: text("choice").notNull(), // "green" or "blue"
