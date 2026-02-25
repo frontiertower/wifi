@@ -1977,6 +1977,115 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
     }
   });
 
+  // UniFi connected devices endpoint
+  app.get("/api/admin/devices", verifyAdminSession, async (req, res) => {
+    try {
+      const apiKey = process.env.UNIFI_API_KEY;
+      const controllerUrl = process.env.UNIFI_CONTROLLER_URL;
+      const siteId = process.env.UNIFI_SITE || "default";
+      const username = process.env.UNIFI_USERNAME;
+      const password = process.env.UNIFI_PASSWORD;
+      const dbSettings = await storage.getSettings();
+      const apiType = apiKey ? 'modern' : (dbSettings.unifi_api_type || 'none');
+
+      if (!controllerUrl || apiType === 'none') {
+        return res.json({ success: true, configured: false, devices: [], message: "UniFi controller not configured" });
+      }
+
+      const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+
+      type NormalizedDevice = {
+        mac: string; ip: string | null; hostname: string | null;
+        type: "WIRELESS" | "WIRED"; signalStrength: number | null;
+        uptime: number | null; network: string | null; apMac: string | null;
+      };
+
+      if (apiType === 'modern' && apiKey) {
+        let allDevices: NormalizedDevice[] = [];
+        let page = 1;
+        const pageSize = 200;
+
+        while (true) {
+          const response = await fetch(
+            `${controllerUrl}/v1/sites/${siteId}/clients?pageSize=${pageSize}&page=${page}`,
+            { headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, agent: httpsAgent }
+          );
+          if (!response.ok) throw new Error(`UniFi API error: ${response.status} ${response.statusText}`);
+
+          const body = await response.json() as { data?: any[]; totalCount?: number };
+          const items: any[] = body.data ?? (Array.isArray(body) ? body : []);
+
+          for (const c of items) {
+            allDevices.push({
+              mac: (c.macAddress ?? c.mac ?? "").toUpperCase(),
+              ip: c.ipAddress ?? c.ip ?? null,
+              hostname: c.name ?? c.hostname ?? null,
+              type: c.type === "WIRED" || c.isWired === true ? "WIRED" : "WIRELESS",
+              signalStrength: c.signalStrength ?? c.signal ?? null,
+              uptime: c.uptime ?? null,
+              network: c.network ?? c.ssid ?? null,
+              apMac: (c.uplinkMacAddress ?? c.apMac ?? null)?.toUpperCase() ?? null,
+            });
+          }
+
+          if (items.length < pageSize) break;
+          page++;
+          if (page > 20) break;
+        }
+
+        return res.json({ success: true, configured: true, devices: allDevices, total: allDevices.length });
+      }
+
+      // Legacy API
+      if (apiType === 'legacy' && username && password) {
+        let loginResponse = await fetch(`${controllerUrl}/api/login`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }), agent: httpsAgent,
+        });
+
+        if (!loginResponse.ok) {
+          loginResponse = await fetch(`${controllerUrl}/api/auth/login`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, remember: true }), agent: httpsAgent,
+          });
+          if (!loginResponse.ok) throw new Error('Failed to authenticate with UniFi controller');
+        }
+
+        const setCookies = loginResponse.headers.raw()['set-cookie'] || [];
+        const cookies = setCookies.join('; ');
+
+        let clientsData: any[] = [];
+        for (const path of [`${controllerUrl}/api/s/${siteId}/stat/sta`, `${controllerUrl}/proxy/network/api/s/${siteId}/stat/sta`]) {
+          try {
+            const r = await fetch(path, { headers: { 'Cookie': cookies, 'Content-Type': 'application/json' }, agent: httpsAgent });
+            if (r.ok) { const body = await r.json(); clientsData = body.data ?? []; break; }
+          } catch { continue; }
+        }
+
+        const devices: NormalizedDevice[] = clientsData.map((c: any) => ({
+          mac: (c.mac ?? "").toUpperCase(),
+          ip: c.ip ?? null,
+          hostname: c.name ?? c.hostname ?? c.oui ?? null,
+          type: c.is_wired ? "WIRED" : "WIRELESS",
+          signalStrength: c.signal ?? null,
+          uptime: c.uptime ?? null,
+          network: c.essid ?? null,
+          apMac: (c.ap_mac ?? null)?.toUpperCase() ?? null,
+        }));
+
+        return res.json({ success: true, configured: true, devices, total: devices.length });
+      }
+
+      return res.json({ success: true, configured: false, devices: [], message: "UniFi credentials incomplete" });
+    } catch (error) {
+      console.error('Devices fetch error:', error);
+      return res.status(500).json({
+        success: false, configured: true, devices: [],
+        message: error instanceof Error ? error.message : "Failed to fetch devices"
+      });
+    }
+  });
+
   app.post("/api/bookings", async (req, res) => {
     try {
       let bookingData = req.body;

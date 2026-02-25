@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut, Briefcase, Check, Star, Mail, UserCircle, CheckCircle2, XCircle, Clock, LogIn } from "lucide-react";
+import { Building, Users, Ticket, Calendar, TrendingUp, Plus, Filter, Sparkles, Settings, Eye, EyeOff, Download, ClipboardList, Menu, ExternalLink, Building2, Save, Trash2, X, Wifi, Search, LogOut, Briefcase, Check, Star, Mail, UserCircle, CheckCircle2, XCircle, Clock, LogIn, Laptop, Radio, RefreshCw, AlertCircle, Waves } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/sheet";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing, JobApplication, ResidencyBooking } from "@shared/schema";
 
-type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers" | "segments" | "guests" | "hosts";
+type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers" | "segments" | "guests" | "hosts" | "devices";
 
 // Helper function to generate URL slugs from listing names
 function slugify(text: string): string {
@@ -318,6 +318,27 @@ export default function AdminDashboard() {
     onError: (error) => {
       toast({ title: "Sync Failed", description: error instanceof Error ? error.message : "Could not sync hosts", variant: "destructive" });
     },
+  });
+
+  type UnifiDevice = {
+    mac: string;
+    ip: string | null;
+    hostname: string | null;
+    type: "WIRELESS" | "WIRED";
+    signalStrength: number | null;
+    uptime: number | null;
+    network: string | null;
+    apMac: string | null;
+  };
+  type DevicesResponse = { success: boolean; configured: boolean; devices: UnifiDevice[]; total?: number; message?: string };
+
+  const [deviceSearch, setDeviceSearch] = useState<string>("");
+  const [deviceTypeFilter, setDeviceTypeFilter] = useState<"all" | "WIRELESS" | "WIRED">("all");
+
+  const { data: devicesData, isLoading: devicesLoading, refetch: refetchDevices, isFetching: devicesFetching } = useQuery<DevicesResponse>({
+    queryKey: ['/api/admin/devices'],
+    enabled: activeTab === "devices",
+    staleTime: 0,
   });
 
   const { data: floorStats } = useQuery<FloorStatsResponse>({
@@ -814,6 +835,7 @@ export default function AdminDashboard() {
     { id: "careers", label: "Careers", icon: Briefcase },
     { id: "directory", label: "Directory", icon: Building2 },
     { id: "settings", label: "WiFi", icon: Wifi },
+    { id: "devices", label: "Devices", icon: Laptop },
     { id: "admin-logins", label: "Admins", icon: LogOut },
   ] as const;
 
@@ -3591,6 +3613,176 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === "settings" && <SettingsTab />}
+
+        {activeTab === "devices" && (() => {
+          const formatUptime = (seconds: number | null): string => {
+            if (seconds === null) return "—";
+            const d = Math.floor(seconds / 86400);
+            const h = Math.floor((seconds % 86400) / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            if (d > 0) return `${d}d ${h}h`;
+            if (h > 0) return `${h}h ${m}m`;
+            return `${m}m`;
+          };
+
+          const formatSignal = (dbm: number | null): { label: string; color: string } => {
+            if (dbm === null) return { label: "—", color: "text-gray-400" };
+            if (dbm >= -50) return { label: `${dbm} dBm`, color: "text-green-600 dark:text-green-400" };
+            if (dbm >= -70) return { label: `${dbm} dBm`, color: "text-yellow-600 dark:text-yellow-400" };
+            return { label: `${dbm} dBm`, color: "text-red-500 dark:text-red-400" };
+          };
+
+          const filtered = (devicesData?.devices ?? []).filter(d => {
+            const matchesType = deviceTypeFilter === "all" || d.type === deviceTypeFilter;
+            const q = deviceSearch.toLowerCase();
+            const matchesSearch = !q ||
+              (d.mac?.toLowerCase().includes(q)) ||
+              (d.hostname?.toLowerCase().includes(q) ?? false) ||
+              (d.ip?.toLowerCase().includes(q) ?? false) ||
+              (d.network?.toLowerCase().includes(q) ?? false);
+            return matchesType && matchesSearch;
+          });
+
+          const wirelessCount = (devicesData?.devices ?? []).filter(d => d.type === "WIRELESS").length;
+          const wiredCount = (devicesData?.devices ?? []).filter(d => d.type === "WIRED").length;
+
+          return (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              {/* Header */}
+              <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                  <div>
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Connected Devices</h2>
+                    {devicesData?.configured && devicesData.devices.length > 0 && (
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        {devicesData.devices.length} device{devicesData.devices.length !== 1 ? "s" : ""} connected &bull; {wirelessCount} wireless &bull; {wiredCount} wired
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    onClick={() => refetchDevices()}
+                    disabled={devicesLoading || devicesFetching}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                    data-testid="button-refresh-devices"
+                  >
+                    <RefreshCw className={`mr-2 h-4 w-4 ${devicesFetching ? "animate-spin" : ""}`} />
+                    {devicesFetching ? "Refreshing…" : "Refresh"}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Not configured state */}
+              {devicesData && !devicesData.configured && (
+                <div className="p-8 text-center">
+                  <AlertCircle className="h-10 w-10 text-amber-500 mx-auto mb-3" />
+                  <h3 className="text-base font-semibold text-gray-700 dark:text-gray-300 mb-1">UniFi Controller Not Configured</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                    Set your <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded text-xs">UNIFI_CONTROLLER_URL</code> and <code className="bg-gray-100 dark:bg-gray-700 px-1 rounded text-xs">UNIFI_API_KEY</code> (or legacy credentials) to see connected devices.
+                  </p>
+                </div>
+              )}
+
+              {/* Configured — filter bar */}
+              {devicesData?.configured && (
+                <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 space-y-3">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search by hostname, MAC, IP, or network…"
+                      value={deviceSearch}
+                      onChange={e => setDeviceSearch(e.target.value)}
+                      className="w-full pl-9 pr-4 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                      data-testid="input-device-search"
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" variant={deviceTypeFilter === "all" ? "default" : "outline"} onClick={() => setDeviceTypeFilter("all")} data-testid="button-device-filter-all">
+                      All ({devicesData.devices.length})
+                    </Button>
+                    <Button size="sm" variant={deviceTypeFilter === "WIRELESS" ? "default" : "outline"} onClick={() => setDeviceTypeFilter("WIRELESS")} data-testid="button-device-filter-wireless">
+                      <Waves className="mr-1.5 h-3.5 w-3.5" />Wireless ({wirelessCount})
+                    </Button>
+                    <Button size="sm" variant={deviceTypeFilter === "WIRED" ? "default" : "outline"} onClick={() => setDeviceTypeFilter("WIRED")} data-testid="button-device-filter-wired">
+                      <Radio className="mr-1.5 h-3.5 w-3.5" />Wired ({wiredCount})
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Table */}
+              {devicesData?.configured && (
+                <div className="overflow-x-auto">
+                  {devicesLoading ? (
+                    <div className="flex items-center justify-center py-16">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+                    </div>
+                  ) : filtered.length === 0 ? (
+                    <div className="text-center py-16">
+                      <Laptop className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {deviceSearch || deviceTypeFilter !== "all" ? "No devices match your filters" : "No devices connected"}
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {deviceSearch || deviceTypeFilter !== "all" ? "Try clearing your filters." : "Devices will appear here once they connect to the network."}
+                      </p>
+                    </div>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Device</TableHead>
+                          <TableHead>MAC Address</TableHead>
+                          <TableHead>IP Address</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Network / AP</TableHead>
+                          <TableHead>Signal</TableHead>
+                          <TableHead>Uptime</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filtered.map(device => {
+                          const signal = formatSignal(device.signalStrength);
+                          return (
+                            <TableRow key={device.mac} data-testid={`row-device-${device.mac}`}>
+                              <TableCell className="font-medium">
+                                <div className="flex items-center gap-2">
+                                  {device.type === "WIRELESS"
+                                    ? <Waves className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                                    : <Radio className="h-4 w-4 text-gray-500 flex-shrink-0" />}
+                                  <span className="truncate max-w-[140px]" title={device.hostname ?? undefined}>
+                                    {device.hostname || <span className="text-gray-400 italic text-xs">Unknown</span>}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="font-mono text-xs text-gray-600 dark:text-gray-400">{device.mac}</TableCell>
+                              <TableCell className="font-mono text-xs text-gray-600 dark:text-gray-400">{device.ip ?? "—"}</TableCell>
+                              <TableCell>
+                                <Badge variant={device.type === "WIRELESS" ? "default" : "secondary"} className="text-xs">
+                                  {device.type === "WIRELESS" ? "Wireless" : "Wired"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-sm text-gray-600 dark:text-gray-400">
+                                <div className="leading-tight">
+                                  {device.network && <div className="font-medium text-gray-800 dark:text-gray-200 text-xs">{device.network}</div>}
+                                  {device.apMac && <div className="font-mono text-xs text-gray-400">{device.apMac}</div>}
+                                  {!device.network && !device.apMac && "—"}
+                                </div>
+                              </TableCell>
+                              <TableCell className={`text-sm font-medium ${signal.color}`}>{signal.label}</TableCell>
+                              <TableCell className="text-sm text-gray-600 dark:text-gray-400">{formatUptime(device.uptime)}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {activeTab === "admin-logins" && (
           <div>
