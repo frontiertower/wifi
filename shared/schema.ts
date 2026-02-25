@@ -552,6 +552,7 @@ export const lumaGuests = pgTable("luma_guests", {
   registeredAt: timestamp("registered_at"),
   checkedInAt: timestamp("checked_in_at"),
   syncedAt: timestamp("synced_at").defaultNow(),
+  registrationAnswers: jsonb("registration_answers"),
 });
 
 export const insertLumaGuestSchema = createInsertSchema(lumaGuests).omit({

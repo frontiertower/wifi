@@ -1217,6 +1217,7 @@ export class DatabaseStorage {
           approvalStatus: guest.approvalStatus,
           registeredAt: guest.registeredAt,
           checkedInAt: guest.checkedInAt,
+          registrationAnswers: guest.registrationAnswers,
           syncedAt: new Date(),
         },
       })

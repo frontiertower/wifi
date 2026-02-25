@@ -1613,6 +1613,12 @@ Rules:
               const guestId = entry.api_id || guest.api_id;
               if (!guestId) continue;
 
+              const rawAnswers: Array<{ label: string; value: unknown; answer: unknown; question_id: string; question_type: string }> =
+                guest.registration_answers ?? entry.registration_answers ?? [];
+              const registrationAnswers = rawAnswers
+                .filter(a => a.question_type !== "terms" && a.answer !== "" && a.answer !== null && a.answer !== undefined && a.answer !== false)
+                .map(a => ({ label: a.label, answer: String(a.answer), type: a.question_type }));
+
               await storage.upsertLumaGuest({
                 lumaGuestId: guestId,
                 eventExternalId: event.externalId!,
@@ -1622,6 +1628,7 @@ Rules:
                 approvalStatus: entry.approval_status || guest.approval_status || null,
                 registeredAt: entry.registered_at ? new Date(entry.registered_at) : null,
                 checkedInAt: entry.checked_in_at ? new Date(entry.checked_in_at) : null,
+                registrationAnswers: registrationAnswers.length > 0 ? registrationAnswers : null,
               });
               pageGuests++;
             }
