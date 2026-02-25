@@ -1363,7 +1363,7 @@ export default function AdminDashboard() {
                   <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Event Guests</h2>
                   {lumaGuestsData?.guests && (
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      {lumaGuestsData.guests.length} guest{lumaGuestsData.guests.length !== 1 ? "s" : ""} &bull; {new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? [])).size} categor{new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? [])).size !== 1 ? "ies" : "y"} &bull; {new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size} event{new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size !== 1 ? "s" : ""}
+                      {new Set(lumaGuestsData.guests.map(g => g.email ?? `__${g.id}`)).size} people &bull; {lumaGuestsData.guests.length} registration{lumaGuestsData.guests.length !== 1 ? "s" : ""} &bull; {new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? [])).size} categor{new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? [])).size !== 1 ? "ies" : "y"} &bull; {new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size} event{new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size !== 1 ? "s" : ""}
                     </p>
                   )}
                 </div>
@@ -1462,59 +1462,81 @@ export default function AdminDashboard() {
                     <TableRow>
                       <TableHead>Name</TableHead>
                       <TableHead>Email</TableHead>
-                      <TableHead>Event</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Registered</TableHead>
-                      <TableHead>Checked In</TableHead>
+                      <TableHead className="text-center">Approved</TableHead>
+                      <TableHead className="text-center">Waitlisted</TableHead>
+                      <TableHead className="text-center">Pending</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {(() => {
-                      const filtered = lumaGuestsData.guests.filter(g => {
-                        const matchesCategory = guestEventFilter === "all" || (g.segments ?? []).includes(guestEventFilter);
+                      // Deduplicate by email, aggregating status counts and segments
+                      type PersonRow = {
+                        email: string | null;
+                        name: string | null;
+                        approved: number;
+                        waitlisted: number;
+                        pending: number;
+                        segments: Set<string>;
+                      };
+                      const byEmail = new Map<string, PersonRow>();
+                      for (const g of lumaGuestsData.guests) {
+                        const key = g.email ?? `__noemail_${g.id}`;
+                        if (!byEmail.has(key)) {
+                          byEmail.set(key, { email: g.email, name: g.name, approved: 0, waitlisted: 0, pending: 0, segments: new Set() });
+                        }
+                        const p = byEmail.get(key)!;
+                        if (!p.name && g.name) p.name = g.name;
+                        const s = g.approvalStatus;
+                        if (s === "approved") p.approved++;
+                        else if (s === "waitlisted") p.waitlisted++;
+                        else p.pending++;
+                        for (const seg of g.segments ?? []) p.segments.add(seg);
+                      }
+
+                      // Filter by category and search
+                      const people = Array.from(byEmail.values()).filter(p => {
+                        const matchesCategory = guestEventFilter === "all" || p.segments.has(guestEventFilter);
                         const q = guestSearch.toLowerCase();
-                        const matchesSearch = !q || (g.name?.toLowerCase().includes(q) ?? false) || (g.email?.toLowerCase().includes(q) ?? false);
+                        const matchesSearch = !q || (p.name?.toLowerCase().includes(q) ?? false) || (p.email?.toLowerCase().includes(q) ?? false);
                         return matchesCategory && matchesSearch;
                       });
-                      const totalPages = Math.max(1, Math.ceil(filtered.length / GUESTS_PER_PAGE));
+
+                      const totalPages = Math.max(1, Math.ceil(people.length / GUESTS_PER_PAGE));
                       const safePage = Math.min(guestPage, totalPages);
-                      const paginated = filtered.slice((safePage - 1) * GUESTS_PER_PAGE, safePage * GUESTS_PER_PAGE);
-                      return paginated.map(guest => (
+                      const paginated = people.slice((safePage - 1) * GUESTS_PER_PAGE, safePage * GUESTS_PER_PAGE);
+
+                      return paginated.map((person, idx) => (
                         <TableRow
-                          key={guest.id}
-                          data-testid={`row-guest-${guest.id}`}
+                          key={person.email ?? idx}
+                          data-testid={`row-guest-${idx}`}
                           className="cursor-pointer hover-elevate"
-                          onClick={() => setSelectedGuestEmail(guest.email)}
+                          onClick={() => setSelectedGuestEmail(person.email)}
                         >
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
                               <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                                 <span className="text-xs font-semibold text-primary">
-                                  {guest.name ? guest.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase() : "?"}
+                                  {person.name ? person.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase() : "?"}
                                 </span>
                               </div>
-                              {guest.name || "-"}
+                              {person.name || "-"}
                             </div>
                           </TableCell>
-                          <TableCell className="text-sm text-gray-600 dark:text-gray-400">{guest.email || "-"}</TableCell>
-                          <TableCell className="text-sm">{guest.eventName || "-"}</TableCell>
-                          <TableCell>
-                            {guest.approvalStatus ? (
-                              <Badge variant={guest.approvalStatus === "approved" ? "default" : guest.approvalStatus === "declined" ? "destructive" : "secondary"}>
-                                {guest.approvalStatus.replace(/_/g, " ")}
-                              </Badge>
-                            ) : "-"}
+                          <TableCell className="text-sm text-gray-600 dark:text-gray-400">{person.email || "-"}</TableCell>
+                          <TableCell className="text-center">
+                            {person.approved > 0 ? (
+                              <Badge variant="default">{person.approved}</Badge>
+                            ) : <span className="text-gray-400 text-sm">—</span>}
                           </TableCell>
-                          <TableCell className="text-sm whitespace-nowrap">
-                            {guest.registeredAt ? new Date(guest.registeredAt).toLocaleDateString() : "-"}
+                          <TableCell className="text-center">
+                            {person.waitlisted > 0 ? (
+                              <Badge variant="secondary">{person.waitlisted}</Badge>
+                            ) : <span className="text-gray-400 text-sm">—</span>}
                           </TableCell>
-                          <TableCell className="text-sm whitespace-nowrap">
-                            {guest.checkedInAt ? (
-                              <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                                <CheckCircle2 className="h-3.5 w-3.5" />
-                                {new Date(guest.checkedInAt).toLocaleDateString()}
-                              </span>
-                            ) : "-"}
+                          <TableCell className="text-center">
+                            {person.pending > 0 ? (
+                              <Badge variant="outline">{person.pending}</Badge>
+                            ) : <span className="text-gray-400 text-sm">—</span>}
                           </TableCell>
                         </TableRow>
                       ));
@@ -1522,19 +1544,26 @@ export default function AdminDashboard() {
                   </TableBody>
                 </Table>
                 {(() => {
-                  const filtered = lumaGuestsData.guests.filter(g => {
-                    const matchesCategory = guestEventFilter === "all" || (g.segments ?? []).includes(guestEventFilter);
+                  const byEmail2 = new Map<string, { email: string | null; name: string | null; segments: Set<string> }>();
+                  for (const g of lumaGuestsData.guests) {
+                    const key = g.email ?? `__noemail_${g.id}`;
+                    if (!byEmail2.has(key)) byEmail2.set(key, { email: g.email, name: g.name, segments: new Set() });
+                    const p = byEmail2.get(key)!;
+                    for (const seg of g.segments ?? []) p.segments.add(seg);
+                  }
+                  const people2 = Array.from(byEmail2.values()).filter(p => {
+                    const matchesCategory = guestEventFilter === "all" || p.segments.has(guestEventFilter);
                     const q = guestSearch.toLowerCase();
-                    const matchesSearch = !q || (g.name?.toLowerCase().includes(q) ?? false) || (g.email?.toLowerCase().includes(q) ?? false);
+                    const matchesSearch = !q || (p.name?.toLowerCase().includes(q) ?? false) || (p.email?.toLowerCase().includes(q) ?? false);
                     return matchesCategory && matchesSearch;
                   });
-                  const totalPages = Math.max(1, Math.ceil(filtered.length / GUESTS_PER_PAGE));
+                  const totalPages = Math.max(1, Math.ceil(people2.length / GUESTS_PER_PAGE));
                   if (totalPages <= 1) return null;
                   const safePage = Math.min(guestPage, totalPages);
                   return (
                     <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700">
                       <span className="text-sm text-gray-500 dark:text-gray-400">
-                        Page {safePage} of {totalPages} &bull; {filtered.length.toLocaleString()} total
+                        Page {safePage} of {totalPages} &bull; {people2.length.toLocaleString()} people
                       </span>
                       <div className="flex items-center gap-2">
                         <Button
