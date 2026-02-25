@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/dialog";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing, JobApplication, ResidencyBooking } from "@shared/schema";
 
-type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers" | "segments";
+type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers" | "segments" | "guests";
 
 // Helper function to generate URL slugs from listing names
 function slugify(text: string): string {
@@ -279,10 +279,11 @@ export default function AdminDashboard() {
 
   const { data: lumaGuestsData } = useQuery<{ success: boolean; guests: Array<{ id: number; lumaGuestId: string; eventExternalId: string | null; eventName: string | null; name: string | null; email: string | null; approvalStatus: string | null; registeredAt: string | null; checkedInAt: string | null; syncedAt: string | null }> }>({
     queryKey: ['/api/admin/luma-guests'],
-    enabled: activeTab === "events",
+    enabled: activeTab === "guests",
   });
 
   const [guestEventFilter, setGuestEventFilter] = useState<string>("all");
+  const [guestSearch, setGuestSearch] = useState<string>("");
 
   const { data: floorStats } = useQuery<FloorStatsResponse>({
     queryKey: ['/api/admin/floor-stats'],
@@ -752,6 +753,7 @@ export default function AdminDashboard() {
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "users", label: "Users", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
+    { id: "guests", label: "Guests", icon: Ticket },
     { id: "segments", label: "Segments", icon: Filter },
     { id: "leads", label: "Leads", icon: ClipboardList },
     { id: "careers", label: "Careers", icon: Briefcase },
@@ -1044,25 +1046,6 @@ export default function AdminDashboard() {
                       </>
                     )}
                   </Button>
-                  <Button
-                    onClick={() => syncGuestsMutation.mutate()}
-                    disabled={syncGuestsMutation.isPending}
-                    variant="outline"
-                    className="w-full sm:w-auto"
-                    data-testid="button-sync-guests"
-                  >
-                    {syncGuestsMutation.isPending ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-                        Syncing Guests...
-                      </>
-                    ) : (
-                      <>
-                        <Users className="mr-2 h-4 w-4" />
-                        Sync Guests
-                      </>
-                    )}
-                  </Button>
                   <Button 
                     onClick={() => setShowEventForm(!showEventForm)}
                     className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white w-full sm:w-auto" 
@@ -1149,80 +1132,6 @@ export default function AdminDashboard() {
                 </Button>
               </div>
             </div>
-
-            {/* Luma Guests Table */}
-            {lumaGuestsData && lumaGuestsData.guests && lumaGuestsData.guests.length > 0 && (
-              <div className="border-t border-gray-200 dark:border-gray-700">
-                <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      Luma Event Guests
-                      <Badge variant="secondary">{lumaGuestsData.guests.length}</Badge>
-                    </h3>
-                    <div className="flex flex-wrap gap-2 sm:ml-4">
-                      <Button
-                        size="sm"
-                        variant={guestEventFilter === "all" ? "default" : "outline"}
-                        onClick={() => setGuestEventFilter("all")}
-                        data-testid="button-guest-filter-all"
-                      >
-                        All Events
-                      </Button>
-                      {Array.from(new Set(lumaGuestsData.guests.map(g => g.eventName).filter(Boolean))).map(eventName => (
-                        <Button
-                          key={eventName}
-                          size="sm"
-                          variant={guestEventFilter === eventName ? "default" : "outline"}
-                          onClick={() => setGuestEventFilter(eventName!)}
-                          data-testid={`button-guest-filter-${eventName}`}
-                        >
-                          {eventName}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Event</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Registered</TableHead>
-                        <TableHead>Checked In</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {lumaGuestsData.guests
-                        .filter(g => guestEventFilter === "all" || g.eventName === guestEventFilter)
-                        .map(guest => (
-                          <TableRow key={guest.id} data-testid={`row-guest-${guest.id}`}>
-                            <TableCell className="font-medium">{guest.name || "-"}</TableCell>
-                            <TableCell className="text-sm text-gray-600 dark:text-gray-400">{guest.email || "-"}</TableCell>
-                            <TableCell className="text-sm">{guest.eventName || "-"}</TableCell>
-                            <TableCell>
-                              {guest.approvalStatus ? (
-                                <Badge variant={guest.approvalStatus === "approved" ? "default" : guest.approvalStatus === "declined" ? "destructive" : "secondary"}>
-                                  {guest.approvalStatus.replace(/_/g, " ")}
-                                </Badge>
-                              ) : "-"}
-                            </TableCell>
-                            <TableCell className="text-sm whitespace-nowrap">
-                              {guest.registeredAt ? new Date(guest.registeredAt).toLocaleDateString() : "-"}
-                            </TableCell>
-                            <TableCell className="text-sm whitespace-nowrap">
-                              {guest.checkedInAt ? new Date(guest.checkedInAt).toLocaleDateString() : "-"}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            )}
 
             <div className="overflow-x-auto">
               <Table>
@@ -1348,6 +1257,142 @@ export default function AdminDashboard() {
                 })()}
               </TableBody>
             </Table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "guests" && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div>
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Event Guests</h2>
+                  {lumaGuestsData?.guests && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      {lumaGuestsData.guests.length} guest{lumaGuestsData.guests.length !== 1 ? "s" : ""} across {new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size} event{new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size !== 1 ? "s" : ""}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  onClick={() => syncGuestsMutation.mutate()}
+                  disabled={syncGuestsMutation.isPending}
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  data-testid="button-sync-guests"
+                >
+                  {syncGuestsMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                      Syncing Guests...
+                    </>
+                  ) : (
+                    <>
+                      <Users className="mr-2 h-4 w-4" />
+                      Sync Guests
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 space-y-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by name or email…"
+                  value={guestSearch}
+                  onChange={e => setGuestSearch(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
+                  data-testid="input-guest-search"
+                />
+              </div>
+              {lumaGuestsData?.guests && (
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant={guestEventFilter === "all" ? "default" : "outline"}
+                    onClick={() => setGuestEventFilter("all")}
+                    data-testid="button-guest-filter-all"
+                  >
+                    All Events
+                  </Button>
+                  {Array.from(new Set(lumaGuestsData.guests.map(g => g.eventName).filter(Boolean))).sort().map(eventName => (
+                    <Button
+                      key={eventName}
+                      size="sm"
+                      variant={guestEventFilter === eventName ? "default" : "outline"}
+                      onClick={() => setGuestEventFilter(eventName!)}
+                      data-testid={`button-guest-filter-${eventName}`}
+                    >
+                      {eventName}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="overflow-x-auto">
+              {!lumaGuestsData?.guests?.length ? (
+                <div className="text-center py-16">
+                  <Ticket className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No guests synced yet</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+                    Click "Sync Guests" to pull registrant data from all your Luma events.
+                  </p>
+                  <Button
+                    onClick={() => syncGuestsMutation.mutate()}
+                    disabled={syncGuestsMutation.isPending}
+                    variant="outline"
+                  >
+                    <Users className="mr-2 h-4 w-4" />
+                    Sync Guests
+                  </Button>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Event</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Registered</TableHead>
+                      <TableHead>Checked In</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {lumaGuestsData.guests
+                      .filter(g => {
+                        const matchesEvent = guestEventFilter === "all" || g.eventName === guestEventFilter;
+                        const q = guestSearch.toLowerCase();
+                        const matchesSearch = !q || (g.name?.toLowerCase().includes(q) ?? false) || (g.email?.toLowerCase().includes(q) ?? false);
+                        return matchesEvent && matchesSearch;
+                      })
+                      .map(guest => (
+                        <TableRow key={guest.id} data-testid={`row-guest-${guest.id}`}>
+                          <TableCell className="font-medium">{guest.name || "-"}</TableCell>
+                          <TableCell className="text-sm text-gray-600 dark:text-gray-400">{guest.email || "-"}</TableCell>
+                          <TableCell className="text-sm">{guest.eventName || "-"}</TableCell>
+                          <TableCell>
+                            {guest.approvalStatus ? (
+                              <Badge variant={guest.approvalStatus === "approved" ? "default" : guest.approvalStatus === "declined" ? "destructive" : "secondary"}>
+                                {guest.approvalStatus.replace(/_/g, " ")}
+                              </Badge>
+                            ) : "-"}
+                          </TableCell>
+                          <TableCell className="text-sm whitespace-nowrap">
+                            {guest.registeredAt ? new Date(guest.registeredAt).toLocaleDateString() : "-"}
+                          </TableCell>
+                          <TableCell className="text-sm whitespace-nowrap">
+                            {guest.checkedInAt ? new Date(guest.checkedInAt).toLocaleDateString() : "-"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              )}
             </div>
           </div>
         )}
