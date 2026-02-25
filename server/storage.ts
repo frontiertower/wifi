@@ -1237,6 +1237,20 @@ export class DatabaseStorage {
     return db.select().from(lumaGuests).orderBy(desc(lumaGuests.registeredAt));
   }
 
+  async updateGuestInterests(lumaGuestId: string, interests: string[]): Promise<void> {
+    await db.update(lumaGuests).set({ interests }).where(eq(lumaGuests.lumaGuestId, lumaGuestId));
+  }
+
+  async clearAllGuestInterests(): Promise<number> {
+    const withInterests = await db.select({ id: lumaGuests.lumaGuestId })
+      .from(lumaGuests)
+      .where(sql`interests IS NOT NULL AND array_length(interests, 1) > 0`);
+    if (withInterests.length > 0) {
+      await db.update(lumaGuests).set({ interests: [] });
+    }
+    return withInterests.length;
+  }
+
   async getLumaGuestsByEvent(eventExternalId: string): Promise<LumaGuest[]> {
     return db.select().from(lumaGuests).where(eq(lumaGuests.eventExternalId, eventExternalId)).orderBy(desc(lumaGuests.registeredAt));
   }

@@ -1881,34 +1881,39 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
 
       const EXCLUDED = new Set(["invited", "declined"]);
 
-      // Find unique event externalIds that have active guest registrations
+      // Get all active guests and the events they attended
       const allGuests = await storage.getAllLumaGuests();
-      const activeEventIds = new Set(
-        allGuests
-          .filter(g => !EXCLUDED.has(g.approvalStatus ?? ""))
-          .map(g => g.eventExternalId)
-          .filter(Boolean)
-      );
+      const activeGuests = allGuests.filter(g => !EXCLUDED.has(g.approvalStatus ?? "") && g.eventExternalId);
 
-      if (activeEventIds.size === 0) {
-        return res.json({ success: true, message: "No events with active guest registrations found", analyzed: 0 });
+      if (activeGuests.length === 0) {
+        return res.json({ success: true, message: "No active guest registrations found", analyzed: 0 });
       }
 
-      // Get the DB events that match those externalIds
+      // Build map of eventExternalId → guest lumaGuestIds
+      const guestsByExtId: Record<string, string[]> = {};
+      for (const g of activeGuests) {
+        const key = g.eventExternalId!;
+        if (!guestsByExtId[key]) guestsByExtId[key] = [];
+        guestsByExtId[key].push(g.lumaGuestId);
+      }
+
+      // Get DB events matching those externalIds
       const allEvents = await storage.getAllEventsWithSegments();
-      const eventsToAnalyze = allEvents.filter(e => e.externalId && activeEventIds.has(e.externalId) && !e.isHidden);
+      const eventsToAnalyze = allEvents.filter(e => e.externalId && guestsByExtId[e.externalId] && !e.isHidden);
 
       if (eventsToAnalyze.length === 0) {
         return res.json({ success: true, message: "No matching events found to analyze", analyzed: 0 });
       }
 
-      let analyzed = 0;
+      // AI-categorize events, then write interests directly onto each guest record
+      let updatedGuests = 0;
       const BATCH_SIZE = 20;
 
       for (let i = 0; i < eventsToAnalyze.length; i += BATCH_SIZE) {
         const batch = eventsToAnalyze.slice(i, i + BATCH_SIZE);
         const eventsJson = batch.map(e => ({
           id: e.id,
+          externalId: e.externalId,
           name: e.name,
           description: e.description ? e.description.substring(0, 300) : null,
         }));
@@ -1950,15 +1955,22 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
               .map((s: unknown) => typeof s === "string" ? s.trim() : "")
               .filter((s: string) => s.length > 0 && s.length <= 50)
           ));
-          await storage.updateEventSegments(item.id, cleanedSegments);
-          analyzed++;
+          // Find event's externalId from the batch
+          const batchEvent = batch.find(e => e.id === item.id);
+          if (!batchEvent?.externalId) continue;
+          // Update interests on every guest who attended this event with active status
+          const guestIds = guestsByExtId[batchEvent.externalId] ?? [];
+          for (const guestId of guestIds) {
+            await storage.updateGuestInterests(guestId, cleanedSegments);
+            updatedGuests++;
+          }
         }
       }
 
       res.json({
         success: true,
-        message: `Analyzed interests across ${analyzed} event${analyzed !== 1 ? 's' : ''} with active registrations`,
-        analyzed,
+        message: `Updated interests for ${updatedGuests} guest registration${updatedGuests !== 1 ? 's' : ''} across ${eventsToAnalyze.length} event${eventsToAnalyze.length !== 1 ? 's' : ''}`,
+        analyzed: updatedGuests,
       });
     } catch (error) {
       console.error('Error analyzing guest interests:', error);
@@ -1969,15 +1981,11 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
   // Clear all event segments (interests)
   app.post("/api/admin/guests/clear-interests", verifyAdminSession, async (req, res) => {
     try {
-      const allEvents = await storage.getAllEventsWithSegments();
-      const withSegments = allEvents.filter(e => e.segments && e.segments.length > 0);
-      for (const event of withSegments) {
-        await storage.updateEventSegments(event.id, []);
-      }
+      const cleared = await storage.clearAllGuestInterests();
       res.json({
         success: true,
-        message: `Cleared interests from ${withSegments.length} event${withSegments.length !== 1 ? 's' : ''}`,
-        cleared: withSegments.length,
+        message: `Cleared interests from ${cleared} guest record${cleared !== 1 ? 's' : ''}`,
+        cleared,
       });
     } catch (error) {
       console.error('Error clearing interests:', error);
@@ -2032,21 +2040,13 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
     }
   });
 
-  // Get all Luma guests (enriched with event segments)
+  // Get all Luma guests (with guest-level interests)
   app.get("/api/admin/luma-guests", verifyAdminSession, async (req, res) => {
     try {
       const guests = await storage.getAllLumaGuests();
-      // Build a map from externalId -> segments for quick lookup
-      const allEvents = await storage.getAllEventsWithSegments();
-      const segmentsByExtId: Record<string, string[]> = {};
-      for (const ev of allEvents) {
-        if (ev.externalId && ev.segments?.length) {
-          segmentsByExtId[ev.externalId] = ev.segments;
-        }
-      }
       const enriched = guests.map(g => ({
         ...g,
-        segments: (g.eventExternalId ? segmentsByExtId[g.eventExternalId] : null) ?? [],
+        segments: g.interests ?? [],
       }));
       res.json({ success: true, guests: enriched });
     } catch (error) {
