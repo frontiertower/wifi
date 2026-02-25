@@ -292,6 +292,8 @@ export default function AdminDashboard() {
 
   const [guestEventFilter, setGuestEventFilter] = useState<string>("all");
   const [guestSearch, setGuestSearch] = useState<string>("");
+  const [guestPage, setGuestPage] = useState<number>(1);
+  const GUESTS_PER_PAGE = 1000;
   const [selectedGuestEmail, setSelectedGuestEmail] = useState<string | null>(null);
 
   type UnifiDevice = {
@@ -1395,7 +1397,7 @@ export default function AdminDashboard() {
                   type="text"
                   placeholder="Search by name or email…"
                   value={guestSearch}
-                  onChange={e => setGuestSearch(e.target.value)}
+                  onChange={e => { setGuestSearch(e.target.value); setGuestPage(1); }}
                   className="w-full pl-9 pr-4 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary"
                   data-testid="input-guest-search"
                 />
@@ -1405,7 +1407,7 @@ export default function AdminDashboard() {
                   <Button
                     size="sm"
                     variant={guestEventFilter === "all" ? "default" : "outline"}
-                    onClick={() => setGuestEventFilter("all")}
+                    onClick={() => { setGuestEventFilter("all"); setGuestPage(1); }}
                     data-testid="button-guest-filter-all"
                   >
                     All Categories
@@ -1415,7 +1417,7 @@ export default function AdminDashboard() {
                       key={category}
                       size="sm"
                       variant={guestEventFilter === category ? "default" : "outline"}
-                      onClick={() => setGuestEventFilter(category)}
+                      onClick={() => { setGuestEventFilter(category); setGuestPage(1); }}
                       data-testid={`button-guest-filter-${category}`}
                     >
                       {category}
@@ -1455,14 +1457,17 @@ export default function AdminDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {lumaGuestsData.guests
-                      .filter(g => {
+                    {(() => {
+                      const filtered = lumaGuestsData.guests.filter(g => {
                         const matchesCategory = guestEventFilter === "all" || (g.segments ?? []).includes(guestEventFilter);
                         const q = guestSearch.toLowerCase();
                         const matchesSearch = !q || (g.name?.toLowerCase().includes(q) ?? false) || (g.email?.toLowerCase().includes(q) ?? false);
                         return matchesCategory && matchesSearch;
-                      })
-                      .map(guest => (
+                      });
+                      const totalPages = Math.max(1, Math.ceil(filtered.length / GUESTS_PER_PAGE));
+                      const safePage = Math.min(guestPage, totalPages);
+                      const paginated = filtered.slice((safePage - 1) * GUESTS_PER_PAGE, safePage * GUESTS_PER_PAGE);
+                      return paginated.map(guest => (
                         <TableRow
                           key={guest.id}
                           data-testid={`row-guest-${guest.id}`}
@@ -1500,9 +1505,48 @@ export default function AdminDashboard() {
                             ) : "-"}
                           </TableCell>
                         </TableRow>
-                      ))}
+                      ));
+                    })()}
                   </TableBody>
                 </Table>
+                {(() => {
+                  const filtered = lumaGuestsData.guests.filter(g => {
+                    const matchesCategory = guestEventFilter === "all" || (g.segments ?? []).includes(guestEventFilter);
+                    const q = guestSearch.toLowerCase();
+                    const matchesSearch = !q || (g.name?.toLowerCase().includes(q) ?? false) || (g.email?.toLowerCase().includes(q) ?? false);
+                    return matchesCategory && matchesSearch;
+                  });
+                  const totalPages = Math.max(1, Math.ceil(filtered.length / GUESTS_PER_PAGE));
+                  if (totalPages <= 1) return null;
+                  const safePage = Math.min(guestPage, totalPages);
+                  return (
+                    <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        Page {safePage} of {totalPages} &bull; {filtered.length.toLocaleString()} total
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setGuestPage(p => Math.max(1, p - 1))}
+                          disabled={safePage <= 1}
+                          data-testid="button-guests-prev"
+                        >
+                          Previous
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setGuestPage(p => Math.min(totalPages, p + 1))}
+                          disabled={safePage >= totalPages}
+                          data-testid="button-guests-next"
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })()}
               )}
             </div>
 
