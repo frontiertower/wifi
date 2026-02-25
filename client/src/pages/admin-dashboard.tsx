@@ -1479,8 +1479,10 @@ export default function AdminDashboard() {
                         pending: number;
                         segments: Set<string>;
                       };
+                      const EXCLUDED_STATUSES = new Set(["invited", "declined"]);
                       const byEmail = new Map<string, PersonRow>();
                       for (const g of lumaGuestsData.guests) {
+                        if (EXCLUDED_STATUSES.has(g.approvalStatus ?? "")) continue;
                         const key = g.email ?? `__noemail_${g.id}`;
                         if (!byEmail.has(key)) {
                           byEmail.set(key, { email: g.email, name: g.name, approved: 0, waitlisted: 0, pending: 0, segments: new Set() });
@@ -1555,6 +1557,7 @@ export default function AdminDashboard() {
                 {(() => {
                   const byEmail2 = new Map<string, { email: string | null; name: string | null; segments: Set<string> }>();
                   for (const g of lumaGuestsData.guests) {
+                    if (g.approvalStatus === "invited" || g.approvalStatus === "declined") continue;
                     const key = g.email ?? `__noemail_${g.id}`;
                     if (!byEmail2.has(key)) byEmail2.set(key, { email: g.email, name: g.name, segments: new Set() });
                     const p = byEmail2.get(key)!;
