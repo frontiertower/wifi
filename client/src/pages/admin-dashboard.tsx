@@ -278,7 +278,7 @@ export default function AdminDashboard() {
     enabled: activeTab === "segments",
   });
 
-  const { data: lumaGuestsData } = useQuery<{ success: boolean; guests: Array<{ id: number; lumaGuestId: string; eventExternalId: string | null; eventName: string | null; name: string | null; email: string | null; approvalStatus: string | null; registeredAt: string | null; checkedInAt: string | null; syncedAt: string | null }> }>({
+  const { data: lumaGuestsData } = useQuery<{ success: boolean; guests: Array<{ id: number; lumaGuestId: string; eventExternalId: string | null; eventName: string | null; name: string | null; email: string | null; approvalStatus: string | null; registeredAt: string | null; checkedInAt: string | null; syncedAt: string | null; segments: string[] }> }>({
     queryKey: ['/api/admin/luma-guests'],
     enabled: activeTab === "guests",
   });
@@ -1289,7 +1289,7 @@ export default function AdminDashboard() {
                   <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Event Guests</h2>
                   {lumaGuestsData?.guests && (
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      {lumaGuestsData.guests.length} guest{lumaGuestsData.guests.length !== 1 ? "s" : ""} across {new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size} event{new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size !== 1 ? "s" : ""}
+                      {lumaGuestsData.guests.length} guest{lumaGuestsData.guests.length !== 1 ? "s" : ""} &bull; {new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? [])).size} categor{new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? [])).size !== 1 ? "ies" : "y"} &bull; {new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size} event{new Set(lumaGuestsData.guests.map(g => g.eventExternalId)).size !== 1 ? "s" : ""}
                     </p>
                   )}
                 </div>
@@ -1336,17 +1336,17 @@ export default function AdminDashboard() {
                     onClick={() => setGuestEventFilter("all")}
                     data-testid="button-guest-filter-all"
                   >
-                    All Events
+                    All Categories
                   </Button>
-                  {Array.from(new Set(lumaGuestsData.guests.map(g => g.eventName).filter(Boolean))).sort().map(eventName => (
+                  {Array.from(new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? []))).sort().map(category => (
                     <Button
-                      key={eventName}
+                      key={category}
                       size="sm"
-                      variant={guestEventFilter === eventName ? "default" : "outline"}
-                      onClick={() => setGuestEventFilter(eventName!)}
-                      data-testid={`button-guest-filter-${eventName}`}
+                      variant={guestEventFilter === category ? "default" : "outline"}
+                      onClick={() => setGuestEventFilter(category)}
+                      data-testid={`button-guest-filter-${category}`}
                     >
-                      {eventName}
+                      {category}
                     </Button>
                   ))}
                 </div>
@@ -1385,10 +1385,10 @@ export default function AdminDashboard() {
                   <TableBody>
                     {lumaGuestsData.guests
                       .filter(g => {
-                        const matchesEvent = guestEventFilter === "all" || g.eventName === guestEventFilter;
+                        const matchesCategory = guestEventFilter === "all" || (g.segments ?? []).includes(guestEventFilter);
                         const q = guestSearch.toLowerCase();
                         const matchesSearch = !q || (g.name?.toLowerCase().includes(q) ?? false) || (g.email?.toLowerCase().includes(q) ?? false);
-                        return matchesEvent && matchesSearch;
+                        return matchesCategory && matchesSearch;
                       })
                       .map(guest => (
                         <TableRow key={guest.id} data-testid={`row-guest-${guest.id}`}>

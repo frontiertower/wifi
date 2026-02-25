@@ -1827,11 +1827,23 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
     }
   });
 
-  // Get all Luma guests
+  // Get all Luma guests (enriched with event segments)
   app.get("/api/admin/luma-guests", verifyAdminSession, async (req, res) => {
     try {
       const guests = await storage.getAllLumaGuests();
-      res.json({ success: true, guests });
+      // Build a map from externalId -> segments for quick lookup
+      const allEvents = await storage.getAllEventsWithSegments();
+      const segmentsByExtId: Record<string, string[]> = {};
+      for (const ev of allEvents) {
+        if (ev.externalId && ev.segments?.length) {
+          segmentsByExtId[ev.externalId] = ev.segments;
+        }
+      }
+      const enriched = guests.map(g => ({
+        ...g,
+        segments: (g.eventExternalId ? segmentsByExtId[g.eventExternalId] : null) ?? [],
+      }));
+      res.json({ success: true, guests: enriched });
     } catch (error) {
       console.error('Error fetching Luma guests:', error);
       res.status(500).json({ success: false, message: "Failed to fetch guests" });
