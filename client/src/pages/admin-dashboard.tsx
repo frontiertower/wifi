@@ -268,10 +268,11 @@ export default function AdminDashboard() {
       total: number;
       upcoming: number;
       past: number;
-      events: Array<{ id: number; name: string; url: string | null; startDate: string; endDate: string; imageUrl: string | null; host: string | null }>;
+      events: Array<{ id: number; name: string; url: string | null; startDate: string; endDate: string; imageUrl: string | null; host: string | null; segments: string[] }>;
     }>;
     uncategorized: number;
     totalEvents: number;
+    allSegmentNames: string[];
   }>({
     queryKey: ['/api/admin/segments'],
     enabled: activeTab === "segments",
@@ -645,6 +646,25 @@ export default function AdminDashboard() {
         description: error instanceof Error ? error.message : "Could not analyze event segments",
         variant: "destructive",
       });
+    },
+  });
+
+  // Inline tag editing state: maps eventId -> current tag list (local overrides)
+  const [eventTagOverrides, setEventTagOverrides] = useState<Record<number, string[]>>({});
+  const [tagInputValues, setTagInputValues] = useState<Record<number, string>>({});
+
+  const updateEventSegmentsMutation = useMutation({
+    mutationFn: async ({ eventId, segments }: { eventId: number; segments: string[] }) => {
+      const response = await apiRequest("PATCH", `/api/admin/events/${eventId}/segments`, { segments });
+      return response.json();
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/segments'] });
+      // Keep local override until query refreshes
+      setEventTagOverrides(prev => ({ ...prev, [variables.eventId]: variables.segments }));
+    },
+    onError: () => {
+      toast({ title: "Failed to update tags", variant: "destructive" });
     },
   });
 
@@ -1494,8 +1514,22 @@ export default function AdminDashboard() {
                         "XR/VR": "text-violet-700 dark:text-violet-300",
                         "Meditation": "text-sky-700 dark:text-sky-300",
                       };
-                      const bgClass = segmentColors[seg.name] || "bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-700";
-                      const textClass = segmentTextColors[seg.name] || "text-gray-700 dark:text-gray-300";
+                      const FALLBACK_COLORS = [
+                        ["bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800", "text-red-700 dark:text-red-300"],
+                        ["bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800", "text-orange-700 dark:text-orange-300"],
+                        ["bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800", "text-teal-700 dark:text-teal-300"],
+                        ["bg-cyan-50 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-800", "text-cyan-700 dark:text-cyan-300"],
+                        ["bg-lime-50 dark:bg-lime-900/20 border-lime-200 dark:border-lime-800", "text-lime-700 dark:text-lime-300"],
+                        ["bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800", "text-rose-700 dark:text-rose-300"],
+                        ["bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800", "text-violet-700 dark:text-violet-300"],
+                        ["bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800", "text-amber-700 dark:text-amber-300"],
+                        ["bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800", "text-sky-700 dark:text-sky-300"],
+                        ["bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800", "text-emerald-700 dark:text-emerald-300"],
+                      ];
+                      const hashCode = (s: string) => s.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+                      const fallback = FALLBACK_COLORS[hashCode(seg.name) % FALLBACK_COLORS.length];
+                      const bgClass = segmentColors[seg.name] || fallback[0];
+                      const textClass = segmentTextColors[seg.name] || fallback[1];
                       return (
                         <div
                           key={seg.name}
@@ -1515,7 +1549,7 @@ export default function AdminDashboard() {
                     {segmentsData.segments.map((seg) => (
                       <details key={seg.name} className="group rounded-md border border-gray-200 dark:border-gray-700">
                         <summary className="flex items-center justify-between p-4 cursor-pointer list-none select-none hover-elevate rounded-md">
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 flex-wrap">
                             <span className="font-semibold text-gray-900 dark:text-gray-100">{seg.name}</span>
                             <Badge variant="secondary">{seg.total} events</Badge>
                             {seg.upcoming > 0 && (
@@ -1529,29 +1563,92 @@ export default function AdminDashboard() {
                             <TableHeader>
                               <TableRow>
                                 <TableHead>Event</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Host</TableHead>
-                                <TableHead></TableHead>
+                                <TableHead className="w-28">Date</TableHead>
+                                <TableHead>Tags</TableHead>
+                                <TableHead className="w-8"></TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
                               {seg.events.map((event) => {
                                 const isPast = new Date(event.endDate) < new Date();
+                                const currentTags = eventTagOverrides[event.id] ?? event.segments ?? [];
+                                const inputVal = tagInputValues[event.id] ?? "";
+                                const allKnownTags = segmentsData.allSegmentNames ?? [];
+
+                                const removeTag = (tag: string) => {
+                                  const next = currentTags.filter(t => t !== tag);
+                                  setEventTagOverrides(prev => ({ ...prev, [event.id]: next }));
+                                  updateEventSegmentsMutation.mutate({ eventId: event.id, segments: next });
+                                };
+
+                                const addTag = (tag: string) => {
+                                  const trimmed = tag.trim();
+                                  if (!trimmed || currentTags.includes(trimmed)) return;
+                                  const next = [...currentTags, trimmed];
+                                  setEventTagOverrides(prev => ({ ...prev, [event.id]: next }));
+                                  setTagInputValues(prev => ({ ...prev, [event.id]: "" }));
+                                  updateEventSegmentsMutation.mutate({ eventId: event.id, segments: next });
+                                };
+
                                 return (
-                                  <TableRow key={event.id} className={isPast ? "opacity-60" : ""} data-testid={`segment-event-${event.id}`}>
+                                  <TableRow key={event.id} className={isPast ? "opacity-70" : ""} data-testid={`segment-event-${event.id}`}>
                                     <TableCell className="font-medium">
-                                      {event.name}
-                                      {isPast && <Badge variant="secondary" className="ml-2 text-xs">Past</Badge>}
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        {event.url ? (
+                                          <a href={event.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                                            {event.name}
+                                          </a>
+                                        ) : event.name}
+                                        {isPast && <Badge variant="secondary" className="text-xs">Past</Badge>}
+                                      </div>
                                     </TableCell>
                                     <TableCell className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
                                       {new Date(event.startDate).toLocaleDateString()}
                                     </TableCell>
-                                    <TableCell className="text-sm text-gray-500 dark:text-gray-400">
-                                      {event.host ? event.host.replace(/Frontier Tower \| San Francisco/gi, '').replace(/^[\s,&]+|[\s,&]+$/g, '').trim() || "-" : "-"}
+                                    <TableCell>
+                                      <div className="flex flex-wrap gap-1 items-center">
+                                        {currentTags.map(tag => (
+                                          <span
+                                            key={tag}
+                                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
+                                            data-testid={`tag-${event.id}-${tag}`}
+                                          >
+                                            {tag}
+                                            <button
+                                              onClick={() => removeTag(tag)}
+                                              className="hover:text-destructive transition-colors"
+                                              aria-label={`Remove ${tag}`}
+                                              data-testid={`button-remove-tag-${event.id}-${tag}`}
+                                            >
+                                              <X className="h-3 w-3" />
+                                            </button>
+                                          </span>
+                                        ))}
+                                        <div className="relative">
+                                          <input
+                                            type="text"
+                                            list={`tags-datalist-${event.id}`}
+                                            value={inputVal}
+                                            onChange={e => setTagInputValues(prev => ({ ...prev, [event.id]: e.target.value }))}
+                                            onKeyDown={e => {
+                                              if (e.key === "Enter") { e.preventDefault(); addTag(inputVal); }
+                                            }}
+                                            onBlur={() => { if (inputVal) addTag(inputVal); }}
+                                            placeholder="+ add tag"
+                                            className="text-xs px-2 py-0.5 rounded-full border border-dashed border-gray-300 dark:border-gray-600 bg-transparent text-gray-500 dark:text-gray-400 focus:outline-none focus:border-primary w-20 focus:w-32 transition-all"
+                                            data-testid={`input-tag-${event.id}`}
+                                          />
+                                          <datalist id={`tags-datalist-${event.id}`}>
+                                            {allKnownTags.filter(t => !currentTags.includes(t)).map(t => (
+                                              <option key={t} value={t} />
+                                            ))}
+                                          </datalist>
+                                        </div>
+                                      </div>
                                     </TableCell>
                                     <TableCell>
                                       {event.url && (
-                                        <Button variant="ghost" size="sm" asChild>
+                                        <Button variant="ghost" size="icon" asChild>
                                           <a href={event.url} target="_blank" rel="noopener noreferrer">
                                             <ExternalLink className="h-4 w-4" />
                                           </a>

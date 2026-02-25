@@ -1652,12 +1652,41 @@ Rules:
     }
   });
 
-  // Analyze and categorize events into segments using AI
-  const EVENT_SEGMENTS = [
+  // Seed categories shown to AI as inspiration (AI is free to invent new ones)
+  const SEGMENT_EXAMPLES = [
     "AI", "Web3", "Longevity", "Human Flourishing", "Arts", "Music",
     "Founders", "Fundraising", "Parties", "Food", "Hackathons",
-    "Neuroscience", "Biotech", "Robotics", "Fitness", "XR/VR", "Meditation"
+    "Neuroscience", "Biotech", "Robotics", "Fitness", "XR/VR", "Meditation",
+    "Climate", "Space", "Finance", "Real Estate", "Healthcare", "Education",
+    "Policy", "Philosophy", "Consciousness", "Crypto", "DeFi", "NFTs",
+    "Social Impact", "Mental Health", "Relationships", "Leadership",
+    "Gaming", "Sports", "Fashion", "Film", "Comedy", "Spirituality",
+    "Productivity", "Design", "Marketing", "Sales", "Law", "Privacy",
+    "Defense", "Energy", "Agriculture", "Manufacturing", "Supply Chain",
+    "Architecture", "Urban Planning", "Transportation", "Ocean Tech",
+    "Materials Science", "Quantum Computing", "Cybersecurity", "Data Science",
+    "Open Source", "Developer Tools", "No-Code", "Community", "Diversity",
+    "Investing", "Venture Capital", "Angel Investing", "M&A", "IPO",
+    "Future of Work", "Remote Work", "HR", "Recruiting", "Culture"
   ];
+
+  // PATCH: manually update segments for a single event
+  app.patch("/api/admin/events/:id/segments", verifyAdminSession, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ success: false, message: "Invalid event ID" });
+      const { segments } = req.body;
+      if (!Array.isArray(segments)) return res.status(400).json({ success: false, message: "segments must be an array" });
+      const cleaned = segments
+        .map((s: unknown) => typeof s === "string" ? s.trim() : "")
+        .filter((s: string) => s.length > 0 && s.length <= 50);
+      await storage.updateEventSegments(id, cleaned);
+      res.json({ success: true, segments: cleaned });
+    } catch (error) {
+      console.error("Error updating event segments:", error);
+      res.status(500).json({ success: false, message: "Failed to update segments" });
+    }
+  });
 
   app.post("/api/admin/events/analyze-segments", verifyAdminSession, async (req, res) => {
     try {
@@ -1691,13 +1720,13 @@ Rules:
           messages: [
             {
               role: "system",
-              content: `You are an event categorization expert. Given a list of events, assign each event 1-3 categories from this exact list: ${EVENT_SEGMENTS.join(", ")}.
+              content: `You are an event categorization expert. Given a list of events, assign each event 1-3 descriptive categories.
+You may use any of these example categories: ${SEGMENT_EXAMPLES.join(", ")}.
+You may also invent new category names if none of the examples fit well — keep invented names concise (1-3 words, Title Case).
+Be precise and creative — only assign categories that clearly match the event topic.
 
-Return a JSON array where each item has "id" (number) and "segments" (array of strings from the allowed list only).
-Only use categories from the provided list. Be precise - only assign categories that clearly match the event topic.
-
-Example response format:
-[{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segments": ["Music", "Parties"]}]`
+Return a JSON object with a "results" key containing an array where each item has "id" (number) and "segments" (string[]).
+Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segments": ["Music", "Parties"]}]}`
             },
             {
               role: "user",
@@ -1724,12 +1753,16 @@ Example response format:
 
         for (const item of items) {
           if (!item.id || !Array.isArray(item.segments)) continue;
-          // Validate segments against allowed list
-          const validSegments = item.segments.filter((s: string) => EVENT_SEGMENTS.includes(s));
-          await storage.updateEventSegments(item.id, validSegments);
+          // Clean up: trim, deduplicate, cap length — allow any category the AI invents
+          const cleanedSegments: string[] = Array.from(new Set(
+            item.segments
+              .map((s: unknown) => typeof s === "string" ? s.trim() : "")
+              .filter((s: string) => s.length > 0 && s.length <= 50)
+          ));
+          await storage.updateEventSegments(item.id, cleanedSegments);
           const event = batch.find(e => e.id === item.id);
           if (event) {
-            results.push({ id: item.id, name: event.name, segments: validSegments });
+            results.push({ id: item.id, name: event.name, segments: cleanedSegments });
             analyzed++;
           }
         }
@@ -1753,7 +1786,7 @@ Example response format:
       const allEvents = await storage.getAllEventsWithSegments();
       const now = new Date();
 
-      const segmentMap: Record<string, Array<{ id: number; name: string; url: string | null; startDate: Date; endDate: Date; imageUrl: string | null; host: string | null }>> = {};
+      const segmentMap: Record<string, Array<{ id: number; name: string; url: string | null; startDate: Date; endDate: Date; imageUrl: string | null; host: string | null; segments: string[] }>> = {};
 
       for (const event of allEvents) {
         if (event.isHidden || !event.segments || event.segments.length === 0) continue;
@@ -1767,6 +1800,7 @@ Example response format:
             endDate: event.endDate,
             imageUrl: event.imageUrl?.startsWith('data:') ? null : event.imageUrl,
             host: event.host,
+            segments: event.segments,
           });
         }
       }
@@ -1781,9 +1815,12 @@ Example response format:
         }))
         .sort((a, b) => b.total - a.total);
 
+      // Also collect all known segment names for autocomplete
+      const allSegmentNames = Array.from(new Set(allEvents.flatMap(e => e.segments || []))).sort();
+
       const uncategorized = allEvents.filter(e => !e.isHidden && (!e.segments || e.segments.length === 0)).length;
 
-      res.json({ success: true, segments, uncategorized, totalEvents: allEvents.filter(e => !e.isHidden).length });
+      res.json({ success: true, segments, uncategorized, totalEvents: allEvents.filter(e => !e.isHidden).length, allSegmentNames });
     } catch (error) {
       console.error('Error fetching segments:', error);
       res.status(500).json({ success: false, message: "Failed to fetch segments" });
