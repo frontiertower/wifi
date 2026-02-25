@@ -1684,6 +1684,144 @@ Rules:
     }
   });
 
+  // Analyze and categorize events into segments using AI
+  const EVENT_SEGMENTS = [
+    "AI", "Web3", "Longevity", "Human Flourishing", "Arts", "Music",
+    "Founders", "Fundraising", "Parties", "Food", "Hackathons",
+    "Neuroscience", "Biotech", "Robotics", "Fitness", "XR/VR", "Meditation"
+  ];
+
+  app.post("/api/admin/events/analyze-segments", verifyAdminSession, async (req, res) => {
+    try {
+      const OpenAI = (await import('openai')).default;
+      const openai = new OpenAI({
+        baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+        apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      });
+
+      const allEvents = await storage.getAllEventsWithSegments();
+      if (allEvents.length === 0) {
+        return res.json({ success: true, message: "No events to analyze", analyzed: 0 });
+      }
+
+      const eventsToAnalyze = allEvents.filter(e => !e.isHidden);
+      let analyzed = 0;
+      const results: Array<{ id: number; name: string; segments: string[] }> = [];
+
+      // Process in batches of 20 to stay within token limits
+      const BATCH_SIZE = 20;
+      for (let i = 0; i < eventsToAnalyze.length; i += BATCH_SIZE) {
+        const batch = eventsToAnalyze.slice(i, i + BATCH_SIZE);
+        const eventsJson = batch.map(e => ({
+          id: e.id,
+          name: e.name,
+          description: e.description ? e.description.substring(0, 300) : null,
+        }));
+
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: `You are an event categorization expert. Given a list of events, assign each event 1-3 categories from this exact list: ${EVENT_SEGMENTS.join(", ")}.
+
+Return a JSON array where each item has "id" (number) and "segments" (array of strings from the allowed list only).
+Only use categories from the provided list. Be precise - only assign categories that clearly match the event topic.
+
+Example response format:
+[{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segments": ["Music", "Parties"]}]`
+            },
+            {
+              role: "user",
+              content: `Categorize these events:\n${JSON.stringify(eventsJson)}`
+            }
+          ],
+          temperature: 0.2,
+          response_format: { type: "json_object" },
+        });
+
+        const raw = completion.choices[0]?.message?.content || "{}";
+        let parsed: any;
+        try {
+          parsed = JSON.parse(raw);
+        } catch {
+          console.error("Failed to parse OpenAI response:", raw);
+          continue;
+        }
+
+        // Handle both { results: [...] } and [...] formats
+        const items: Array<{ id: number; segments: string[] }> = Array.isArray(parsed)
+          ? parsed
+          : (parsed.results || parsed.events || Object.values(parsed).find(v => Array.isArray(v)) || []);
+
+        for (const item of items) {
+          if (!item.id || !Array.isArray(item.segments)) continue;
+          // Validate segments against allowed list
+          const validSegments = item.segments.filter((s: string) => EVENT_SEGMENTS.includes(s));
+          await storage.updateEventSegments(item.id, validSegments);
+          const event = batch.find(e => e.id === item.id);
+          if (event) {
+            results.push({ id: item.id, name: event.name, segments: validSegments });
+            analyzed++;
+          }
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `Analyzed ${analyzed} event${analyzed !== 1 ? 's' : ''}`,
+        analyzed,
+        results,
+      });
+    } catch (error) {
+      console.error('Error analyzing event segments:', error);
+      res.status(500).json({ success: false, message: error instanceof Error ? error.message : "Failed to analyze segments" });
+    }
+  });
+
+  // Get segment summary
+  app.get("/api/admin/segments", verifyAdminSession, async (req, res) => {
+    try {
+      const allEvents = await storage.getAllEventsWithSegments();
+      const now = new Date();
+
+      const segmentMap: Record<string, Array<{ id: number; name: string; url: string | null; startDate: Date; endDate: Date; imageUrl: string | null; host: string | null }>> = {};
+
+      for (const event of allEvents) {
+        if (event.isHidden || !event.segments || event.segments.length === 0) continue;
+        for (const segment of event.segments) {
+          if (!segmentMap[segment]) segmentMap[segment] = [];
+          segmentMap[segment].push({
+            id: event.id,
+            name: event.name,
+            url: event.url,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            imageUrl: event.imageUrl?.startsWith('data:') ? null : event.imageUrl,
+            host: event.host,
+          });
+        }
+      }
+
+      const segments = Object.entries(segmentMap)
+        .map(([name, evts]) => ({
+          name,
+          total: evts.length,
+          upcoming: evts.filter(e => new Date(e.endDate) >= now).length,
+          past: evts.filter(e => new Date(e.endDate) < now).length,
+          events: evts.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()),
+        }))
+        .sort((a, b) => b.total - a.total);
+
+      const uncategorized = allEvents.filter(e => !e.isHidden && (!e.segments || e.segments.length === 0)).length;
+
+      res.json({ success: true, segments, uncategorized, totalEvents: allEvents.filter(e => !e.isHidden).length });
+    } catch (error) {
+      console.error('Error fetching segments:', error);
+      res.status(500).json({ success: false, message: "Failed to fetch segments" });
+    }
+  });
+
   // Get all Luma guests
   app.get("/api/admin/luma-guests", verifyAdminSession, async (req, res) => {
     try {

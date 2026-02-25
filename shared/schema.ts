@@ -71,6 +71,7 @@ export const events = pgTable("events", {
   url: text("url"),
   imageUrl: text("image_url"),
   originalImageUrl: text("original_image_url"),
+  segments: text("segments").array(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

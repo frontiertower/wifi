@@ -1195,6 +1195,14 @@ export class DatabaseStorage {
     };
   }
 
+  async updateEventSegments(eventId: number, segments: string[]): Promise<void> {
+    await db.update(events).set({ segments }).where(eq(events.id, eventId));
+  }
+
+  async getAllEventsWithSegments(): Promise<Event[]> {
+    return db.select().from(events).where(eq(events.isActive, true));
+  }
+
   async upsertLumaGuest(guest: InsertLumaGuest): Promise<LumaGuest> {
     const [result] = await db
       .insert(lumaGuests)

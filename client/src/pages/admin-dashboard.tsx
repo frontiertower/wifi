@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/dialog";
 import type { TourBooking, EventHostBooking, MembershipApplication, ChatInviteRequest, Booking, DirectoryListing, JobApplication, ResidencyBooking } from "@shared/schema";
 
-type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers";
+type Tab = "users" | "events" | "analytics" | "leads" | "directory" | "settings" | "admin-logins" | "careers" | "segments";
 
 // Helper function to generate URL slugs from listing names
 function slugify(text: string): string {
@@ -259,6 +259,22 @@ export default function AdminDashboard() {
   const { data: events } = useQuery<EventsResponse>({
     queryKey: ['/api/admin/events'],
     enabled: activeTab === "events",
+  });
+
+  const { data: segmentsData, isLoading: segmentsLoading, refetch: refetchSegments } = useQuery<{
+    success: boolean;
+    segments: Array<{
+      name: string;
+      total: number;
+      upcoming: number;
+      past: number;
+      events: Array<{ id: number; name: string; url: string | null; startDate: string; endDate: string; imageUrl: string | null; host: string | null }>;
+    }>;
+    uncategorized: number;
+    totalEvents: number;
+  }>({
+    queryKey: ['/api/admin/segments'],
+    enabled: activeTab === "segments",
   });
 
   const { data: lumaGuestsData } = useQuery<{ success: boolean; guests: Array<{ id: number; lumaGuestId: string; eventExternalId: string | null; eventName: string | null; name: string | null; email: string | null; approvalStatus: string | null; registeredAt: string | null; checkedInAt: string | null; syncedAt: string | null }> }>({
@@ -610,6 +626,27 @@ export default function AdminDashboard() {
     },
   });
 
+  const analyzeSegmentsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/events/analyze-segments", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Segments Analyzed",
+        description: data.message || `Analyzed ${data.analyzed} events`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/segments'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Analysis Failed",
+        description: error instanceof Error ? error.message : "Could not analyze event segments",
+        variant: "destructive",
+      });
+    },
+  });
+
   const syncGuestsMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/admin/events/sync-guests", {});
@@ -715,6 +752,7 @@ export default function AdminDashboard() {
     { id: "analytics", label: "Analytics", icon: TrendingUp },
     { id: "users", label: "Users", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
+    { id: "segments", label: "Segments", icon: Filter },
     { id: "leads", label: "Leads", icon: ClipboardList },
     { id: "careers", label: "Careers", icon: Briefcase },
     { id: "directory", label: "Directory", icon: Building2 },
@@ -1310,6 +1348,182 @@ export default function AdminDashboard() {
                 })()}
               </TableBody>
             </Table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "segments" && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div>
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Event Segments</h2>
+                  {segmentsData && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      {segmentsData.totalEvents} events &bull; {segmentsData.uncategorized} uncategorized
+                    </p>
+                  )}
+                </div>
+                <Button
+                  onClick={() => analyzeSegmentsMutation.mutate()}
+                  disabled={analyzeSegmentsMutation.isPending}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white w-full sm:w-auto"
+                  data-testid="button-analyze-segments"
+                >
+                  {analyzeSegmentsMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Analyzing with AI...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      {segmentsData?.segments?.length ? "Re-analyze Segments" : "Analyze with AI"}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-6">
+              {segmentsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : !segmentsData?.segments?.length ? (
+                <div className="text-center py-16">
+                  <Filter className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No segments yet</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+                    Click "Analyze with AI" to automatically categorize all your events by topic.
+                  </p>
+                  <Button
+                    onClick={() => analyzeSegmentsMutation.mutate()}
+                    disabled={analyzeSegmentsMutation.isPending}
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Analyze with AI
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Summary tiles */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                    {segmentsData.segments.map((seg) => {
+                      const segmentColors: Record<string, string> = {
+                        "AI": "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
+                        "Web3": "bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800",
+                        "Longevity": "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800",
+                        "Human Flourishing": "bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800",
+                        "Arts": "bg-pink-50 dark:bg-pink-900/20 border-pink-200 dark:border-pink-800",
+                        "Music": "bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800",
+                        "Founders": "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800",
+                        "Fundraising": "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800",
+                        "Parties": "bg-fuchsia-50 dark:bg-fuchsia-900/20 border-fuchsia-200 dark:border-fuchsia-800",
+                        "Food": "bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800",
+                        "Hackathons": "bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800",
+                        "Neuroscience": "bg-cyan-50 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-800",
+                        "Biotech": "bg-lime-50 dark:bg-lime-900/20 border-lime-200 dark:border-lime-800",
+                        "Robotics": "bg-slate-50 dark:bg-slate-900/20 border-slate-200 dark:border-slate-800",
+                        "Fitness": "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800",
+                        "XR/VR": "bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800",
+                        "Meditation": "bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800",
+                      };
+                      const segmentTextColors: Record<string, string> = {
+                        "AI": "text-blue-700 dark:text-blue-300",
+                        "Web3": "text-purple-700 dark:text-purple-300",
+                        "Longevity": "text-green-700 dark:text-green-300",
+                        "Human Flourishing": "text-teal-700 dark:text-teal-300",
+                        "Arts": "text-pink-700 dark:text-pink-300",
+                        "Music": "text-rose-700 dark:text-rose-300",
+                        "Founders": "text-amber-700 dark:text-amber-300",
+                        "Fundraising": "text-yellow-700 dark:text-yellow-300",
+                        "Parties": "text-fuchsia-700 dark:text-fuchsia-300",
+                        "Food": "text-orange-700 dark:text-orange-300",
+                        "Hackathons": "text-indigo-700 dark:text-indigo-300",
+                        "Neuroscience": "text-cyan-700 dark:text-cyan-300",
+                        "Biotech": "text-lime-700 dark:text-lime-300",
+                        "Robotics": "text-slate-700 dark:text-slate-300",
+                        "Fitness": "text-emerald-700 dark:text-emerald-300",
+                        "XR/VR": "text-violet-700 dark:text-violet-300",
+                        "Meditation": "text-sky-700 dark:text-sky-300",
+                      };
+                      const bgClass = segmentColors[seg.name] || "bg-gray-50 dark:bg-gray-900/20 border-gray-200 dark:border-gray-700";
+                      const textClass = segmentTextColors[seg.name] || "text-gray-700 dark:text-gray-300";
+                      return (
+                        <div
+                          key={seg.name}
+                          className={`rounded-md border p-3 text-center ${bgClass}`}
+                          data-testid={`segment-card-${seg.name.toLowerCase().replace(/\//g, '-').replace(/\s+/g, '-')}`}
+                        >
+                          <p className={`text-2xl font-bold ${textClass}`}>{seg.total}</p>
+                          <p className={`text-xs font-medium mt-1 ${textClass}`}>{seg.name}</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{seg.upcoming} upcoming</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Detailed breakdown by segment */}
+                  <div className="space-y-4">
+                    {segmentsData.segments.map((seg) => (
+                      <details key={seg.name} className="group rounded-md border border-gray-200 dark:border-gray-700">
+                        <summary className="flex items-center justify-between p-4 cursor-pointer list-none select-none hover-elevate rounded-md">
+                          <div className="flex items-center gap-3">
+                            <span className="font-semibold text-gray-900 dark:text-gray-100">{seg.name}</span>
+                            <Badge variant="secondary">{seg.total} events</Badge>
+                            {seg.upcoming > 0 && (
+                              <Badge variant="default" className="text-xs">{seg.upcoming} upcoming</Badge>
+                            )}
+                          </div>
+                          <span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div className="border-t border-gray-200 dark:border-gray-700">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Event</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Host</TableHead>
+                                <TableHead></TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {seg.events.map((event) => {
+                                const isPast = new Date(event.endDate) < new Date();
+                                return (
+                                  <TableRow key={event.id} className={isPast ? "opacity-60" : ""} data-testid={`segment-event-${event.id}`}>
+                                    <TableCell className="font-medium">
+                                      {event.name}
+                                      {isPast && <Badge variant="secondary" className="ml-2 text-xs">Past</Badge>}
+                                    </TableCell>
+                                    <TableCell className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                                      {new Date(event.startDate).toLocaleDateString()}
+                                    </TableCell>
+                                    <TableCell className="text-sm text-gray-500 dark:text-gray-400">
+                                      {event.host ? event.host.replace(/Frontier Tower \| San Francisco/gi, '').replace(/^[\s,&]+|[\s,&]+$/g, '').trim() || "-" : "-"}
+                                    </TableCell>
+                                    <TableCell>
+                                      {event.url && (
+                                        <Button variant="ghost" size="sm" asChild>
+                                          <a href={event.url} target="_blank" rel="noopener noreferrer">
+                                            <ExternalLink className="h-4 w-4" />
+                                          </a>
+                                        </Button>
+                                      )}
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </details>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
