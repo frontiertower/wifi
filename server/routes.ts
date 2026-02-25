@@ -4,6 +4,7 @@ import express from "express";
 import { z } from "zod";
 import { storage } from "./storage";
 import { insertCaptiveUserSchema, insertVoucherSchema, insertEventSchema, insertBookingSchema, insertTourBookingSchema, insertPrivateOfficeRentalSchema, insertEventHostBookingSchema, insertMembershipApplicationSchema, insertChatInviteRequestSchema, insertJobApplicationSchema, insertJobListingSchema, insertResidencyBookingSchema } from "@shared/schema";
+import { lumaFetch, lumaGet } from "./luma-client";
 import fetch from "node-fetch";
 import https from "https";
 import { SiweMessage } from "siwe";
@@ -1267,38 +1268,12 @@ Rules:
       }
 
       const lumaApiUrl = `https://api.lu.ma/public/v1/calendar/list-events?calendar_api_id=${encodeURIComponent(CALENDAR_ID)}`;
-      
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
-
-      let response;
-      try {
-        response = await fetch(lumaApiUrl, { 
-          signal: controller.signal,
-          headers: {
-            'x-luma-api-key': LUMA_API_KEY,
-            'Accept': 'application/json',
-          },
-        });
-        clearTimeout(timeout);
-      } catch (fetchError) {
-        clearTimeout(timeout);
-        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
-          throw new Error("Luma API request timed out after 30 seconds");
-        }
-        throw new Error(`Failed to connect to Luma API: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Unknown error');
-        throw new Error(`Luma API returned status ${response.status}: ${errorText}`);
-      }
 
       let responseData: { entries?: any[]; has_more?: boolean; next_cursor?: string };
       try {
-        responseData = await response.json();
-      } catch (parseError) {
-        throw new Error("Failed to parse Luma API response as JSON");
+        responseData = await lumaGet<{ entries?: any[]; has_more?: boolean; next_cursor?: string }>(lumaApiUrl, LUMA_API_KEY);
+      } catch (fetchError) {
+        throw new Error(`Failed to fetch events from Luma: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}`);
       }
 
       // Luma API returns { entries: [...], has_more: boolean, next_cursor: string }
@@ -1625,19 +1600,12 @@ Rules:
             url.searchParams.set("pagination_limit", "100");
             if (cursor) url.searchParams.set("pagination_cursor", cursor);
 
-            const response = await fetch(url.toString(), {
-              headers: {
-                "x-luma-api-key": LUMA_API_KEY,
-                "Accept": "application/json",
-              },
-            });
-
-            if (!response.ok) {
-              const errorText = await response.text();
-              throw new Error(`Luma API returned ${response.status}: ${errorText}`);
+            let data: { entries?: any[]; has_more?: boolean; next_cursor?: string };
+            try {
+              data = await lumaGet<{ entries?: any[]; has_more?: boolean; next_cursor?: string }>(url.toString(), LUMA_API_KEY);
+            } catch (fetchErr) {
+              throw new Error(`Luma API error: ${fetchErr instanceof Error ? fetchErr.message : 'Unknown'}`);
             }
-
-            const data = await response.json();
             const entries = data.entries || [];
 
             for (const entry of entries) {
