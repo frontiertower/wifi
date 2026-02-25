@@ -1402,29 +1402,40 @@ export default function AdminDashboard() {
                   data-testid="input-guest-search"
                 />
               </div>
-              {lumaGuestsData?.guests && (
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    variant={guestEventFilter === "all" ? "default" : "outline"}
-                    onClick={() => { setGuestEventFilter("all"); setGuestPage(1); }}
-                    data-testid="button-guest-filter-all"
-                  >
-                    All Categories
-                  </Button>
-                  {Array.from(new Set(lumaGuestsData.guests.flatMap(g => g.segments ?? []))).sort().map(category => (
+              {lumaGuestsData?.guests && (() => {
+                const categoryCounts: Record<string, number> = {};
+                for (const g of lumaGuestsData.guests) {
+                  for (const seg of g.segments ?? []) {
+                    categoryCounts[seg] = (categoryCounts[seg] ?? 0) + 1;
+                  }
+                }
+                const categories = Object.keys(categoryCounts).sort();
+                return (
+                  <div className="flex flex-wrap gap-2">
                     <Button
-                      key={category}
                       size="sm"
-                      variant={guestEventFilter === category ? "default" : "outline"}
-                      onClick={() => { setGuestEventFilter(category); setGuestPage(1); }}
-                      data-testid={`button-guest-filter-${category}`}
+                      variant={guestEventFilter === "all" ? "default" : "outline"}
+                      onClick={() => { setGuestEventFilter("all"); setGuestPage(1); }}
+                      data-testid="button-guest-filter-all"
                     >
-                      {category}
+                      All Categories
+                      <span className="ml-1.5 text-xs opacity-70">{lumaGuestsData.guests.length}</span>
                     </Button>
-                  ))}
-                </div>
-              )}
+                    {categories.map(category => (
+                      <Button
+                        key={category}
+                        size="sm"
+                        variant={guestEventFilter === category ? "default" : "outline"}
+                        onClick={() => { setGuestEventFilter(category); setGuestPage(1); }}
+                        data-testid={`button-guest-filter-${category}`}
+                      >
+                        {category}
+                        <span className="ml-1.5 text-xs opacity-70">{categoryCounts[category]}</span>
+                      </Button>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="overflow-x-auto">
@@ -1445,6 +1456,7 @@ export default function AdminDashboard() {
                   </Button>
                 </div>
               ) : (
+                <>
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -1547,6 +1559,7 @@ export default function AdminDashboard() {
                     </div>
                   );
                 })()}
+                </>
               )}
             </div>
 
