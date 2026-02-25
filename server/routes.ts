@@ -1581,13 +1581,17 @@ Rules:
       const allEvents = await storage.getAllEvents();
       const now = new Date();
 
-      // Find the most recent past Luma event that hasn't had guests synced yet
+      // Only events with a proper evt- ID can be fetched via the Luma API;
+      // iCal UID format (luma-evt-XXX@events.lu.ma) always returns 403.
+      const isValidLumaId = (id: string) => id.startsWith("evt-");
+
+      // Find the most recent past Luma event (valid API ID, not yet synced)
       const pastLumaEvents = allEvents
-        .filter(e => e.externalId && e.source === 'luma' && new Date(e.endDate) < now && !e.guestsSyncedAt)
+        .filter(e => e.externalId && isValidLumaId(e.externalId) && e.source === 'luma' && new Date(e.endDate) < now && !e.guestsSyncedAt)
         .sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime());
 
       if (pastLumaEvents.length === 0) {
-        const alreadySynced = allEvents.filter(e => e.externalId && e.source === 'luma' && new Date(e.endDate) < now && e.guestsSyncedAt);
+        const alreadySynced = allEvents.filter(e => e.externalId && isValidLumaId(e.externalId) && e.source === 'luma' && new Date(e.endDate) < now && e.guestsSyncedAt);
         const msg = alreadySynced.length > 0
           ? `All past Luma events have already been synced. Most recent: "${alreadySynced.sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())[0]?.name}"`
           : "No past Luma events found to sync";
