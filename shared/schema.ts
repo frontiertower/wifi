@@ -73,6 +73,7 @@ export const events = pgTable("events", {
   originalImageUrl: text("original_image_url"),
   segments: text("segments").array(),
   createdAt: timestamp("created_at").defaultNow(),
+  guestsSyncedAt: timestamp("guests_synced_at"),
 });
 
 export const sessions = pgTable("sessions", {

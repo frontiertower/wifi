@@ -1579,79 +1579,80 @@ Rules:
       }
 
       const allEvents = await storage.getAllEvents();
-      const lumaEvents = allEvents.filter(e => e.externalId && e.source === 'luma');
+      const now = new Date();
 
-      if (lumaEvents.length === 0) {
-        return res.json({ success: true, message: "No Luma events found to sync guests for", totalGuests: 0, syncedEvents: 0 });
+      // Find the most recent past Luma event that hasn't had guests synced yet
+      const pastLumaEvents = allEvents
+        .filter(e => e.externalId && e.source === 'luma' && new Date(e.endDate) < now && !e.guestsSyncedAt)
+        .sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime());
+
+      if (pastLumaEvents.length === 0) {
+        const alreadySynced = allEvents.filter(e => e.externalId && e.source === 'luma' && new Date(e.endDate) < now && e.guestsSyncedAt);
+        const msg = alreadySynced.length > 0
+          ? `All past Luma events have already been synced. Most recent: "${alreadySynced.sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())[0]?.name}"`
+          : "No past Luma events found to sync";
+        return res.json({ success: true, message: msg, totalGuests: 0, syncedEvents: 0 });
       }
 
+      const event = pastLumaEvents[0];
       let totalGuests = 0;
-      let syncedEvents = 0;
-      const errors: string[] = [];
+      let cursor: string | undefined;
 
-      for (const event of lumaEvents) {
+      do {
+        const url = new URL("https://api.lu.ma/public/v1/event/get-guests");
+        url.searchParams.set("event_api_id", event.externalId!);
+        url.searchParams.set("pagination_limit", "100");
+        if (cursor) url.searchParams.set("pagination_cursor", cursor);
+
+        let data: { entries?: any[]; has_more?: boolean; next_cursor?: string };
         try {
-          let cursor: string | undefined;
-          let pageGuests = 0;
-
-          do {
-            const url = new URL("https://api.lu.ma/public/v1/event/get-guests");
-            url.searchParams.set("event_api_id", event.externalId!);
-            url.searchParams.set("pagination_limit", "100");
-            if (cursor) url.searchParams.set("pagination_cursor", cursor);
-
-            let data: { entries?: any[]; has_more?: boolean; next_cursor?: string };
-            try {
-              data = await lumaGet<{ entries?: any[]; has_more?: boolean; next_cursor?: string }>(url.toString(), LUMA_API_KEY);
-            } catch (fetchErr) {
-              throw new Error(`Luma API error: ${fetchErr instanceof Error ? fetchErr.message : 'Unknown'}`);
-            }
-            const entries = data.entries || [];
-
-            for (const entry of entries) {
-              const guest = entry.guest || entry;
-              const guestId = entry.api_id || guest.api_id;
-              if (!guestId) continue;
-
-              const rawAnswers: Array<{ label: string; value: unknown; answer: unknown; question_id: string; question_type: string }> =
-                guest.registration_answers ?? entry.registration_answers ?? [];
-              const registrationAnswers = rawAnswers
-                .filter(a => a.question_type !== "terms" && a.answer !== "" && a.answer !== null && a.answer !== undefined && a.answer !== false)
-                .map(a => ({ label: a.label, answer: String(a.answer), type: a.question_type }));
-
-              await storage.upsertLumaGuest({
-                lumaGuestId: guestId,
-                eventExternalId: event.externalId!,
-                eventName: event.name,
-                name: guest.name || entry.name || null,
-                email: guest.email || entry.email || null,
-                approvalStatus: entry.approval_status || guest.approval_status || null,
-                registeredAt: entry.registered_at ? new Date(entry.registered_at) : null,
-                checkedInAt: entry.checked_in_at ? new Date(entry.checked_in_at) : null,
-                registrationAnswers: registrationAnswers.length > 0 ? registrationAnswers : null,
-              });
-              pageGuests++;
-            }
-
-            cursor = data.has_more ? data.next_cursor : undefined;
-          } while (cursor);
-
-          totalGuests += pageGuests;
-          syncedEvents++;
-          console.log(`Synced ${pageGuests} guests for event "${event.name}"`);
-        } catch (eventError) {
-          const msg = `Failed to sync guests for "${event.name}": ${eventError instanceof Error ? eventError.message : 'Unknown error'}`;
-          console.error(msg);
-          errors.push(msg);
+          data = await lumaGet<{ entries?: any[]; has_more?: boolean; next_cursor?: string }>(url.toString(), LUMA_API_KEY);
+        } catch (fetchErr) {
+          throw new Error(`Luma API error: ${fetchErr instanceof Error ? fetchErr.message : 'Unknown'}`);
         }
-      }
+        const entries = data.entries || [];
+
+        for (const entry of entries) {
+          const guest = entry.guest || entry;
+          const guestId = entry.api_id || guest.api_id;
+          if (!guestId) continue;
+
+          const rawAnswers: Array<{ label: string; value: unknown; answer: unknown; question_id: string; question_type: string }> =
+            guest.registration_answers ?? entry.registration_answers ?? [];
+          const registrationAnswers = rawAnswers
+            .filter(a => a.question_type !== "terms" && a.answer !== "" && a.answer !== null && a.answer !== undefined && a.answer !== false)
+            .map(a => ({ label: a.label, answer: String(a.answer), type: a.question_type }));
+
+          await storage.upsertLumaGuest({
+            lumaGuestId: guestId,
+            eventExternalId: event.externalId!,
+            eventName: event.name,
+            name: guest.name || entry.name || null,
+            email: guest.email || entry.email || null,
+            approvalStatus: entry.approval_status || guest.approval_status || null,
+            registeredAt: entry.registered_at ? new Date(entry.registered_at) : null,
+            checkedInAt: entry.checked_in_at ? new Date(entry.checked_in_at) : null,
+            registrationAnswers: registrationAnswers.length > 0 ? registrationAnswers : null,
+          });
+          totalGuests++;
+        }
+
+        cursor = data.has_more ? data.next_cursor : undefined;
+      } while (cursor);
+
+      // Mark this event as synced so it won't be re-synced
+      await storage.markEventGuestsSynced(event.id);
+      console.log(`Synced ${totalGuests} guests for event "${event.name}"`);
+
+      const remaining = pastLumaEvents.length - 1;
 
       res.json({
         success: true,
-        message: `Synced ${totalGuests} guest${totalGuests !== 1 ? 's' : ''} across ${syncedEvents} event${syncedEvents !== 1 ? 's' : ''}${errors.length > 0 ? ` (${errors.length} event${errors.length !== 1 ? 's' : ''} failed)` : ''}`,
+        message: `Synced ${totalGuests} guest${totalGuests !== 1 ? 's' : ''} from "${event.name}"${remaining > 0 ? ` — ${remaining} more past event${remaining !== 1 ? 's' : ''} ready to sync` : ' — all past events are now synced'}`,
         totalGuests,
-        syncedEvents,
-        errors: errors.length > 0 ? errors : undefined,
+        syncedEvents: 1,
+        eventName: event.name,
+        remainingUnsyncedEvents: remaining,
       });
     } catch (error) {
       console.error('Error syncing Luma guests:', error);

@@ -1389,7 +1389,7 @@ export default function AdminDashboard() {
                   <Ticket className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No guests synced yet</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-                    Click "Sync Guests" to pull registrant data from all your Luma events.
+                    Click "Sync Guests" to pull registrant data from your most recent past Luma event. Each click syncs the next unsynced event.
                   </p>
                   <Button
                     onClick={() => syncGuestsMutation.mutate()}
