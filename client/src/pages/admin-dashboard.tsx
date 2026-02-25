@@ -720,6 +720,27 @@ export default function AdminDashboard() {
     },
   });
 
+  const analyzeInterestsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/admin/guests/analyze-interests", {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Interests Analyzed",
+        description: data.message || `Analyzed ${data.analyzed} events`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/luma-guests'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to Analyze Interests",
+        description: error instanceof Error ? error.message : "Could not analyze guest interests",
+        variant: "destructive",
+      });
+    },
+  });
+
   const syncDescriptionsMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/admin/events/sync-descriptions", {});
@@ -1375,25 +1396,46 @@ export default function AdminDashboard() {
                     </p>
                   )}
                 </div>
-                <Button
-                  onClick={() => syncGuestsMutation.mutate()}
-                  disabled={syncGuestsMutation.isPending}
-                  variant="outline"
-                  className="w-full sm:w-auto"
-                  data-testid="button-sync-guests"
-                >
-                  {syncGuestsMutation.isPending ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-                      Syncing Guests...
-                    </>
-                  ) : (
-                    <>
-                      <Users className="mr-2 h-4 w-4" />
-                      Sync Guests
-                    </>
-                  )}
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    onClick={() => syncGuestsMutation.mutate()}
+                    disabled={syncGuestsMutation.isPending}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                    data-testid="button-sync-guests"
+                  >
+                    {syncGuestsMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Syncing Guests...
+                      </>
+                    ) : (
+                      <>
+                        <Users className="mr-2 h-4 w-4" />
+                        Sync Guests
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() => analyzeInterestsMutation.mutate()}
+                    disabled={analyzeInterestsMutation.isPending}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                    data-testid="button-analyze-interests"
+                  >
+                    {analyzeInterestsMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Analyze Interests
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
 

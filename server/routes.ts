@@ -1870,6 +1870,102 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
     }
   });
 
+  // Analyze interests: run segment analysis only on events that have active guest registrations
+  app.post("/api/admin/guests/analyze-interests", verifyAdminSession, async (req, res) => {
+    try {
+      const OpenAI = (await import('openai')).default;
+      const openai = new OpenAI({
+        baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+        apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      });
+
+      const EXCLUDED = new Set(["invited", "declined"]);
+
+      // Find unique event externalIds that have active guest registrations
+      const allGuests = await storage.getAllLumaGuests();
+      const activeEventIds = new Set(
+        allGuests
+          .filter(g => !EXCLUDED.has(g.approvalStatus ?? ""))
+          .map(g => g.eventExternalId)
+          .filter(Boolean)
+      );
+
+      if (activeEventIds.size === 0) {
+        return res.json({ success: true, message: "No events with active guest registrations found", analyzed: 0 });
+      }
+
+      // Get the DB events that match those externalIds
+      const allEvents = await storage.getAllEventsWithSegments();
+      const eventsToAnalyze = allEvents.filter(e => e.externalId && activeEventIds.has(e.externalId) && !e.isHidden);
+
+      if (eventsToAnalyze.length === 0) {
+        return res.json({ success: true, message: "No matching events found to analyze", analyzed: 0 });
+      }
+
+      let analyzed = 0;
+      const BATCH_SIZE = 20;
+
+      for (let i = 0; i < eventsToAnalyze.length; i += BATCH_SIZE) {
+        const batch = eventsToAnalyze.slice(i, i + BATCH_SIZE);
+        const eventsJson = batch.map(e => ({
+          id: e.id,
+          name: e.name,
+          description: e.description ? e.description.substring(0, 300) : null,
+        }));
+
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: `You are an event categorization expert. Given a list of events, assign each event 1-3 descriptive categories.
+You may use any of these example categories: ${SEGMENT_EXAMPLES.join(", ")}.
+You may also invent new category names if none of the examples fit well — keep invented names concise (1-3 words, Title Case).
+Be precise and creative — only assign categories that clearly match the event topic.
+
+Return a JSON object with a "results" key containing an array where each item has "id" (number) and "segments" (string[]).
+Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segments": ["Music", "Parties"]}]}`
+            },
+            {
+              role: "user",
+              content: `Categorize these events:\n${JSON.stringify(eventsJson)}`
+            }
+          ],
+          temperature: 0.2,
+          response_format: { type: "json_object" },
+        });
+
+        const raw = completion.choices[0]?.message?.content || "{}";
+        let parsed: any;
+        try { parsed = JSON.parse(raw); } catch { continue; }
+
+        const items: Array<{ id: number; segments: string[] }> = Array.isArray(parsed)
+          ? parsed
+          : (parsed.results || parsed.events || Object.values(parsed).find((v: any) => Array.isArray(v)) || []);
+
+        for (const item of items) {
+          if (!item.id || !Array.isArray(item.segments)) continue;
+          const cleanedSegments: string[] = Array.from(new Set(
+            item.segments
+              .map((s: unknown) => typeof s === "string" ? s.trim() : "")
+              .filter((s: string) => s.length > 0 && s.length <= 50)
+          ));
+          await storage.updateEventSegments(item.id, cleanedSegments);
+          analyzed++;
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `Analyzed interests across ${analyzed} event${analyzed !== 1 ? 's' : ''} with active registrations`,
+        analyzed,
+      });
+    } catch (error) {
+      console.error('Error analyzing guest interests:', error);
+      res.status(500).json({ success: false, message: error instanceof Error ? error.message : "Failed to analyze interests" });
+    }
+  });
+
   // Get segment summary
   app.get("/api/admin/segments", verifyAdminSession, async (req, res) => {
     try {
