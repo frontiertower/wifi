@@ -1503,6 +1503,59 @@ export default function AdminDashboard() {
                       </div>
                     </div>
 
+                    {/* Interests — categories from all RSVPs, ranked by frequency */}
+                    {(() => {
+                      const catCounts: Record<string, number> = {};
+                      for (const rsvp of profileRsvps) {
+                        for (const seg of (rsvp.segments ?? [])) {
+                          catCounts[seg] = (catCounts[seg] ?? 0) + 1;
+                        }
+                      }
+                      const rankedCats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]);
+                      if (rankedCats.length === 0) return null;
+
+                      // Reuse hash-based color for consistency with Segments tab
+                      const hashCode = (s: string) => s.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+                      const PILL_COLORS = [
+                        "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+                        "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300",
+                        "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
+                        "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300",
+                        "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300",
+                        "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300",
+                        "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300",
+                        "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
+                        "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300",
+                        "bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300",
+                      ];
+
+                      return (
+                        <div className="mb-6">
+                          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+                            <Sparkles className="h-4 w-4" />
+                            Interests
+                          </h3>
+                          <div className="flex flex-wrap gap-2">
+                            {rankedCats.map(([cat, count]) => {
+                              const color = PILL_COLORS[hashCode(cat) % PILL_COLORS.length];
+                              return (
+                                <span
+                                  key={cat}
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${color}`}
+                                  data-testid={`interest-${cat}`}
+                                >
+                                  {cat}
+                                  {count > 1 && (
+                                    <span className="opacity-60 font-normal">×{count}</span>
+                                  )}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })()}
+
                     {/* Event history */}
                     <div>
                       <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
