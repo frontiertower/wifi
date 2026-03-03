@@ -226,6 +226,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   let cachedGalleryData: { photos: any[]; albumTitle: string; cachedAt: number } | null = null;
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+  const ALBUM_TOKEN = "B2NGq6kMgGcF56U";
+  const ALBUM_DIRECT_URL = `https://www.icloud.com/photos/${ALBUM_TOKEN}`;
+
   app.get("/api/gallery/photos", async (req, res) => {
     try {
       // Return cached data if available and fresh
@@ -234,19 +237,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const { getImages } = await import("icloud-shared-album");
-      const albumToken = "B2NGq6kMgGcF56U";
-      const data: any = await getImages(albumToken);
-      
+
+      // Race the iCloud call against an 8-second timeout — Apple's API is
+      // unreachable from some server environments (Replit, etc.)
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("iCloud API timeout")), 8000)
+      );
+      const data: any = await Promise.race([getImages(ALBUM_TOKEN), timeout]);
+
       // Transform the data to extract photo URLs
       // derivatives are keyed by height (e.g., "720", "1024", "1920")
       const photos = data.photos.map((photo: any) => {
         const derivatives = photo.derivatives || {};
         const heights = Object.keys(derivatives).filter(k => !isNaN(parseInt(k))).sort((a, b) => parseInt(b) - parseInt(a));
-        
-        // Get largest derivative for full view, and a smaller one for thumbnail
+
         const largestKey = heights[0];
         const thumbnailKey = heights.find(h => parseInt(h) <= 720) || heights[heights.length - 1] || largestKey;
-        
+
         return {
           id: photo.photoGuid || photo.guid || Math.random().toString(36).substr(2, 9),
           url: derivatives[largestKey]?.url || "",
@@ -257,20 +264,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           dateCreated: photo.dateCreated || "",
         };
       }).filter((photo: any) => photo.url);
-      
+
       const albumTitle = data.metadata?.streamName || "Frontier Tower Gallery";
-      
-      // Cache the result
+
       cachedGalleryData = { photos, albumTitle, cachedAt: Date.now() };
-      
       res.json({ photos, albumTitle });
     } catch (error: any) {
-      console.error("Failed to fetch iCloud photos:", error);
-      // If we have stale cached data, return it on error
+      console.error("Failed to fetch iCloud photos:", error.message);
       if (cachedGalleryData) {
         return res.json({ photos: cachedGalleryData.photos, albumTitle: cachedGalleryData.albumTitle });
       }
-      res.status(500).json({ error: "Failed to fetch photos from gallery" });
+      // Return a structured error so the frontend can show a direct link
+      res.status(503).json({ error: "icloud_unreachable", directUrl: ALBUM_DIRECT_URL });
     }
   });
 

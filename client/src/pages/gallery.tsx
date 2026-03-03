@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronLeft, ChevronRight, X, Image as ImageIcon, Camera } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Image as ImageIcon, Camera, ExternalLink } from "lucide-react";
 
 interface Photo {
   id: string;
@@ -22,34 +22,33 @@ interface GalleryResponse {
   albumTitle: string;
 }
 
+interface GalleryError {
+  error: string;
+  directUrl?: string;
+}
+
+const DIRECT_ALBUM_URL = "https://www.icloud.com/photos/B2NGq6kMgGcF56U";
+
 export default function GalleryPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const { data, isLoading, error } = useQuery<GalleryResponse>({
+  const { data, isLoading, error } = useQuery<GalleryResponse, GalleryError>({
     queryKey: ["/api/gallery/photos"],
+    retry: 1,
   });
 
   const photos = data?.photos || [];
   const albumTitle = data?.albumTitle || "Photo Gallery";
 
-  const openLightbox = (index: number) => {
-    setSelectedIndex(index);
-  };
-
-  const closeLightbox = () => {
-    setSelectedIndex(null);
-  };
+  const openLightbox = (index: number) => setSelectedIndex(index);
+  const closeLightbox = () => setSelectedIndex(null);
 
   const goToPrevious = () => {
-    if (selectedIndex !== null && selectedIndex > 0) {
-      setSelectedIndex(selectedIndex - 1);
-    }
+    if (selectedIndex !== null && selectedIndex > 0) setSelectedIndex(selectedIndex - 1);
   };
 
   const goToNext = () => {
-    if (selectedIndex !== null && selectedIndex < photos.length - 1) {
-      setSelectedIndex(selectedIndex + 1);
-    }
+    if (selectedIndex !== null && selectedIndex < photos.length - 1) setSelectedIndex(selectedIndex + 1);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -61,7 +60,7 @@ export default function GalleryPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="sm" data-testid="button-back">
@@ -74,24 +73,37 @@ export default function GalleryPage() {
                 <Camera className="w-8 h-8 text-primary" />
                 {albumTitle}
               </h1>
-              <p className="text-muted-foreground mt-1">
-                Life at Frontier Tower
-              </p>
+              <p className="text-muted-foreground mt-1">Life at Frontier Tower</p>
             </div>
           </div>
-          {photos.length > 0 && (
-            <p className="text-sm text-muted-foreground" data-testid="text-photo-count">
-              {photos.length} photos
-            </p>
-          )}
+          <div className="flex items-center gap-3">
+            {photos.length > 0 && (
+              <p className="text-sm text-muted-foreground" data-testid="text-photo-count">
+                {photos.length} photos
+              </p>
+            )}
+            <a href={DIRECT_ALBUM_URL} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm" data-testid="button-open-album">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Open in iCloud
+              </Button>
+            </a>
+          </div>
         </div>
 
         {error && (
-          <Card className="p-8 text-center">
-            <ImageIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
-            <p className="text-muted-foreground" data-testid="text-error">
-              Unable to load photos. Please try again later.
+          <Card className="p-12 text-center" data-testid="card-gallery-error">
+            <ImageIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground/40" />
+            <h2 className="text-lg font-semibold text-foreground mb-2">Photos unavailable from this server</h2>
+            <p className="text-muted-foreground mb-6 max-w-sm mx-auto text-sm">
+              Apple's iCloud photo API can't be reached from here. You can view the full album directly on iCloud.
             </p>
+            <a href={DIRECT_ALBUM_URL} target="_blank" rel="noopener noreferrer">
+              <Button data-testid="button-view-on-icloud">
+                <ExternalLink className="w-4 h-4 mr-2" />
+                View Album on iCloud
+              </Button>
+            </a>
           </Card>
         )}
 
@@ -106,9 +118,7 @@ export default function GalleryPage() {
         {!isLoading && !error && photos.length === 0 && (
           <Card className="p-8 text-center">
             <ImageIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
-            <p className="text-muted-foreground" data-testid="text-empty">
-              No photos available yet.
-            </p>
+            <p className="text-muted-foreground" data-testid="text-empty">No photos available yet.</p>
           </Card>
         )}
 
