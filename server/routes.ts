@@ -227,7 +227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   const ALBUM_TOKEN = "B2NGq6kMgGcF56U";
-  const ALBUM_DIRECT_URL = `https://www.icloud.com/photos/${ALBUM_TOKEN}`;
+  const ALBUM_DIRECT_URL = `https://www.icloud.com/sharedalbum/#${ALBUM_TOKEN}`;
 
   app.get("/api/gallery/photos", async (req, res) => {
     try {

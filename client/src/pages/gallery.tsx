@@ -27,7 +27,7 @@ interface GalleryError {
   directUrl?: string;
 }
 
-const DIRECT_ALBUM_URL = "https://www.icloud.com/photos/B2NGq6kMgGcF56U";
+const DIRECT_ALBUM_URL = "https://www.icloud.com/sharedalbum/#B2NGq6kMgGcF56U";
 
 export default function GalleryPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
