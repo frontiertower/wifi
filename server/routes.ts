@@ -2091,37 +2091,25 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
       };
 
       if (apiType === 'modern' && apiKey) {
-        let allDevices: NormalizedDevice[] = [];
-        let page = 1;
-        const pageSize = 200;
+        const response = await fetch(
+          `${controllerUrl}/proxy/network/v2/api/site/${siteId}/clients/active`,
+          { headers: { 'X-API-KEY': apiKey, 'Accept': 'application/json' }, agent: httpsAgent }
+        );
+        if (!response.ok) throw new Error(`UniFi API error: ${response.status} ${response.statusText}`);
 
-        while (true) {
-          const response = await fetch(
-            `${controllerUrl}/v1/sites/${siteId}/clients?pageSize=${pageSize}&page=${page}`,
-            { headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, agent: httpsAgent }
-          );
-          if (!response.ok) throw new Error(`UniFi API error: ${response.status} ${response.statusText}`);
+        const body = await response.json() as { data?: any[] };
+        const items: any[] = body.data ?? (Array.isArray(body) ? body : []);
 
-          const body = await response.json() as { data?: any[]; totalCount?: number };
-          const items: any[] = body.data ?? (Array.isArray(body) ? body : []);
-
-          for (const c of items) {
-            allDevices.push({
-              mac: (c.macAddress ?? c.mac ?? "").toUpperCase(),
-              ip: c.ipAddress ?? c.ip ?? null,
-              hostname: c.name ?? c.hostname ?? null,
-              type: c.type === "WIRED" || c.isWired === true ? "WIRED" : "WIRELESS",
-              signalStrength: c.signalStrength ?? c.signal ?? null,
-              uptime: c.uptime ?? null,
-              network: c.network ?? c.ssid ?? null,
-              apMac: (c.uplinkMacAddress ?? c.apMac ?? null)?.toUpperCase() ?? null,
-            });
-          }
-
-          if (items.length < pageSize) break;
-          page++;
-          if (page > 20) break;
-        }
+        const allDevices: NormalizedDevice[] = items.map((c: any) => ({
+          mac: (c.macAddress ?? c.mac ?? "").toUpperCase(),
+          ip: c.ipAddress ?? c.ip ?? null,
+          hostname: c.name ?? c.hostname ?? null,
+          type: c.type === "WIRED" || c.isWired === true ? "WIRED" : "WIRELESS",
+          signalStrength: c.signalStrength ?? c.signal ?? null,
+          uptime: c.uptime ?? null,
+          network: c.network ?? c.ssid ?? null,
+          apMac: (c.uplinkMacAddress ?? c.apMac ?? null)?.toUpperCase() ?? null,
+        }));
 
         return res.json({ success: true, configured: true, devices: allDevices, total: allDevices.length });
       }
