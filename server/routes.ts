@@ -2090,9 +2090,11 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
         uptime: number | null; network: string | null; apMac: string | null;
       };
 
+      const baseUrl = controllerUrl.replace(/\/$/, '');
+
       if (apiType === 'modern' && apiKey) {
         const response = await fetch(
-          `${controllerUrl}/proxy/network/v2/api/site/${siteId}/clients/active`,
+          `${baseUrl}/proxy/network/v2/api/site/${siteId}/clients/active`,
           { headers: { 'X-API-KEY': apiKey, 'Accept': 'application/json' }, agent: httpsAgent }
         );
         if (!response.ok) throw new Error(`UniFi API error: ${response.status} ${response.statusText}`);
@@ -2116,13 +2118,13 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
 
       // Legacy API
       if (apiType === 'legacy' && username && password) {
-        let loginResponse = await fetch(`${controllerUrl}/api/login`, {
+        let loginResponse = await fetch(`${baseUrl}/api/login`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password }), agent: httpsAgent,
         });
 
         if (!loginResponse.ok) {
-          loginResponse = await fetch(`${controllerUrl}/api/auth/login`, {
+          loginResponse = await fetch(`${baseUrl}/api/auth/login`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password, remember: true }), agent: httpsAgent,
           });
@@ -2133,7 +2135,7 @@ Example: {"results": [{"id": 1, "segments": ["AI", "Founders"]}, {"id": 2, "segm
         const cookies = setCookies.join('; ');
 
         let clientsData: any[] = [];
-        for (const path of [`${controllerUrl}/api/s/${siteId}/stat/sta`, `${controllerUrl}/proxy/network/api/s/${siteId}/stat/sta`]) {
+        for (const path of [`${baseUrl}/api/s/${siteId}/stat/sta`, `${baseUrl}/proxy/network/api/s/${siteId}/stat/sta`]) {
           try {
             const r = await fetch(path, { headers: { 'Cookie': cookies, 'Content-Type': 'application/json' }, agent: httpsAgent });
             if (r.ok) { const body = await r.json(); clientsData = body.data ?? []; break; }
