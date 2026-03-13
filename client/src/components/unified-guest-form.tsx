@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Shield, CheckCircle, Wifi, WifiOff, Loader2 } from "lucide-react";
+import { ArrowLeft, CalendarIcon, Shield, CheckCircle, Wifi, WifiOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,10 +11,6 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { format } from "date-fns";
-import step1Image from '@assets/step 1_1763765971195.jpeg';
-import step2Image from '@assets/step 2_1763765971195.jpeg';
-import step3Image from '@assets/step 3_1763765971195.jpeg';
-import step4Image from '@assets/step 4_1763765971195.jpeg';
 
 interface UniFiParams {
   id?: string;
@@ -52,7 +48,6 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [guestType, setGuestType] = useState<GuestType>(null);
-  const [showInstructions, setShowInstructions] = useState(false);
   const [requirePassword, setRequirePassword] = useState(false);
   const [authStatus, setAuthStatus] = useState<'pending' | 'success' | 'mock' | 'error'>('pending');
   const [authMessage, setAuthMessage] = useState<string>('');
@@ -720,137 +715,6 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
                       <strong>Password:</strong> frontiertower995
                     </p>
                   </div>
-                </div>
-
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-700 rounded-lg">
-                  <p className="text-sm font-bold text-blue-900 dark:text-blue-100 mb-3">
-                    Option 2: Quick Setup (iOS/Mac)
-                  </p>
-                  <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
-                    Install this profile to automatically connect to FrontierTower WiFi
-                  </p>
-                  <Button
-                    asChild
-                    variant="default"
-                    className="w-full mb-4"
-                    data-testid="button-install-wifi-profile"
-                  >
-                    <a href="/api/wifi-profile">
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      Install WiFi Profile
-                    </a>
-                  </Button>
-                  
-                  <Button
-                    onClick={() => setShowInstructions(!showInstructions)}
-                    variant="ghost"
-                    className="w-full flex items-center justify-between text-left p-2 h-auto"
-                    data-testid="button-toggle-instructions"
-                  >
-                    <div className="text-left">
-                      <h4 className="font-medium text-sm text-blue-900 dark:text-blue-100">How to Install WiFi Profile</h4>
-                      <p className="text-xs text-blue-800 dark:text-blue-200">
-                        Step-by-step installation guide
-                      </p>
-                    </div>
-                    {showInstructions ? (
-                      <ChevronUp className="w-4 h-4 text-blue-800 dark:text-blue-200 flex-shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-blue-800 dark:text-blue-200 flex-shrink-0" />
-                    )}
-                  </Button>
-
-                  {showInstructions && (
-                    <div className="mt-4 space-y-4" data-testid="wifi-instructions">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold" data-testid="badge-step-1">
-                      1
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Profile Downloaded</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        After downloading, you'll see this confirmation. Tap "Close" to continue.
-                      </p>
-                      <img 
-                        src={step1Image} 
-                        alt="Step 1: Profile Downloaded screen" 
-                        className="rounded-lg border w-full max-w-sm mx-auto"
-                        data-testid="img-step-1"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold" data-testid="badge-step-2">
-                      2
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Open Settings</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        Go to Settings app and look for "Profile Downloaded" notification.
-                      </p>
-                      <img 
-                        src={step2Image} 
-                        alt="Step 2: Settings showing Profile Downloaded notification" 
-                        className="rounded-lg border w-full max-w-sm mx-auto"
-                        data-testid="img-step-2"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold" data-testid="badge-step-3">
-                      3
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Review Profile Details</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        Review the WiFi Configuration profile and tap "Install" in the top right.
-                      </p>
-                      <img 
-                        src={step3Image} 
-                        alt="Step 3: Install Profile screen with WiFi Configuration details" 
-                        className="rounded-lg border w-full max-w-sm mx-auto"
-                        data-testid="img-step-3"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold" data-testid="badge-step-4">
-                      4
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Confirm Installation</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        You'll see a warning about unsigned profile. This is normal - tap "Install" to complete the setup.
-                      </p>
-                      <img 
-                        src={step4Image} 
-                        alt="Step 4: Warning screen about unsigned profile" 
-                        className="rounded-lg border w-full max-w-sm mx-auto"
-                        data-testid="img-step-4"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mt-2">
-                        <p className="text-sm text-blue-700 dark:text-blue-200">
-                          <strong>Note:</strong> Once installed, your device will automatically connect to FrontierTower WiFi whenever you're in the building!
-                        </p>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
