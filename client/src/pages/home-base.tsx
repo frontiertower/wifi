@@ -329,45 +329,32 @@ export default function HomeBase({ language = "en" }: { language?: Language }) {
             
             <div className="p-6 space-y-6">
               <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Wifi className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Wifi className="h-8 w-8 text-amber-600 dark:text-amber-400" />
                 </div>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Please enter the WiFi access password to continue
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Guest WiFi Temporarily Unavailable
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                  We are reserving our network capacity for{" "}
+                  <span className="font-medium text-gray-800 dark:text-gray-200">
+                    Funding the Commons: Intelligence at the Frontier
+                  </span>
+                  . Guest WiFi will be restored once the event concludes.
+                </p>
+                <p className="text-gray-500 dark:text-gray-500 text-sm mt-4">
+                  Thank you for your understanding.
                 </p>
               </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="wifi-password" className="text-gray-700 dark:text-gray-300">
-                    Password
-                  </Label>
-                  <Input
-                    id="wifi-password"
-                    type="password"
-                    value={wifiPassword}
-                    onChange={(e) => setWifiPassword(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleVerifyPassword()}
-                    placeholder="Enter password"
-                    className="mt-1"
-                    data-testid="input-wifi-password"
-                  />
-                  {passwordError && (
-                    <p className="text-sm text-red-600 dark:text-red-400 mt-2" data-testid="text-password-error">
-                      {passwordError}
-                    </p>
-                  )}
-                </div>
-                
-                <Button
-                  onClick={handleVerifyPassword}
-                  disabled={isVerifying}
-                  className="w-full"
-                  data-testid="button-verify-password"
-                >
-                  {isVerifying ? "Verifying..." : "Continue"}
-                </Button>
-              </div>
+
+              <Button
+                variant="outline"
+                onClick={handlePasswordBack}
+                className="w-full"
+                data-testid="button-password-back-notice"
+              >
+                Go Back
+              </Button>
             </div>
           </div>
         </div>
