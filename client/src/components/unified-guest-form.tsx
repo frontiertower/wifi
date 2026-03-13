@@ -668,28 +668,6 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         </div>
         <div className="max-w-2xl mx-auto w-full space-y-6">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden p-8">
-            <div className="mb-6 text-center">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2" data-testid="heading-registration-complete">
-                Connecting to WiFi
-              </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
-                Now connecting to WiFi
-              </p>
-              
-              {/* UniFi Authorization Status */}
-              <div className={`flex items-center justify-center gap-2 p-3 rounded-lg mb-4 ${
-                authStatus === 'pending' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300' :
-                authStatus === 'success' ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300' :
-                authStatus === 'mock' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300' :
-                'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300'
-              }`} data-testid="auth-status">
-                {authStatus === 'pending' && <Loader2 className="w-5 h-5 animate-spin" />}
-                {authStatus === 'success' && <Wifi className="w-5 h-5" />}
-                {authStatus === 'mock' && <Wifi className="w-5 h-5" />}
-                {authStatus === 'error' && <WifiOff className="w-5 h-5" />}
-                <span className="text-sm font-medium">{authMessage}</span>
-              </div>
-            </div>
             
             <div className="text-center py-4">
                 <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
