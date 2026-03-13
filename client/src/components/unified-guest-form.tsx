@@ -669,24 +669,30 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
         <div className="max-w-2xl mx-auto w-full space-y-6">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden p-8">
             
-            <div className="text-center py-4">
-                <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Wifi className="h-7 w-7 text-amber-600 dark:text-amber-400" />
+            <div className="py-4 space-y-5">
+              <div className="text-center">
+                <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Wifi className="h-7 w-7 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                  Guest WiFi Temporarily Unavailable
+                <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                  Connect to WiFi
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                  We are reserving our network capacity for{" "}
-                  <span className="font-medium text-gray-800 dark:text-gray-200">
-                    Funding the Commons: Intelligence at the Frontier
-                  </span>
-                  . Guest WiFi will be restored once the event concludes.
-                </p>
-                <p className="text-gray-500 dark:text-gray-500 text-sm mt-3">
-                  Thank you for your understanding.
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Join the <span className="font-medium text-gray-800 dark:text-gray-200">FrontierTower</span> network using the credentials below.
                 </p>
               </div>
+              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Network</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">FrontierTower</span>
+                </div>
+                <div className="border-t border-gray-200 dark:border-gray-700" />
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Password</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-mono">frontiertower995</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
