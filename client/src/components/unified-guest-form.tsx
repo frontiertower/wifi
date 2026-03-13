@@ -691,33 +691,24 @@ export default function UnifiedGuestForm({ onBack, onSuccess, unifiParams }: Uni
               </div>
             </div>
             
-            {isSubmitting ? (
-              <div className="flex justify-center">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-2 border-gray-300 dark:border-gray-700 rounded-lg">
-                  <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">
-                    Option 1: Manual Connection (All Devices)
-                  </p>
-                  <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-3">
-                    <li>1. Go to your device's <strong>WiFi menu</strong></li>
-                    <li>2. Click <strong>Other Networks</strong> and scroll down</li>
-                    <li>3. Find and select the <strong>"FrontierTower"</strong> network</li>
-                    <li>4. Enter the password below when prompted</li>
-                  </ol>
-                  <div className="bg-white dark:bg-gray-900/50 rounded p-3 text-sm">
-                    <p className="text-gray-900 dark:text-gray-100">
-                      <strong>Network Name:</strong> FrontierTower
-                    </p>
-                    <p className="text-gray-900 dark:text-gray-100">
-                      <strong>Password:</strong> frontiertower995
-                    </p>
-                  </div>
+            <div className="text-center py-4">
+                <div className="w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Wifi className="h-7 w-7 text-amber-600 dark:text-amber-400" />
                 </div>
+                <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Guest WiFi Temporarily Unavailable
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                  We are reserving our network capacity for{" "}
+                  <span className="font-medium text-gray-800 dark:text-gray-200">
+                    Funding the Commons: Intelligence at the Frontier
+                  </span>
+                  . Guest WiFi will be restored once the event concludes.
+                </p>
+                <p className="text-gray-500 dark:text-gray-500 text-sm mt-3">
+                  Thank you for your understanding.
+                </p>
               </div>
-            )}
           </div>
         </div>
       </div>
